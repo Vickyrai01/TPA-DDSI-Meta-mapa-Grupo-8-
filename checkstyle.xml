@@ -24,10 +24,5 @@
         <module name="TypeName">
             <property name="format" value="^[A-Z][a-zA-Z0-9]*$"/>
         </module>
-
-        <!-- Espacio después de ',' -->
-        <module name="GenericWhitespace">
-            <property name="tokens" value="COMMA"/>
-        </module>
     </module>
 </module>
