@@ -28,4 +28,6 @@ public class Coleccion {
     @Getter
     private String identificadorHandle;
 
+
+
 }
