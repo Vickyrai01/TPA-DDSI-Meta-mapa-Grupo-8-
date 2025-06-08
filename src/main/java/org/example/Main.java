@@ -13,6 +13,7 @@ public class Main {
             // We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
             // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
             System.out.println("i = " + i);
+            System.out.println(10);
         }
     }
 }
