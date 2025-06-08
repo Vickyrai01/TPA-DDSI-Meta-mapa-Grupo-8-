@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import models.entities.fuentes.Fuente;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,7 +30,7 @@ public class Hecho {
 
     @Setter
     @Getter
-    private LocalDateTime fechaCarga;
+    private LocalDate fechaCarga;
 
     @Setter
     @Getter
@@ -51,4 +53,14 @@ public class Hecho {
     private List<SugerenciaDeCambio> sugerenciaDeCambio;
 
 
+    public Hecho(String titulo, String descripcion, LocalDate fecha) {
+        this.titulo= titulo;
+        this.descripcion = descripcion;
+        this.fechaCarga = LocalDate.from(fecha);
+    }
+
+    @Override
+    public String toString() {
+        return "Titulo: " + titulo + " - Fecha: " + fechaCarga ;
+    }
 }
