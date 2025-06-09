@@ -52,9 +52,9 @@ public class StrategyCSV implements StrategyTipoConexion {
 
 
                 //VER LO DE TIPO DE FUENTE.
-                Hecho hecho = new Hecho(titulo, null, null,
-                        null, Estado.ACEPTADO, null,
-                        LocalDate.now(), null, etiquetaList, descripcion);
+                Hecho hecho = new Hecho(titulo, descripcion, etiquetaList,
+                        null, LocalDate.now(), null,
+                        Estado.ACEPTADO, null, null, null);
                 hechos.put(titulo, hecho);
             }
         } catch (Exception e) {

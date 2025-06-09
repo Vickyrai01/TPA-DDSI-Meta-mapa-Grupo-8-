@@ -21,12 +21,8 @@ public class EtiquetaCategoria extends Etiqueta {
 
     private String nombre;
 
-    public EtiquetaCategoria(String nombre) {
-        this.nombre = nombre;
-
     @Override
-    public void cambiarCategoria(String categoriaNueva){
+    public void cambiarCategoria (String categoriaNueva){
         this.setNombre(categoriaNueva);
-
+        }
     }
-}
