@@ -9,4 +9,9 @@ public class EtiquetaCategoria extends Etiqueta {
     @Setter
     @Getter
     private String nombre;
+
+    @override
+    public void cambiarCategoria(String categoriaNueva){
+        this.setNombre(categoriaNueva);
+    }
 }
