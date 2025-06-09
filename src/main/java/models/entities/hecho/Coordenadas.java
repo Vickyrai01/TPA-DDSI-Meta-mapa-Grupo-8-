@@ -4,17 +4,35 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-
 public class Coordenadas {
-    @Setter
-    @Getter
+    public Double getLongitud() {
+        return longitud;
+    }
+
+    public void setLatitud(Double latitud) {
+        this.latitud = latitud;
+    }
+
+    public Double getLatitud() {
+        return latitud;
+    }
+
     private Double latitud;
-    @Setter
-    @Getter
+
+    public void setLongitud(Double longitud) {
+        this.longitud = longitud;
+    }
+
     private Double longitud;
 
     public Coordenadas(Double latitud, Double longitud) {
         this.latitud = latitud;
         this.longitud = longitud;
     }
+
+    public void cambiarUbicacion(Double latitud, Double longitud){
+        this.latitud = latitud;
+        this.longitud = longitud;
+    }
+
 }

@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 
 public class EtiquetaFecha extends Etiqueta {
@@ -14,6 +13,19 @@ public class EtiquetaFecha extends Etiqueta {
     private LocalDate fechaAcontecimiento;
 
     public EtiquetaFecha(LocalDate fechaAcontecimiento) {
+        this.fechaAcontecimiento = fechaAcontecimiento;
+    }
+
+    @Override
+    public void cambiarFecha(LocalDate fechaNueva) {
+        this.setFechaAcontecimiento(fechaNueva);
+    }
+
+    public LocalDate getFechaAcontecimiento() {
+        return fechaAcontecimiento;
+    }
+
+    public void setFechaAcontecimiento(LocalDate fechaAcontecimiento) {
         this.fechaAcontecimiento = fechaAcontecimiento;
     }
 }
