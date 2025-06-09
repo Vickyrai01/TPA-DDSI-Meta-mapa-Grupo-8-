@@ -9,4 +9,8 @@ public class EtiquetaLugar extends Etiqueta {
     @Setter
     @Getter
     private Coordenadas coordenadasLugar;
+
+    public void cambiarUbicacion(Double latitud, Double longitud){
+        coordenadasLugar.cambiarUbicacion(latitud, longitud);
+    }
 }
