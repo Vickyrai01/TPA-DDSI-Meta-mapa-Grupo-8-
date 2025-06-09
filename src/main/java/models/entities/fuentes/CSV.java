@@ -1,30 +1,23 @@
 package models.entities.fuentes;
 
-
 import com.opencsv.CSVReader;
 import models.entities.hecho.*;
-import models.entities.hecho.Hecho;
 
 import java.io.FileReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.HashMap;
 import java.util.Map;
 
-public class StrategyCSV implements StrategyTipoConexion {
-
-
+public class CSV {
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    @Override
-    public Map<String, Hecho> agregarHecho(String FuenteBase) {
+    public static Map<String, Hecho> leerHechosDesdeCSV(String archivoCSV) {
         Map<String, Hecho> hechos = new HashMap<>();
 
-        try (CSVReader reader = new CSVReader(new FileReader(FuenteBase))) {
+        try (CSVReader reader = new CSVReader(new FileReader(archivoCSV))) {
             String[] fila;
             reader.readNext(); // Saltar encabezado
 
@@ -51,7 +44,7 @@ public class StrategyCSV implements StrategyTipoConexion {
                 etiquetaList.add(etiquetaLugar);
 
 
-                //VER LO DE TIPO DE FUENTE.
+    //VER LO DE TIPO DE FUENTE.
                 Hecho hecho = new Hecho(titulo, null, null,
                         null, Estado.ACEPTADO, null,
                         LocalDate.now(), null, etiquetaList, descripcion);
@@ -63,5 +56,4 @@ public class StrategyCSV implements StrategyTipoConexion {
 
         return hechos;
     }
-
-    }
+}
