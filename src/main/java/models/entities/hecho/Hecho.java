@@ -50,5 +50,7 @@ public class Hecho {
     @Getter
     private List<SugerenciaDeCambio> sugerenciaDeCambio;
 
-
+    public void modificarEtiquetaLugar(EtiquetaLugar lugar, Double latitud, Double longitud){
+        lugar.cambiarUbicacion(latitud, longitud);
+    }
 }
