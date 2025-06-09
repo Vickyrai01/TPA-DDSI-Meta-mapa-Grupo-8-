@@ -7,9 +7,13 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
+
 public class EtiquetaFecha extends Etiqueta {
     @Setter
     @Getter
-    private LocalDateTime fechaAcontecimiento;
+    private LocalDate fechaAcontecimiento;
+
+    public EtiquetaFecha(LocalDate fechaAcontecimiento) {
+        this.fechaAcontecimiento = fechaAcontecimiento;
+    }
 }

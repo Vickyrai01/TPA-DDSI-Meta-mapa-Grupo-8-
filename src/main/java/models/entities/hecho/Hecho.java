@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@AllArgsConstructor
 public class Hecho {
 
     @Setter
@@ -52,15 +51,27 @@ public class Hecho {
     @Getter
     private List<SugerenciaDeCambio> sugerenciaDeCambio;
 
-
-    public Hecho(String titulo, String descripcion, LocalDate fecha) {
-        this.titulo= titulo;
+    public Hecho(String titulo,
+                 List<SugerenciaDeCambio> sugerenciaDeCambio,
+                 LocalDateTime ultimaFechaModificacion,
+                 List<String> multimedia, Estado estado,
+                 Contribuyente contribuyente, LocalDate fechaCarga,
+                 Fuente fuenteDeOrigen, List<Etiqueta> etiquetas,
+                 String descripcion) {
+        this.titulo = titulo;
+        this.sugerenciaDeCambio = sugerenciaDeCambio;
+        this.ultimaFechaModificacion = ultimaFechaModificacion;
+        this.multimedia = multimedia;
+        this.estado = estado;
+        this.contribuyente = contribuyente;
+        this.fechaCarga = fechaCarga;
+        this.fuenteDeOrigen = fuenteDeOrigen;
+        this.etiquetas = etiquetas;
         this.descripcion = descripcion;
-        this.fechaCarga = LocalDate.from(fecha);
     }
 
     @Override
     public String toString() {
-        return "Titulo: " + titulo + " - Fecha: " + fechaCarga ;
+        return "Titulo: " + titulo + " - Fecha: " + fechaCarga;
     }
 }
