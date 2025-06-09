@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import models.entities.fuentes.Fuente;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -53,6 +56,11 @@ public class Hecho {
     @Setter
     @Getter
     private List<SugerenciaDeCambio> sugerenciaDeCambio;
+
+    @Override
+    public String toString() {
+        return "Titulo: " + titulo + " - Fecha: " + fechaCarga;
+    }
 
     public Hecho(String titulo, String descripcion, List<Etiqueta> etiquetas,
                  Fuente fuenteDeOrigen, LocalDate fechaCarga, Contribuyente contribuyente, Estado estado,

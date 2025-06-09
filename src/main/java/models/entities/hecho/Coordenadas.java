@@ -30,10 +30,9 @@ public class Coordenadas {
         this.longitud = longitud;
     }
 
-
-
     public void cambiarUbicacion(Double latitud, Double longitud){
         this.latitud = latitud;
         this.longitud = longitud;
     }
+
 }
