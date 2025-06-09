@@ -2,7 +2,7 @@ package models.entities.hecho;
 
 import java.util.List;
 
-public class ValidadorEtiquetas {
+public class ValidadorDeEtiqueta {
 
     public boolean noMasDeUnHorario(List<Etiqueta> etiquetas){
         return contarEtiquetasPorTipo(etiquetas, "Horario") <= 1;
