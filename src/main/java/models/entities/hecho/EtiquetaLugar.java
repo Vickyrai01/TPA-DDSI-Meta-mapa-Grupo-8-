@@ -6,11 +6,20 @@ import lombok.Setter;
 
 
 public class EtiquetaLugar extends Etiqueta {
+    public Coordenadas getCoordenadasLugar() {
+        return coordenadasLugar;
+    }
+
     @Setter
-    @Getter
     private Coordenadas coordenadasLugar;
 
     public EtiquetaLugar(Coordenadas coordenadasLugar) {
         this.coordenadasLugar = coordenadasLugar;
     }
+
+
+    public void cambiarUbicacion(Double latitud, Double longitud){
+        coordenadasLugar.cambiarUbicacion(latitud, longitud);
+    }
+
 }
