@@ -13,4 +13,9 @@ public class Coordenadas {
     @Getter
     private Double longitud;
 
+
+    public void cambiarUbicacion(Double latitud, Double longitud){
+        this.latitud = latitud;
+        this.longitud = longitud;
+    }
 }
