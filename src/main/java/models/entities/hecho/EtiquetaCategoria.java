@@ -4,13 +4,24 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@AllArgsConstructor
+
 public class EtiquetaCategoria extends Etiqueta {
-    @Setter
-    @Getter
+
+    public EtiquetaCategoria(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
     private String nombre;
 
-    @override
+    @Override
     public void cambiarCategoria(String categoriaNueva){
         this.setNombre(categoriaNueva);
     }

@@ -9,6 +9,14 @@ import java.util.Objects;
 
 
 public abstract class Etiqueta {
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
     @Setter
     @Getter
     private String keyword;

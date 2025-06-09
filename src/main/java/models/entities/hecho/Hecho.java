@@ -7,7 +7,7 @@ import models.entities.fuentes.Fuente;
 import java.time.LocalDate;
 import java.util.List;
 
-@AllArgsConstructor
+
 public class Hecho {
 
     @Setter
@@ -17,6 +17,10 @@ public class Hecho {
     @Setter
     @Getter
     private String descripcion;
+
+    public List<Etiqueta> getEtiquetas() {
+        return etiquetas;
+    }
 
     @Setter
     @Getter
@@ -50,16 +54,31 @@ public class Hecho {
     @Getter
     private List<SugerenciaDeCambio> sugerenciaDeCambio;
 
+    public Hecho(String titulo, String descripcion, List<Etiqueta> etiquetas,
+                 Fuente fuenteDeOrigen, LocalDate fechaCarga, Contribuyente contribuyente, Estado estado,
+                 List<String> multimedia, List<SugerenciaDeCambio> sugerenciaDeCambio, LocalDate ultimaFechaModificacion) {
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.etiquetas = etiquetas;
+        this.fuenteDeOrigen = fuenteDeOrigen;
+        this.fechaCarga = fechaCarga;
+        this.contribuyente = contribuyente;
+        this.estado = estado;
+        this.multimedia = multimedia;
+        this.sugerenciaDeCambio = sugerenciaDeCambio;
+        this.ultimaFechaModificacion = ultimaFechaModificacion;
+    }
+
     public void modificarEtiquetaLugar(EtiquetaLugar lugar, Double latitud, Double longitud){
-        this.getEtiquetas().forEach(unaEtiqueta -> unaEtiqueta.cambiarUbicacion(latitud, longitud));
+        this.etiquetas.forEach(unaEtiqueta -> unaEtiqueta.cambiarUbicacion(latitud, longitud));
     }
 
     public void modificarEtiquetaCategoria(EtiquetaCategoria categoria, String categoriaNueva){
-        this.getEtiquetas().forEach(unaEtiqueta -> unaEtiqueta.cambiarCategoria(categoriaNueva));
+        this.etiquetas.forEach(unaEtiqueta -> unaEtiqueta.cambiarCategoria(categoriaNueva));
     }
 
     public void modificarEtiquetaFecha(EtiquetaFecha fecha, LocalDate fechaNueva){
-        this.getEtiquetas().forEach(unaEtiqueta -> unaEtiqueta.cambiarFecha(fechaNueva));
+        this.etiquetas.forEach(unaEtiqueta -> unaEtiqueta.cambiarFecha(fechaNueva));
     }
 
     public void agregarEtiqueta(Etiqueta etiqueta)
