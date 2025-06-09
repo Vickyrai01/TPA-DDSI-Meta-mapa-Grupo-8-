@@ -4,9 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@AllArgsConstructor
+
 public class EtiquetaCategoria extends Etiqueta {
     @Setter
     @Getter
     private String nombre;
+
+    public EtiquetaCategoria(String nombre) {
+        this.nombre = nombre;
+    }
 }

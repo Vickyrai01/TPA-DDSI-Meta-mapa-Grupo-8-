@@ -10,6 +10,8 @@ import java.util.Map;
 public class CSVTest {
     public static void main(String[] args) {
 
+        StrategyCSV strategy = new StrategyCSV();
+
         String ruta = "desastres_sanitarios_contaminacion_argentina.csv";
 
         System.out.println("*********DEMO CSV: SOLO MUESTRA LOS PRIMEROS 15**************");
@@ -22,7 +24,7 @@ public class CSVTest {
         else {System.out.println("...¡Se encontro el archivo!");}
         System.out.println( "                          ");
 
-        Map<String, Hecho> todosLosHechos = CSV.leerHechosDesdeCSV(ruta);
+        Map<String, Hecho> todosLosHechos = strategy.agregarHecho(ruta);
 
         if (todosLosHechos.isEmpty()) {
             System.out.println("ERROR: No se cargaron hechos. Verifica el archivo CSV.");

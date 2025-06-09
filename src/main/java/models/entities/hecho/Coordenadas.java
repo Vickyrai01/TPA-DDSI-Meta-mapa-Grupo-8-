@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@AllArgsConstructor
+
 public class Coordenadas {
     @Setter
     @Getter
@@ -13,4 +13,8 @@ public class Coordenadas {
     @Getter
     private Double longitud;
 
+    public Coordenadas(Double latitud, Double longitud) {
+        this.latitud = latitud;
+        this.longitud = longitud;
+    }
 }
