@@ -43,7 +43,7 @@ public class Hecho {
 
     @Setter
     @Getter
-    private Estado estado;
+    public Estado estado;
 
     @Setter
     @Getter
