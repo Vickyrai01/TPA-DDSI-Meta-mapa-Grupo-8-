@@ -2,6 +2,7 @@ package models.entities.fuentes;
 
 
 import com.opencsv.CSVReader;
+import models.entities.colecciones.CriterioDePertenencia;
 import models.entities.hecho.*;
 import models.entities.hecho.Hecho;
 
@@ -19,6 +20,9 @@ public class StrategyCSV implements StrategyTipoConexion {
 
 
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    @Override
+    public List<Hecho> extraerHecho(CriterioDePertenencia criterio){return null;};
 
     @Override
     public Map<String, Hecho> agregarHecho(String FuenteBase) {
@@ -42,13 +46,9 @@ public class StrategyCSV implements StrategyTipoConexion {
                 LocalDate fecha = LocalDate.parse(fila[5].trim(), FORMATO_FECHA);
 
                 Coordenadas coordenadas = new Coordenadas(latitud, longitud);
-                EtiquetaLugar etiquetaLugar = new EtiquetaLugar(coordenadas);
-                EtiquetaCategoria etiquetaCategoria = new EtiquetaCategoria(categoria);
-                EtiquetaFecha etiquetaFecha = new EtiquetaFecha(fecha);
+                Etiqueta etiqueta = new Etiqueta(categoria);
                 List<Etiqueta> etiquetaList = new ArrayList<>();
-                etiquetaList.add(etiquetaCategoria);
-                etiquetaList.add(etiquetaFecha);
-                etiquetaList.add(etiquetaLugar);
+                etiquetaList.add(etiqueta);
 
 
                 //VER LO DE TIPO DE FUENTE.
