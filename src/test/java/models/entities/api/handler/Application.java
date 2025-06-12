@@ -13,7 +13,7 @@ public class Application {
 
         Javalin app = Javalin.create()
                 .get("/", ctx -> ctx.result("Hello World"))
-                .start(8081);
+                .start(8080);
 
         app.get("/api/hechos", new GetHechoHandler());
         app.get("/api/hechos/{id}", new GetHechoIdHandler());

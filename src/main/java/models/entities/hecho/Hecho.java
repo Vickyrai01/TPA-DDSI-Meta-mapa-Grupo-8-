@@ -13,16 +13,95 @@ import java.util.List;
 
 public class Hecho {
 
-    @Setter
-    @Getter
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public void setEtiquetas(List<Etiqueta> etiquetas) {
+        this.etiquetas = etiquetas;
+    }
+
+    public Fuente getFuenteDeOrigen() {
+        return fuenteDeOrigen;
+    }
+
+    public void setFuenteDeOrigen(Fuente fuenteDeOrigen) {
+        this.fuenteDeOrigen = fuenteDeOrigen;
+    }
+
+    public LocalDate getFechaCarga() {
+        return fechaCarga;
+    }
+
+    public void setFechaCarga(LocalDate fechaCarga) {
+        this.fechaCarga = fechaCarga;
+    }
+
+    public Contribuyente getContribuyente() {
+        return contribuyente;
+    }
+
+    public void setContribuyente(Contribuyente contribuyente) {
+        this.contribuyente = contribuyente;
+    }
+
+    public Estado getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Estado estado) {
+        this.estado = estado;
+    }
+
+    public List<String> getMultimedia() {
+        return multimedia;
+    }
+
+    public void setMultimedia(List<String> multimedia) {
+        this.multimedia = multimedia;
+    }
+
+    public LocalDate getUltimaFechaModificacion() {
+        return ultimaFechaModificacion;
+    }
+
+    public void setUltimaFechaModificacion(LocalDate ultimaFechaModificacion) {
+        this.ultimaFechaModificacion = ultimaFechaModificacion;
+    }
+
+    public List<SugerenciaDeCambio> getSugerenciaDeCambio() {
+        return sugerenciaDeCambio;
+    }
+
+    public void setSugerenciaDeCambio(List<SugerenciaDeCambio> sugerenciaDeCambio) {
+        this.sugerenciaDeCambio = sugerenciaDeCambio;
+    }
+
     private Integer id;
 
-    @Setter
-    @Getter
+
     private String titulo;
 
-    @Setter
-    @Getter
     private String descripcion;
 
     public Hecho() {
@@ -33,36 +112,20 @@ public class Hecho {
         return etiquetas;
     }
 
-    @Setter
-    @Getter
     private List<Etiqueta> etiquetas;
 
-    @Setter
-    @Getter
     private Fuente fuenteDeOrigen;
 
-    @Setter
-    @Getter
     private LocalDate fechaCarga;
 
-    @Setter
-    @Getter
     private Contribuyente contribuyente;
 
-    @Setter
-    @Getter
     public Estado estado;
 
-    @Setter
-    @Getter
     private List<String> multimedia;
 
-    @Setter
-    @Getter
     private LocalDate ultimaFechaModificacion;
 
-    @Setter
-    @Getter
     private List<SugerenciaDeCambio> sugerenciaDeCambio;
 
     @Override
