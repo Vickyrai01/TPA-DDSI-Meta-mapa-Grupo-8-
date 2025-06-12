@@ -1,6 +1,6 @@
 package models.entities.solicitud;
 
-public class DetectorDeSpam {
+public interface DetectorDeSpam {
 
-    public boolean esSpam(String solicitud) {return true;}
+    default boolean esSpam(String solicitud) {return true;}
 }
