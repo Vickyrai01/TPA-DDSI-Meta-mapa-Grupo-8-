@@ -7,11 +7,7 @@ import models.repository.HechosRepository;
 import org.jetbrains.annotations.NotNull;
 
 public class PostHechoHandler implements Handler {
-    private final HechosRepository repoHecho;
-
-    public PostHechoHandler() {
-        this.repoHecho = new HechosRepository();
-    }
+    private final HechosRepository repoHechos = HechosRepository.getInstance();
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
@@ -20,6 +16,7 @@ public class PostHechoHandler implements Handler {
         System.out.println("Creando hecho: " + bodyString);
         System.out.println(hecho);
         validarNuevoHecho(hecho);
+        repoHechos.add(hecho);
         context.status(201);
     }
 
