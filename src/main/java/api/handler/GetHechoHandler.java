@@ -10,11 +10,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class GetHechoHandler implements Handler {
-    private final HechosRepository repoHechos;
+    private final HechosRepository repoHechos = HechosRepository.getInstance();
 
-    public GetHechoHandler() {
-        this.repoHechos = new HechosRepository();
-    }
+
     @Override
     public void handle(@NotNull Context context) throws Exception {
         context.json(repoHechos.obtenerTodas());

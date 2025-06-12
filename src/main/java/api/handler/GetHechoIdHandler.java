@@ -9,17 +9,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public class GetHechoIdHandler implements Handler {
-    private final HechosRepository repoHecho;
-
-    public GetHechoIdHandler() {
-        this.repoHecho = new HechosRepository();
-    }
+    private final HechosRepository repoHechos = HechosRepository.getInstance();
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
 
         Integer idBuscado = context.pathParamAsClass("id", Integer.class).get();
-        final Optional<Hecho> resultadoBusqueda = repoHecho.obtenerTodas().stream()
+        final Optional<Hecho> resultadoBusqueda = repoHechos.obtenerTodas().stream()
                 .filter(m -> m.getId() == idBuscado)
                 .findFirst();
         if (resultadoBusqueda.isPresent()) {
