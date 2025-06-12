@@ -14,22 +14,22 @@ public class HechosRepository {
     private HechosRepository() {
         // Evita la creación de instancias mediante reflection
         if (instance != null) {
-            throw new RuntimeException("¡Usa getInstance() para obtener el Singleton!");
+            throw new RuntimeException("Usa getInstance() para obtener el Singleton");
         }
     }
 
-    // 3. Método público estático para obtener la instancia (Thread-Safe con doble verificación)
+    // Metodo público estático para obtener la instancia
     public static HechosRepository getInstance() {
-        if (instance == null) { // Primera verificación (sin bloqueo, mejora el rendimiento)
-            synchronized (HechosRepository.class) { // Bloqueo para evitar race conditions
-                if (instance == null) { // Segunda verificación (dentro del bloqueo)
+        if (instance == null) { // verifica si hay instancia
+            synchronized (HechosRepository.class) { // Bloqueo para evitar condicion de carrera
+                if (instance == null) { // verifica nuevamente si existe instancia
                     instance = new HechosRepository();
                 }
             }
         }
         return instance;
     }
-    private List<Hecho> hechos = new ArrayList<>();
+    private final List<Hecho> hechos = new ArrayList<>();
 
     public List<Hecho> obtenerTodas(){
        return hechos;

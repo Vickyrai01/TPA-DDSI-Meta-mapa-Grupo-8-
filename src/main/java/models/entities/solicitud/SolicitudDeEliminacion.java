@@ -8,22 +8,50 @@ import models.entities.solicitud.DetectorDeSpam;
 import java.time.LocalDateTime;
 
 public class SolicitudDeEliminacion implements DetectorDeSpam {
-    @Setter
-    @Getter
+
     private Hecho hecho;
-    @Setter
-    @Getter
+
     private String descripcion;
-    @Setter
-    @Getter
+
     private Boolean aceptada;
-    @Setter
-    @Getter
+
     private LocalDateTime fechaDeRevision;
+
+    public Hecho getHecho() {
+        return hecho;
+    }
+
+    public void setHecho(Hecho hecho) {
+        this.hecho = hecho;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public Boolean getAceptada() {
+        return aceptada;
+    }
+
+    public void setAceptada(Boolean aceptada) {
+        this.aceptada = aceptada;
+    }
+
+    public LocalDateTime getFechaDeRevision() {
+        return fechaDeRevision;
+    }
+
+    public void setFechaDeRevision(LocalDateTime fechaDeRevision) {
+        this.fechaDeRevision = fechaDeRevision;
+    }
 
     public void aceptarSolicitud(Hecho hecho) {
         this.aceptada = true;
-        hecho.estado = Estado.INACTIVO;
+        hecho.desactivarse();
     }
 
     public void rechazarSolicitud() {
@@ -35,7 +63,7 @@ public class SolicitudDeEliminacion implements DetectorDeSpam {
             this.rechazarSolicitud();
         }
     }
-
+    
     public String toString() {
         return "SolicitudDeEliminacion{" +
                 "hecho=" + hecho +
