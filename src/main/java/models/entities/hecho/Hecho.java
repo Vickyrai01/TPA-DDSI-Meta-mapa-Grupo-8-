@@ -15,11 +15,19 @@ public class Hecho {
 
     @Setter
     @Getter
+    private Integer id;
+
+    @Setter
+    @Getter
     private String titulo;
 
     @Setter
     @Getter
     private String descripcion;
+
+    public Hecho() {
+
+    }
 
     public List<Etiqueta> getEtiquetas() {
         return etiquetas;
