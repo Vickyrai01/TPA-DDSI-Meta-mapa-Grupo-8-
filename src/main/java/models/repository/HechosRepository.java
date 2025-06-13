@@ -12,13 +12,11 @@ public class HechosRepository {
     private static volatile HechosRepository instance;
 
     private HechosRepository() {
-        // Evita la creación de instancias mediante reflection
         if (instance != null) {
             throw new RuntimeException("Usa getInstance() para obtener el Singleton");
         }
     }
 
-    // Metodo público estático para obtener la instancia
     public static HechosRepository getInstance() {
         if (instance == null) { // verifica si hay instancia
             synchronized (HechosRepository.class) { // Bloqueo para evitar condicion de carrera

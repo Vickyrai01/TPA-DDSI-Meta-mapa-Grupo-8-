@@ -180,7 +180,7 @@ public class Hecho {
 
     @Override
     public String toString() {
-        return "Titulo: " + titulo + " - Fecha: " + fechaCarga;
+        return "Titulo: " + titulo + " - Fecha: " + fechaSuceso;
     }
 
 
