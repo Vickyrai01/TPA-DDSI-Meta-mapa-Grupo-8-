@@ -19,9 +19,9 @@ import java.util.List;
 public class StrategyAPIREST implements StrategyTipoConexion {
 
     @Override
-    public List<Hecho> extraerHecho(CriterioDePertenencia criterio){
+    public List<Hecho> extraerHecho(CriterioDePertenencia criterio, String fuente){
         List<Hecho> hechosExtraidos = new ArrayList<>();
-        WebClient clientUsers = WebClient.create("https://684b1942165d05c5d35b843b.mockapi.io/metamapa/hechos");
+        WebClient clientUsers = WebClient.create(fuente);
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());

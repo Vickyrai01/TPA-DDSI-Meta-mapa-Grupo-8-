@@ -20,10 +20,7 @@ public class StrategyCSV implements StrategyTipoConexion {
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @Override
-    public List<Hecho> extraerHecho(CriterioDePertenencia criterio){return null;};
-
-    @Override
-    public List<Hecho> agregarHecho(String fuenteBase) {
+    public List<Hecho> extraerHecho(CriterioDePertenencia criterio, String fuenteBase) {
         Map<String, Hecho> hechos = new HashMap<>();
 
         try (CSVReader reader = new CSVReader(new FileReader(fuenteBase))) {
@@ -47,7 +44,7 @@ public class StrategyCSV implements StrategyTipoConexion {
 
 
                 Hecho hecho = new Hecho(7, coordenadas, categoria, null, null,
-                        null ,Estado.ACEPTADO, null, LocalDate.now(),
+                        null, Estado.ACEPTADO, null, LocalDate.now(),
                         fecha, TipoFuente.ESTATICA, null, descripcion, titulo);
                 hechos.put(titulo, hecho);
 
@@ -61,5 +58,13 @@ public class StrategyCSV implements StrategyTipoConexion {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
         return listaHechos;
+
+
+    }
+
+
+    @Override
+    public List<Hecho> agregarHecho(String fuenteBase) { return null;
     }
 }
+
