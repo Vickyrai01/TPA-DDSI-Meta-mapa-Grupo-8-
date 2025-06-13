@@ -75,7 +75,7 @@ public class StrategyAPIREST implements StrategyTipoConexion {
     };
 
     @Override
-    public List<Hecho> agregarHecho(String FuenteBase) {
+    public List<Hecho> agregarHecho(String FuenteBase, Hecho hecho) {
         //ES UN POST, LO QUE SUBE EL USUARIO
         return null;
     };

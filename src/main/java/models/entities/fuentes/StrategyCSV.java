@@ -64,7 +64,7 @@ public class StrategyCSV implements StrategyTipoConexion {
 
 
     @Override
-    public List<Hecho> agregarHecho(String fuenteBase) { return null;
+    public List<Hecho> agregarHecho(String fuenteBase,  Hecho hecho) { return null;
     }
 }
 

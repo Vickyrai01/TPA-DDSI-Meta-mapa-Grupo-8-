@@ -10,6 +10,6 @@ public interface StrategyTipoConexion {
 
     public List<Hecho> extraerHecho(CriterioDePertenencia criterio, String fuente);
 
-    public List<Hecho> agregarHecho(String FuenteBase);
+    public List<Hecho> agregarHecho(String FuenteBase, Hecho hecho);
 
 }
