@@ -9,11 +9,8 @@ import java.util.Map;
 public class StrategyBibliotecaCliente implements StrategyTipoConexion {
 
     @Override
-    public List<Hecho> extraerHecho(CriterioDePertenencia criterio){return null;};
+    public List<Hecho> extraerHecho(CriterioDePertenencia criterio, String fuente){return null;}; //toma los hechos!!
 
     @Override
-    public Map<String, Hecho> agregarHecho(String FuenteBase) {
-
-        return null;
-    }
+    public List<Hecho> agregarHecho(String FuenteBase) {return null;} //es un POST a la fuente
 }

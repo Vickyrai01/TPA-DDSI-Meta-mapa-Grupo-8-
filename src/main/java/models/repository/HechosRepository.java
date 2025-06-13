@@ -27,6 +27,7 @@ public class HechosRepository {
         }
         return instance;
     }
+
     private final List<Hecho> hechos = new ArrayList<>();
 
     public List<Hecho> obtenerTodas(){

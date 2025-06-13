@@ -10,11 +10,9 @@ import java.io.FileReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.HashMap;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 public class StrategyCSV implements StrategyTipoConexion {
 
@@ -22,15 +20,12 @@ public class StrategyCSV implements StrategyTipoConexion {
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @Override
-    public List<Hecho> extraerHecho(CriterioDePertenencia criterio){return null;};
-
-    @Override
-    public Map<String, Hecho> agregarHecho(String fuenteBase) {
+    public List<Hecho> extraerHecho(CriterioDePertenencia criterio, String fuenteBase) {
         Map<String, Hecho> hechos = new HashMap<>();
 
         try (CSVReader reader = new CSVReader(new FileReader(fuenteBase))) {
             String[] fila;
-            reader.readNext(); // Saltar encabezado
+            reader.readNext();
 
             while ((fila = reader.readNext()) != null) {
                 if (fila.length != 6) {
@@ -49,7 +44,7 @@ public class StrategyCSV implements StrategyTipoConexion {
 
 
                 Hecho hecho = new Hecho(7, coordenadas, categoria, null, null,
-                        null ,Estado.ACEPTADO, null, LocalDate.now(),
+                        null, Estado.ACEPTADO, null, LocalDate.now(),
                         fecha, TipoFuente.ESTATICA, null, descripcion, titulo);
                 hechos.put(titulo, hecho);
 
@@ -58,7 +53,18 @@ public class StrategyCSV implements StrategyTipoConexion {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        List<Hecho> listaHechos = hechos.values()
+                .stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        return listaHechos;
 
-        return hechos;
+
     }
+
+
+    @Override
+    public List<Hecho> agregarHecho(String fuenteBase) { return null;
     }
+}
+
