@@ -1,5 +1,6 @@
-import models.entities.hecho.Etiqueta;
-import models.entities.hecho.Hecho;
+package models.entities.hecho;
+
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
