@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import models.entities.fuentes.Fuente;
+import models.entities.fuentes.TipoFuente;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,6 +14,57 @@ import java.util.List;
 
 
 public class Hecho {
+
+    private Integer id;
+
+    private String titulo;
+
+    private String descripcion;
+
+    private List<Etiqueta> etiquetas;
+
+    private TipoFuente fuenteDeOrigen;
+
+    private LocalDate fechaCarga;
+
+    private LocalDate fechaSuceso;
+
+    private Contribuyente contribuyente;
+
+    private Estado estado;
+
+    private List<String> multimedia;
+
+    private LocalDate ultimaFechaModificacion;
+
+    private List<SugerenciaDeCambio> sugerenciaDeCambio;
+
+    private String categoria;
+
+    private Coordenadas ubicacion;
+
+    public Hecho(Integer id, Coordenadas ubicacion, String categoria,
+                 List<SugerenciaDeCambio> sugerenciaDeCambio,
+                 LocalDate ultimaFechaModificacion, List<String> multimedia,
+                 Estado estado, Contribuyente contribuyente,
+                 LocalDate fechaCarga, LocalDate fechaSuceso,
+                 TipoFuente fuenteDeOrigen,
+                 List<Etiqueta> etiquetas, String descripcion, String titulo) {
+        this.id = id;
+        this.ubicacion = ubicacion;
+        this.categoria = categoria;
+        this.sugerenciaDeCambio = sugerenciaDeCambio;
+        this.ultimaFechaModificacion = ultimaFechaModificacion;
+        this.multimedia = multimedia;
+        this.estado = estado;
+        this.contribuyente = contribuyente;
+        this.fechaCarga = fechaCarga;
+        this.fechaSuceso = fechaSuceso;
+        this.fuenteDeOrigen = fuenteDeOrigen;
+        this.etiquetas = etiquetas;
+        this.descripcion = descripcion;
+        this.titulo = titulo;
+    }
 
     public Integer getId() {
         return id;
@@ -37,15 +90,19 @@ public class Hecho {
         this.descripcion = descripcion;
     }
 
+    public List<Etiqueta> getEtiquetas() {
+        return etiquetas;
+    }
+
     public void setEtiquetas(List<Etiqueta> etiquetas) {
         this.etiquetas = etiquetas;
     }
 
-    public Fuente getFuenteDeOrigen() {
+    public TipoFuente getFuenteDeOrigen() {
         return fuenteDeOrigen;
     }
 
-    public void setFuenteDeOrigen(Fuente fuenteDeOrigen) {
+    public void setFuenteDeOrigen(TipoFuente fuenteDeOrigen) {
         this.fuenteDeOrigen = fuenteDeOrigen;
     }
 
@@ -55,6 +112,14 @@ public class Hecho {
 
     public void setFechaCarga(LocalDate fechaCarga) {
         this.fechaCarga = fechaCarga;
+    }
+
+    public LocalDate getFechaSuceso() {
+        return fechaSuceso;
+    }
+
+    public void setFechaSuceso(LocalDate fechaSuceso) {
+        this.fechaSuceso = fechaSuceso;
     }
 
     public Contribuyente getContribuyente() {
@@ -97,69 +162,41 @@ public class Hecho {
         this.sugerenciaDeCambio = sugerenciaDeCambio;
     }
 
-    private Integer id;
-
-
-    private String titulo;
-
-    private String descripcion;
-
-    public Hecho() {
-
+    public String getCategoria() {
+        return categoria;
     }
 
-    public List<Etiqueta> getEtiquetas() {
-        return etiquetas;
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 
-    private List<Etiqueta> etiquetas;
+    public Coordenadas getUbicacion() {
+        return ubicacion;
+    }
 
-    private Fuente fuenteDeOrigen;
-
-    private LocalDate fechaCarga;
-
-    private Contribuyente contribuyente;
-
-    public Estado estado;
-
-    private List<String> multimedia;
-
-    private LocalDate ultimaFechaModificacion;
-
-    private List<SugerenciaDeCambio> sugerenciaDeCambio;
+    public void setUbicacion(Coordenadas ubicacion) {
+        this.ubicacion = ubicacion;
+    }
 
     @Override
     public String toString() {
-        return "Titulo: " + titulo + " - Fecha: " + fechaCarga;
+        return "Titulo: " + titulo + " - Fecha: " + fechaSuceso;
     }
 
-    public Hecho(String titulo, String descripcion, List<Etiqueta> etiquetas,
-                 Fuente fuenteDeOrigen, LocalDate fechaCarga, Contribuyente contribuyente, Estado estado,
-                 List<String> multimedia, List<SugerenciaDeCambio> sugerenciaDeCambio, LocalDate ultimaFechaModificacion) {
-        this.titulo = titulo;
-        this.descripcion = descripcion;
-        this.etiquetas = etiquetas;
-        this.fuenteDeOrigen = fuenteDeOrigen;
-        this.fechaCarga = fechaCarga;
-        this.contribuyente = contribuyente;
-        this.estado = estado;
-        this.multimedia = multimedia;
-        this.sugerenciaDeCambio = sugerenciaDeCambio;
-        this.ultimaFechaModificacion = ultimaFechaModificacion;
-    }
 
-    public void modificarEtiquetaLugar(EtiquetaLugar lugar, Double latitud, Double longitud){
-        this.etiquetas.forEach(unaEtiqueta -> unaEtiqueta.cambiarUbicacion(latitud, longitud));
-    }
-
-    public void modificarEtiquetaCategoria(EtiquetaCategoria categoria, String categoriaNueva){
-        this.etiquetas.forEach(unaEtiqueta -> unaEtiqueta.cambiarCategoria(categoriaNueva));
-    }
-
-    public void modificarEtiquetaFecha(EtiquetaFecha fecha, LocalDate fechaNueva){
-        this.etiquetas.forEach(unaEtiqueta -> unaEtiqueta.cambiarFecha(fechaNueva));
-    }
 
     public void agregarEtiqueta(Etiqueta etiqueta)
     { etiquetas.add(etiqueta);}
+
+    public boolean pasoUnaSemana(){
+        LocalDate fechaActual = LocalDate.now();
+        LocalDate fechaActualMenosUnaSemana = fechaActual.minusDays(7);
+        return fechaActualMenosUnaSemana.isBefore(fechaSuceso);
+    }
+
+    public void desactivarse(){
+        this.setEstado(Estado.INACTIVO);
+    }
+
+
 }

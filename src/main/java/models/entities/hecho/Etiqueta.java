@@ -1,33 +1,17 @@
 package models.entities.hecho;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+public class Etiqueta {
+    private String nombre;
 
-import java.time.LocalDate;
-import java.util.Objects;
-
-
-public abstract class Etiqueta {
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
+    public Etiqueta(String categoria) {
+        this.nombre = categoria;
     }
 
-    public String getKeyword() {
-        return keyword;
+    public String getTipo() {
+        return nombre;
     }
 
-    @Setter
-    @Getter
-    private String keyword;
-
-    public boolean esEtiqueta(String tipoEtiqueta){
-        return Objects.equals(tipoEtiqueta, keyword);
+    public void setTipo(String tipo) {
+        this.nombre = tipo;
     }
-
-    public void cambiarCategoria(String categoriaNueva){};
-
-    public void cambiarUbicacion(Double latitud, Double longitud){};
-
-    public void cambiarFecha(LocalDate fechaNueva){};
 }
