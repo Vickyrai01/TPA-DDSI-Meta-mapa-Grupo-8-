@@ -43,6 +43,29 @@ public class Hecho {
 
     private Coordenadas ubicacion;
 
+    public Hecho(Integer id, Coordenadas ubicacion, String categoria,
+                 List<SugerenciaDeCambio> sugerenciaDeCambio,
+                 LocalDate ultimaFechaModificacion, List<String> multimedia,
+                 Estado estado, Contribuyente contribuyente,
+                 LocalDate fechaCarga, LocalDate fechaSuceso,
+                 TipoFuente fuenteDeOrigen,
+                 List<Etiqueta> etiquetas, String descripcion, String titulo) {
+        this.id = id;
+        this.ubicacion = ubicacion;
+        this.categoria = categoria;
+        this.sugerenciaDeCambio = sugerenciaDeCambio;
+        this.ultimaFechaModificacion = ultimaFechaModificacion;
+        this.multimedia = multimedia;
+        this.estado = estado;
+        this.contribuyente = contribuyente;
+        this.fechaCarga = fechaCarga;
+        this.fechaSuceso = fechaSuceso;
+        this.fuenteDeOrigen = fuenteDeOrigen;
+        this.etiquetas = etiquetas;
+        this.descripcion = descripcion;
+        this.titulo = titulo;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -160,20 +183,7 @@ public class Hecho {
         return "Titulo: " + titulo + " - Fecha: " + fechaCarga;
     }
 
-    public Hecho(String titulo, String descripcion, List<Etiqueta> etiquetas,
-                 TipoFuente fuenteDeOrigen, LocalDate fechaCarga, Contribuyente contribuyente, Estado estado,
-                 List<String> multimedia, List<SugerenciaDeCambio> sugerenciaDeCambio, LocalDate ultimaFechaModificacion) {
-        this.titulo = titulo;
-        this.descripcion = descripcion;
-        this.etiquetas = etiquetas;
-        this.fuenteDeOrigen = fuenteDeOrigen;
-        this.fechaCarga = fechaCarga;
-        this.contribuyente = contribuyente;
-        this.estado = estado;
-        this.multimedia = multimedia;
-        this.sugerenciaDeCambio = sugerenciaDeCambio;
-        this.ultimaFechaModificacion = ultimaFechaModificacion;
-    }
+
 
     public void agregarEtiqueta(Etiqueta etiqueta)
     { etiquetas.add(etiqueta);}
