@@ -1,8 +1,6 @@
 package models.entities.api.handler;
 
-import api.handler.GetHechoHandler;
-import api.handler.GetHechoIdHandler;
-import api.handler.PostHechoHandler;
+import api.handler.*;
 import io.javalin.Javalin;
 import models.entities.hecho.Hecho;
 import models.repository.HechosRepository;
@@ -18,8 +16,9 @@ public class Application {
         app.get("/api/hechos", new GetHechoHandler());
         app.get("/api/hechos/{id}", new GetHechoIdHandler());
         app.post("/api/hechos", new PostHechoHandler());
-
-
+        app.get("api/solicitudes", new GetSolicitudHandler());
+        app.post("api/solicitudes", new PostSolicitudHandler());
+        //app.get("api/hechos", this::obtenerHechosFiltrados);
     }
 
 
