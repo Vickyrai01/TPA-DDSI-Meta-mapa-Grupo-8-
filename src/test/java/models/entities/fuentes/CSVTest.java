@@ -23,7 +23,7 @@ public class CSVTest {
         else {System.out.println("...¡Se encontro el archivo!");}
         System.out.println( "                          ");
 
-        List<Hecho> todosLosHechos = strategy.agregarHecho(ruta);
+        List<Hecho> todosLosHechos = strategy.extraerHecho(null,ruta);
 
         if (todosLosHechos.isEmpty()) {
             System.out.println("ERROR: No se cargaron hechos. Verifica el archivo CSV.");

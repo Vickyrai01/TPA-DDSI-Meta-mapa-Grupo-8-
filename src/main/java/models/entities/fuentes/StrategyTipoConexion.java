@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface StrategyTipoConexion {
 
-    public List<Hecho> extraerHecho(CriterioDePertenencia criterio);
+    public List<Hecho> extraerHecho(CriterioDePertenencia criterio, String fuente);
 
     public List<Hecho> agregarHecho(String FuenteBase);
 
