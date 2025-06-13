@@ -35,20 +35,14 @@ public class CSV {
                 LocalDate fecha = LocalDate.parse(fila[5].trim(), FORMATO_FECHA);
 
                 Coordenadas coordenadas = new Coordenadas(latitud, longitud);
-                EtiquetaLugar etiquetaLugar = new EtiquetaLugar(coordenadas);
-                EtiquetaCategoria etiquetaCategoria = new EtiquetaCategoria(categoria);
-                EtiquetaFecha etiquetaFecha = new EtiquetaFecha(fecha);
-                List<Etiqueta> etiquetaList = new ArrayList<>();
-                etiquetaList.add(etiquetaCategoria);
-                etiquetaList.add(etiquetaFecha);
-                etiquetaList.add(etiquetaLugar);
 
 
-    //VER LO DE TIPO DE FUENTE.
-                Hecho hecho = new Hecho(titulo, descripcion, etiquetaList,
-                        null, LocalDate.now(), null,
-                        Estado.ACEPTADO, null, null, null);
+                Hecho hecho = new Hecho(7, coordenadas, categoria, null, null,
+                        null ,Estado.ACEPTADO, null, LocalDate.now(),
+                        fecha, TipoFuente.ESTATICA, null, descripcion, titulo);
                 hechos.put(titulo, hecho);
+
+
             }
         } catch (Exception e) {
             e.printStackTrace();

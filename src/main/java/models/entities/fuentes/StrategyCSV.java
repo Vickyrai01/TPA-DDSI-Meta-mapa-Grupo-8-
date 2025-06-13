@@ -25,10 +25,10 @@ public class StrategyCSV implements StrategyTipoConexion {
     public List<Hecho> extraerHecho(CriterioDePertenencia criterio){return null;};
 
     @Override
-    public Map<String, Hecho> agregarHecho(String FuenteBase) {
+    public Map<String, Hecho> agregarHecho(String fuenteBase) {
         Map<String, Hecho> hechos = new HashMap<>();
 
-        try (CSVReader reader = new CSVReader(new FileReader(FuenteBase))) {
+        try (CSVReader reader = new CSVReader(new FileReader(fuenteBase))) {
             String[] fila;
             reader.readNext(); // Saltar encabezado
 
@@ -46,16 +46,14 @@ public class StrategyCSV implements StrategyTipoConexion {
                 LocalDate fecha = LocalDate.parse(fila[5].trim(), FORMATO_FECHA);
 
                 Coordenadas coordenadas = new Coordenadas(latitud, longitud);
-                Etiqueta etiqueta = new Etiqueta(categoria);
-                List<Etiqueta> etiquetaList = new ArrayList<>();
-                etiquetaList.add(etiqueta);
 
 
-                //VER LO DE TIPO DE FUENTE.
-                Hecho hecho = new Hecho(titulo, descripcion, etiquetaList,
-                        null, LocalDate.now(), null,
-                        Estado.ACEPTADO, null, null, null);
+                Hecho hecho = new Hecho(7, coordenadas, categoria, null, null,
+                        null ,Estado.ACEPTADO, null, LocalDate.now(),
+                        fecha, TipoFuente.ESTATICA, null, descripcion, titulo);
                 hechos.put(titulo, hecho);
+
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -63,5 +61,4 @@ public class StrategyCSV implements StrategyTipoConexion {
 
         return hechos;
     }
-
     }

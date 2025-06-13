@@ -52,7 +52,9 @@ public class Fuente {
         this.strategyTipoConexion = strategyTipoConexion;
     }
 
-    public List<Hecho> extraerHechos(CriterioDePertenencia criterio){};
+    public List<Hecho> extraerHechos(CriterioDePertenencia criterio){
+        return List.of();
+    };
 
     
 }
