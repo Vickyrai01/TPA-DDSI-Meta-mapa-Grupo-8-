@@ -1,8 +1,4 @@
-package models.entities.fuentes;
-import org.apache.commons.beanutils.PropertyUtilsBean;
-
-import java.time.LocalDateTime;
-import java.util.Map;
+package api.handler;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -31,7 +27,7 @@ public class Demo {
          System.out.println("hola");
     }
 
-    public void detenerMonitoreo() {
+    public void detenerScheduler() {
         enEjecucion = false;
         scheduler.shutdown();
         try {
