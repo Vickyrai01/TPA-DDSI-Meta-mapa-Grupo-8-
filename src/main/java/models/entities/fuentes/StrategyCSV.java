@@ -10,11 +10,9 @@ import java.io.FileReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.HashMap;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 public class StrategyCSV implements StrategyTipoConexion {
 
@@ -25,12 +23,12 @@ public class StrategyCSV implements StrategyTipoConexion {
     public List<Hecho> extraerHecho(CriterioDePertenencia criterio){return null;};
 
     @Override
-    public Map<String, Hecho> agregarHecho(String fuenteBase) {
+    public List<Hecho> agregarHecho(String fuenteBase) {
         Map<String, Hecho> hechos = new HashMap<>();
 
         try (CSVReader reader = new CSVReader(new FileReader(fuenteBase))) {
             String[] fila;
-            reader.readNext(); // Saltar encabezado
+            reader.readNext();
 
             while ((fila = reader.readNext()) != null) {
                 if (fila.length != 6) {
@@ -58,7 +56,10 @@ public class StrategyCSV implements StrategyTipoConexion {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return hechos;
+        List<Hecho> listaHechos = hechos.values()
+                .stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        return listaHechos;
     }
-    }
+}

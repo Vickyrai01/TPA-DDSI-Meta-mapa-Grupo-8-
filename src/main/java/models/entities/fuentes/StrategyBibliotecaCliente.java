@@ -12,8 +12,5 @@ public class StrategyBibliotecaCliente implements StrategyTipoConexion {
     public List<Hecho> extraerHecho(CriterioDePertenencia criterio){return null;};
 
     @Override
-    public Map<String, Hecho> agregarHecho(String FuenteBase) {
-
-        return null;
-    }
+    public List<Hecho> agregarHecho(String FuenteBase) {return null;}
 }

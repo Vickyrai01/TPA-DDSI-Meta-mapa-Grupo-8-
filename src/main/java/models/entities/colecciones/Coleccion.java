@@ -75,7 +75,7 @@ public class Coleccion {
         /// le pregunte a chati y me recomendo parallelstream() en vez de stream, la unica diferencia es que puede trabajar en paralelo, no se cual es mejor en este caso
         /// PD: le acabo de preguntar cual es mejor y me dijo que el paralelo es mejor cuando tengamos muchos hechos (asi que supongo que elgimos nostros cual agarrar)
         return hechos.stream().anyMatch(h -> h.getTitulo().equalsIgnoreCase(hecho.getTitulo()));
-        /// creo que deberia agregar un metodo en el hecho para poder hacer esto(me refiero al equals)
+        /// creo que deberia agregar un metodo en el hecho para poder hacer esto(me refiero al equals)
     }
 
     public void agregarHechosDeFuente(CriterioDePertenencia criterio){

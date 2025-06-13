@@ -180,10 +180,14 @@ public class Hecho {
 
     @Override
     public String toString() {
-        return "Titulo: " + titulo + " - Fecha: " + fechaSuceso;
+        return "Titulo: " + titulo +
+                "\n ||| ID: " + id +
+                "\n ||| Descripcion:" + descripcion +
+                "\n ||| Fecha Suceso: " + fechaSuceso +
+                "\n ||| Fecha Carga: " + fechaCarga +
+                "\n ||| Sugerencia De Cambio: " + sugerenciaDeCambio +
+                "\n ||| Coordenadas: " + ubicacion.toString();
     }
-
-
 
     public void agregarEtiqueta(Etiqueta etiqueta)
     { etiquetas.add(etiqueta);}
