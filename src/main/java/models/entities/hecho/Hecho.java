@@ -66,6 +66,8 @@ public class Hecho {
         this.titulo = titulo;
     }
 
+    public Hecho(){}
+
     public Integer getId() {
         return id;
     }

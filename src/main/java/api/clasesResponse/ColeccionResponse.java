@@ -1,14 +1,16 @@
-package models.entities.colecciones;
+package api.clasesResponse;
 
-import lombok.AllArgsConstructor;
+import models.entities.colecciones.CriterioDePertenencia;
 import models.entities.fuentes.Fuente;
 import models.entities.hecho.Hecho;
 
 import java.util.List;
-@AllArgsConstructor
-public class Coleccion {
 
-    public Coleccion(int id, String titulo, String descripcionColeccion, CriterioDePertenencia criterioDePertenencia, Fuente fuente, List<Hecho> hechos, String identificadorHandle) {
+public class ColeccionResponse {
+
+    public ColeccionResponse(){}
+
+    public ColeccionResponse(int id, String titulo, String descripcionColeccion, CriterioDePertenencia criterioDePertenencia, Fuente fuente, List<Integer> hechos, String identificadorHandle) {
         this.id = id;
         this.titulo = titulo;
         this.descripcionColeccion = descripcionColeccion;
@@ -18,6 +20,8 @@ public class Coleccion {
         this.identificadorHandle = identificadorHandle;
     }
 
+    private int id;
+
     public int getId() {
         return id;
     }
@@ -25,20 +29,6 @@ public class Coleccion {
     public void setId(int id) {
         this.id = id;
     }
-
-    private int id;
-
-    private String titulo;
-
-    private String descripcionColeccion;
-
-    private Fuente fuente;
-
-    private CriterioDePertenencia criterioDePertenencia;
-
-    private List<Hecho> hechos;
-
-    private String identificadorHandle;
 
     public String getTitulo() {
         return titulo;
@@ -72,11 +62,11 @@ public class Coleccion {
         this.criterioDePertenencia = criterioDePertenencia;
     }
 
-    public List<Hecho> getHechos() {
+    public List<Integer> getHechos() {
         return hechos;
     }
 
-    public void setHechos(List<Hecho> hechos) {
+    public void setHechos(List<Integer> hechos) {
         this.hechos = hechos;
     }
 
@@ -88,16 +78,15 @@ public class Coleccion {
         this.identificadorHandle = identificadorHandle;
     }
 
-    public boolean yaEstaEsteHecho(Hecho hecho) {
+    private String titulo;
 
-        /// le pregunte a chati y me recomendo parallelstream() en vez de stream, la unica diferencia es que puede trabajar en paralelo, no se cual es mejor en este caso
-        /// PD: le acabo de preguntar cual es mejor y me dijo que el paralelo es mejor cuando tengamos muchos hechos (asi que supongo que elgimos nostros cual agarrar)
-        return hechos.stream().anyMatch(h -> h.getTitulo().equalsIgnoreCase(hecho.getTitulo()));
-        /// creo que deberia agregar un metodo en el hecho para poder hacer esto(me refiero al equals)
-    }
+    private String descripcionColeccion;
 
-    public void agregarHechosDeFuente(CriterioDePertenencia criterio){
-        this.fuente.extraerHechos(criterio).addAll(hechos);
-    }
+    private Fuente fuente;
 
+    private CriterioDePertenencia criterioDePertenencia;
+
+    private List<Integer> hechos;
+
+    private String identificadorHandle;
 }

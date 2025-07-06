@@ -17,6 +17,16 @@ public class SolicitudDeEliminacion implements DetectorDeSpam {
 
     private LocalDateTime fechaDeRevision;
 
+    public SolicitudDeEliminacion(Hecho hecho, String descripcion, Boolean aceptada, LocalDateTime fechaDeRevision) {
+        this.hecho = hecho;
+        this.descripcion = descripcion;
+        this.aceptada = aceptada;
+        this.fechaDeRevision = fechaDeRevision;
+    }
+
+    public SolicitudDeEliminacion()
+    {}
+
     public Hecho getHecho() {
         return hecho;
     }
