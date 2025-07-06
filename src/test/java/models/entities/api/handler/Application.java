@@ -31,6 +31,7 @@ public class Application {
         app.get("/api/colecciones/{id}/hechos", new GetHechosDeColeccionesHandler());
         app.get("api/colecciones", new GetColeccionHandler());
         app.get("api/colecciones/{id}", new GetColeccionIdHandler());
+        app.post("api/colecciones", new PostColeccionHandler());
     }
 
 
