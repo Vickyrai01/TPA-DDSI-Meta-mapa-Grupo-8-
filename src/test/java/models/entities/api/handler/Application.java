@@ -2,17 +2,9 @@ package models.entities.api.handler;
 
 import api.handler.*;
 import io.javalin.Javalin;
-import models.entities.hecho.Contribuyente;
-import models.entities.hecho.Coordenadas;
-import models.entities.hecho.Estado;
-import models.entities.hecho.Hecho;
-import models.repository.HechosRepository;
 import models.repository.seeders.ColeccionesRepositorySeeder;
 import models.repository.seeders.HechosRepositorySeeder;
 import models.repository.seeders.SolicitudEliminacioRepositorySeeder;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class Application {
 
@@ -36,7 +28,9 @@ public class Application {
         app.post("/api/hechos", new PostHechoHandler());
         app.get("api/solicitudes", new GetSolicitudHandler());
         app.post("api/solicitudes", new PostSolicitudHandler());
-        app.get("/api/colecciones/{id}/hechos", new GetColeccionesHandler());
+        app.get("/api/colecciones/{id}/hechos", new GetHechosDeColeccionesHandler());
+        app.get("api/colecciones", new GetColeccionHandler());
+        app.get("api/colecciones/{id}", new GetColeccionIdHandler());
     }
 
 
