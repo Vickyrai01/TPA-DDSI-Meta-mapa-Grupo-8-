@@ -5,8 +5,6 @@ import models.entities.hecho.Hecho;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Arrays.asList;
-
 public class HechosRepository {
 
     private static volatile HechosRepository instance;
@@ -38,6 +36,12 @@ public class HechosRepository {
         hechos.remove(h);
     }
 
+    public Hecho getHecho(int id) {
+        return hechos.stream()
+                .filter(h -> h.getId() == id)
+                .findFirst()
+                .orElse(null);
+    }
     public  void add(Hecho h){
         hechos.add(h);
     }
