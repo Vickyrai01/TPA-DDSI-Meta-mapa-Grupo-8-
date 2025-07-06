@@ -7,6 +7,7 @@ import models.entities.hecho.Coordenadas;
 import models.entities.hecho.Estado;
 import models.entities.hecho.Hecho;
 import models.repository.HechosRepository;
+import models.repository.seeders.ColeccionesRepositorySeeder;
 import models.repository.seeders.HechosRepositorySeeder;
 import models.repository.seeders.SolicitudEliminacioRepositorySeeder;
 
@@ -23,6 +24,8 @@ public class Application {
         SolicitudEliminacioRepositorySeeder solicitudEliminacioRepositorySeeder = SolicitudEliminacioRepositorySeeder.getInstance();
         solicitudEliminacioRepositorySeeder.cargarSolicitudDeEliminacionSeeder();
 
+        ColeccionesRepositorySeeder coleccionesRepositorySeeder = ColeccionesRepositorySeeder.getInstance();
+        coleccionesRepositorySeeder.cargarColeccionesRepositorySeeder();
 
         Javalin app = Javalin.create()
                 .get("/", ctx -> ctx.result("Hello World"))

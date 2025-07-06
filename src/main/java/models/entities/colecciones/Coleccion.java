@@ -1,14 +1,32 @@
 package models.entities.colecciones;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 import models.entities.fuentes.Fuente;
 import models.entities.hecho.Hecho;
 
 import java.util.List;
 @AllArgsConstructor
 public class Coleccion {
+
+    public Coleccion(int id, String titulo, String descripcionColeccion, CriterioDePertenencia criterioDePertenencia, Fuente fuente, List<Hecho> hechos, String identificadorHandle) {
+        this.id = id;
+        this.titulo = titulo;
+        this.descripcionColeccion = descripcionColeccion;
+        this.criterioDePertenencia = criterioDePertenencia;
+        this.fuente = fuente;
+        this.hechos = hechos;
+        this.identificadorHandle = identificadorHandle;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    private int id;
 
     private String titulo;
 
