@@ -8,12 +8,12 @@ import java.util.List;
 @AllArgsConstructor
 public class Coleccion {
 
-    public Coleccion(int id, String titulo, String descripcionColeccion, CriterioDePertenencia criterioDePertenencia, Fuente fuente, List<Hecho> hechos, String identificadorHandle) {
+    public Coleccion(int id, String titulo, String descripcionColeccion, CriterioDePertenencia criterioDePertenencia, List<Fuente> fuentes, List<Hecho> hechos, String identificadorHandle) {
         this.id = id;
         this.titulo = titulo;
         this.descripcionColeccion = descripcionColeccion;
         this.criterioDePertenencia = criterioDePertenencia;
-        this.fuente = fuente;
+        this.fuente = fuentes;
         this.hechos = hechos;
         this.identificadorHandle = identificadorHandle;
     }
@@ -32,7 +32,15 @@ public class Coleccion {
 
     private String descripcionColeccion;
 
-    private Fuente fuente;
+    public List<Fuente> getFuente() {
+        return fuente;
+    }
+
+    public void setFuente(List<Fuente> fuente) {
+        this.fuente = fuente;
+    }
+
+    private List<Fuente> fuente;
 
     private CriterioDePertenencia criterioDePertenencia;
 
@@ -54,14 +62,6 @@ public class Coleccion {
 
     public void setDescripcionColeccion(String descripcionColeccion) {
         this.descripcionColeccion = descripcionColeccion;
-    }
-
-    public Fuente getFuente() {
-        return fuente;
-    }
-
-    public void setFuente(Fuente fuente) {
-        this.fuente = fuente;
     }
 
     public CriterioDePertenencia getCriterioDePertenencia() {
@@ -97,7 +97,7 @@ public class Coleccion {
     }
 
     public void agregarHechosDeFuente(CriterioDePertenencia criterio){
-        this.fuente.extraerHechos(criterio).addAll(hechos);
+        //this.fuente.extraerHechos(criterio).addAll(hechos); arreglar!! Porq ahora tenemos una lista de fuente.
     }
 
 }
