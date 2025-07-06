@@ -24,6 +24,9 @@ public class SolicitudDeEliminacion implements DetectorDeSpam {
         this.fechaDeRevision = fechaDeRevision;
     }
 
+    public SolicitudDeEliminacion()
+    {}
+
     public Hecho getHecho() {
         return hecho;
     }
