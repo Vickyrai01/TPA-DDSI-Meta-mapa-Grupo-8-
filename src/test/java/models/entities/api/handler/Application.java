@@ -36,6 +36,7 @@ public class Application {
         app.post("/api/hechos", new PostHechoHandler());
         app.get("api/solicitudes", new GetSolicitudHandler());
         app.post("api/solicitudes", new PostSolicitudHandler());
+        app.get("/api/colecciones/{id}/hechos", new GetColeccionesHandler());
     }
 
 
