@@ -1,6 +1,6 @@
 package api.handler;
 
-import api.clasesResponse.SolicitudDeEliminacionDTO;
+import api.clasesResponse.SolicitudDeEliminacionResponse;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import models.entities.hecho.Hecho;
@@ -14,7 +14,7 @@ public class PostSolicitudHandler implements Handler {
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
-        SolicitudDeEliminacionDTO dto  = context.bodyAsClass(SolicitudDeEliminacionDTO.class);
+        SolicitudDeEliminacionResponse dto  = context.bodyAsClass(SolicitudDeEliminacionResponse.class);
         System.out.println("Creando solicitud de eliminación: " + dto.hecho);
 
         Hecho hecho = HechosRepository.getInstance().getHecho(dto.hecho);
