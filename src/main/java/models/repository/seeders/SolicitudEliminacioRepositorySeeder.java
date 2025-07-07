@@ -12,7 +12,7 @@ public class SolicitudEliminacioRepositorySeeder {
 
     public static SolicitudEliminacioRepositorySeeder getInstance() {
         if (instance == null) {
-            synchronized (HechosRepository.class) {
+            synchronized (SolicitudEliminacioRepositorySeeder.class) {
                 if (instance == null) {
                     instance = new SolicitudEliminacioRepositorySeeder();
                 }
