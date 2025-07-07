@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import models.entities.fuentes.Fuente;
 import models.entities.hecho.Hecho;
 
+import java.util.ArrayList;
 import java.util.List;
 @AllArgsConstructor
 public class Coleccion {
@@ -13,7 +14,7 @@ public class Coleccion {
         this.titulo = titulo;
         this.descripcionColeccion = descripcionColeccion;
         this.criterioDePertenencia = criterioDePertenencia;
-        this.fuente = fuentes;
+        this.fuente =  new ArrayList<>(fuentes);;
         this.hechos = hechos;
         this.identificadorHandle = identificadorHandle;
     }
@@ -39,6 +40,12 @@ public class Coleccion {
     public void setFuente(List<Fuente> fuente) {
         this.fuente = fuente;
     }
+
+    public void agregarFuente(Fuente f)
+    {this.fuente.add(f);}
+
+    public void eliminarFuente(Fuente f)
+    {this.fuente.remove(f);}
 
     private List<Fuente> fuente;
 

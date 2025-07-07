@@ -43,6 +43,8 @@ public class Application {
         app.post("/api/solicitud/{id}/aceptar", new PostAceptarSolicitudHandler());
         app.post("/api/solicitud/{id}/rechazar", new PostRecahazarSolicitudHandler());
         app.get("/api/solicitud/{id}", new GetSolicitudIdHandler());
+        app.patch("api/colecciones/{id}/fuentes/agregar", new PatchAgregarFuentesColeccionHandler());
+        app.patch("api/colecciones/{id}/fuentes/eliminar", new PatchEliminarFuentesColeccionHandler());
     }
 
 
