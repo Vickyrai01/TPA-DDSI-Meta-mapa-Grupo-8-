@@ -1,24 +1,21 @@
-package api.handler;
+package api.handlers.hechos;
 
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
-import models.entities.colecciones.Coleccion;
 import models.entities.hecho.Hecho;
-import models.repository.ColeccionesRepository;
 import models.repository.HechosRepository;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class GetColeccionIdHandler implements Handler {
-
-    private final ColeccionesRepository repoColecciones = ColeccionesRepository.getInstance();
+public class GetHechoIdHandler implements Handler {
+    private final HechosRepository repoHechos = HechosRepository.getInstance();
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
 
         Integer idBuscado = context.pathParamAsClass("id", Integer.class).get();
-        final Optional<Coleccion> resultadoBusqueda = repoColecciones.obtenerTodas().stream()
+        final Optional<Hecho> resultadoBusqueda = repoHechos.obtenerTodas().stream()
                 .filter(m -> m.getId() == idBuscado)
                 .findFirst();
         if (resultadoBusqueda.isPresent()) {
@@ -26,6 +23,5 @@ public class GetColeccionIdHandler implements Handler {
         } else {
             context.status(404);
         }
-
     }
 }

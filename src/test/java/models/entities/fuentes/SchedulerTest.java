@@ -1,6 +1,6 @@
 package models.entities.fuentes;
 
-import api.handler.Demo;
+import api.handlers.Demo;
 
 public class SchedulerTest {
     public static void main(String[] args) throws Exception {

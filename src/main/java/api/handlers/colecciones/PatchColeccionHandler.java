@@ -1,6 +1,6 @@
-package api.handler;
+package api.handlers.colecciones;
 
-import api.clasesResponse.ActualizoColeccionDTO;
+import api.DTO.ActualizoColeccionDTO;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import models.entities.colecciones.Coleccion;

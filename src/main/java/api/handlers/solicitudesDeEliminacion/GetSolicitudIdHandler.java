@@ -1,10 +1,8 @@
-package api.handler;
+package api.handlers.solicitudesDeEliminacion;
 
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
-import models.entities.hecho.Hecho;
 import models.entities.solicitud.SolicitudDeEliminacion;
-import models.repository.HechosRepository;
 import models.repository.SolicitudEliminacionRepository;
 import org.jetbrains.annotations.NotNull;
 
