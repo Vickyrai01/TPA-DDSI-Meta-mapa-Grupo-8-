@@ -33,7 +33,7 @@ public class ColeccionesRepository {
         return colecciones;
     }
 
-    public void delete(Hecho c){
+    public void delete(Coleccion c){
         colecciones.remove(c);
     }
 
