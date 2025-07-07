@@ -54,7 +54,7 @@ public class PostColeccionHandler implements Handler {
         Coleccion coleccion = new Coleccion(
                 dto.getId(),
                 dto.getTitulo(),
-                dto.getDescripcionColeccion(), fuentes, 
+                dto.getDescripcionColeccion(), fuentes,
                 dto.getCriterioDePertenencia(),
                 hechosAsociados,
                 dto.getIdentificadorHandle()
