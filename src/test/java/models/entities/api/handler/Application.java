@@ -34,6 +34,9 @@ public class Application {
         app.post("api/colecciones", new PostColeccionHandler());
         app.delete("api/colecciones/{id}", new DeleteColeccionHandler());
         app.patch("api/colecciones/{id}", new PatchColeccionHandler());
+        app.post("/api/solicitud/{id}/aceptar", new PostAceptarSolicitudHandler());
+        app.post("/api/solicitud/{id}/rechazar", new PostRecahazarSolicitudHandler());
+        app.get("/api/solicitud/{id}", new GetSolicitudIdHandler());
     }
 
 

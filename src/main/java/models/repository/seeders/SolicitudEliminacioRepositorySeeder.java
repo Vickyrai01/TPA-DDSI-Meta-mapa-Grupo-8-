@@ -29,9 +29,9 @@ public class SolicitudEliminacioRepositorySeeder {
 
     SolicitudEliminacionRepository solicitudDeEliminacion = SolicitudEliminacionRepository.getInstance();
 
-    SolicitudDeEliminacion solicitudDeEliminacion1 = new SolicitudDeEliminacion(hecho1,"Cualquier cosa dice, es mi casa. No hubo ningun incendio", null, null);
-    SolicitudDeEliminacion solicitudDeEliminacion2 = new SolicitudDeEliminacion(hecho2,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", null, null);
-    SolicitudDeEliminacion solicitudDeEliminacion3 = new SolicitudDeEliminacion(hecho4,"espero que la persona este bien", null, null);
+    SolicitudDeEliminacion solicitudDeEliminacion1 = new SolicitudDeEliminacion(1, hecho1,"Cualquier cosa dice, es mi casa. No hubo ningun incendio", null, null);
+    SolicitudDeEliminacion solicitudDeEliminacion2 = new SolicitudDeEliminacion(2, hecho2,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", null, null);
+    SolicitudDeEliminacion solicitudDeEliminacion3 = new SolicitudDeEliminacion(3, hecho4,"espero que la persona este bien", null, null);
 
     public void cargarSolicitudDeEliminacionSeeder()
     {solicitudDeEliminacion.add(solicitudDeEliminacion1);
