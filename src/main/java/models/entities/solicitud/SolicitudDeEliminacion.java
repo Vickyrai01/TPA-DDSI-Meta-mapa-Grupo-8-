@@ -1,5 +1,6 @@
 package models.entities.solicitud;
 
+import io.javalin.http.Handler;
 import lombok.Getter;
 import lombok.Setter;
 import models.entities.hecho.Hecho;
@@ -9,6 +10,16 @@ import java.time.LocalDateTime;
 
 public class SolicitudDeEliminacion implements DetectorDeSpam {
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    private Integer id;
+
     private Hecho hecho;
 
     private String descripcion;
@@ -17,7 +28,8 @@ public class SolicitudDeEliminacion implements DetectorDeSpam {
 
     private LocalDateTime fechaDeRevision;
 
-    public SolicitudDeEliminacion(Hecho hecho, String descripcion, Boolean aceptada, LocalDateTime fechaDeRevision) {
+    public SolicitudDeEliminacion(Integer id, Hecho hecho, String descripcion, Boolean aceptada, LocalDateTime fechaDeRevision) {
+        this.id = id;
         this.hecho = hecho;
         this.descripcion = descripcion;
         this.aceptada = aceptada;
