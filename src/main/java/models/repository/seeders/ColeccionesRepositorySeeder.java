@@ -2,8 +2,10 @@ package models.repository.seeders;
 
 import models.entities.colecciones.Coleccion;
 import models.entities.colecciones.CriterioDePertenencia;
+import models.entities.fuentes.Fuente;
 import models.entities.hecho.Hecho;
 import models.repository.ColeccionesRepository;
+import models.repository.FuentesRepository;
 import models.repository.HechosRepository;
 
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ public class ColeccionesRepositorySeeder {
 
     public static ColeccionesRepositorySeeder getInstance() {
         if (instance == null) {
-            synchronized (ColeccionesRepository.class) {
+            synchronized (ColeccionesRepositorySeeder.class) {
                 if (instance == null) {
                     instance = new ColeccionesRepositorySeeder();
                 }
@@ -39,14 +41,27 @@ public class ColeccionesRepositorySeeder {
     List<Hecho> coleccionHechos2 = new ArrayList<>(List.of(hecho4, hecho2));
     List<Hecho> coleccionHechos3 = new ArrayList<>(List.of(hecho1, hecho3, hecho4, hecho2, hecho5));
 
+    FuentesRepository fuentesRepository = FuentesRepository.getInstance();
+    Fuente fuente1 = fuentesRepository.getFuente(1);
+    Fuente fuente2 = fuentesRepository.getFuente(2);
+    Fuente fuente3 = fuentesRepository.getFuente(3);
+
+    List<Fuente> fuentes3 = new ArrayList<>(List.of(fuente1, fuente2, fuente3));
+    List<Fuente> fuentes1 = List.of(fuente1);
+    List<Fuente> fuentes2 = List.of(fuente2);
+
     ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();
 
-    Coleccion coleccion1 = new Coleccion(1, "Incendios", "Incendios de cualquier objeto", (CriterioDePertenencia) null, null, coleccionHechos1, null);
-    Coleccion coleccion2 = new Coleccion(2, "Choques", "Todos los choques", (CriterioDePertenencia) null, null, coleccionHechos2, null);
-    Coleccion coleccion3 = new Coleccion(3, "Sin victimas fatales", "Accidentes de cualquier tipo sin accidentes", (CriterioDePertenencia) null, null, coleccionHechos3, null);
+    Coleccion coleccion1 = new Coleccion(1, "Incendios", "Incendios de cualquier objeto", (CriterioDePertenencia) null, fuentes1, coleccionHechos1, null);
+    Coleccion coleccion2 = new Coleccion(2, "Choques", "Todos los choques", (CriterioDePertenencia) null, fuentes2, coleccionHechos2, null);
+    Coleccion coleccion3 = new Coleccion(3, "Sin victimas fatales", "Accidentes de cualquier tipo sin accidentes", (CriterioDePertenencia) null, fuentes3, coleccionHechos3, null);
 
     public void cargarColeccionesRepositorySeeder()
-    {  coleccionesRepository.add(coleccion1);
+    {
+        if (fuente1 == null || fuente2 == null || fuente3 == null) {
+            throw new IllegalStateException("Una o más fuentes no están cargadas en el repositorio");
+        }
+        coleccionesRepository.add(coleccion1);
         coleccionesRepository.add(coleccion2);
         coleccionesRepository.add(coleccion3);
     }
