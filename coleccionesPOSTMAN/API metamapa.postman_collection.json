@@ -1,0 +1,69 @@
+{
+	"info": {
+		"_postman_id": "48da1d58-0d42-4ee3-b119-498aa101bc7d",
+		"name": "API metamapa",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42598532"
+	},
+	"item": [
+		{
+			"name": "hechos de coleccion 1",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/api/colecciones/1/hechos",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"colecciones",
+						"1",
+						"hechos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "solicitud eliminacion hecho 1",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\r\n        \"id\": 4,\r\n        \"hecho\": 2,\r\n        \"descripcion\": \"pruebaaa\",\r\n        \"aceptada\": null,\r\n        \"fechaDeRevision\": null\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/solicitudes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"solicitudes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}

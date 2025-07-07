@@ -1,10 +1,9 @@
 package models.entities.api.handler;
 
-import api.handlers.colecciones.*;
-import api.handlers.hechos.GetHechoHandler;
-import api.handlers.hechos.GetHechoIdHandler;
-import api.handlers.hechos.PostHechoHandler;
-import api.handlers.solicitudesDeEliminacion.*;
+import api.handlers.colecciones.GetColeccionHandler;
+import api.handlers.colecciones.GetHechosDeColeccionesHandler;
+import api.handlers.solicitudesDeEliminacion.GetSolicitudHandler;
+import api.handlers.solicitudesDeEliminacion.PostSolicitudHandler;
 import io.javalin.Javalin;
 import models.repository.seeders.ColeccionesRepositorySeeder;
 import models.repository.seeders.FuentesRepositorySeeder;
@@ -36,6 +35,7 @@ public class ApplicationApiMETAMAPA {
         app.get("/api/colecciones/{id}/hechos", new GetHechosDeColeccionesHandler());
         app.post("api/solicitudes", new PostSolicitudHandler());
         app.get("api/colecciones", new GetColeccionHandler());
+        app.get("api/solicitudes", new GetSolicitudHandler()); //para prueba solo
     }
 
 

@@ -15,8 +15,8 @@ public class PostAceptarSolicitudHandler implements Handler {
     private final HechosRepository repoHechos = HechosRepository.getInstance();
 
     @Override
-    public void handle(@NotNull Context ctx) throws Exception {
-        int id = ctx.pathParamAsClass("id", Integer.class).get();
+    public void handle(@NotNull Context context) throws Exception {
+        int id = context.pathParamAsClass("id", Integer.class).get();
 
         Optional<SolicitudDeEliminacion> solicitudOpt = repo.obtenerTodas().stream()
                 .filter(s -> s.getId() == id)
@@ -24,7 +24,7 @@ public class PostAceptarSolicitudHandler implements Handler {
 
 
         if (solicitudOpt.isEmpty()) {
-            ctx.status(404).result("Solicitud no encontrada");
+            context.status(404).result("Solicitud no encontrada");
             return;
         }
 
@@ -34,6 +34,6 @@ public class PostAceptarSolicitudHandler implements Handler {
 
         repoHechos.delete(solicitud.getHecho());
 
-        ctx.status(200).result("Solicitud aprobada");
+        context.status(200).result("Solicitud aprobada");
     }
 }

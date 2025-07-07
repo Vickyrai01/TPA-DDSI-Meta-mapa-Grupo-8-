@@ -1,7 +1,6 @@
 package models.repository;
 
 import models.entities.colecciones.Coleccion;
-import models.entities.hecho.Hecho;
 
 import java.util.ArrayList;
 import java.util.List;
