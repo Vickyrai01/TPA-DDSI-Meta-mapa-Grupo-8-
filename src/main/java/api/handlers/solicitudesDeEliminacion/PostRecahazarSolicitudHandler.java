@@ -13,15 +13,15 @@ public class PostRecahazarSolicitudHandler implements Handler {
     private final SolicitudEliminacionRepository repo = SolicitudEliminacionRepository.getInstance();
 
     @Override
-    public void handle(@NotNull Context ctx) throws Exception {
-        int id = ctx.pathParamAsClass("id", Integer.class).get();
+    public void handle(@NotNull Context context) throws Exception {
+        int id = context.pathParamAsClass("id", Integer.class).get();
 
         Optional<SolicitudDeEliminacion> solicitudOpt = repo.obtenerTodas().stream()
                 .filter(s -> s.getId() == id)
                 .findFirst();
 
         if (solicitudOpt.isEmpty()) {
-            ctx.status(404).result("Solicitud no encontrada");
+            context.status(404).result("Solicitud no encontrada");
             return;
         }
 
@@ -29,7 +29,7 @@ public class PostRecahazarSolicitudHandler implements Handler {
         solicitud.setAceptada(false);
         solicitud.setFechaDeRevision(LocalDateTime.now());
 
-        ctx.status(200).result("Solicitud rechazada");
+        context.status(200).result("Solicitud rechazada");
     }
 
     //abria que ver si elimina o que a la solicitud!!!

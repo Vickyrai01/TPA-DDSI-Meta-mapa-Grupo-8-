@@ -2,9 +2,6 @@ package models.repository.seeders;
 
 import models.entities.fuentes.*;
 import models.repository.FuentesRepository;
-import models.repository.HechosRepository;
-
-import java.net.URL;
 
 public class FuentesRepositorySeeder {
 
