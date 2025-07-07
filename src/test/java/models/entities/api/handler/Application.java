@@ -33,6 +33,7 @@ public class Application {
         app.get("api/colecciones/{id}", new GetColeccionIdHandler());
         app.post("api/colecciones", new PostColeccionHandler());
         app.delete("api/colecciones/{id}", new DeleteColeccionHandler());
+        app.patch("api/colecciones/{id}", new PatchColeccionHandler());
     }
 
 
