@@ -10,7 +10,7 @@ public class ColeccionResponse {
 
     public ColeccionResponse(){}
 
-    public ColeccionResponse(int id, String titulo, String descripcionColeccion, CriterioDePertenencia criterioDePertenencia, List<Fuente> fuente, List<Integer> hechos, String identificadorHandle) {
+    public ColeccionResponse(int id, String titulo, String descripcionColeccion, CriterioDePertenencia criterioDePertenencia, List<Integer> fuente, List<Integer> hechos, String identificadorHandle) {
         this.id = id;
         this.titulo = titulo;
         this.descripcionColeccion = descripcionColeccion;
@@ -75,15 +75,15 @@ public class ColeccionResponse {
 
     private String descripcionColeccion;
 
-    public List<Fuente> getFuente() {
+    public List<Integer> getFuente() {
         return fuente;
     }
 
-    public void setFuente(List<Fuente> fuente) {
+    public void setFuente(List<Integer> fuente) {
         this.fuente = fuente;
     }
 
-    private List<Fuente> fuente;
+    private List<Integer> fuente;
 
     private CriterioDePertenencia criterioDePertenencia;
 

@@ -10,6 +10,7 @@ import models.entities.fuentes.Fuente;
 import models.entities.hecho.Hecho;
 import models.entities.solicitud.SolicitudDeEliminacion;
 import models.repository.ColeccionesRepository;
+import models.repository.FuentesRepository;
 import models.repository.HechosRepository;
 import models.repository.SolicitudEliminacionRepository;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +21,7 @@ import java.util.List;
 public class PostColeccionHandler implements Handler {
     private final ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();
     private final HechosRepository hechosRepository = HechosRepository.getInstance();
+    private final FuentesRepository fuentesRepository = FuentesRepository.getInstance();
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
@@ -27,6 +29,7 @@ public class PostColeccionHandler implements Handler {
         System.out.println("Creando coleccion: " + dto.getTitulo());
 
         List<Hecho> hechosAsociados = new ArrayList<>();
+        List<Fuente> fuentes = new ArrayList<>();
 
         for (Integer idHecho : dto.getHechos()) {
             Hecho hecho = hechosRepository.getHecho(idHecho);
@@ -38,11 +41,20 @@ public class PostColeccionHandler implements Handler {
             }
         }
 
+        for (Integer idFuente : dto.getFuente()) {
+            Fuente fuente = fuentesRepository.getFuente(idFuente);
+            if (fuente != null) {
+                fuentes.add(fuente);
+            } else {
+                context.status(404).result("Fuente con ID " + idFuente + " no encontrado");
+                return;
+            }
+        }
+
         Coleccion coleccion = new Coleccion(
                 dto.getId(),
                 dto.getTitulo(),
-                dto.getDescripcionColeccion(),
-                null, //arreglar
+                dto.getDescripcionColeccion(), fuentes, 
                 dto.getCriterioDePertenencia(),
                 hechosAsociados,
                 dto.getIdentificadorHandle()
