@@ -1,4 +1,4 @@
-package api.clasesResponse;
+package api.DTO;
 
 import java.util.List;
 

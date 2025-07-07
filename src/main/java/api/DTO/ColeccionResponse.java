@@ -1,8 +1,6 @@
-package api.clasesResponse;
+package api.DTO;
 
 import models.entities.colecciones.CriterioDePertenencia;
-import models.entities.fuentes.Fuente;
-import models.entities.hecho.Hecho;
 
 import java.util.List;
 

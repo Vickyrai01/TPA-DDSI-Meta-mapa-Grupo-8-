@@ -7,8 +7,7 @@ import models.entities.colecciones.CriterioDePertenencia;
 import models.entities.hecho.Coordenadas;
 import models.entities.hecho.Estado;
 import models.entities.hecho.Hecho;
-import api.clasesResponse.HechoResponse;
-import models.repository.HechosRepository;
+import api.DTO.HechoResponse;
 import org.apache.cxf.jaxrs.client.WebClient;
 
 import javax.ws.rs.core.Response;
