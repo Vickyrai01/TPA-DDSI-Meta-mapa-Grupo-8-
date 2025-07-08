@@ -1,6 +1,6 @@
-package api.handler;
+package api.handlers.solicitudesDeEliminacion;
 
-import api.clasesResponse.SolicitudDeEliminacionResponse;
+import api.DTO.SolicitudDeEliminacionResponse;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import models.entities.hecho.Hecho;
@@ -25,6 +25,7 @@ public class PostSolicitudHandler implements Handler {
         }
 
         SolicitudDeEliminacion solicitud = new SolicitudDeEliminacion(
+                dto.id,
                 hecho,
                 dto.descripcion,
                 dto.aceptada,
