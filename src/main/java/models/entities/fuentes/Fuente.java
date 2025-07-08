@@ -1,18 +1,14 @@
 package models.entities.fuentes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 import models.entities.colecciones.criterios.Criterio;
 import models.entities.hecho.Hecho;
 
-import java.net.URL;
 import java.util.List;
 
 public class Fuente {
 
-    public Fuente(int id, String nombre, URL link, TipoFuente tipoFuente, StrategyTipoConexion strategyTipoConexion) {
+    public Fuente(int id, String nombre, String link, TipoFuente tipoFuente, StrategyTipoConexion strategyTipoConexion) {
         this.id = id;
         this.nombre = nombre;
         this.link = link;
@@ -34,7 +30,7 @@ public class Fuente {
 
     private String nombre;
 
-    private URL link;
+    private String link;
 
     private TipoFuente tipoFuente;
 
@@ -49,11 +45,11 @@ public class Fuente {
         this.nombre = nombre;
     }
 
-    public URL getLink() {
+    public String getLink() {
         return link;
     }
 
-    public void setLink(URL link) {
+    public void setLink(String link) {
         this.link = link;
     }
 
@@ -74,9 +70,7 @@ public class Fuente {
     }
 
     public List<Hecho> extraerHechos(List<Criterio> criterios){
-        return List.of();
+        return strategyTipoConexion.extraerHecho(criterios, link);
     };
-
-    
 }
 
