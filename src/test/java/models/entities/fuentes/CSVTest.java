@@ -1,5 +1,7 @@
 package models.entities.fuentes;
 
+import models.entities.colecciones.criterios.Criterio;
+import models.entities.colecciones.criterios.CriterioNombre;
 import models.entities.hecho.Hecho;
 
 import java.io.File;
@@ -10,7 +12,10 @@ public class CSVTest {
     public static void main(String[] args) {
 
         StrategyCSV strategy = new StrategyCSV();
-
+        //filtra por emergencia y buenos aires el criterio :)
+        CriterioNombre criterioNombre1 = new CriterioNombre("Buenos Aires");
+        CriterioNombre criterioNombre2 = new CriterioNombre("emergencia");
+        List<Criterio> criterios = List.of(criterioNombre1, criterioNombre2);
         String ruta = "desastres_sanitarios_contaminacion_argentina.csv";
 
         System.out.println("*********DEMO CSV: SOLO MUESTRA LOS PRIMEROS 15**************");
@@ -23,7 +28,7 @@ public class CSVTest {
         else {System.out.println("...¡Se encontro el archivo!");}
         System.out.println( "                          ");
 
-        List<Hecho> todosLosHechos = strategy.extraerHecho(null,ruta);
+        List<Hecho> todosLosHechos = strategy.extraerHecho(criterios,ruta);
 
         if (todosLosHechos.isEmpty()) {
             System.out.println("ERROR: No se cargaron hechos. Verifica el archivo CSV.");
