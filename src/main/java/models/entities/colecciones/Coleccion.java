@@ -1,19 +1,19 @@
 package models.entities.colecciones;
 
-import lombok.AllArgsConstructor;
+import models.entities.colecciones.criterios.Criterio;
 import models.entities.fuentes.Fuente;
 import models.entities.hecho.Hecho;
 
+import java.util.ArrayList;
 import java.util.List;
-@AllArgsConstructor
 public class Coleccion {
 
-    public Coleccion(int id, String titulo, String descripcionColeccion, CriterioDePertenencia criterioDePertenencia, List<Fuente> fuentes, List<Hecho> hechos, String identificadorHandle) {
+    public Coleccion(int id, String titulo, String descripcionColeccion,List<Fuente> fuentes, List<Criterio> criterioDePertenencia,  List<Hecho> hechos, String identificadorHandle) {
         this.id = id;
         this.titulo = titulo;
         this.descripcionColeccion = descripcionColeccion;
         this.criterioDePertenencia = criterioDePertenencia;
-        this.fuente = fuentes;
+        this.fuente =  new ArrayList<>(fuentes);;
         this.hechos = hechos;
         this.identificadorHandle = identificadorHandle;
     }
@@ -40,9 +40,15 @@ public class Coleccion {
         this.fuente = fuente;
     }
 
+    public void agregarFuente(Fuente f)
+    {this.fuente.add(f);}
+
+    public void eliminarFuente(Fuente f)
+    {this.fuente.remove(f);}
+
     private List<Fuente> fuente;
 
-    private CriterioDePertenencia criterioDePertenencia;
+    private List<Criterio> criterioDePertenencia;
 
     private List<Hecho> hechos;
 
@@ -77,11 +83,11 @@ public class Coleccion {
         this.descripcionColeccion = descripcionColeccion;
     }
 
-    public CriterioDePertenencia getCriterioDePertenencia() {
+    public List<Criterio> getCriterioDePertenencia() {
         return criterioDePertenencia;
     }
 
-    public void setCriterioDePertenencia(CriterioDePertenencia criterioDePertenencia) {
+    public void setCriterioDePertenencia(List<Criterio> criterioDePertenencia) {
         this.criterioDePertenencia = criterioDePertenencia;
     }
 
@@ -97,6 +103,12 @@ public class Coleccion {
         return identificadorHandle;
     }
 
+    public void agregarCriterio(Criterio criterio)
+    {criterioDePertenencia.add(criterio);};
+
+    public void eliminarCriterio(Criterio criterio)
+    {criterioDePertenencia.remove(criterio);};
+
     public void setIdentificadorHandle(String identificadorHandle) {
         this.identificadorHandle = identificadorHandle;
     }
@@ -109,7 +121,7 @@ public class Coleccion {
         /// creo que deberia agregar un metodo en el hecho para poder hacer esto(me refiero al equals)
     }
 
-    public void agregarHechosDeFuente(CriterioDePertenencia criterio){
+    public void agregarHechosDeFuente(Criterio criterio){
         //this.fuente.extraerHechos(criterio).addAll(hechos); arreglar!! Porq ahora tenemos una lista de fuente.
     }
 
