@@ -1,7 +1,6 @@
 package models.entities.hecho;
 
 
-import models.entities.colecciones.criterios.Filtrador;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
