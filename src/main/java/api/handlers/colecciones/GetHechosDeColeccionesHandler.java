@@ -1,4 +1,4 @@
-package api.handler;
+package api.handlers.colecciones;
 
 import io.javalin.http.Context;
 import io.javalin.http.Handler;

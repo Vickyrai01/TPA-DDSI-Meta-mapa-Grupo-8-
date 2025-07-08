@@ -1,7 +1,6 @@
 package models.repository;
 
 import models.entities.colecciones.Coleccion;
-import models.entities.hecho.Hecho;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,7 @@ public class ColeccionesRepository {
         return colecciones;
     }
 
-    public void delete(Hecho c){
+    public void delete(Coleccion c){
         colecciones.remove(c);
     }
 

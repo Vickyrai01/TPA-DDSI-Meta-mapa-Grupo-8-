@@ -1,8 +1,6 @@
-package api.clasesResponse;
+package api.DTO;
 
 import models.entities.colecciones.CriterioDePertenencia;
-import models.entities.fuentes.Fuente;
-import models.entities.hecho.Hecho;
 
 import java.util.List;
 
@@ -10,7 +8,7 @@ public class ColeccionResponse {
 
     public ColeccionResponse(){}
 
-    public ColeccionResponse(int id, String titulo, String descripcionColeccion, CriterioDePertenencia criterioDePertenencia, Fuente fuente, List<Integer> hechos, String identificadorHandle) {
+    public ColeccionResponse(int id, String titulo, String descripcionColeccion, CriterioDePertenencia criterioDePertenencia, List<Integer> fuente, List<Integer> hechos, String identificadorHandle) {
         this.id = id;
         this.titulo = titulo;
         this.descripcionColeccion = descripcionColeccion;
@@ -46,13 +44,6 @@ public class ColeccionResponse {
         this.descripcionColeccion = descripcionColeccion;
     }
 
-    public Fuente getFuente() {
-        return fuente;
-    }
-
-    public void setFuente(Fuente fuente) {
-        this.fuente = fuente;
-    }
 
     public CriterioDePertenencia getCriterioDePertenencia() {
         return criterioDePertenencia;
@@ -82,7 +73,15 @@ public class ColeccionResponse {
 
     private String descripcionColeccion;
 
-    private Fuente fuente;
+    public List<Integer> getFuente() {
+        return fuente;
+    }
+
+    public void setFuente(List<Integer> fuente) {
+        this.fuente = fuente;
+    }
+
+    private List<Integer> fuente;
 
     private CriterioDePertenencia criterioDePertenencia;
 

@@ -14,7 +14,7 @@ public class HechosRepositorySeeder {
 
     public static HechosRepositorySeeder getInstance() {
         if (instance == null) {
-            synchronized (HechosRepository.class) {
+            synchronized (HechosRepositorySeeder.class) {
                 if (instance == null) {
                     instance = new HechosRepositorySeeder();
                 }
