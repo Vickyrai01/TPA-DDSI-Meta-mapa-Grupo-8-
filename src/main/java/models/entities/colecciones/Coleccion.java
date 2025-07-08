@@ -52,6 +52,9 @@ public class Coleccion {
 
     private List<Hecho> hechos;
 
+    public void agregarHecho(Hecho h)
+    {hechos.add(h);}
+
     private String identificadorHandle;
 
     public String getTitulo() {
@@ -111,5 +114,7 @@ public class Coleccion {
     public void agregarHechosDeFuente(Criterio criterio){
         //this.fuente.extraerHechos(criterio).addAll(hechos); arreglar!! Porq ahora tenemos una lista de fuente.
     }
+
+
 
 }
