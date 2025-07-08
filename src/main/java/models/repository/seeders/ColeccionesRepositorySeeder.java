@@ -1,7 +1,6 @@
 package models.repository.seeders;
 
 import models.entities.colecciones.Coleccion;
-import models.entities.colecciones.CriterioDePertenencia;
 import models.entities.fuentes.Fuente;
 import models.entities.hecho.Hecho;
 import models.repository.ColeccionesRepository;
@@ -52,9 +51,9 @@ public class ColeccionesRepositorySeeder {
 
     ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();
 
-    Coleccion coleccion1 = new Coleccion(1, "Incendios", "Incendios de cualquier objeto", (CriterioDePertenencia) null, fuentes1, coleccionHechos1, null);
-    Coleccion coleccion2 = new Coleccion(2, "Choques", "Todos los choques", (CriterioDePertenencia) null, fuentes2, coleccionHechos2, null);
-    Coleccion coleccion3 = new Coleccion(3, "Sin victimas fatales", "Accidentes de cualquier tipo sin accidentes", (CriterioDePertenencia) null, fuentes3, coleccionHechos3, null);
+    Coleccion coleccion1 = new Coleccion(1, "Incendios", "Incendios de cualquier objeto",  fuentes1, null, coleccionHechos1, null);
+    Coleccion coleccion2 = new Coleccion(2, "Choques", "Todos los choques", fuentes2, null, coleccionHechos2, null);
+    Coleccion coleccion3 = new Coleccion(3, "Sin victimas fatales", "Accidentes de cualquier tipo sin accidentes",  fuentes3, null, coleccionHechos3, null);
 
     public void cargarColeccionesRepositorySeeder()
     {

@@ -1,6 +1,6 @@
 package api.DTO;
 
-import models.entities.colecciones.CriterioDePertenencia;
+import models.entities.colecciones.criterios.Criterio;
 
 import java.util.List;
 
@@ -8,11 +8,11 @@ public class ColeccionResponse {
 
     public ColeccionResponse(){}
 
-    public ColeccionResponse(int id, String titulo, String descripcionColeccion, CriterioDePertenencia criterioDePertenencia, List<Integer> fuente, List<Integer> hechos, String identificadorHandle) {
+    public ColeccionResponse(int id, String titulo, String descripcionColeccion, List<Criterio> listaCriterio, List<Integer> fuente, List<Integer> hechos, String identificadorHandle) {
         this.id = id;
         this.titulo = titulo;
         this.descripcionColeccion = descripcionColeccion;
-        this.criterioDePertenencia = criterioDePertenencia;
+        this.criterioDePertenencia = listaCriterio;
         this.fuente = fuente;
         this.hechos = hechos;
         this.identificadorHandle = identificadorHandle;
@@ -45,11 +45,11 @@ public class ColeccionResponse {
     }
 
 
-    public CriterioDePertenencia getCriterioDePertenencia() {
+    public List<Criterio> getCriterioDePertenencia() {
         return criterioDePertenencia;
     }
 
-    public void setCriterioDePertenencia(CriterioDePertenencia criterioDePertenencia) {
+    public void setCriterioDePertenencia(List<Criterio> criterioDePertenencia) {
         this.criterioDePertenencia = criterioDePertenencia;
     }
 
@@ -83,7 +83,7 @@ public class ColeccionResponse {
 
     private List<Integer> fuente;
 
-    private CriterioDePertenencia criterioDePertenencia;
+    private List<Criterio> criterioDePertenencia;
 
     private List<Integer> hechos;
 
