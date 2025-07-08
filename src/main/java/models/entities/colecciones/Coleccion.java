@@ -48,6 +48,16 @@ public class Coleccion {
 
     private String identificadorHandle;
 
+    //public Navegacion modoDeNavegacion;
+
+    public AlgoritmoConsenso algoritmoConsenso = null;
+
+    public List<Hecho> hechosVisibles;
+
+    public void ejecitarAlgoritmo(List<Fuente> fuentes, List<Hecho> hechos){
+       hechosVisibles= algoritmoConsenso.ejecutarAlgoritmo(fuentes,hechos);
+    }
+
     public String getTitulo() {
         return titulo;
     }
