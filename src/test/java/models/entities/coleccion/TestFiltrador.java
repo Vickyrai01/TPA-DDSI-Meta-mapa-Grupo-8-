@@ -26,8 +26,6 @@ public class TestFiltrador {
     //chequar qeu el filtro solo devuelve, no cambia la colección.
     final FiltradorColecciones filtradorColecciones = FiltradorColecciones.getInstance();
 
-    List<Hecho> hechos = new ArrayList<>();
-
     Coordenadas coordenadas1 = new Coordenadas(123.0, 456.0);
     Coordenadas coordenadas2 = new Coordenadas(893.0, 016.0);
     Coordenadas coordenadas3 = new Coordenadas(973.0, 656.0);
@@ -44,43 +42,46 @@ public class TestFiltrador {
 
     Coleccion coleccion1 = new Coleccion(1, "Todos", "Todos los hechos que existen", Collections.singletonList(fuente), null, hechos1, null);
 
+
+    Hecho hecho1 = new Hecho(1, coordenadas1, categoriaIncendio, null,
+            null, null, Estado.ACEPTADO, null,
+            LocalDate.now().minusDays(2), LocalDate.now().minusDays(3),
+            TipoFuente.ESTATICA, null, "No hubo heridos, el perro salto por la ventana, fue por una sartén", "Incendio en casa");
+    Hecho hecho2 = new Hecho(2, coordenadas2, categoriaChoque, null,
+            null, null, Estado.ACEPTADO, null,
+            LocalDate.now().minusDays(2), LocalDate.now().minusDays(3),
+            TipoFuente.ESTATICA, null, "Un perro cruzo por la calle y frenó de golpe, todos a salvo.", "Choque entre moto y gol");
+    Hecho hecho3 = new Hecho(3, coordenadas3, categoriaIncendio, null,
+            null, null, Estado.ACEPTADO, null,
+            LocalDate.now().minusDays(1), LocalDate.now().minusDays(2),
+            TipoFuente.ESTATICA, null, "Causa desconocida", "Departamento en un edicio");
+    Hecho hecho4 = new Hecho(4, coordenadas4, categoriaChoque, null,
+            null, null, Estado.ACEPTADO, null,
+            LocalDate.now().minusDays(1), LocalDate.now().minusDays(2),
+            TipoFuente.ESTATICA, null, "Parecía que el conductor iba borracho, se llevó puesto una maceta que estaba en la calle", "Choque con maceta");
+    Hecho hecho5 = new Hecho(5, coordenadas1, categoriaRobo, null,
+            null, null, Estado.ACEPTADO, null,
+            LocalDate.now().minusDays(5), LocalDate.now().minusDays(6),
+            TipoFuente.ESTATICA, null, "Se robó unas manzanas y bolsas", "Hurto en una verdulería");
+
+    void inicializarColeccion (){
+             coleccion1.agregarHecho(hecho1);
+                coleccion1.agregarHecho(hecho3);
+                coleccion1.agregarHecho(hecho4);
+                coleccion1.agregarHecho(hecho2);
+                coleccion1.agregarHecho(hecho5);}
+
+
     @BeforeEach
     void setUp() {
-
-
-        Hecho hecho1 = new Hecho(1, coordenadas1, categoriaIncendio, null,
-                null, null, Estado.ACEPTADO, null,
-                LocalDate.now().minusDays(2), LocalDate.now().minusDays(3),
-                TipoFuente.ESTATICA, null, "No hubo heridos, el perro salto por la ventana, fue por una sartén", "Incendio en casa");
-        Hecho hecho2 = new Hecho(2, coordenadas2, categoriaChoque, null,
-                null, null, Estado.ACEPTADO, null,
-                LocalDate.now().minusDays(2), LocalDate.now().minusDays(3),
-                TipoFuente.ESTATICA, null, "Un perro cruzo por la calle y frenó de golpe, todos a salvo.", "Choque entre moto y gol");
-        Hecho hecho3 = new Hecho(3, coordenadas3, categoriaIncendio, null,
-                null, null, Estado.ACEPTADO, null,
-                LocalDate.now().minusDays(1), LocalDate.now().minusDays(2),
-                TipoFuente.ESTATICA, null, "Causa desconocida", "Departamento en un edicio");
-        Hecho hecho4 = new Hecho(4, coordenadas4, categoriaChoque, null,
-                null, null, Estado.ACEPTADO, null,
-                LocalDate.now().minusDays(1), LocalDate.now().minusDays(2),
-                TipoFuente.ESTATICA, null, "Parecía que el conductor iba borracho, se llevó puesto una maceta que estaba en la calle", "Choque con maceta");
-        Hecho hecho5 = new Hecho(5, coordenadas1, categoriaRobo, null,
-                null, null, Estado.ACEPTADO, null,
-                LocalDate.now().minusDays(5), LocalDate.now().minusDays(6),
-                TipoFuente.ESTATICA, null, "Se robó unas manzanas y bolsas", "Hurto en una verdulería");
-
-        coleccion1.agregarHecho(hecho1);
-        coleccion1.agregarHecho(hecho3);
-        coleccion1.agregarHecho(hecho4);
-        coleccion1.agregarHecho(hecho2);
-        coleccion1.agregarHecho(hecho5);
-
+        inicializarColeccion();
     }
 
     @Test//filtre por perro, con categoria incendio -> 1
     void TestFiltroPorDescripcionYCategoria() {
+        Categoria categoria = new Categoria("Incendio");
         CriterioDescripcion filtroPerro = new CriterioDescripcion("perro");
-        CriterioCategoria filtroCategoria = new CriterioCategoria(categoriaIncendio);
+        CriterioCategoria filtroCategoria = new CriterioCategoria(categoria);
 
         List<Criterio> criterios = Arrays.asList(filtroPerro, filtroCategoria);
 
@@ -141,5 +142,12 @@ public class TestFiltrador {
         assertEquals(5, coleccion1.getHechos().size());
     }
 
+    @Test
+    void TestCriterioVacio() {
+        List<Hecho> hechosFiltrados = filtradorColecciones.filtrarColeccion(coleccion1, null);
+
+        assertEquals(5, hechosFiltrados.size());
+        assertEquals(5, coleccion1.getHechos().size());
+    }
 
 }

@@ -26,6 +26,9 @@ public class FiltradorCriterios {
     }
 
     public Boolean cumpleCriterios(Hecho hecho, List<Criterio> criterios) {
-        return criterios.stream().allMatch(criterio -> criterio.cumpleCriterio(hecho));
+        if(criterios == null || criterios.isEmpty())
+        {return true;}
+        else{
+        return criterios.stream().allMatch(criterio -> criterio.cumpleCriterio(hecho));}
     }
 }
