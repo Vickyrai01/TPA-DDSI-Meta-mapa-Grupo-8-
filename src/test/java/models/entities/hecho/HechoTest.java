@@ -51,7 +51,6 @@ public class HechoTest {
 
     @Test
     void testPasoUnaSemana_CuandoSucesoHaceMenosDe7Dias_DeberiaRetornarTrue() {
-        // Arrange (ya está configurado en el setUp con fechaSuceso = now-6 días)
 
         // Act
         boolean resultado = hecho1.pasoUnaSemana();

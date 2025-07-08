@@ -3,6 +3,7 @@ package models.entities.fuentes;
 
 import com.opencsv.CSVReader;
 import models.entities.colecciones.criterios.Criterio;
+import models.entities.colecciones.criterios.FiltradorCriterios;
 import models.entities.hecho.*;
 import models.entities.hecho.Hecho;
 
@@ -18,6 +19,7 @@ public class StrategyCSV implements StrategyTipoConexion {
 
 
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    FiltradorCriterios filtradorCriterios = FiltradorCriterios.getInstance();
 
     @Override
     public List<Hecho> extraerHecho(List<Criterio> criterio, String fuenteBase) {
@@ -47,7 +49,9 @@ public class StrategyCSV implements StrategyTipoConexion {
                 Hecho hecho = new Hecho(7, coordenadas, categoria1, null, null,
                         null, Estado.ACEPTADO, null, LocalDate.now(),
                         fecha, TipoFuente.ESTATICA, null, descripcion, titulo);
-                hechos.put(titulo, hecho);
+
+                if (filtradorCriterios.cumpleCriterios(hecho,criterio))
+                {hechos.put(titulo, hecho);}
 
 
             }
@@ -59,9 +63,8 @@ public class StrategyCSV implements StrategyTipoConexion {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
         return listaHechos;
-
-
     }
+    // SOLO RETORNA LA LISTA, NO AGREGA LOS HECHOS AL REPOSITORY
 
 
     @Override
