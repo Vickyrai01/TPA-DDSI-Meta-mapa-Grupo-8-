@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import models.entities.colecciones.CriterioDePertenencia;
+import models.entities.colecciones.criterios.Criterio;
 import models.entities.hecho.Hecho;
 
 import java.net.URL;
@@ -73,7 +73,7 @@ public class Fuente {
         this.strategyTipoConexion = strategyTipoConexion;
     }
 
-    public List<Hecho> extraerHechos(CriterioDePertenencia criterio){
+    public List<Hecho> extraerHechos(List<Criterio> criterios){
         return List.of();
     };
 
