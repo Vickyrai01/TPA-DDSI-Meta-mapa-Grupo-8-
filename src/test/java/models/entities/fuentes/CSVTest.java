@@ -10,25 +10,25 @@ import java.util.List;
 
 public class CSVTest {
     public static void main(String[] args) {
-
         StrategyCSV strategy = new StrategyCSV();
+        Fuente fuente = new Fuente(3, "Desastres Sanitarios", "desastres_sanitarios_contaminacion_argentina.csv", TipoFuente.ESTATICA, strategy);
+
         //filtra por emergencia y buenos aires el criterio :)
         CriterioNombre criterioNombre1 = new CriterioNombre("Buenos Aires");
         CriterioNombre criterioNombre2 = new CriterioNombre("emergencia");
         List<Criterio> criterios = List.of(criterioNombre1, criterioNombre2);
-        String ruta = "desastres_sanitarios_contaminacion_argentina.csv";
 
         System.out.println("*********DEMO CSV: SOLO MUESTRA LOS PRIMEROS 15**************");
         System.out.println("Buscando archivo...");
-        File archivo = new File(ruta);
+        File archivo = new File(fuente.getLink());
         if (!archivo.exists()) {
-            System.out.println("...Archivo no encontrado: " + ruta);
+            System.out.println("...Archivo no encontrado: " + fuente.getLink());
             return;
         }
         else {System.out.println("...¡Se encontro el archivo!");}
         System.out.println( "                          ");
 
-        List<Hecho> todosLosHechos = strategy.extraerHecho(criterios,ruta);
+        List<Hecho> todosLosHechos = fuente.extraerHechos(criterios);
 
         if (todosLosHechos.isEmpty()) {
             System.out.println("ERROR: No se cargaron hechos. Verifica el archivo CSV.");
