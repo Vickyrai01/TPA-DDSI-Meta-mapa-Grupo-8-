@@ -10,8 +10,28 @@ public class AlgoritmoConsenso {
         return hechos;
     }
 
-    //se tienen que comparar todos los atributos y tienen que ser iguales para considerar un hecho igual a otro
-    //en todas las fuentes, deben haber dos hechos IGUALES y
+    public boolean sonHechosIguales(Hecho hecho1, Hecho hecho2) {
+        if (hecho1 == null || hecho2 == null) {
+            return false;
+        }
+
+        // Comparar por título (ignorando mayúsculas/minúsculas)
+        boolean titulosIguales = hecho1.getTitulo() != null &&
+                hecho2.getTitulo() != null &&
+                hecho1.getTitulo().equalsIgnoreCase(hecho2.getTitulo());
+
+        // Comparar por fecha de suceso si ambas existen
+        boolean fechasIguales = hecho1.getFechaSuceso() != null &&
+                hecho2.getFechaSuceso() != null &&
+                hecho1.getFechaSuceso().equals(hecho2.getFechaSuceso());
+
+        // Comparar por ubicación si ambas existen
+        boolean ubicacionesIguales = hecho1.getUbicacion() != null &&
+                hecho2.getUbicacion() != null &&
+                hecho1.getUbicacion().equals(hecho2.getUbicacion());
+
+        return titulosIguales && fechasIguales && ubicacionesIguales;
+    }
 
     public boolean sonHechosSimilares(Hecho hecho1, Hecho hecho2) {
         if (hecho1 == null || hecho2 == null) {
@@ -19,22 +39,21 @@ public class AlgoritmoConsenso {
         }
 
         // Comparar por título (ignorando mayúsculas/minúsculas)
-        boolean titulosSimilares = hecho1.getTitulo() != null &&
+        boolean titulosIguales = hecho1.getTitulo() != null &&
                 hecho2.getTitulo() != null &&
-                hecho1.getTitulo().equalsIgnoreCase(hecho2.getTitulo());
+                !hecho1.getTitulo().equalsIgnoreCase(hecho2.getTitulo());
 
         // Comparar por fecha de suceso si ambas existen
-        boolean fechasSimilares = hecho1.getFechaSuceso() != null &&
+        boolean fechasDistintas = hecho1.getFechaSuceso() != null &&
                 hecho2.getFechaSuceso() != null &&
-                hecho1.getFechaSuceso().equals(hecho2.getFechaSuceso());
+                !hecho1.getFechaSuceso().equals(hecho2.getFechaSuceso());
 
         // Comparar por ubicación si ambas existen
-        boolean ubicacionesSimilares = hecho1.getUbicacion() != null &&
+        boolean ubicacionesDistintas = hecho1.getUbicacion() != null &&
                 hecho2.getUbicacion() != null &&
-                hecho1.getUbicacion().equals(hecho2.getUbicacion());
+                !hecho1.getUbicacion().equals(hecho2.getUbicacion());
 
-        // Se considera similar si el título coincide y al menos uno de los otros criterios también
-        return titulosSimilares && (fechasSimilares || ubicacionesSimilares);
+        return titulosIguales && fechasDistintas && ubicacionesDistintas;
     }
 }
 

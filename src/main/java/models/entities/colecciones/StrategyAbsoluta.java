@@ -3,7 +3,6 @@ import models.entities.fuentes.Fuente;
 import models.entities.hecho.Hecho;
 import java.util.ArrayList;
 import java.util.List;
-import models.entities.colecciones.AlgoritmoConsenso;
 
 public class StrategyAbsoluta extends AlgoritmoConsenso {
 
@@ -15,12 +14,11 @@ public class StrategyAbsoluta extends AlgoritmoConsenso {
             boolean estaEnTodasLasFuentes = true;
 
             for (Fuente fuente : fuentes) {
-                String stringFuente = "fuente";//ver esto
-                List<Hecho> hechosDeLaFuente = fuente.extraerHechos(null, stringFuente );//criterio de pertenencia y string de fuente????
+                List<Hecho> hechosDeLaFuente = fuente.extraerHechos(null);
                 boolean hechoEncontradoEnFuente = false;
 
                 for (Hecho hechoFuente : hechosDeLaFuente) {
-                    if (sonHechosSimilares(hecho, hechoFuente)) {
+                    if (sonHechosIguales(hecho, hechoFuente)) {
                         hechoEncontradoEnFuente = true;
                         break;
                     }
