@@ -40,11 +40,11 @@ public class Hecho {
 
     private List<SugerenciaDeCambio> sugerenciaDeCambio;
 
-    private String categoria;
+    private Categoria categoria;
 
     private Coordenadas ubicacion;
 
-    public Hecho(Integer id, Coordenadas ubicacion, String categoria,
+    public Hecho(Integer id, Coordenadas ubicacion, Categoria categoria,
                  List<SugerenciaDeCambio> sugerenciaDeCambio,
                  LocalDate ultimaFechaModificacion, List<String> multimedia,
                  Estado estado, Contribuyente contribuyente,
@@ -165,11 +165,11 @@ public class Hecho {
         this.sugerenciaDeCambio = sugerenciaDeCambio;
     }
 
-    public String getCategoria() {
+    public Categoria getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(String categoria) {
+    public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
     }
 
