@@ -4,6 +4,7 @@ import api.DTO.ActualizoColeccionDTO;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import models.entities.colecciones.Coleccion;
+import models.entities.colecciones.criterios.Criterio;
 import models.entities.hecho.Hecho;
 import models.repository.ColeccionesRepository;
 import models.repository.HechosRepository;
@@ -45,8 +46,8 @@ public class PatchColeccionHandler implements Handler {
             coleccion.setFuente(dto.fuente);
         }
 
-        if (dto.criterioDePertenencia != null) {
-            coleccion.setCriterioDePertenencia(dto.criterioDePertenencia);
+        if (dto .criterioDePertenencia != null) {
+            coleccion.setCriterioDePertenencia((List<Criterio>) dto.criterioDePertenencia);
         }
 
         if (dto.identificadorHandle != null) {
