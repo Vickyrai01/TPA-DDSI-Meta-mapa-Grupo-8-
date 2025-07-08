@@ -1,26 +1,26 @@
 package models.entities.colecciones.criterios;
 
+import models.entities.colecciones.Coleccion;
 import models.entities.hecho.Hecho;
-import models.repository.ColeccionesRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Filtrador {
+public class FiltradorColecciones {
 
-    private static volatile Filtrador instance;
+    private static volatile FiltradorColecciones instance;
 
-    private Filtrador() {
+    private FiltradorColecciones() {
         if (instance != null) {
             throw new RuntimeException("Usa getInstance() para obtener el Singleton");
         }
     }
 
-    public static Filtrador getInstance() {
+    public static FiltradorColecciones getInstance() {
         if (instance == null) {
-            synchronized (Filtrador.class) {
+            synchronized (FiltradorColecciones.class) {
                 if (instance == null) {
-                    instance = new Filtrador();
+                    instance = new FiltradorColecciones();
                 }
             }
         }
@@ -33,7 +33,9 @@ public class Filtrador {
                 .collect(Collectors.toList());
     }
 
-    public Boolean cumpleCriterios(Hecho hecho, List<Criterio> criterios) {
-        return criterios.stream().allMatch(criterio -> criterio.cumpleCriterio(hecho));
+    public List<Hecho> filtrarColeccion(Coleccion coleccion, List<Criterio> criterios)
+    {
+        return filtrarHechos(coleccion.getHechos(), criterios);
     }
+
 }

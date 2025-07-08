@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import models.entities.colecciones.criterios.Criterio;
-import models.entities.colecciones.criterios.Filtrador;
+import models.entities.colecciones.criterios.FiltradorCriterios;
 import models.entities.hecho.Coordenadas;
 import models.entities.hecho.Estado;
 import models.entities.hecho.Hecho;
@@ -18,7 +18,7 @@ import java.util.List;
 
 public class StrategyAPIREST implements StrategyTipoConexion {
 
-    Filtrador filtrador = Filtrador.getInstance();
+    FiltradorCriterios filtradorCriterios = FiltradorCriterios.getInstance();
 
     @Override
     public List<Hecho> extraerHecho(List<Criterio> criterios, String fuente){
@@ -66,7 +66,7 @@ public class StrategyAPIREST implements StrategyTipoConexion {
                         hechoResponse.getDescripcion(),
                         hechoResponse.getTitulo()
                 );
-                if (filtrador.cumpleCriterios(nuevoHecho, criterios)){
+                if (filtradorCriterios.cumpleCriterios(nuevoHecho, criterios)){
                     hechosExtraidos.add(nuevoHecho);
                     System.out.println("Hecho: " + nuevoHecho);
                 }

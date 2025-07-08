@@ -1,37 +1,49 @@
 package models.entities.coleccion;
 
+import models.entities.colecciones.Coleccion;
 import models.entities.colecciones.criterios.*;
+import models.entities.fuentes.Fuente;
 import models.entities.fuentes.TipoFuente;
 import models.entities.hecho.Categoria;
 import models.entities.hecho.Coordenadas;
 import models.entities.hecho.Estado;
 import models.entities.hecho.Hecho;
+import models.repository.ColeccionesRepository;
+import models.repository.FuentesRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestCriterios {
-
-    final FiltradorCriterios filtradorCriterios = FiltradorCriterios.getInstance();
+public class TestFiltrador {
+    //chequar qeu el filtro solo devuelve, no cambia la colección.
+    final FiltradorColecciones filtradorColecciones = FiltradorColecciones.getInstance();
 
     List<Hecho> hechos = new ArrayList<>();
 
-         Coordenadas coordenadas1 = new Coordenadas(123.0, 456.0);
-            Coordenadas coordenadas2 = new Coordenadas(893.0, 016.0);
-            Coordenadas coordenadas3 = new Coordenadas(973.0, 656.0);
-            Coordenadas coordenadas4 = new Coordenadas(223.0, 033.0);
+    Coordenadas coordenadas1 = new Coordenadas(123.0, 456.0);
+    Coordenadas coordenadas2 = new Coordenadas(893.0, 016.0);
+    Coordenadas coordenadas3 = new Coordenadas(973.0, 656.0);
+    Coordenadas coordenadas4 = new Coordenadas(223.0, 033.0);
 
-            Categoria categoriaIncendio = new Categoria("Incendio");
-            Categoria categoriaChoque = new Categoria("Choque");
-            Categoria categoriaRobo = new Categoria("Robo");
+    Categoria categoriaIncendio = new Categoria("Incendio");
+    Categoria categoriaChoque = new Categoria("Choque");
+    Categoria categoriaRobo = new Categoria("Robo");
 
-    //DE UNA LISTA DE HECHOS APLICAR UNA LISTA DE CRITERIOS Y QUE MUESTRE SI FUNCIONO O NO.
+    List<Hecho> hechos1 = new ArrayList<>();
+
+    @Mock
+    private Fuente fuente;
+
+    Coleccion coleccion1 = new Coleccion(1, "Todos", "Todos los hechos que existen", Collections.singletonList(fuente), null, hechos1, null);
+
     @BeforeEach
     void setUp() {
 
@@ -57,60 +69,62 @@ public class TestCriterios {
                 LocalDate.now().minusDays(5), LocalDate.now().minusDays(6),
                 TipoFuente.ESTATICA, null, "Se robó unas manzanas y bolsas", "Hurto en una verdulería");
 
-        hechos.addAll(List.of(hecho1, hecho2, hecho3, hecho4, hecho5));
+        coleccion1.agregarHecho(hecho1);
+        coleccion1.agregarHecho(hecho3);
+        coleccion1.agregarHecho(hecho4);
+        coleccion1.agregarHecho(hecho2);
+        coleccion1.agregarHecho(hecho5);
 
     }
 
+    @Test//filtre por perro, con categoria incendio -> 1
+    void TestFiltroPorDescripcionYCategoria() {
+        CriterioDescripcion filtroPerro = new CriterioDescripcion("perro");
+        CriterioCategoria filtroCategoria = new CriterioCategoria(categoriaIncendio);
 
+        List<Criterio> criterios = Arrays.asList(filtroPerro, filtroCategoria);
 
+        List<Hecho> hechosFiltrados = filtradorColecciones.filtrarColeccion(coleccion1, criterios);
+
+        assertEquals( 1, hechosFiltrados.size());
+        assertEquals(5, coleccion1.getHechos().size());
+    }
+    
     @Test
-    //filtre por perro, que hayan paso ayer -> 0
+        //filtre por descripcion perro
     void TestFiltroPorDescripcionYFecha() {
         CriterioDescripcion filtroPerro = new CriterioDescripcion("perro");
-        CriterioFechaSuceso criterioFechaSuceso = new CriterioFechaSuceso( LocalDate.now().minusDays(2),  LocalDate.now());
 
-        List<Criterio> criterios = Arrays.asList(filtroPerro, criterioFechaSuceso);
-        List<Hecho> hechosFiltrados = new ArrayList<>();
+        List<Criterio> criterios = Arrays.asList(filtroPerro);
+        List<Hecho> hechosFiltrados = filtradorColecciones.filtrarColeccion(coleccion1, criterios);
 
-        for (Hecho hecho : hechos) {
-            if(filtradorCriterios.cumpleCriterios(hecho, criterios))
-            {hechosFiltrados.add(hecho);}
-
-        }
-        assertEquals( 0, hechosFiltrados.size());
+        assertEquals( 2, hechosFiltrados.size());
+        assertEquals(5, coleccion1.getHechos().size());
     }
 
     //filtra por perro, que haya paso, que paso hace 2 dias -> 2
     @Test
     void TestFiltroPorDescripcionYFechaHace2Dias() {
         CriterioDescripcion filtroPerro = new CriterioDescripcion("perro");
-        CriterioFechaSuceso criterioFechaSuceso = new CriterioFechaSuceso(LocalDate.now().minusDays(4),  LocalDate.now());
+        CriterioFechaSuceso criterioFechaSuceso = new CriterioFechaSuceso(LocalDate.now().minusDays(4), LocalDate.now());
 
         List<Criterio> criterios = Arrays.asList(filtroPerro, criterioFechaSuceso);
-        List<Hecho> hechosFiltrados = new ArrayList<>();
+        List<Hecho> hechosFiltrados = filtradorColecciones.filtrarColeccion(coleccion1, criterios);
 
-        for (Hecho hecho : hechos) {
-            if(filtradorCriterios.cumpleCriterios(hecho, criterios))
-            {hechosFiltrados.add(hecho);}
-
-        }
         assertEquals(2, hechosFiltrados.size());
+        assertEquals(5, coleccion1.getHechos().size());
     }
 
-    //filtra entre 5 y 1 -> 3
+
     @Test
     void TestFiltroEntreDias() {
         CriterioFechaSuceso criterioFechaSuceso = new CriterioFechaSuceso(LocalDate.now().minusDays(5),  LocalDate.now());
 
         List<Criterio> criterios = Arrays.asList(criterioFechaSuceso);
-        List<Hecho> hechosFiltrados = new ArrayList<>();
+        List<Hecho> hechosFiltrados = filtradorColecciones.filtrarColeccion(coleccion1, criterios);
 
-        for (Hecho hecho : hechos) {
-            if(filtradorCriterios.cumpleCriterios(hecho, criterios))
-            {hechosFiltrados.add(hecho);}
-
-        }
         assertEquals(4, hechosFiltrados.size());
+        assertEquals(5, coleccion1.getHechos().size());
     }
 
 
@@ -121,14 +135,11 @@ public class TestCriterios {
 
         List<Criterio> criterios = Arrays.asList(criterioUbicacion, criterioCategoria);
 
-        List<Hecho> hechosFiltrados = new ArrayList<>();
+        List<Hecho> hechosFiltrados = filtradorColecciones.filtrarColeccion(coleccion1, criterios);
 
-        for (Hecho hecho : hechos) {
-            if(filtradorCriterios.cumpleCriterios(hecho, criterios))
-            {hechosFiltrados.add(hecho);}
-
-        }
         assertEquals(1, hechosFiltrados.size());
+        assertEquals(5, coleccion1.getHechos().size());
     }
+
 
 }

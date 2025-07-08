@@ -3,7 +3,7 @@ package models.entities.fuentes;
 
 import com.opencsv.CSVReader;
 import models.entities.colecciones.criterios.Criterio;
-import models.entities.colecciones.criterios.Filtrador;
+import models.entities.colecciones.criterios.FiltradorCriterios;
 import models.entities.hecho.*;
 import models.entities.hecho.Hecho;
 
@@ -19,7 +19,7 @@ public class StrategyCSV implements StrategyTipoConexion {
 
 
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    Filtrador filtrador = Filtrador.getInstance();
+    FiltradorCriterios filtradorCriterios = FiltradorCriterios.getInstance();
 
     @Override
     public List<Hecho> extraerHecho(List<Criterio> criterio, String fuenteBase) {
@@ -50,7 +50,7 @@ public class StrategyCSV implements StrategyTipoConexion {
                         null, Estado.ACEPTADO, null, LocalDate.now(),
                         fecha, TipoFuente.ESTATICA, null, descripcion, titulo);
 
-                if (filtrador.cumpleCriterios(hecho,criterio))
+                if (filtradorCriterios.cumpleCriterios(hecho,criterio))
                 {hechos.put(titulo, hecho);}
 
 
