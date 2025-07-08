@@ -28,14 +28,21 @@ public class FiltradorColecciones {
     }
 
     public List<Hecho> filtrarHechos(List<Hecho> hechos, List<Criterio> criterios) {
-        return hechos.stream()
-                .filter(hecho -> criterios.stream().allMatch(criterio -> criterio.cumpleCriterio(hecho)))
-                .collect(Collectors.toList());
+        if(criterios == null || criterios.isEmpty())
+        {return hechos;}
+        else {
+            return hechos.stream()
+                    .filter(hecho -> criterios.stream().allMatch(criterio -> criterio.cumpleCriterio(hecho)))
+                    .collect(Collectors.toList());
+        }
     }
 
     public List<Hecho> filtrarColeccion(Coleccion coleccion, List<Criterio> criterios)
     {
-        return filtrarHechos(coleccion.getHechos(), criterios);
+        if(criterios == null || criterios.isEmpty())
+        {return coleccion.getHechos();}
+        else {
+        return filtrarHechos(coleccion.getHechos(), criterios);}
     }
 
 }
