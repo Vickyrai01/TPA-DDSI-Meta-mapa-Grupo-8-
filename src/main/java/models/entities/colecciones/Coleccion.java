@@ -54,7 +54,7 @@ public class Coleccion {
 
     private String identificadorHandle;
 
-    //public Navegacion modoDeNavegacion;
+    public ModoDeNavegacion modoDeNavegacion;
 
     public AlgoritmoConsenso algoritmoConsenso = null;
 
