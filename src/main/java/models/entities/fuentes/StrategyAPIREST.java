@@ -3,12 +3,11 @@ package models.entities.fuentes;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import models.entities.colecciones.CriterioDePertenencia;
+import models.entities.colecciones.criterios.Criterio;
 import models.entities.hecho.Coordenadas;
 import models.entities.hecho.Estado;
 import models.entities.hecho.Hecho;
-import api.clasesResponse.HechoResponse;
-import models.repository.HechosRepository;
+import api.DTO.HechoResponse;
 import org.apache.cxf.jaxrs.client.WebClient;
 
 import javax.ws.rs.core.Response;
@@ -19,7 +18,7 @@ import java.util.List;
 public class StrategyAPIREST implements StrategyTipoConexion {
 
     @Override
-    public List<Hecho> extraerHecho(CriterioDePertenencia criterio, String fuente){
+    public List<Hecho> extraerHecho(List<Criterio> criterio, String fuente){
         List<Hecho> hechosExtraidos = new ArrayList<>();
         WebClient clientUsers = WebClient.create(fuente);
 
