@@ -55,7 +55,10 @@ public class Coleccion {
     public List<Hecho> hechosVisibles;
 
     public void ejecitarAlgoritmo(List<Fuente> fuentes, List<Hecho> hechos){
-       hechosVisibles= algoritmoConsenso.ejecutarAlgoritmo(fuentes,hechos);
+
+        if(algoritmoConsenso==null){hechosVisibles= hechos;}
+
+        hechosVisibles= algoritmoConsenso.ejecutarAlgoritmo(fuentes,hechos);
     }
 
     public String getTitulo() {

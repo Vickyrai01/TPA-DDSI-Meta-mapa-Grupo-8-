@@ -15,7 +15,8 @@ public class StrategyAbsoluta extends AlgoritmoConsenso {
             boolean estaEnTodasLasFuentes = true;
 
             for (Fuente fuente : fuentes) {
-                List<Hecho> hechosDeLaFuente = fuente.extraerHechos(null);//criterio de pertenencia y string de fuente????
+                String stringFuente = "fuente";//ver esto
+                List<Hecho> hechosDeLaFuente = fuente.extraerHechos(null, stringFuente );//criterio de pertenencia y string de fuente????
                 boolean hechoEncontradoEnFuente = false;
 
                 for (Hecho hechoFuente : hechosDeLaFuente) {
@@ -30,7 +31,6 @@ public class StrategyAbsoluta extends AlgoritmoConsenso {
                     break;
                 }
             }
-
 
             if (estaEnTodasLasFuentes) {
                 hechosVisibles.add(hecho);

@@ -10,6 +10,9 @@ public class AlgoritmoConsenso {
         return hechos;
     }
 
+    //se tienen que comparar todos los atributos y tienen que ser iguales para considerar un hecho igual a otro
+    //en todas las fuentes, deben haber dos hechos IGUALES y
+
     public boolean sonHechosSimilares(Hecho hecho1, Hecho hecho2) {
         if (hecho1 == null || hecho2 == null) {
             return false;

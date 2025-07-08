@@ -17,9 +17,9 @@ public class StrategyMayoriaSimple extends AlgoritmoConsenso {
         for (Hecho hecho : hechos) {
             int fuentesQueContienen = 0;
 
-
             for (Fuente fuente : fuentes) {
-                List<Hecho> hechosDeLaFuente = fuente.extraerHechos(null);//criterio de pertenencia y string de la fuente???????
+                String stringFuente = "url";//ver esto
+                List<Hecho> hechosDeLaFuente = fuente.extraerHechos(null, stringFuente );//criterio de pertenencia y string de la fuente???????
 
                 boolean hechoEncontradoEnFuente = false;
                 for (Hecho hechoFuente : hechosDeLaFuente) {
@@ -37,6 +37,4 @@ public class StrategyMayoriaSimple extends AlgoritmoConsenso {
 
         return hechosVisibles;
     }
-
-
 }
