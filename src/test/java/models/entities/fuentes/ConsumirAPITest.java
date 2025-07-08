@@ -12,15 +12,21 @@ import java.util.List;
 public class ConsumirAPITest {
     public static void main(String[] args) throws Exception {
 
+        StrategyAPIREST strategyAPIREST = new StrategyAPIREST();
+        Fuente fuente = new Fuente(4, "API de ejemplo","https://684b1942165d05c5d35b843b.mockapi.io/metamapa/hechos",TipoFuente.PROXY, strategyAPIREST);
+        HechosRepository hechosRepository = HechosRepository.getInstance();
+
+        System.out.println("Hay " + hechosRepository.obtenerTodas().size() + " hechos en el repositorio");
+        System.out.println("Extrayendo hechos de API...");
+
         LocalDate fechaInicio = LocalDate.of(2023, 4,30);
         LocalDate fechaFin = LocalDate.of(2023, 6, 30);
         CriterioFechaSuceso fechaSuceso = new CriterioFechaSuceso(fechaInicio, fechaFin);
         List<Criterio> criterios = new ArrayList<>(List.of(fechaSuceso));
 
-        final HechosRepository repoHechos = HechosRepository.getInstance();
-        StrategyAPIREST consumirAPI = new StrategyAPIREST();
 
-        consumirAPI.extraerHecho(criterios, "https://684b1942165d05c5d35b843b.mockapi.io/metamapa/hechos");
+        fuente.extraerHechos(criterios);
+        System.out.println("Hay " + hechosRepository.obtenerTodas().size() + " hechos nuevos en el repositorio");
 
     }
 }

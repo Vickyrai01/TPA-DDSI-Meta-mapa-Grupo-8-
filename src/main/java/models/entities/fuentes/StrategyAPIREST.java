@@ -9,6 +9,7 @@ import models.entities.hecho.Coordenadas;
 import models.entities.hecho.Estado;
 import models.entities.hecho.Hecho;
 import api.DTO.HechoResponse;
+import models.repository.HechosRepository;
 import org.apache.cxf.jaxrs.client.WebClient;
 
 import javax.ws.rs.core.Response;
@@ -25,6 +26,7 @@ public class StrategyAPIREST implements StrategyTipoConexion {
         List<Hecho> hechosExtraidos = new ArrayList<>();
         WebClient clientUsers = WebClient.create(fuente);
 
+        HechosRepository hechosRepository = HechosRepository.getInstance();
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -68,6 +70,7 @@ public class StrategyAPIREST implements StrategyTipoConexion {
                 );
                 if (filtradorCriterios.cumpleCriterios(nuevoHecho, criterios)){
                     hechosExtraidos.add(nuevoHecho);
+                    hechosRepository.add(nuevoHecho);
                     System.out.println("Hecho: " + nuevoHecho);
                 }
 
