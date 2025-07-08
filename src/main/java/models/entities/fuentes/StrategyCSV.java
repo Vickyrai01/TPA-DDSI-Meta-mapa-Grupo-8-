@@ -6,6 +6,7 @@ import models.entities.colecciones.criterios.Criterio;
 import models.entities.colecciones.criterios.FiltradorCriterios;
 import models.entities.hecho.*;
 import models.entities.hecho.Hecho;
+import models.repository.HechosRepository;
 
 import java.io.FileReader;
 import java.time.LocalDate;
@@ -20,6 +21,8 @@ public class StrategyCSV implements StrategyTipoConexion {
 
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     FiltradorCriterios filtradorCriterios = FiltradorCriterios.getInstance();
+    HechosRepository hechosRepository = HechosRepository.getInstance();
+    int i = 5; //A SOLUCIONAR DSP!!
 
     @Override
     public List<Hecho> extraerHecho(List<Criterio> criterio, String fuenteBase) {
@@ -46,12 +49,16 @@ public class StrategyCSV implements StrategyTipoConexion {
                 Categoria categoria1 = new Categoria(categoria);
 
 
-                Hecho hecho = new Hecho(7, coordenadas, categoria1, null, null,
+
+                Hecho hecho = new Hecho(i, coordenadas, categoria1, null, null,
                         null, Estado.ACEPTADO, null, LocalDate.now(),
                         fecha, TipoFuente.ESTATICA, null, descripcion, titulo);
 
+
                 if (filtradorCriterios.cumpleCriterios(hecho,criterio))
-                {hechos.put(titulo, hecho);}
+                {hechos.put(titulo, hecho);
+                    hechosRepository.add(hecho);
+                i++;}
 
 
             }
@@ -62,9 +69,10 @@ public class StrategyCSV implements StrategyTipoConexion {
                 .stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+
         return listaHechos;
     }
-    // SOLO RETORNA LA LISTA, NO AGREGA LOS HECHOS AL REPOSITORY
+
 
 
     @Override
