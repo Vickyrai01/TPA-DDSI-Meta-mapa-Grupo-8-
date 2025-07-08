@@ -1,6 +1,7 @@
 package models.entities.hecho;
 
 
+import models.entities.colecciones.criterios.Filtrador;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,7 +52,6 @@ public class HechoTest {
 
     @Test
     void testPasoUnaSemana_CuandoSucesoHaceMenosDe7Dias_DeberiaRetornarTrue() {
-        // Arrange (ya está configurado en el setUp con fechaSuceso = now-6 días)
 
         // Act
         boolean resultado = hecho1.pasoUnaSemana();

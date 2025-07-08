@@ -1,6 +1,5 @@
 package models.entities.coleccion;
 
-import com.fasterxml.jackson.databind.ser.BasicSerializerFactory;
 import models.entities.colecciones.criterios.*;
 import models.entities.fuentes.TipoFuente;
 import models.entities.hecho.Categoria;
@@ -8,18 +7,18 @@ import models.entities.hecho.Coordenadas;
 import models.entities.hecho.Estado;
 import models.entities.hecho.Hecho;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestCriterios {
+
+    final Filtrador filtrador = Filtrador.getInstance();
 
     List<Hecho> hechos = new ArrayList<>();
 
@@ -63,12 +62,6 @@ public class TestCriterios {
     }
 
 
-    List<Hecho> filtrarHechos(List<Hecho> hechos, List<Criterio> criterios) {
-        return hechos.stream()
-                .filter(hecho -> criterios.stream().allMatch(criterio -> criterio.cumpleCriterio(hecho)))
-                .collect(Collectors.toList());
-    }
-
 
     @Test
     //filtre por perro, que hayan paso ayer -> 0
@@ -78,7 +71,7 @@ public class TestCriterios {
 
         List<Criterio> criterios = Arrays.asList(filtroPerro, criterioFechaSuceso);
 
-        List<Hecho> hechosFiltrados = filtrarHechos(hechos, criterios);
+        List<Hecho> hechosFiltrados = filtrador.filtrarHechos(hechos, criterios);
 
         assertEquals( 0, hechosFiltrados.size());
     }
@@ -91,7 +84,7 @@ public class TestCriterios {
 
         List<Criterio> criterios = Arrays.asList(filtroPerro, criterioFechaSuceso);
 
-        List<Hecho> hechosFiltrados = filtrarHechos(hechos, criterios);
+        List<Hecho> hechosFiltrados = filtrador.filtrarHechos(hechos, criterios);
         assertEquals(2, hechosFiltrados.size());
     }
 
@@ -102,7 +95,7 @@ public class TestCriterios {
 
         List<Criterio> criterios = Arrays.asList(criterioFechaSuceso);
 
-        List<Hecho> hechosFiltrados = filtrarHechos(hechos, criterios);
+        List<Hecho> hechosFiltrados = filtrador.filtrarHechos(hechos, criterios);
         assertEquals(4, hechosFiltrados.size());
     }
 
@@ -114,7 +107,7 @@ public class TestCriterios {
 
         List<Criterio> criterios = Arrays.asList(criterioUbicacion, criterioCategoria);
 
-        List<Hecho> hechosFiltrados = filtrarHechos(hechos, criterios);
+        List<Hecho> hechosFiltrados = filtrador.filtrarHechos(hechos, criterios);
         assertEquals(1, hechosFiltrados.size());
     }
 
