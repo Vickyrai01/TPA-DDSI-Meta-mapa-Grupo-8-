@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class FuenteFactory {
     private static AtomicInteger contadorCSV= new AtomicInteger(0);
     private static AtomicInteger contadorAPI= new AtomicInteger(0);
-
+    private static AtomicInteger idContador = new AtomicInteger(1);
 
     public static Fuente crearFuente(String nombre, String link, TipoFuente tipo, TipoConexion strategy){
         StrategyTipoConexion strategyTipoConexion = crearStrategy(strategy);
@@ -16,6 +16,8 @@ public class FuenteFactory {
         fuente.setTipoFuente(tipo);
         fuente.setStrategyTipoConexion(strategyTipoConexion);
         fuente.setCodigoDeFuente(codigo);
+        int nuevoId = idContador.getAndIncrement();
+        fuente.setId(nuevoId);
         return fuente;
     }
 

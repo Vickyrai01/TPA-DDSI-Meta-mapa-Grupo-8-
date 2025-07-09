@@ -18,103 +18,46 @@ public class Coleccion {
         this.identificadorHandle = identificadorHandle;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     private int id;
+    public int getId() {return id;}
+    public void setId(int id) {this.id = id;}
 
     private String titulo;
+    public String getTitulo() {return titulo;}
+    public void setTitulo(String titulo) {this.titulo = titulo;}
 
     private List<Fuente> fuentes;
+    public List<Fuente> getFuentes() {return this.fuentes;}
+    public void setFuentes(List<Fuente> fuentes){this.fuentes = fuentes;}
 
-    public void agregarFuente (Fuente f)
-    {fuentes.add(f);}
+    public void agregarFuente (Fuente f) {fuentes.add(f);}
+    public void agregarFuentes (List<Fuente> listaFuentes){fuentes.addAll(listaFuentes);}
+    public void eliminarFuente (Fuente f) {fuentes.remove(f);}
 
-    public void agregarFuentes (List<Fuente> listaFuentes){
-        fuentes.addAll(listaFuentes);
-    }
-
-    public void eliminarFuente (Fuente f)
-    {fuentes.remove(f);}
-
-    public List<Fuente> getFuentes() {
-        return this.fuentes;
-    }
-
-    public void setFuentes(List<Fuente> fuentes){
-        this.fuentes = fuentes;
-    }
+    public List<String> extraerCodigosDeFuentes(List<Fuente> fuentes){return fuentes.stream().map(Fuente::getCodigoDeFuente).toList();}
 
     private String descripcionColeccion;
+    public String getDescripcionColeccion() {return descripcionColeccion;}
+    public void setDescripcionColeccion(String descripcionColeccion) {this.descripcionColeccion = descripcionColeccion;}
 
     private List<Criterio> criterioDePertenencia;
-
-    private List<Hecho> hechos;
-
-    private String identificadorHandle;
-
-
-    public String getTitulo() {
-        return titulo;
-    }
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
-    public String getDescripcionColeccion() {
-        return descripcionColeccion;
-    }
-
-    public void setDescripcionColeccion(String descripcionColeccion) {
-        this.descripcionColeccion = descripcionColeccion;
-    }
-
     public List<Criterio> getCriterioDePertenencia() {
         return criterioDePertenencia;
     }
+    public void setCriterioDePertenencia(List<Criterio> criterioDePertenencia) {this.criterioDePertenencia = criterioDePertenencia;}
 
-    public void setCriterioDePertenencia(List<Criterio> criterioDePertenencia) {
-        this.criterioDePertenencia = criterioDePertenencia;
-    }
+    public void agregarCriterio(Criterio criterio) {criterioDePertenencia.add(criterio);};
+    public void eliminarCriterio(Criterio criterio) {criterioDePertenencia.remove(criterio);};
 
-    public List<Hecho> getHechos() {
-        return hechos;
-    }
+    private List<Hecho> hechos;
+    public List<Hecho> getHechos() {return hechos;}
+    public void setHechos(List<Hecho> hechos) {this.hechos = hechos;}
+    public void agregarHechosDeFuentes(List<Hecho> hechos){this.hechos.addAll(hechos.stream().filter(unHecho -> unHecho.perteneceAFuente(extraerCodigosDeFuentes(this.fuentes))).toList());}
+    public void agregarHecho(Hecho hecho){this.hechos.add(hecho);}
 
-    public void setHechos(List<Hecho> hechos) {
-        this.hechos = hechos;
-    }
+    private String identificadorHandle;
+    public String getIdentificadorHandle() {return identificadorHandle;}
+    public void setIdentificadorHandle(String identificadorHandle) {this.identificadorHandle = identificadorHandle;}
 
-    public String getIdentificadorHandle() {
-        return identificadorHandle;
-    }
-
-    public void agregarCriterio(Criterio criterio)
-    {criterioDePertenencia.add(criterio);};
-
-    public void eliminarCriterio(Criterio criterio)
-    {criterioDePertenencia.remove(criterio);};
-
-    public void setIdentificadorHandle(String identificadorHandle) {
-        this.identificadorHandle = identificadorHandle;
-    }
-
-    public List<String> extraerCodigosDeFuentes(List<Fuente> fuentes){
-        return fuentes.stream().map(Fuente::getCodigoDeFuente).toList();
-    }
-
-    public void agregarHechosDeFuentes(List<Hecho> hechos){
-       this.hechos.addAll(hechos.stream().filter(unHecho -> unHecho.perteneceAFuente(extraerCodigosDeFuentes(this.fuentes))).toList());
-    }
-
-    public void agregarHecho(Hecho hecho){
-        {this.hechos.add(hecho);}
-    }
 
 }

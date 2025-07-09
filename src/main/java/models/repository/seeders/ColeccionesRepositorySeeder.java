@@ -1,6 +1,7 @@
 package models.repository.seeders;
 
 import models.entities.colecciones.Coleccion;
+import models.entities.colecciones.criterios.Criterio;
 import models.entities.fuentes.Fuente;
 import models.entities.hecho.Hecho;
 import models.repository.ColeccionesRepository;
@@ -9,9 +10,17 @@ import models.repository.HechosRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-
 public class ColeccionesRepositorySeeder {
     private static volatile ColeccionesRepositorySeeder instance;
+    private final ColeccionesRepository coleccionesRepository;
+    private final HechosRepository hechosRepository;
+    private final FuentesRepository fuentesRepository;
+
+    private ColeccionesRepositorySeeder() {
+        this.coleccionesRepository = ColeccionesRepository.getInstance();
+        this.hechosRepository = HechosRepository.getInstance();
+        this.fuentesRepository = FuentesRepository.getInstance();
+    }
 
     public static ColeccionesRepositorySeeder getInstance() {
         if (instance == null) {
@@ -23,46 +32,46 @@ public class ColeccionesRepositorySeeder {
         }
         return instance;
     }
-    HechosRepository hechosRepository = HechosRepository.getInstance();
 
-    //incendio, sin incidentes
-    Hecho hecho1 = hechosRepository.getHecho(1);
-    Hecho hecho3 = hechosRepository.getHecho(3);
+    public void cargarColeccionesRepositorySeeder() {
+        // Obtener hechos (validar que existan)
+        Hecho hecho1 = hechosRepository.getHecho(1);
+        Hecho hecho2 = hechosRepository.getHecho(2);
+        Hecho hecho3 = hechosRepository.getHecho(3);
+        Hecho hecho4 = hechosRepository.getHecho(4);
+        Hecho hecho5 = hechosRepository.getHecho(5);
 
-    //choque, sin incidente
-    Hecho hecho4 = hechosRepository.getHecho(4);
-    Hecho hecho2 = hechosRepository.getHecho(2);
-
-    //todos son sin victimas fatales
-    Hecho hecho5 = hechosRepository.getHecho(5);
-
-    List<Hecho> coleccionHechos1 = new ArrayList<>(List.of(hecho1, hecho3));
-    List<Hecho> coleccionHechos2 = new ArrayList<>(List.of(hecho4, hecho2));
-    List<Hecho> coleccionHechos3 = new ArrayList<>(List.of(hecho1, hecho3, hecho4, hecho2, hecho5));
-
-    FuentesRepository fuentesRepository = FuentesRepository.getInstance();
-    Fuente fuente1 = fuentesRepository.getFuente(1);
-    Fuente fuente2 = fuentesRepository.getFuente(2);
-    Fuente fuente3 = fuentesRepository.getFuente(3);
-
-    List<Fuente> fuentes3 = new ArrayList<>(List.of(fuente1, fuente2, fuente3));
-    List<Fuente> fuentes1 = List.of(fuente1);
-    List<Fuente> fuentes2 = List.of(fuente2);
-
-    ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();
-
-    Coleccion coleccion1 = new Coleccion(1, "Incendios", "Incendios de cualquier objeto", null,fuentes1, coleccionHechos1, null);
-    Coleccion coleccion2 = new Coleccion(2, "Choques", "Todos los choques",  null,fuentes2, coleccionHechos2, null);
-    Coleccion coleccion3 = new Coleccion(3, "Sin victimas fatales", "Accidentes de cualquier tipo sin accidentes", null, fuentes3, coleccionHechos3, null);
-
-    public void cargarColeccionesRepositorySeeder()
-    {
-        if (fuente1 == null || fuente2 == null || fuente3 == null) {
-            throw new IllegalStateException("Una o más fuentes no están cargadas en el repositorio");
+        if (hecho1 == null || hecho2 == null || hecho3 == null || hecho4 == null || hecho5 == null) {
+            throw new IllegalStateException("No se encontraron todos los hechos necesarios");
         }
+
+        // Obtener fuentes (validar que existan)
+        Fuente fuente1 = fuentesRepository.getFuente(1);
+        Fuente fuente2 = fuentesRepository.getFuente(2);
+        Fuente fuente3 = fuentesRepository.getFuente(3);
+
+        if (fuente1 == null || fuente2 == null || fuente3 == null) {
+            throw new IllegalStateException("No se encontraron todas las fuentes necesarias");
+        }
+
+        // Crear listas
+        List<Hecho> coleccionHechos1 = List.of(hecho1, hecho3);
+        List<Hecho> coleccionHechos2 = List.of(hecho4, hecho2);
+        List<Hecho> coleccionHechos3 = List.of(hecho1, hecho3, hecho4, hecho2, hecho5);
+
+        List<Fuente> fuentes1 = List.of(fuente1);
+        List<Fuente> fuentes2 = List.of(fuente2);
+        List<Fuente> fuentes3 = List.of(fuente1, fuente2, fuente3);
+
+        // Crear colecciones
+        List<Criterio> criterios = new ArrayList<>();
+        Coleccion coleccion1 = new Coleccion(1, "Incendios", "Incendios de cualquier objeto", criterios, fuentes1, coleccionHechos1, null);
+        Coleccion coleccion2 = new Coleccion(2, "Choques", "Todos los choques", criterios, fuentes2, coleccionHechos2, null);
+        Coleccion coleccion3 = new Coleccion(3, "Sin victimas fatales", "Accidentes de cualquier tipo sin accidentes", criterios, fuentes3, coleccionHechos3, null);
+
+        // Guardar colecciones
         coleccionesRepository.add(coleccion1);
         coleccionesRepository.add(coleccion2);
         coleccionesRepository.add(coleccion3);
     }
-
 }
