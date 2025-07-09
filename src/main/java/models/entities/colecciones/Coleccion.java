@@ -41,6 +41,51 @@ public class Coleccion {
     public void setDescripcionColeccion(String descripcionColeccion) {this.descripcionColeccion = descripcionColeccion;}
 
     private List<Criterio> criterioDePertenencia;
+
+
+    private List<Hecho> hechos;
+
+    private String identificadorHandle;
+
+    public ModoDeNavegacion modoDeNavegacion;
+
+    public AlgoritmoConsenso algoritmoConsenso = null;
+
+    public List<Hecho> hechosVisibles;
+
+
+
+    public void actualizarColeccionVisible(List<Fuente> fuentes, List<Hecho> hechos){
+        if(modoDeNavegacion == modoDeNavegacion.CURADA){
+            if(algoritmoConsenso==null){
+                hechosVisibles= hechos;
+            }else{
+                hechosVisibles= algoritmoConsenso.ejecutarAlgoritmo(fuentes,hechos);
+            }
+    }
+        else{
+            hechosVisibles=hechos;
+        }
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public String getDescripcionColeccion() {
+        return descripcionColeccion;
+    }
+
+    public void setDescripcionColeccion(String descripcionColeccion) {
+        this.descripcionColeccion = descripcionColeccion;
+    }
+
+
+
     public List<Criterio> getCriterioDePertenencia() {
         return criterioDePertenencia;
     }
