@@ -73,15 +73,58 @@ public class StrategyCSV implements StrategyTipoConexion {
         return listaHechos;
     }
 
-
-
     @Override
     public List<Hecho> agregarHecho(String fuenteBase,  Hecho hecho) { return null;
     }
 
     @Override
-    public List<Hecho> extraerHechosRecientes(String fuente, Integer tiempo){
-        return List.of();
+    public List<Hecho> extraerHechosRecientes(String fuenteBase){
+
+        Map<String, Hecho> hechos = new HashMap<>();
+
+        try (CSVReader reader = new CSVReader(new FileReader(fuenteBase))) {
+            String[] fila;
+            reader.readNext();
+
+            while ((fila = reader.readNext()) != null) {
+                if (fila.length != 6) {
+                    System.out.println("Línea ignorada: no tiene 6 columnas.");
+                    continue;
+                }
+
+                String titulo = fila[0].trim();
+                String descripcion = fila[1].trim();
+                String categoria = fila[2].trim();
+                Double latitud = Double.valueOf(fila[3].trim());
+                Double longitud = Double.valueOf(fila[4].trim());
+                LocalDate fecha = LocalDate.parse(fila[5].trim(), FORMATO_FECHA);
+
+                Coordenadas coordenadas = new Coordenadas(latitud, longitud);
+                Categoria categoria1 = new Categoria(categoria);
+
+
+
+                Hecho hecho = new Hecho(i, coordenadas, categoria1, null, null,
+                        null, Estado.ACEPTADO, null, LocalDate.now(),
+                        fecha, TipoFuente.ESTATICA, null, descripcion, titulo);
+
+
+                if (!hechosRepository.esHechoDuplicado(hecho))
+                {hechos.put(titulo, hecho);
+                    // hechosRepository.add(hecho);
+                    i++;}
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        List<Hecho> listaHechos = hechos.values()
+                .stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        return listaHechos;
     }
 }
 
