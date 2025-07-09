@@ -115,6 +115,4 @@ public class Coleccion {
         //this.fuente.extraerHechos(criterio).addAll(hechos); arreglar!! Porq ahora tenemos una lista de fuente.
     }
 
-
-
 }
