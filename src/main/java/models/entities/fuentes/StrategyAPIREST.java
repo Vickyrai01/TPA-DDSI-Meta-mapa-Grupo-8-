@@ -93,7 +93,7 @@ public class StrategyAPIREST implements StrategyTipoConexion {
     };
 
     @Override
-    public List<Hecho> extraerHechosRecientes(String fuente, Integer tiempo){
+    public List<Hecho> extraerHechosRecientes(String fuente){
         List<Hecho> hechosExtraidos = new ArrayList<>();
         WebClient clientUsers = WebClient.create(fuente);
 

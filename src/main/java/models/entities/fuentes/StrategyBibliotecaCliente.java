@@ -15,7 +15,7 @@ public class StrategyBibliotecaCliente implements StrategyTipoConexion {
     public List<Hecho> agregarHecho(String FuenteBase,  Hecho hecho) {return null;} //es un POST a la fuente
 
     @Override
-    public List<Hecho> extraerHechosRecientes(String fuente, Integer tiempo){
+    public List<Hecho> extraerHechosRecientes(String fuente){
         return null;
     }
 }
