@@ -21,6 +21,10 @@ public class ServicioDeAgregacion {
         }
     }
 
+    public List<Fuente> getFuentes() {
+        return fuentes;
+    }
+
     public static ServicioDeAgregacion getInstance() {
         if (instance == null) {
             synchronized (ServicioDeAgregacion.class) {
@@ -51,23 +55,24 @@ public class ServicioDeAgregacion {
         }
     }
 
-    private void agregarHechosAColecciones()
+    private void agregarHechosAColecciones(Coleccion coleccion)
     {
-        for (Coleccion coleccion : colecciones) {
             List<Criterio> criterios = coleccion.getCriterioDePertenencia();
             List<Hecho> hechosFiltrados = filtradorCriterios.filtrarHechos(hechosCargadosEnLaUltimaHora, criterios);
-            for(Hecho hecho: hechosFiltrados)
-            {
-                hechosRepository.add(hecho);
-                coleccion.agregarHecho(hecho);
+            for (Hecho hecho : hechosFiltrados) {
+                if (hecho.perteneceAFuente(coleccion.extraerCodigosDeFuentes(fuentes))) {
+                    coleccion.agregarHecho(hecho);
+                    hechosRepository.add(hecho);
+                }
             }
-        }
     }
 
     public void actualizarColecciones()
     {
         obtenerTodosLosHechosNuevos();
-        agregarHechosAColecciones();
+        for (Coleccion coleccion : colecciones) {
+            agregarHechosAColecciones(coleccion);
+        }
         hechosCargadosEnLaUltimaHora.clear();
     }
 

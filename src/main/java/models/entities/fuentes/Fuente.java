@@ -79,11 +79,11 @@ public class Fuente {
     }
 
     public List<Hecho> extraerHechos(List<Criterio> criterios){
-        return strategyTipoConexion.extraerHecho(criterios, link);
+        return strategyTipoConexion.extraerHecho(criterios, link, codigoDeFuente);
     };
 
     public List<Hecho> extraerHechosRecientes(){
-        return strategyTipoConexion.extraerHechosRecientes(link);
+        return strategyTipoConexion.extraerHechosRecientes(link, codigoDeFuente);
     };
 }
 

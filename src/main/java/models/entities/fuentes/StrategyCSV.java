@@ -25,7 +25,7 @@ public class StrategyCSV implements StrategyTipoConexion {
     int i = 5; //A SOLUCIONAR DSP!!
 
     @Override
-    public List<Hecho> extraerHecho(List<Criterio> criterio, String fuenteBase) {
+    public List<Hecho> extraerHecho(List<Criterio> criterio, String fuenteBase, String codigoFuente) {
         Map<String, Hecho> hechos = new HashMap<>();
 
         try (CSVReader reader = new CSVReader(new FileReader(fuenteBase))) {
@@ -57,12 +57,12 @@ public class StrategyCSV implements StrategyTipoConexion {
 
                 Hecho hecho = new Hecho(i, coordenadas, categoria1, null, null,
                         null, Estado.ACEPTADO, null, LocalDate.now(),
-                        fecha, TipoFuente.ESTATICA, null, descripcion, titulo);
+                        fecha, TipoFuente.ESTATICA, null, descripcion, titulo, codigoFuente);
 
 
                 if (filtradorCriterios.cumpleCriterios(hecho,criterio))
                 {hechos.put(titulo, hecho);
-                   // hechosRepository.add(hecho);
+                   hechosRepository.add(hecho);
                 i++;}
 
 
@@ -83,7 +83,7 @@ public class StrategyCSV implements StrategyTipoConexion {
     }
 
     @Override
-    public List<Hecho> extraerHechosRecientes(String fuenteBase){
+    public List<Hecho> extraerHechosRecientes(String fuenteBase,  String codigoFuente){
 
         Map<String, Hecho> hechos = new HashMap<>();
 
@@ -116,12 +116,12 @@ public class StrategyCSV implements StrategyTipoConexion {
 
                 Hecho hecho = new Hecho(i, coordenadas, categoria1, null, null,
                         null, Estado.ACEPTADO, null, LocalDate.now(),
-                        fecha, TipoFuente.ESTATICA, null, descripcion, titulo);
+                        fecha, TipoFuente.ESTATICA, null, descripcion, titulo, codigoFuente);
 
 
                 if (!hechosRepository.esHechoDuplicado(hecho))
                 {hechos.put(titulo, hecho);
-                    // hechosRepository.add(hecho);
+                    hechosRepository.add(hecho);
                     i++;}
 
             }

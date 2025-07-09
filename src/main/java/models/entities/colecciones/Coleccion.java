@@ -56,10 +56,8 @@ public class Coleccion {
 
     private List<Hecho> hechos;
 
-    public void agregarHecho(Hecho h)
-    {hechos.add(h);}
-
     private String identificadorHandle;
+
 
     public String getTitulo() {
         return titulo;
@@ -107,16 +105,16 @@ public class Coleccion {
         this.identificadorHandle = identificadorHandle;
     }
 
-    public boolean yaEstaEsteHecho(Hecho hecho) {
-
-        /// le pregunte a chati y me recomendo parallelstream() en vez de stream, la unica diferencia es que puede trabajar en paralelo, no se cual es mejor en este caso
-        /// PD: le acabo de preguntar cual es mejor y me dijo que el paralelo es mejor cuando tengamos muchos hechos (asi que supongo que elgimos nostros cual agarrar)
-        return hechos.stream().anyMatch(h -> h.getTitulo().equalsIgnoreCase(hecho.getTitulo()));
-        /// creo que deberia agregar un metodo en el hecho para poder hacer esto(me refiero al equals)
+    public List<String> extraerCodigosDeFuentes(List<Fuente> fuentes){
+        return fuentes.stream().map(Fuente::getCodigoDeFuente).toList();
     }
 
-    public void agregarHechosDeFuentes(Hecho hechos){
-       // this.hechos().add()
+    public void agregarHechosDeFuentes(List<Hecho> hechos){
+       this.hechos.addAll(hechos.stream().filter(unHecho -> unHecho.perteneceAFuente(extraerCodigosDeFuentes(this.fuentes))).toList());
+    }
+
+    public void agregarHecho(Hecho hecho){
+        {this.hechos.add(hecho);}
     }
 
 }
