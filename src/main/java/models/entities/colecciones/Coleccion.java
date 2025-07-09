@@ -60,6 +60,9 @@ public class Coleccion {
     public void setAlgoritmoConsenso(AlgoritmoConsenso algoritmoConsenso) {this.algoritmoConsenso = algoritmoConsenso;}
 
     public List<Hecho> hechosVisibles;
+
+    public TipoConsenso tipoConsenso;
+
     public List<Hecho> getHechosVisibles(){return hechosVisibles;}
 
     public void actualizarColeccionVisible(List<Fuente> fuentes, List<Hecho> hechos){
@@ -93,6 +96,7 @@ public class Coleccion {
     public void setHechos(List<Hecho> hechos) {this.hechos = hechos;}
     public void agregarHechosDeFuentes(List<Hecho> hechos){this.hechos.addAll(hechos.stream().filter(unHecho -> unHecho.perteneceAFuente(extraerCodigosDeFuentes(this.fuentes))).toList());}
     public void agregarHecho(Hecho hecho){this.hechos.add(hecho);}
+
 
     private String identificadorHandle;
     public String getIdentificadorHandle() {return identificadorHandle;}
