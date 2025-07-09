@@ -1,6 +1,7 @@
 package api.configs;
 
 import api.handlers.colecciones.GetColeccionHandler;
+import api.handlers.colecciones.GetHechosDeColeccionCurados;
 import api.handlers.colecciones.GetHechosDeColeccionesHandler;
 import api.handlers.hechos.PostHechoHandler;
 import api.handlers.solicitudesDeEliminacion.GetSolicitudHandler;
@@ -14,5 +15,6 @@ public class ApiMetaMapaConfig {
         app.post("/api/hechos/reportar", new PostHechoHandler());
         app.get("api/colecciones", new GetColeccionHandler());
         app.get("api/solicitudes", new GetSolicitudHandler()); //para prueba solo
+        app.get("/api/colecciones/{id}/{modoVisualizacion}/hechos", new GetHechosDeColeccionCurados());
     }
 }
