@@ -15,7 +15,7 @@ public class SchedulerActualizarVisibles {
 
     public void actualizarColeccion(){ //ver cuando se usa
         if(hayBajaCargaEnSistema()){
-            List<Fuente> fuentes= coleccion.getFuente();
+            List<Fuente> fuentes= coleccion.getFuentes();
             List<Hecho> hechos= coleccion.getHechos();
 
             coleccion.actualizarColeccionVisible(fuentes, hechos);
