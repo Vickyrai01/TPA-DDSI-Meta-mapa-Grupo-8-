@@ -14,12 +14,12 @@ import java.util.List;
 
 public class PatchAgregarFuentesColeccionHandler implements Handler
 {
-   /* private final ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();
-    private final FuentesRepository fuentesRepository = FuentesRepository.getInstance();*/
+   private final ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();
+    private final FuentesRepository fuentesRepository = FuentesRepository.getInstance();
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
-        /*int idColeccion = Integer.parseInt(context.pathParam("id"));
+        int idColeccion = Integer.parseInt(context.pathParam("id"));
         ActualizarFuentesColeccionDTO dto = context.bodyAsClass(ActualizarFuentesColeccionDTO.class);
 
         Coleccion coleccion = coleccionesRepository.getColeccion(idColeccion);
@@ -28,7 +28,7 @@ public class PatchAgregarFuentesColeccionHandler implements Handler
             return;
         }
 
-        List<Fuente> fuentesActuales = new ArrayList<>(coleccion.getFuente());
+        List<Fuente> fuentesActuales = new ArrayList<>(coleccion.getFuentes());
 
         for (Integer idFuente : dto.fuentes) {
             Fuente fuente = fuentesRepository.getFuente(idFuente);
@@ -42,7 +42,7 @@ public class PatchAgregarFuentesColeccionHandler implements Handler
             }
         }
 
-        context.status(200).result("Fuentes agregadas correctamente");*/
+        context.status(200).result("Fuentes agregadas correctamente");
     }
 }
 

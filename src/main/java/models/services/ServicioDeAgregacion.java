@@ -6,7 +6,6 @@ import models.entities.colecciones.criterios.FiltradorColecciones;
 import models.entities.fuentes.Fuente;
 import java.util.*;
 import models.entities.hecho.Hecho;
-import models.repository.ColeccionesRepository;
 import models.repository.HechosRepository;
 
 public class ServicioDeAgregacion {

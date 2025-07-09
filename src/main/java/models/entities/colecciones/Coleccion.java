@@ -8,11 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 public class Coleccion {
 
-    public Coleccion(int id, String titulo, String descripcionColeccion, List<Criterio> criterioDePertenencia,  List<Hecho> hechos, String identificadorHandle) {
+    public Coleccion(int id, String titulo, String descripcionColeccion, List<Criterio> criterioDePertenencia, List<Fuente> fuentes, List<Hecho> hechos, String identificadorHandle) {
         this.id = id;
         this.titulo = titulo;
         this.descripcionColeccion = descripcionColeccion;
         this.criterioDePertenencia = criterioDePertenencia;
+        this.fuentes = fuentes;
         this.hechos = hechos;
         this.identificadorHandle = identificadorHandle;
     }
@@ -28,6 +29,26 @@ public class Coleccion {
     private int id;
 
     private String titulo;
+
+    private List<Fuente> fuentes;
+
+    public void agregarFuente (Fuente f)
+    {fuentes.add(f);}
+
+    public void agregarFuentes (List<Fuente> listaFuentes){
+        fuentes.addAll(listaFuentes);
+    }
+
+    public void eliminarFuente (Fuente f)
+    {fuentes.remove(f);}
+
+    public List<Fuente> getFuentes() {
+        return this.fuentes;
+    }
+
+    public void setFuentes(List<Fuente> fuentes){
+        this.fuentes = fuentes;
+    }
 
     private String descripcionColeccion;
 
@@ -94,8 +115,8 @@ public class Coleccion {
         /// creo que deberia agregar un metodo en el hecho para poder hacer esto(me refiero al equals)
     }
 
-    public void agregarHechosDeFuente(Criterio criterio){
-        //this.fuente.extraerHechos(criterio).addAll(hechos); arreglar!! Porq ahora tenemos una lista de fuente.
+    public void agregarHechosDeFuentes(Hecho hechos){
+       // this.hechos().add()
     }
 
 }

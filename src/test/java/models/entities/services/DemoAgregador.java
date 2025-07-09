@@ -17,7 +17,7 @@ import java.util.List;
 
 public class DemoAgregador {
     public static void main(String[] args){
-        ServicioDeAgregacion servicioDeAgregacion = ServicioDeAgregacion.getInstance();
+       /* ServicioDeAgregacion servicioDeAgregacion = ServicioDeAgregacion.getInstance();
 
         Categoria categoria = new Categoria("Contaminación");
         CriterioCategoria criterioCategoria = new CriterioCategoria(categoria);
@@ -52,7 +52,7 @@ public class DemoAgregador {
         servicioDeAgregacion.agregarFuente(fuente3);
         servicioDeAgregacion.actualizarColecciones();
 
-        System.out.println("La cantidad de hechos que hay en la coleccion es: " + coleccion1.getHechos().size());
+        System.out.println("La cantidad de hechos que hay en la coleccion es: " + coleccion1.getHechos().size());*/
 
     }
 }
