@@ -8,47 +8,40 @@ import java.util.ArrayList;
 import java.util.List;
 public class Coleccion {
 
-    public Coleccion(int id, String titulo, String descripcionColeccion,List<Fuente> fuentes, List<Criterio> criterioDePertenencia,  List<Hecho> hechos, String identificadorHandle) {
+    public Coleccion(int id, String titulo, String descripcionColeccion, List<Criterio> criterioDePertenencia, List<Fuente> fuentes, List<Hecho> hechos, String identificadorHandle) {
         this.id = id;
         this.titulo = titulo;
         this.descripcionColeccion = descripcionColeccion;
         this.criterioDePertenencia = criterioDePertenencia;
-        this.fuente =  new ArrayList<>(fuentes);;
+        this.fuentes = fuentes;
         this.hechos = hechos;
         this.identificadorHandle = identificadorHandle;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     private int id;
+    public int getId() {return id;}
+    public void setId(int id) {this.id = id;}
 
     private String titulo;
+    public String getTitulo() {return titulo;}
+    public void setTitulo(String titulo) {this.titulo = titulo;}
+
+    private List<Fuente> fuentes;
+    public List<Fuente> getFuentes() {return this.fuentes;}
+    public void setFuentes(List<Fuente> fuentes){this.fuentes = fuentes;}
+
+    public void agregarFuente (Fuente f) {fuentes.add(f);}
+    public void agregarFuentes (List<Fuente> listaFuentes){fuentes.addAll(listaFuentes);}
+    public void eliminarFuente (Fuente f) {fuentes.remove(f);}
+
+    public List<String> extraerCodigosDeFuentes(List<Fuente> fuentes){return fuentes.stream().map(Fuente::getCodigoDeFuente).toList();}
 
     private String descripcionColeccion;
-
-    public List<Fuente> getFuente() {
-        return fuente;
-    }
-
-    public void setFuente(List<Fuente> fuente) {
-        this.fuente = fuente;
-    }
-
-    public void agregarFuente(Fuente f)
-    {this.fuente.add(f);}
-
-    public void eliminarFuente(Fuente f)
-    {this.fuente.remove(f);}
-
-    private List<Fuente> fuente;
+    public String getDescripcionColeccion() {return descripcionColeccion;}
+    public void setDescripcionColeccion(String descripcionColeccion) {this.descripcionColeccion = descripcionColeccion;}
 
     private List<Criterio> criterioDePertenencia;
+
 
     private List<Hecho> hechos;
 
@@ -91,46 +84,25 @@ public class Coleccion {
         this.descripcionColeccion = descripcionColeccion;
     }
 
+
+
     public List<Criterio> getCriterioDePertenencia() {
         return criterioDePertenencia;
     }
+    public void setCriterioDePertenencia(List<Criterio> criterioDePertenencia) {this.criterioDePertenencia = criterioDePertenencia;}
 
-    public void setCriterioDePertenencia(List<Criterio> criterioDePertenencia) {
-        this.criterioDePertenencia = criterioDePertenencia;
-    }
+    public void agregarCriterio(Criterio criterio) {criterioDePertenencia.add(criterio);};
+    public void eliminarCriterio(Criterio criterio) {criterioDePertenencia.remove(criterio);};
 
-    public List<Hecho> getHechos() {
-        return hechos;
-    }
+    private List<Hecho> hechos;
+    public List<Hecho> getHechos() {return hechos;}
+    public void setHechos(List<Hecho> hechos) {this.hechos = hechos;}
+    public void agregarHechosDeFuentes(List<Hecho> hechos){this.hechos.addAll(hechos.stream().filter(unHecho -> unHecho.perteneceAFuente(extraerCodigosDeFuentes(this.fuentes))).toList());}
+    public void agregarHecho(Hecho hecho){this.hechos.add(hecho);}
 
-    public void setHechos(List<Hecho> hechos) {
-        this.hechos = hechos;
-    }
+    private String identificadorHandle;
+    public String getIdentificadorHandle() {return identificadorHandle;}
+    public void setIdentificadorHandle(String identificadorHandle) {this.identificadorHandle = identificadorHandle;}
 
-    public String getIdentificadorHandle() {
-        return identificadorHandle;
-    }
-
-    public void agregarCriterio(Criterio criterio)
-    {criterioDePertenencia.add(criterio);};
-
-    public void eliminarCriterio(Criterio criterio)
-    {criterioDePertenencia.remove(criterio);};
-
-    public void setIdentificadorHandle(String identificadorHandle) {
-        this.identificadorHandle = identificadorHandle;
-    }
-
-    public boolean yaEstaEsteHecho(Hecho hecho) {
-
-        /// le pregunte a chati y me recomendo parallelstream() en vez de stream, la unica diferencia es que puede trabajar en paralelo, no se cual es mejor en este caso
-        /// PD: le acabo de preguntar cual es mejor y me dijo que el paralelo es mejor cuando tengamos muchos hechos (asi que supongo que elgimos nostros cual agarrar)
-        return hechos.stream().anyMatch(h -> h.getTitulo().equalsIgnoreCase(hecho.getTitulo()));
-        /// creo que deberia agregar un metodo en el hecho para poder hacer esto(me refiero al equals)
-    }
-
-    public void agregarHechosDeFuente(Criterio criterio){
-        //this.fuente.extraerHechos(criterio).addAll(hechos); arreglar!! Porq ahora tenemos una lista de fuente.
-    }
 
 }

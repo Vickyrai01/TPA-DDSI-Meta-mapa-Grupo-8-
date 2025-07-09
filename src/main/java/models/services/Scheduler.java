@@ -1,13 +1,14 @@
-package api.handlers;
+package models.services;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class Demo {
+public class Scheduler {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private boolean enEjecucion = false;
+    private final ServicioDeAgregacion servicioDeAgregacion = ServicioDeAgregacion.getInstance();
 
-    public Demo(boolean enEjecucion) {
+    public Scheduler(boolean enEjecucion) {
         this.enEjecucion = enEjecucion;
     }
 
@@ -24,7 +25,7 @@ public class Demo {
     }
 
     private void verificarNuevosHechos() {
-         System.out.println("hola");
+         servicioDeAgregacion.actualizarColecciones();
     }
 
     public void detenerScheduler() {

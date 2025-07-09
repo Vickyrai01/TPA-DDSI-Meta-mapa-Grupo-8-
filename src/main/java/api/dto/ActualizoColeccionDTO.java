@@ -1,4 +1,4 @@
-package api.DTO;
+package api.dto;
 
 import models.entities.colecciones.criterios.Criterio;
 import models.entities.fuentes.Fuente;

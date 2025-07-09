@@ -46,4 +46,8 @@ public class HechosRepository {
         hechos.add(h);
     }
 
+    public Boolean esHechoDuplicado(Hecho hecho){
+        return this.hechos.stream()
+                .anyMatch(h -> h.getTitulo().equalsIgnoreCase(hecho.getTitulo()));
+    }
 }

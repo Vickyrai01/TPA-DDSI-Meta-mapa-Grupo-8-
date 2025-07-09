@@ -1,6 +1,6 @@
 package api.handlers.colecciones;
 
-import api.DTO.ActualizoColeccionDTO;
+import api.dto.ActualizoColeccionDTO;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import models.entities.colecciones.Coleccion;
@@ -43,7 +43,7 @@ public class PatchColeccionHandler implements Handler {
         }
 
         if (dto.fuente != null) {
-            coleccion.setFuente(dto.fuente);
+          coleccion.setFuentes(dto.fuente);
         }
 
         if (dto .criterioDePertenencia != null) {
@@ -54,7 +54,7 @@ public class PatchColeccionHandler implements Handler {
             coleccion.setIdentificadorHandle(dto.identificadorHandle);
         }
 
-        //si quiero agregar hechos tengo qeu copiar los previos dado qeu sobrescribe
+        //si quiero agregar hechos tengo que copiar los previos dado que sobrescribe
         if (dto.hechos != null) {
             List<Hecho> hechos = new ArrayList<>();
             for (Integer idHecho : dto.hechos) {

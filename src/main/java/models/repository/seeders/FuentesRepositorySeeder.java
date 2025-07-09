@@ -24,15 +24,11 @@ public class FuentesRepositorySeeder {
 
     FuentesRepository fuentesRepository = FuentesRepository.getInstance();
 
-    StrategyCSV strategyCSV = new StrategyCSV(); //no se si esta bien :P
-    StrategyAPIREST strategyAPIREST = new StrategyAPIREST();
-
-    Fuente fuente1 = new Fuente(1, "CSV incendio", null, TipoFuente.ESTATICA, strategyCSV);
-    Fuente fuente2 = new Fuente(2, "API choque", null, TipoFuente.PROXY, strategyAPIREST);
-    Fuente fuente3 = new Fuente(3, "Contribucion", null, TipoFuente.DINAMICA, null);
-
     public void cargarFuentesSeeder()
     {
+        Fuente fuente1 = FuenteFactory.crearFuente("CSV Incendio", null,  TipoFuente.ESTATICA, TipoConexion.CSV);
+        Fuente fuente2 = FuenteFactory.crearFuente("API Choque", null,  TipoFuente.PROXY, TipoConexion.APIREST);
+        Fuente fuente3 = FuenteFactory.crearFuente("Contribucion", null,  TipoFuente.DINAMICA, TipoConexion.APIREST);
         fuentesRepository.add(fuente1);
         fuentesRepository.add(fuente2);
         fuentesRepository.add(fuente3);

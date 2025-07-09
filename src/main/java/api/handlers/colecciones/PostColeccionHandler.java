@@ -1,6 +1,6 @@
 package api.handlers.colecciones;
 
-import api.DTO.ColeccionResponse;
+import api.dto.ColeccionDTO;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import models.entities.colecciones.Coleccion;
@@ -21,7 +21,7 @@ public class PostColeccionHandler implements Handler {
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
-        ColeccionResponse dto  = context.bodyAsClass(ColeccionResponse.class);
+        ColeccionDTO dto  = context.bodyAsClass(ColeccionDTO.class);
         System.out.println("Creando coleccion: " + dto.getTitulo());
 
         List<Hecho> hechosAsociados = new ArrayList<>();
@@ -50,8 +50,9 @@ public class PostColeccionHandler implements Handler {
         Coleccion coleccion = new Coleccion(
                 dto.getId(),
                 dto.getTitulo(),
-                dto.getDescripcionColeccion(), fuentes,
+                dto.getDescripcionColeccion(),
                 dto.getCriterioDePertenencia(),
+                fuentes,
                 hechosAsociados,
                 dto.getIdentificadorHandle()
         );
