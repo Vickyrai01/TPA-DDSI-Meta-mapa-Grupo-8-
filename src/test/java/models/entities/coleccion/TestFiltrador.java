@@ -40,29 +40,29 @@ public class TestFiltrador {
     @Mock
     private Fuente fuente;
 
-    Coleccion coleccion1 = new Coleccion(1, "Todos", "Todos los hechos que existen", Collections.singletonList(fuente), null, hechos1, null);
+    Coleccion coleccion1 = new Coleccion(1, "Todos", "Todos los hechos que existen", null, Collections.singletonList(fuente), hechos1, null);
 
 
     Hecho hecho1 = new Hecho(1, coordenadas1, categoriaIncendio, null,
             null, null, Estado.ACEPTADO, null,
             LocalDate.now().minusDays(2), LocalDate.now().minusDays(3),
-            TipoFuente.ESTATICA, null, "No hubo heridos, el perro salto por la ventana, fue por una sartén", "Incendio en casa");
+            TipoFuente.ESTATICA, null, "No hubo heridos, el perro salto por la ventana, fue por una sartén", "Incendio en casa", null);
     Hecho hecho2 = new Hecho(2, coordenadas2, categoriaChoque, null,
             null, null, Estado.ACEPTADO, null,
             LocalDate.now().minusDays(2), LocalDate.now().minusDays(3),
-            TipoFuente.ESTATICA, null, "Un perro cruzo por la calle y frenó de golpe, todos a salvo.", "Choque entre moto y gol");
+            TipoFuente.ESTATICA, null, "Un perro cruzo por la calle y frenó de golpe, todos a salvo.", "Choque entre moto y gol", null);
     Hecho hecho3 = new Hecho(3, coordenadas3, categoriaIncendio, null,
             null, null, Estado.ACEPTADO, null,
             LocalDate.now().minusDays(1), LocalDate.now().minusDays(2),
-            TipoFuente.ESTATICA, null, "Causa desconocida", "Departamento en un edicio");
+            TipoFuente.ESTATICA, null, "Causa desconocida", "Departamento en un edicio", null);
     Hecho hecho4 = new Hecho(4, coordenadas4, categoriaChoque, null,
             null, null, Estado.ACEPTADO, null,
             LocalDate.now().minusDays(1), LocalDate.now().minusDays(2),
-            TipoFuente.ESTATICA, null, "Parecía que el conductor iba borracho, se llevó puesto una maceta que estaba en la calle", "Choque con maceta");
+            TipoFuente.ESTATICA, null, "Parecía que el conductor iba borracho, se llevó puesto una maceta que estaba en la calle", "Choque con maceta", null);
     Hecho hecho5 = new Hecho(5, coordenadas1, categoriaRobo, null,
             null, null, Estado.ACEPTADO, null,
             LocalDate.now().minusDays(5), LocalDate.now().minusDays(6),
-            TipoFuente.ESTATICA, null, "Se robó unas manzanas y bolsas", "Hurto en una verdulería");
+            TipoFuente.ESTATICA, null, "Se robó unas manzanas y bolsas", "Hurto en una verdulería", null);
 
     void inicializarColeccion (){
              coleccion1.agregarHecho(hecho1);

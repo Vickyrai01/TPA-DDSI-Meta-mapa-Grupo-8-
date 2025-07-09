@@ -8,8 +8,7 @@ import java.util.List;
 
 public class Fuente {
 
-    public Fuente(int id, String nombre, String link, TipoFuente tipoFuente, StrategyTipoConexion strategyTipoConexion) {
-        this.id = id;
+    public Fuente(String nombre, String link, TipoFuente tipoFuente, StrategyTipoConexion strategyTipoConexion) {
         this.nombre = nombre;
         this.link = link;
         this.tipoFuente = tipoFuente;
@@ -33,6 +32,16 @@ public class Fuente {
     private String link;
 
     private TipoFuente tipoFuente;
+
+    private String codigoDeFuente;
+
+    public String getCodigoDeFuente() {
+        return codigoDeFuente;
+    }
+
+    public String setCodigoDeFuente(String codigoDeFuente) {
+        return this.codigoDeFuente = codigoDeFuente;
+    }
 
     @JsonIgnore
     private StrategyTipoConexion strategyTipoConexion;
@@ -70,7 +79,11 @@ public class Fuente {
     }
 
     public List<Hecho> extraerHechos(List<Criterio> criterios){
-        return strategyTipoConexion.extraerHecho(criterios, link);
+        return strategyTipoConexion.extraerHecho(criterios, link, codigoDeFuente);
+    };
+
+    public List<Hecho> extraerHechosRecientes(){
+        return strategyTipoConexion.extraerHechosRecientes(link, codigoDeFuente);
     };
 }
 

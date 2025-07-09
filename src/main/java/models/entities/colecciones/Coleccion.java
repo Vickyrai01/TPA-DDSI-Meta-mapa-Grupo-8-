@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 public class Coleccion {
 
-    public Coleccion(int id, String titulo, String descripcionColeccion,List<Fuente> fuentes, List<Criterio> criterioDePertenencia,  List<Hecho> hechos, String identificadorHandle) {
+    public Coleccion(int id, String titulo, String descripcionColeccion, List<Criterio> criterioDePertenencia, List<Fuente> fuentes, List<Hecho> hechos, String identificadorHandle) {
         this.id = id;
         this.titulo = titulo;
         this.descripcionColeccion = descripcionColeccion;
         this.criterioDePertenencia = criterioDePertenencia;
-        this.fuente =  new ArrayList<>(fuentes);;
+        this.fuentes = fuentes;
         this.hechos = hechos;
         this.identificadorHandle = identificadorHandle;
     }
@@ -30,32 +30,34 @@ public class Coleccion {
 
     private String titulo;
 
+    private List<Fuente> fuentes;
+
+    public void agregarFuente (Fuente f)
+    {fuentes.add(f);}
+
+    public void agregarFuentes (List<Fuente> listaFuentes){
+        fuentes.addAll(listaFuentes);
+    }
+
+    public void eliminarFuente (Fuente f)
+    {fuentes.remove(f);}
+
+    public List<Fuente> getFuentes() {
+        return this.fuentes;
+    }
+
+    public void setFuentes(List<Fuente> fuentes){
+        this.fuentes = fuentes;
+    }
+
     private String descripcionColeccion;
-
-    public List<Fuente> getFuente() {
-        return fuente;
-    }
-
-    public void setFuente(List<Fuente> fuente) {
-        this.fuente = fuente;
-    }
-
-    public void agregarFuente(Fuente f)
-    {this.fuente.add(f);}
-
-    public void eliminarFuente(Fuente f)
-    {this.fuente.remove(f);}
-
-    private List<Fuente> fuente;
 
     private List<Criterio> criterioDePertenencia;
 
     private List<Hecho> hechos;
 
-    public void agregarHecho(Hecho h)
-    {hechos.add(h);}
-
     private String identificadorHandle;
+
 
     public String getTitulo() {
         return titulo;
@@ -103,18 +105,16 @@ public class Coleccion {
         this.identificadorHandle = identificadorHandle;
     }
 
-    public boolean yaEstaEsteHecho(Hecho hecho) {
-
-        /// le pregunte a chati y me recomendo parallelstream() en vez de stream, la unica diferencia es que puede trabajar en paralelo, no se cual es mejor en este caso
-        /// PD: le acabo de preguntar cual es mejor y me dijo que el paralelo es mejor cuando tengamos muchos hechos (asi que supongo que elgimos nostros cual agarrar)
-        return hechos.stream().anyMatch(h -> h.getTitulo().equalsIgnoreCase(hecho.getTitulo()));
-        /// creo que deberia agregar un metodo en el hecho para poder hacer esto(me refiero al equals)
+    public List<String> extraerCodigosDeFuentes(List<Fuente> fuentes){
+        return fuentes.stream().map(Fuente::getCodigoDeFuente).toList();
     }
 
-    public void agregarHechosDeFuente(Criterio criterio){
-        //this.fuente.extraerHechos(criterio).addAll(hechos); arreglar!! Porq ahora tenemos una lista de fuente.
+    public void agregarHechosDeFuentes(List<Hecho> hechos){
+       this.hechos.addAll(hechos.stream().filter(unHecho -> unHecho.perteneceAFuente(extraerCodigosDeFuentes(this.fuentes))).toList());
     }
 
-
+    public void agregarHecho(Hecho hecho){
+        {this.hechos.add(hecho);}
+    }
 
 }

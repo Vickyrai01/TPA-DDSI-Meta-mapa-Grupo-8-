@@ -8,8 +8,9 @@ import java.util.Map;
 
 public interface StrategyTipoConexion {
 
-    public List<Hecho> extraerHecho(List<Criterio> criterio, String fuente);
+    public List<Hecho> extraerHecho(List<Criterio> criterio, String fuente, String codigoFuente);
 
     public List<Hecho> agregarHecho(String FuenteBase, Hecho hecho);
 
+    public List<Hecho> extraerHechosRecientes(String fuente, String codigoFuente);
 }

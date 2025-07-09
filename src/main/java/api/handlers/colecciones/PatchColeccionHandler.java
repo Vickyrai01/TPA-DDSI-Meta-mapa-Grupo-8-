@@ -42,9 +42,9 @@ public class PatchColeccionHandler implements Handler {
             coleccion.setDescripcionColeccion(dto.descripcionColeccion);
         }
 
-        if (dto.fuente != null) {
-            coleccion.setFuente(dto.fuente);
-        }
+        //if (dto.fuente != null) {
+          //  coleccion.setFuente(dto.fuente);
+        //}
 
         if (dto .criterioDePertenencia != null) {
             coleccion.setCriterioDePertenencia((List<Criterio>) dto.criterioDePertenencia);

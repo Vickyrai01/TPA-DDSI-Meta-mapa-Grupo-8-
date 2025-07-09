@@ -12,7 +12,7 @@ import java.util.List;
 public class CSVTest {
     public static void main(String[] args) {
         StrategyCSV strategy = new StrategyCSV();
-        Fuente fuente = new Fuente(3, "Desastres Sanitarios", "desastres_sanitarios_contaminacion_argentina.csv", TipoFuente.ESTATICA, strategy);
+        Fuente fuente = FuenteFactory.crearFuente("Desastres Sanitarios", "desastres_sanitarios_contaminacion_argentina.csv", TipoFuente.ESTATICA, TipoConexion.CSV);
         HechosRepository hechosRepository = HechosRepository.getInstance();
 
 
