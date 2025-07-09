@@ -58,8 +58,18 @@ public class SolicitudDeEliminacion implements DetectorDeSpam {
         this.fechaDeRevision = fechaDeRevision;
     }
 
+    private StrategyEstadoDeSolicitud strategyEstadoDeSolicitud = new StrategyEstadoDeSolicitud(this) {
+    };
+    public StrategyEstadoDeSolicitud getStrategyEstadoDeSolicitud() {
+        return strategyEstadoDeSolicitud;
+    }
+    public void setStrategyEstadoDeSolicitud(StrategyEstadoDeSolicitud strategyEstadoDeSolicitud) {
+        this.strategyEstadoDeSolicitud = strategyEstadoDeSolicitud;
+    }
+
 
     public void aceptarSolicitud(Hecho hecho) {
+        strategyEstadoDeSolicitud.aceptarSolicitud(hecho, this);
         this.aceptada = true;
         hecho.desactivarse();
     }
