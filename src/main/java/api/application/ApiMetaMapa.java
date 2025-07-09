@@ -24,7 +24,7 @@ public class ApiMetaMapa {
         coleccionesRepositorySeeder.cargarColeccionesRepositorySeeder();
 
         Javalin app = Javalin.create()
-                .get("/", ctx -> ctx.result("API META MAPA ACTIVA"))
+                .get("/", ctx -> ctx.result("API MetaMapa ACTIVA"))
                 .start(8081);
 
         ApiMetaMapaConfig.configurarEndpoints(app);
