@@ -57,7 +57,7 @@ public class StrategyCSV implements StrategyTipoConexion {
 
                 if (filtradorCriterios.cumpleCriterios(hecho,criterio))
                 {hechos.put(titulo, hecho);
-                    hechosRepository.add(hecho);
+                   // hechosRepository.add(hecho);
                 i++;}
 
 
@@ -77,6 +77,11 @@ public class StrategyCSV implements StrategyTipoConexion {
 
     @Override
     public List<Hecho> agregarHecho(String fuenteBase,  Hecho hecho) { return null;
+    }
+
+    @Override
+    public List<Hecho> extraerHechosRecientes(String fuente, Integer tiempo){
+        return List.of();
     }
 }
 
