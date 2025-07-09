@@ -1,5 +1,6 @@
 package models.entities.colecciones.criterios;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import models.entities.hecho.Etiqueta;
 import models.entities.hecho.Hecho;
 

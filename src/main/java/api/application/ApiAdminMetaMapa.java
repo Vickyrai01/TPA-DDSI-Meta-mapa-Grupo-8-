@@ -22,9 +22,9 @@ public class ApiAdminMetaMapa {
         ColeccionesRepositorySeeder coleccionesRepositorySeeder = ColeccionesRepositorySeeder.getInstance();
         coleccionesRepositorySeeder.cargarColeccionesRepositorySeeder();
 
-        
+
         Javalin app = Javalin.create()
-                .get("/", ctx -> ctx.result("API ADMINISTRATIVA META MAPA ACTIVA"))
+                .get("/", ctx -> ctx.result("API ADMINISTRATIVA MetaMapa ACTIVA"))
                 .start(8080);
 
         ApiAdminMetaMapaConfig.configurarEndpoints(app);

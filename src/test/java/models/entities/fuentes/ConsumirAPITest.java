@@ -12,7 +12,6 @@ import java.util.List;
 public class ConsumirAPITest {
     public static void main(String[] args) throws Exception {
 
-        StrategyAPIREST strategyAPIREST = new StrategyAPIREST();
         Fuente fuente = FuenteFactory.crearFuente("API de ejemplo","https://684b1942165d05c5d35b843b.mockapi.io/metamapa/hechos",TipoFuente.PROXY, TipoConexion.APIREST);
         HechosRepository hechosRepository = HechosRepository.getInstance();
 
