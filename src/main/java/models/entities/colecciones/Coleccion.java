@@ -44,6 +44,12 @@ public class Coleccion {
     public void setDescripcionColeccion(String descripcionColeccion) {this.descripcionColeccion = descripcionColeccion;}
 
     private List<Criterio> criterioDePertenencia;
+    public List<Criterio> getCriterioDePertenencia() {
+        return criterioDePertenencia;
+    }
+    public void setCriterioDePertenencia(List<Criterio> criterioDePertenencia) {this.criterioDePertenencia = criterioDePertenencia;}
+    public void agregarCriterio(Criterio criterio) {criterioDePertenencia.add(criterio);};
+    public void eliminarCriterio(Criterio criterio) {criterioDePertenencia.remove(criterio);};
 
     public ModoDeNavegacion modoDeNavegacion;
 
@@ -53,9 +59,8 @@ public class Coleccion {
           case TipoConsenso.ABSOLUTO -> this.setAlgoritmoConsenso(new StrategyAbsoluta());
           case TipoConsenso.MAYORIA_SIMPLE -> this.setAlgoritmoConsenso(new StrategyMayoriaSimple());
           case TipoConsenso.MULTIPLES_MENCIONES -> this.setAlgoritmoConsenso(new StrategyMultiplesMenciones());
-      }
+       }
     }
-
     public AlgoritmoConsenso getAlgoritmoConsenso() {return algoritmoConsenso;}
     public void setAlgoritmoConsenso(AlgoritmoConsenso algoritmoConsenso) {this.algoritmoConsenso = algoritmoConsenso;}
 
@@ -80,13 +85,7 @@ public class Coleccion {
         actualizarColeccionVisible(fuentes, hechos);
     }
 
-    public List<Criterio> getCriterioDePertenencia() {
-        return criterioDePertenencia;
-    }
-    public void setCriterioDePertenencia(List<Criterio> criterioDePertenencia) {this.criterioDePertenencia = criterioDePertenencia;}
 
-    public void agregarCriterio(Criterio criterio) {criterioDePertenencia.add(criterio);};
-    public void eliminarCriterio(Criterio criterio) {criterioDePertenencia.remove(criterio);};
 
     private List<Hecho> hechos;
     public List<Hecho> getHechos() {return hechos;}
