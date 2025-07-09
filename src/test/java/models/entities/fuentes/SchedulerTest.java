@@ -1,8 +1,8 @@
 package models.entities.fuentes;
 
-import api.handlers.Demo;
+import models.services.Scheduler;
 
 public class SchedulerTest {
     public static void main(String[] args) throws Exception {
-        Demo scheduler = new Demo(false);
+        Scheduler scheduler = new Scheduler(false);
         scheduler.iniciarScheduler();}}

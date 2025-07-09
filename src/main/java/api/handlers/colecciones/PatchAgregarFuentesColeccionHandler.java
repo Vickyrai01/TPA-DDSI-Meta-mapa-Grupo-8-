@@ -1,6 +1,6 @@
 package api.handlers.colecciones;
 
-import api.DTO.ActualizarFuentesColeccionDTO;
+import api.dto.ActualizarFuentesColeccionDTO;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import models.entities.colecciones.Coleccion;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public class PatchAgregarFuentesColeccionHandler implements Handler
 {
-    private final ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();
+   private final ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();
     private final FuentesRepository fuentesRepository = FuentesRepository.getInstance();
 
     @Override
@@ -28,7 +28,7 @@ public class PatchAgregarFuentesColeccionHandler implements Handler
             return;
         }
 
-        List<Fuente> fuentesActuales = new ArrayList<>(coleccion.getFuente());
+        List<Fuente> fuentesActuales = new ArrayList<>(coleccion.getFuentes());
 
         for (Integer idFuente : dto.fuentes) {
             Fuente fuente = fuentesRepository.getFuente(idFuente);

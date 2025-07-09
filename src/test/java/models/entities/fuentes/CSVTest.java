@@ -1,6 +1,9 @@
 package models.entities.fuentes;
 
+import models.entities.colecciones.criterios.Criterio;
+import models.entities.colecciones.criterios.CriterioNombre;
 import models.entities.hecho.Hecho;
+import models.repository.HechosRepository;
 
 import java.io.File;
 import java.util.List;
@@ -8,22 +11,28 @@ import java.util.List;
 
 public class CSVTest {
     public static void main(String[] args) {
-
         StrategyCSV strategy = new StrategyCSV();
+        Fuente fuente = FuenteFactory.crearFuente("Desastres Sanitarios", "desastres_sanitarios_contaminacion_argentina.csv", TipoFuente.ESTATICA, TipoConexion.CSV);
+        HechosRepository hechosRepository = HechosRepository.getInstance();
 
-        String ruta = "desastres_sanitarios_contaminacion_argentina.csv";
+
+        //filtra por emergencia y buenos aires el criterio :)
+        CriterioNombre criterioNombre1 = new CriterioNombre("Buenos Aires");
+        CriterioNombre criterioNombre2 = new CriterioNombre("emergencia");
+        List<Criterio> criterios = List.of(criterioNombre1, criterioNombre2);
 
         System.out.println("*********DEMO CSV: SOLO MUESTRA LOS PRIMEROS 15**************");
+        System.out.println("Hay " + hechosRepository.obtenerTodas().size() + " hechos en el repositorio");
         System.out.println("Buscando archivo...");
-        File archivo = new File(ruta);
+        File archivo = new File(fuente.getLink());
         if (!archivo.exists()) {
-            System.out.println("...Archivo no encontrado: " + ruta);
+            System.out.println("...Archivo no encontrado: " + fuente.getLink());
             return;
         }
         else {System.out.println("...¡Se encontro el archivo!");}
         System.out.println( "                          ");
 
-        List<Hecho> todosLosHechos = strategy.extraerHecho(null,ruta);
+        List<Hecho> todosLosHechos = fuente.extraerHechos(criterios);
 
         if (todosLosHechos.isEmpty()) {
             System.out.println("ERROR: No se cargaron hechos. Verifica el archivo CSV.");
@@ -31,8 +40,11 @@ public class CSVTest {
         }
 
         List<Hecho> primeros15 = todosLosHechos.stream().limit(15).toList();
+        System.out.println("Hay " + hechosRepository.obtenerTodas().size() + " Hechos en el repositorio");
+        System.out.println("Ejemplo de 15 hechos encontrados:");
+        System.out.println("************************************************************");
 
-        System.out.println("Primeros 15 hechos encontrados:");
         primeros15.forEach(System.out::println);
+
     }
 }

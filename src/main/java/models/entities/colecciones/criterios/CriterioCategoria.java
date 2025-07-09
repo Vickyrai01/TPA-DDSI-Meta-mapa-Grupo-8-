@@ -1,5 +1,6 @@
 package models.entities.colecciones.criterios;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import models.entities.hecho.Categoria;
 import models.entities.hecho.Hecho;
 
@@ -11,10 +12,17 @@ public class CriterioCategoria implements Criterio{
     }
 
     //TENER EN CUENTA QUE TIENE QUE SER EL MISMO OBJETO EN ESPECIFICO!!
+    //POR AHORA: ES CON COMPARACIÓN DE STRING :)
+    @JsonSerialize(as = String.class)
     @Override
     public boolean cumpleCriterio(Hecho hecho) {
-        return hecho.getCategoria().equals(categoria);
-    }
+        if (hecho.getCategoria() == null || hecho.getCategoria().getNombre() == null) {
+            throw new IllegalStateException("El hecho tiene una categoría nula o sin nombre");
+        }
+        if (categoria == null || categoria.getNombre() == null) {
+            throw new IllegalStateException("El criterio tiene una categoría nula o sin nombre");
+        }
 
+        return hecho.getCategoria().getNombre().toLowerCase().contains(categoria.getNombre().toLowerCase());
 
-}
+}}

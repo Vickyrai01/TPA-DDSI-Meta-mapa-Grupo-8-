@@ -1,6 +1,5 @@
 package models.entities.coleccion;
 
-import com.fasterxml.jackson.databind.ser.BasicSerializerFactory;
 import models.entities.colecciones.criterios.*;
 import models.entities.fuentes.TipoFuente;
 import models.entities.hecho.Categoria;
@@ -8,18 +7,18 @@ import models.entities.hecho.Coordenadas;
 import models.entities.hecho.Estado;
 import models.entities.hecho.Hecho;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestCriterios {
+
+    final FiltradorCriterios filtradorCriterios = FiltradorCriterios.getInstance();
 
     List<Hecho> hechos = new ArrayList<>();
 
@@ -40,34 +39,28 @@ public class TestCriterios {
         Hecho hecho1 = new Hecho(1, coordenadas1, categoriaIncendio, null,
                 null, null, Estado.ACEPTADO, null,
                 LocalDate.now().minusDays(2), LocalDate.now().minusDays(3),
-                TipoFuente.ESTATICA, null, "No hubo heridos, el perro salto por la ventana, fue por una sartén", "Incendio en casa");
+                TipoFuente.ESTATICA, null, "No hubo heridos, el perro salto por la ventana, fue por una sartén", "Incendio en casa", null);
         Hecho hecho2 = new Hecho(2, coordenadas2, categoriaChoque, null,
                 null, null, Estado.ACEPTADO, null,
                 LocalDate.now().minusDays(2), LocalDate.now().minusDays(3),
-                TipoFuente.ESTATICA, null, "Un perro cruzo por la calle y frenó de golpe, todos a salvo.", "Choque entre moto y gol");
+                TipoFuente.ESTATICA, null, "Un perro cruzo por la calle y frenó de golpe, todos a salvo.", "Choque entre moto y gol", null);
         Hecho hecho3 = new Hecho(3, coordenadas3, categoriaIncendio, null,
                 null, null, Estado.ACEPTADO, null,
                 LocalDate.now().minusDays(1), LocalDate.now().minusDays(2),
-                TipoFuente.ESTATICA, null, "Causa desconocida", "Departamento en un edicio");
+                TipoFuente.ESTATICA, null, "Causa desconocida", "Departamento en un edicio", null);
         Hecho hecho4 = new Hecho(4, coordenadas4, categoriaChoque, null,
                 null, null, Estado.ACEPTADO, null,
                 LocalDate.now().minusDays(1), LocalDate.now().minusDays(2),
-                TipoFuente.ESTATICA, null, "Parecía que el conductor iba borracho, se llevó puesto una maceta que estaba en la calle", "Choque con maceta");
+                TipoFuente.ESTATICA, null, "Parecía que el conductor iba borracho, se llevó puesto una maceta que estaba en la calle", "Choque con maceta", null);
         Hecho hecho5 = new Hecho(5, coordenadas1, categoriaRobo, null,
                 null, null, Estado.ACEPTADO, null,
                 LocalDate.now().minusDays(5), LocalDate.now().minusDays(6),
-                TipoFuente.ESTATICA, null, "Se robó unas manzanas y bolsas", "Hurto en una verdulería");
+                TipoFuente.ESTATICA, null, "Se robó unas manzanas y bolsas", "Hurto en una verdulería", null);
 
         hechos.addAll(List.of(hecho1, hecho2, hecho3, hecho4, hecho5));
 
     }
 
-
-    List<Hecho> filtrarHechos(List<Hecho> hechos, List<Criterio> criterios) {
-        return hechos.stream()
-                .filter(hecho -> criterios.stream().allMatch(criterio -> criterio.cumpleCriterio(hecho)))
-                .collect(Collectors.toList());
-    }
 
 
     @Test
@@ -77,9 +70,13 @@ public class TestCriterios {
         CriterioFechaSuceso criterioFechaSuceso = new CriterioFechaSuceso( LocalDate.now().minusDays(2),  LocalDate.now());
 
         List<Criterio> criterios = Arrays.asList(filtroPerro, criterioFechaSuceso);
+        List<Hecho> hechosFiltrados = new ArrayList<>();
 
-        List<Hecho> hechosFiltrados = filtrarHechos(hechos, criterios);
+        for (Hecho hecho : hechos) {
+            if(filtradorCriterios.cumpleCriterios(hecho, criterios))
+            {hechosFiltrados.add(hecho);}
 
+        }
         assertEquals( 0, hechosFiltrados.size());
     }
 
@@ -90,8 +87,13 @@ public class TestCriterios {
         CriterioFechaSuceso criterioFechaSuceso = new CriterioFechaSuceso(LocalDate.now().minusDays(4),  LocalDate.now());
 
         List<Criterio> criterios = Arrays.asList(filtroPerro, criterioFechaSuceso);
+        List<Hecho> hechosFiltrados = new ArrayList<>();
 
-        List<Hecho> hechosFiltrados = filtrarHechos(hechos, criterios);
+        for (Hecho hecho : hechos) {
+            if(filtradorCriterios.cumpleCriterios(hecho, criterios))
+            {hechosFiltrados.add(hecho);}
+
+        }
         assertEquals(2, hechosFiltrados.size());
     }
 
@@ -101,8 +103,13 @@ public class TestCriterios {
         CriterioFechaSuceso criterioFechaSuceso = new CriterioFechaSuceso(LocalDate.now().minusDays(5),  LocalDate.now());
 
         List<Criterio> criterios = Arrays.asList(criterioFechaSuceso);
+        List<Hecho> hechosFiltrados = new ArrayList<>();
 
-        List<Hecho> hechosFiltrados = filtrarHechos(hechos, criterios);
+        for (Hecho hecho : hechos) {
+            if(filtradorCriterios.cumpleCriterios(hecho, criterios))
+            {hechosFiltrados.add(hecho);}
+
+        }
         assertEquals(4, hechosFiltrados.size());
     }
 
@@ -114,7 +121,13 @@ public class TestCriterios {
 
         List<Criterio> criterios = Arrays.asList(criterioUbicacion, criterioCategoria);
 
-        List<Hecho> hechosFiltrados = filtrarHechos(hechos, criterios);
+        List<Hecho> hechosFiltrados = new ArrayList<>();
+
+        for (Hecho hecho : hechos) {
+            if(filtradorCriterios.cumpleCriterios(hecho, criterios))
+            {hechosFiltrados.add(hecho);}
+
+        }
         assertEquals(1, hechosFiltrados.size());
     }
 

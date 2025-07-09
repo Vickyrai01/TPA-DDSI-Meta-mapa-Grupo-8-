@@ -5,37 +5,33 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class Coordenadas {
-    public Double getLongitud() {
-        return longitud;
+    private Double latitud;
+    public Double getLatitud() {
+        return latitud;
     }
-
     public void setLatitud(Double latitud) {
         this.latitud = latitud;
     }
 
-    public Double getLatitud() {
-        return latitud;
+    private Double longitud;
+    public Double getLongitud() {
+        return longitud;
     }
-
-    private Double latitud;
-
     public void setLongitud(Double longitud) {
         this.longitud = longitud;
     }
-
-    private Double longitud;
 
     public Coordenadas(Double latitud, Double longitud) {
         this.latitud = latitud;
         this.longitud = longitud;
     }
+    public Coordenadas() {}
 
     public void cambiarUbicacion(Double latitud, Double longitud){
         this.latitud = latitud;
         this.longitud = longitud;
     }
 
-    public Coordenadas() {}
     public String toString(){
         return "(Latitud: " + latitud + "° Longitud: " + longitud + "°)";
     }
