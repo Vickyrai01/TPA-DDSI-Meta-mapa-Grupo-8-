@@ -25,14 +25,14 @@ public class HechoTest {
                 null, null,
                 LocalDate.now().minusDays(5), LocalDate.now().minusDays(6),
                 null,
-                etiquetas, null,null);
+                etiquetas, null,null, null);
         this.hecho2 = new Hecho(5, null, null,
                 null,
                 null, null,
                 null, null,
                 LocalDate.now().minusDays(9), LocalDate.now().minusDays(6),
                 null,
-                etiquetas, null,null);
+                etiquetas, null,null, null);
     }
 
     @Test
