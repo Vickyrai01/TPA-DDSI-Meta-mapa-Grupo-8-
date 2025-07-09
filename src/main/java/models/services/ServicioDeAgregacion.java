@@ -10,9 +10,9 @@ import models.repository.ColeccionesRepository;
 import models.repository.HechosRepository;
 
 public class ServicioDeAgregacion {
-    private List<Fuente> fuentes; // Es una lista con todas las fuentes de donde va a extraer los hechos
-    private List<Coleccion> colecciones; // Una lista con todas las colecciones que hay
-    private List<Hecho> hechosCargadosEnLaUltimaHora;
+    private List<Fuente> fuentes = new ArrayList<>(); // Es una lista con todas las fuentes de donde va a extraer los hechos
+    private List<Coleccion> colecciones = new ArrayList<>(); // Una lista con todas las colecciones que hay
+    private List<Hecho> hechosCargadosEnLaUltimaHora = new ArrayList<>();
 
     private static volatile ServicioDeAgregacion instance;
 
@@ -37,11 +37,11 @@ public class ServicioDeAgregacion {
 
     HechosRepository hechosRepository = HechosRepository.getInstance();
 
-    private void agregarColeccion(Coleccion nuevaColeccion){
+    public void agregarColeccion(Coleccion nuevaColeccion){
         this.colecciones.add(nuevaColeccion);
     }
 
-    private void agregarFuente(Fuente nuevaFuente){
+    public void agregarFuente(Fuente nuevaFuente){
         this.fuentes.add(nuevaFuente);
     }
 

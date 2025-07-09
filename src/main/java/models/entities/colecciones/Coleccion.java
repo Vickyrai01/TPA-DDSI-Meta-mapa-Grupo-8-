@@ -8,12 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 public class Coleccion {
 
-    public Coleccion(int id, String titulo, String descripcionColeccion,List<Fuente> fuentes, List<Criterio> criterioDePertenencia,  List<Hecho> hechos, String identificadorHandle) {
+    public Coleccion(int id, String titulo, String descripcionColeccion, List<Criterio> criterioDePertenencia,  List<Hecho> hechos, String identificadorHandle) {
         this.id = id;
         this.titulo = titulo;
         this.descripcionColeccion = descripcionColeccion;
         this.criterioDePertenencia = criterioDePertenencia;
-        this.fuente =  new ArrayList<>(fuentes);;
         this.hechos = hechos;
         this.identificadorHandle = identificadorHandle;
     }
@@ -31,22 +30,6 @@ public class Coleccion {
     private String titulo;
 
     private String descripcionColeccion;
-
-    public List<Fuente> getFuente() {
-        return fuente;
-    }
-
-    public void setFuente(List<Fuente> fuente) {
-        this.fuente = fuente;
-    }
-
-    public void agregarFuente(Fuente f)
-    {this.fuente.add(f);}
-
-    public void eliminarFuente(Fuente f)
-    {this.fuente.remove(f);}
-
-    private List<Fuente> fuente;
 
     private List<Criterio> criterioDePertenencia;
 
