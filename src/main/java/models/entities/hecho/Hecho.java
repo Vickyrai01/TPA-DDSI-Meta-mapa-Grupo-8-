@@ -44,13 +44,15 @@ public class Hecho {
 
     private Coordenadas ubicacion;
 
+    private String codigoDeFuente;
+
     public Hecho(Integer id, Coordenadas ubicacion, Categoria categoria,
                  List<SugerenciaDeCambio> sugerenciaDeCambio,
                  LocalDate ultimaFechaModificacion, List<String> multimedia,
                  Estado estado, Contribuyente contribuyente,
                  LocalDate fechaCarga, LocalDate fechaSuceso,
                  TipoFuente fuenteDeOrigen,
-                 List<Etiqueta> etiquetas, String descripcion, String titulo) {
+                 List<Etiqueta> etiquetas, String descripcion, String titulo,String codigoDeFuente) {
         this.id = id;
         this.ubicacion = ubicacion;
         this.categoria = categoria;
@@ -65,6 +67,7 @@ public class Hecho {
         this.etiquetas = etiquetas;
         this.descripcion = descripcion;
         this.titulo = titulo;
+        this.codigoDeFuente = codigoDeFuente;
     }
 
     public Hecho(){}
@@ -95,6 +98,10 @@ public class Hecho {
 
     public List<Etiqueta> getEtiquetas() {
         return etiquetas;
+    }
+
+    public String getCodigoDeFuente() {
+        return codigoDeFuente;
     }
 
     public void setEtiquetas(List<Etiqueta> etiquetas) {
@@ -203,6 +210,11 @@ public class Hecho {
 
     public void desactivarse(){
         this.setEstado(Estado.INACTIVO);
+    }
+
+
+    public boolean perteneceAFuente(List<String> listaFuentes){ //Recibe los IDs de las fuentes
+        return listaFuentes.contains(this.codigoDeFuente);
     }
 
 

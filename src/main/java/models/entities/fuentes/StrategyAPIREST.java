@@ -24,7 +24,7 @@ public class StrategyAPIREST implements StrategyTipoConexion {
     HechosRepository hechosRepository = HechosRepository.getInstance();
 
     @Override
-    public List<Hecho> extraerHecho(List<Criterio> criterios, String fuente){
+    public List<Hecho> extraerHecho(List<Criterio> criterios, String fuente, String codigoFuente){
         List<Hecho> hechosExtraidos = new ArrayList<>();
         WebClient clientUsers = WebClient.create(fuente);
 
@@ -68,10 +68,12 @@ public class StrategyAPIREST implements StrategyTipoConexion {
                         TipoFuente.PROXY,
                         null,
                         hechoResponse.getDescripcion(),
-                        hechoResponse.getTitulo()
+                        hechoResponse.getTitulo(),
+                        codigoFuente
+
                 );
                 if (filtradorCriterios.cumpleCriterios(nuevoHecho, criterios)){
-                    //hechosExtraidos.add(nuevoHecho);
+                    hechosExtraidos.add(nuevoHecho);
                     hechosRepository.add(nuevoHecho);
                     System.out.println("Hecho: " + nuevoHecho);
                 }
@@ -93,7 +95,7 @@ public class StrategyAPIREST implements StrategyTipoConexion {
     };
 
     @Override
-    public List<Hecho> extraerHechosRecientes(String fuente){
+    public List<Hecho> extraerHechosRecientes(String fuente,  String codigoFuente){
         List<Hecho> hechosExtraidos = new ArrayList<>();
         WebClient clientUsers = WebClient.create(fuente);
 
@@ -137,11 +139,12 @@ public class StrategyAPIREST implements StrategyTipoConexion {
                         TipoFuente.PROXY,
                         null,
                         hechoResponse.getDescripcion(),
-                        hechoResponse.getTitulo()
+                        hechoResponse.getTitulo(),
+                        codigoFuente
                 );
                 if (!hechosRepository.esHechoDuplicado(nuevoHecho)){
                     hechosExtraidos.add(nuevoHecho);
-                    //hechosRepository.add(nuevoHecho);
+                    hechosRepository.add(nuevoHecho);
                     System.out.println("Hecho: " + nuevoHecho);
                 }
 
