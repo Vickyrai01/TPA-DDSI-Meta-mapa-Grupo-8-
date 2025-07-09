@@ -13,13 +13,13 @@ import java.util.List;
 
 
 public class PatchEliminarFuentesColeccionHandler implements Handler {
-    /*
+
     private final ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();
     private final FuentesRepository fuentesRepository = FuentesRepository.getInstance();
-*/
+
     @Override
     public void handle(@NotNull Context context) throws Exception {
-        /*
+
         int idColeccion = Integer.parseInt(context.pathParam("id"));
         ActualizarFuentesColeccionDTO dto = context.bodyAsClass(ActualizarFuentesColeccionDTO.class);
 
@@ -29,7 +29,7 @@ public class PatchEliminarFuentesColeccionHandler implements Handler {
             return;
         }
 
-        List<Fuente> fuentesActuales = coleccion.getFuente();
+        List<Fuente> fuentesActuales = coleccion.getFuentes();
         for (Integer idFuente : dto.fuentes) {
             Fuente fuente = fuentesRepository.getFuente(idFuente);
             if (fuente != null) {
@@ -41,7 +41,7 @@ public class PatchEliminarFuentesColeccionHandler implements Handler {
         }
 
         context.status(200).result("Fuentes quitadas correctamente");
-        */
+
 
     }
 }
