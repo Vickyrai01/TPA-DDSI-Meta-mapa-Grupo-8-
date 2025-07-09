@@ -15,10 +15,6 @@ public class HechoDTO {
     public String getDescripcion() {return descripcion;}
     public void setDescripcion(String descripcion) {this.descripcion = descripcion;}
 
-    private LocalDate fechaCarga;
-    public LocalDate getFechaCarga() {return fechaCarga;}
-    public void setFechaCarga(LocalDate fechaCarga) {this.fechaCarga = fechaCarga;}
-
     private LocalDate fechaSuceso;
     public LocalDate getFechaSuceso() {return fechaSuceso;}
     public void setFechaSuceso(LocalDate fechaSuceso) {this.fechaSuceso = fechaSuceso;}
@@ -30,4 +26,5 @@ public class HechoDTO {
     private Double longitud;
     public Double getLongitud() {return longitud;}
     public void setLongitud(Double longitud) {this.longitud = longitud;}
+
 }
