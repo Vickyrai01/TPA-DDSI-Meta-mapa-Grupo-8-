@@ -40,7 +40,7 @@ public class TestFiltrador {
     @Mock
     private Fuente fuente;
 
-    Coleccion coleccion1 = new Coleccion(1, "Todos", "Todos los hechos que existen", Collections.singletonList(fuente), null, hechos1, null);
+    Coleccion coleccion1 = new Coleccion(1, "Todos", "Todos los hechos que existen", null, hechos1, null);
 
 
     Hecho hecho1 = new Hecho(1, coordenadas1, categoriaIncendio, null,
