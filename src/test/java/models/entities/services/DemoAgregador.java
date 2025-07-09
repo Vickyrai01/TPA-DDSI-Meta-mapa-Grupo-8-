@@ -72,7 +72,5 @@ public class DemoAgregador {
 
      System.out.println("La cantidad de hechos que hay en la coleccion es: " + coleccion1.getHechos().size());
      System.out.println("La cantidad de hechos que hay en la coleccion es: " + coleccion2.getHechos().size());
-
-
     }
 }
