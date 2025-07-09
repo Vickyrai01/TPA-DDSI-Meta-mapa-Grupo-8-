@@ -5,7 +5,7 @@ import models.entities.hecho.Hecho;
 
 import java.util.List;
 
-public class AlgortimoScheduler {
+public class SchedulerActualizarVisibles {
     public Coleccion coleccion;
 
     public boolean hayBajaCargaEnSistema(){ //suposición
@@ -18,7 +18,7 @@ public class AlgortimoScheduler {
             List<Fuente> fuentes= coleccion.getFuente();
             List<Hecho> hechos= coleccion.getHechos();
 
-            coleccion.ejecitarAlgoritmo(fuentes, hechos);
+            coleccion.actualizarColeccionVisible(fuentes, hechos);
         }
     }
 }
