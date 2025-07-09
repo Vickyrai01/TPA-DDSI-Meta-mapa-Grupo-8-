@@ -60,7 +60,7 @@ public class Coleccion {
     public void setAlgoritmoConsenso(AlgoritmoConsenso algoritmoConsenso) {this.algoritmoConsenso = algoritmoConsenso;}
 
     public List<Hecho> hechosVisibles;
-
+    public List<Hecho> getHechosVisibles(){return hechosVisibles;}
 
     public void actualizarColeccionVisible(List<Fuente> fuentes, List<Hecho> hechos){
         if(modoDeNavegacion == modoDeNavegacion.CURADA){
@@ -73,6 +73,11 @@ public class Coleccion {
         else{
             hechosVisibles=hechos;
         }
+    }
+
+    public void modificarModoNavegacion(ModoDeNavegacion modoDeNavegacion){
+        this.modoDeNavegacion=modoDeNavegacion;
+        actualizarColeccionVisible(fuentes, hechos);
     }
 
     public List<Criterio> getCriterioDePertenencia() {
@@ -92,6 +97,4 @@ public class Coleccion {
     private String identificadorHandle;
     public String getIdentificadorHandle() {return identificadorHandle;}
     public void setIdentificadorHandle(String identificadorHandle) {this.identificadorHandle = identificadorHandle;}
-
-
 }
