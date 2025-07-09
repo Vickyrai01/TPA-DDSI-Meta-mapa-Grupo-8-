@@ -8,8 +8,7 @@ import models.entities.colecciones.criterios.FiltradorCriterios;
 import models.entities.hecho.Coordenadas;
 import models.entities.hecho.Estado;
 import models.entities.hecho.Hecho;
-import api.DTO.HechoResponse;
-import models.repository.ColeccionesRepository;
+import api.dto.HechoDTO;
 import models.repository.HechosRepository;
 import org.apache.cxf.jaxrs.client.WebClient;
 
@@ -47,9 +46,9 @@ public class StrategyAPIREST implements StrategyTipoConexion {
                 throw new RuntimeException("Error en la llamada a /api/user: " + responseBody);
             }
 
-            HechoResponse[] hechos = objectMapper.readValue(responseBody, HechoResponse[].class);
+            HechoDTO[] hechos = objectMapper.readValue(responseBody, HechoDTO[].class);
 
-            for (HechoResponse hechoResponse : hechos) {
+            for (HechoDTO hechoResponse : hechos) {
                 Coordenadas coordenada = new Coordenadas(
                         hechoResponse.getLatitud(),
                         hechoResponse.getLongitud()
@@ -118,9 +117,9 @@ public class StrategyAPIREST implements StrategyTipoConexion {
                 throw new RuntimeException("Error en la llamada a /api/user: " + responseBody);
             }
 
-            HechoResponse[] hechos = objectMapper.readValue(responseBody, HechoResponse[].class);
+            HechoDTO[] hechos = objectMapper.readValue(responseBody, HechoDTO[].class);
 
-            for (HechoResponse hechoResponse : hechos) {
+            for (HechoDTO hechoResponse : hechos) {
                 Coordenadas coordenada = new Coordenadas(
                         hechoResponse.getLatitud(),
                         hechoResponse.getLongitud()

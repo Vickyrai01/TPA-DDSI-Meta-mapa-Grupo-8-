@@ -16,36 +16,6 @@ import java.util.List;
 
 public class Hecho {
 
-    private Integer id;
-
-    private String titulo;
-
-    private String descripcion;
-
-    private List<Etiqueta> etiquetas;
-
-    private TipoFuente fuenteDeOrigen;
-
-    private LocalDate fechaCarga;
-
-    private LocalDate fechaSuceso;
-
-    private Contribuyente contribuyente;
-
-    private Estado estado;
-
-    private List<String> multimedia;
-
-    private LocalDate ultimaFechaModificacion;
-
-    private List<SugerenciaDeCambio> sugerenciaDeCambio;
-
-    private Categoria categoria;
-
-    private Coordenadas ubicacion;
-
-    private String codigoDeFuente;
-
     public Hecho(Integer id, Coordenadas ubicacion, Categoria categoria,
                  List<SugerenciaDeCambio> sugerenciaDeCambio,
                  LocalDate ultimaFechaModificacion, List<String> multimedia,
@@ -70,123 +40,124 @@ public class Hecho {
         this.codigoDeFuente = codigoDeFuente;
     }
 
-    public Hecho(){}
-
+    private Integer id;
     public Integer getId() {
         return id;
     }
-
     public void setId(Integer id) {
         this.id = id;
     }
 
+    private String titulo;
     public String getTitulo() {
         return titulo;
     }
-
     public void setTitulo(String titulo) {
         this.titulo = titulo;
     }
 
+    private String descripcion;
     public String getDescripcion() {
         return descripcion;
     }
-
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
 
+    private List<Etiqueta> etiquetas;
     public List<Etiqueta> getEtiquetas() {
         return etiquetas;
     }
-
-    public String getCodigoDeFuente() {
-        return codigoDeFuente;
-    }
-
     public void setEtiquetas(List<Etiqueta> etiquetas) {
         this.etiquetas = etiquetas;
     }
 
+    private TipoFuente fuenteDeOrigen;
     public TipoFuente getFuenteDeOrigen() {
         return fuenteDeOrigen;
     }
-
     public void setFuenteDeOrigen(TipoFuente fuenteDeOrigen) {
         this.fuenteDeOrigen = fuenteDeOrigen;
     }
 
+    private LocalDate fechaCarga;
     public LocalDate getFechaCarga() {
         return fechaCarga;
     }
-
     public void setFechaCarga(LocalDate fechaCarga) {
         this.fechaCarga = fechaCarga;
     }
 
+    private LocalDate fechaSuceso;
     public LocalDate getFechaSuceso() {
         return fechaSuceso;
     }
-
     public void setFechaSuceso(LocalDate fechaSuceso) {
         this.fechaSuceso = fechaSuceso;
     }
 
+    private Contribuyente contribuyente;
     public Contribuyente getContribuyente() {
         return contribuyente;
     }
-
     public void setContribuyente(Contribuyente contribuyente) {
         this.contribuyente = contribuyente;
     }
 
+    private Estado estado;
     public Estado getEstado() {
         return estado;
     }
-
     public void setEstado(Estado estado) {
         this.estado = estado;
     }
 
+    private List<String> multimedia;
     public List<String> getMultimedia() {
         return multimedia;
     }
-
     public void setMultimedia(List<String> multimedia) {
         this.multimedia = multimedia;
     }
 
+    private LocalDate ultimaFechaModificacion;
     public LocalDate getUltimaFechaModificacion() {
         return ultimaFechaModificacion;
     }
-
     public void setUltimaFechaModificacion(LocalDate ultimaFechaModificacion) {
         this.ultimaFechaModificacion = ultimaFechaModificacion;
     }
 
+    private List<SugerenciaDeCambio> sugerenciaDeCambio;
     public List<SugerenciaDeCambio> getSugerenciaDeCambio() {
         return sugerenciaDeCambio;
     }
-
     public void setSugerenciaDeCambio(List<SugerenciaDeCambio> sugerenciaDeCambio) {
         this.sugerenciaDeCambio = sugerenciaDeCambio;
     }
 
+    private Categoria categoria;
     public Categoria getCategoria() {
         return categoria;
     }
-
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
     }
 
+    private Coordenadas ubicacion;
     public Coordenadas getUbicacion() {
         return ubicacion;
     }
-
     public void setUbicacion(Coordenadas ubicacion) {
         this.ubicacion = ubicacion;
     }
+
+    private String codigoDeFuente;
+    public String getCodigoDeFuente() {
+        return codigoDeFuente;
+    }
+
+    public Hecho(){}
 
     @Override
     public String toString() {

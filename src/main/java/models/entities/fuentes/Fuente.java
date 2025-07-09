@@ -17,63 +17,52 @@ public class Fuente {
 
     public  Fuente(){}
 
+    private int id;
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
     }
 
-    private int id;
 
     private String nombre;
+    public String getNombre() {
+        return nombre;
+    }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
     private String link;
+    public String getLink() {
+        return link;
+    }
+    public void setLink(String link) {
+        this.link = link;
+    }
 
     private TipoFuente tipoFuente;
+    public TipoFuente getTipoFuente() {
+        return tipoFuente;
+    }
+    public void setTipoFuente(TipoFuente tipoFuente) {
+        this.tipoFuente = tipoFuente;
+    }
 
     private String codigoDeFuente;
-
     public String getCodigoDeFuente() {
         return codigoDeFuente;
     }
-
     public String setCodigoDeFuente(String codigoDeFuente) {
         return this.codigoDeFuente = codigoDeFuente;
     }
 
     @JsonIgnore
     private StrategyTipoConexion strategyTipoConexion;
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
-
-    public TipoFuente getTipoFuente() {
-        return tipoFuente;
-    }
-
-    public void setTipoFuente(TipoFuente tipoFuente) {
-        this.tipoFuente = tipoFuente;
-    }
-
     public StrategyTipoConexion getStrategyTipoConexion() {
         return strategyTipoConexion;
     }
-
     public void setStrategyTipoConexion(StrategyTipoConexion strategyTipoConexion) {
         this.strategyTipoConexion = strategyTipoConexion;
     }

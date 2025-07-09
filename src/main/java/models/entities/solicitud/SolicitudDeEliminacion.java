@@ -9,25 +9,6 @@ import models.entities.solicitud.DetectorDeSpam;
 import java.time.LocalDateTime;
 
 public class SolicitudDeEliminacion implements DetectorDeSpam {
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    private Integer id;
-
-    private Hecho hecho;
-
-    private String descripcion;
-
-    private Boolean aceptada;
-
-    private LocalDateTime fechaDeRevision;
-
     public SolicitudDeEliminacion(Integer id, Hecho hecho, String descripcion, Boolean aceptada, LocalDateTime fechaDeRevision) {
         this.id = id;
         this.hecho = hecho;
@@ -35,41 +16,48 @@ public class SolicitudDeEliminacion implements DetectorDeSpam {
         this.aceptada = aceptada;
         this.fechaDeRevision = fechaDeRevision;
     }
+    public SolicitudDeEliminacion() {}
 
-    public SolicitudDeEliminacion()
-    {}
+    private Integer id;
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
+    private Hecho hecho;
     public Hecho getHecho() {
         return hecho;
     }
-
     public void setHecho(Hecho hecho) {
         this.hecho = hecho;
     }
 
+    private String descripcion;
     public String getDescripcion() {
         return descripcion;
     }
-
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
 
+    private Boolean aceptada;
     public Boolean getAceptada() {
         return aceptada;
     }
-
     public void setAceptada(Boolean aceptada) {
         this.aceptada = aceptada;
     }
 
+    private LocalDateTime fechaDeRevision;
     public LocalDateTime getFechaDeRevision() {
         return fechaDeRevision;
     }
-
     public void setFechaDeRevision(LocalDateTime fechaDeRevision) {
         this.fechaDeRevision = fechaDeRevision;
     }
+
 
     public void aceptarSolicitud(Hecho hecho) {
         this.aceptada = true;

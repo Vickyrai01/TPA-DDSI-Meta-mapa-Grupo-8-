@@ -1,6 +1,6 @@
 package api.handlers.colecciones;
 
-import api.DTO.ActualizarFuentesColeccionDTO;
+import api.dto.ActualizarFuentesColeccionDTO;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import models.entities.colecciones.Coleccion;
