@@ -42,17 +42,10 @@ public class PatchColeccionHandler implements Handler {
             coleccion.setDescripcionColeccion(dto.descripcionColeccion);
         }
 
-        if (dto.fuente != null) {
-          coleccion.setFuentes(dto.fuente);
-        }
-
         if (dto .criterioDePertenencia != null) {
             coleccion.setCriterioDePertenencia((List<Criterio>) dto.criterioDePertenencia);
         }
 
-        if (dto.identificadorHandle != null) {
-            coleccion.setIdentificadorHandle(dto.identificadorHandle);
-        }
 
         //si quiero agregar hechos tengo que copiar los previos dado que sobrescribe
         if (dto.hechos != null) {
