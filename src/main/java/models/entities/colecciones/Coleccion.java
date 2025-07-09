@@ -60,11 +60,19 @@ public class Coleccion {
 
     public List<Hecho> hechosVisibles;
 
-    public void ejecitarAlgoritmo(List<Fuente> fuentes, List<Hecho> hechos){
 
-        if(algoritmoConsenso==null){hechosVisibles= hechos;}
 
-        hechosVisibles= algoritmoConsenso.ejecutarAlgoritmo(fuentes,hechos);
+    public void actualizarColeccionVisible(List<Fuente> fuentes, List<Hecho> hechos){
+        if(modoDeNavegacion == modoDeNavegacion.CURADA){
+            if(algoritmoConsenso==null){
+                hechosVisibles= hechos;
+            }else{
+                hechosVisibles= algoritmoConsenso.ejecutarAlgoritmo(fuentes,hechos);
+            }
+    }
+        else{
+            hechosVisibles=hechos;
+        }
     }
 
     public String getTitulo() {
