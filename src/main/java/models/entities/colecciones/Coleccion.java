@@ -15,7 +15,10 @@ public class Coleccion {
         this.criterioDePertenencia = criterioDePertenencia;
         this.fuentes = fuentes;
         this.hechos = hechos;
+        this.hechosVisibles = new ArrayList<>();
         this.identificadorHandle = identificadorHandle;
+        this.modoDeNavegacion=ModoDeNavegacion.IRRESTRICTO;
+        this.algoritmoConsenso=null;
     }
 
     private int id;
@@ -41,14 +44,22 @@ public class Coleccion {
     public void setDescripcionColeccion(String descripcionColeccion) {this.descripcionColeccion = descripcionColeccion;}
 
     private List<Criterio> criterioDePertenencia;
-    
 
     public ModoDeNavegacion modoDeNavegacion;
 
     public AlgoritmoConsenso algoritmoConsenso = null;
+    public void cambiarAlgoritmoConsenso(TipoConsenso algoritmoConsenso){
+      switch (algoritmoConsenso){
+          case TipoConsenso.ABSOLUTO -> this.setAlgoritmoConsenso(new StrategyAbsoluta());
+          case TipoConsenso.MAYORIA_SIMPLE -> this.setAlgoritmoConsenso(new StrategyMayoriaSimple());
+          case TipoConsenso.MULTIPLES_MENCIONES -> this.setAlgoritmoConsenso(new StrategyMultiplesMenciones());
+      }
+    }
+
+    public AlgoritmoConsenso getAlgoritmoConsenso() {return algoritmoConsenso;}
+    public void setAlgoritmoConsenso(AlgoritmoConsenso algoritmoConsenso) {this.algoritmoConsenso = algoritmoConsenso;}
 
     public List<Hecho> hechosVisibles;
-
 
 
     public void actualizarColeccionVisible(List<Fuente> fuentes, List<Hecho> hechos){
@@ -58,7 +69,7 @@ public class Coleccion {
             }else{
                 hechosVisibles= algoritmoConsenso.ejecutarAlgoritmo(fuentes,hechos);
             }
-    }
+        }
         else{
             hechosVisibles=hechos;
         }

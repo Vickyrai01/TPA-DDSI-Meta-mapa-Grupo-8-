@@ -24,5 +24,6 @@ public class ApiAdminMetaMapaConfig {
         app.get("/api/solicitudes/{id}", new GetSolicitudIdHandler());
         app.patch("api/colecciones/{id}/fuentes/agregar", new PatchAgregarFuentesColeccionHandler());
         app.patch("api/colecciones/{id}/fuentes/eliminar", new PatchEliminarFuentesColeccionHandler());
+        app.patch("api/colecciones/{id}/consenso/modificar", new PatchAlgoritmoDeConsenso());
     }
 }

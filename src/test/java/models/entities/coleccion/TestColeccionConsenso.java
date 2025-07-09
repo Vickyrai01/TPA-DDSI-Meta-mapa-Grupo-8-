@@ -46,10 +46,11 @@ public class TestColeccionConsenso {
         criterios = new ArrayList<>();
 
         // Crear fuentes con diferentes tipos de conexión
-        Fuente fuente1 = new Fuente(1, "Fuente Estática 1", new URL("http://fuente1.com"), TipoFuente.ESTATICA, new StrategyCSV());
-        Fuente fuente2 = new Fuente(2, "Fuente Automática 1", new URL("http://fuente2.com"), TipoFuente.DINAMICA, new StrategyAPIREST());
-        Fuente fuente3 = new Fuente(3, "Fuente Estática 2", new URL("http://fuente3.com"), TipoFuente.PROXY, new StrategyBibliotecaCliente());
+        Fuente fuente1 = FuenteFactory.crearFuente( "Fuente Estática 1","https://684b1942165d05c5d35b843b.mockapi.io/metamapa/hechos", TipoFuente.ESTATICA, TipoConexion.APIREST);
+        Fuente fuente2 = FuenteFactory.crearFuente( "Fuente Automática 1", "https://684b1942165d05c5d35b843b.mockapi.io/metamapa/hechos", TipoFuente.DINAMICA, TipoConexion.APIREST);
+        Fuente fuente3 = FuenteFactory.crearFuente( "Fuente Estática 2", "https://684b1942165d05c5d35b843b.mockapi.io/metamapa/hechos", TipoFuente.PROXY, TipoConexion.APIREST);
         fuentes.addAll(Arrays.asList(fuente1, fuente2, fuente3));
+
 
         // Crear hechos para cada fuente
         // Hechos similares reportados por diferentes fuentes
@@ -57,39 +58,39 @@ public class TestColeccionConsenso {
                 LocalDate.now(), null, Estado.ACEPTADO, null,
                 LocalDate.now(), LocalDate.now().minusDays(1),
                 TipoFuente.ESTATICA, null,
-                "Incendio grave en zona residencial", "Incendio en Barrio Norte");
+                "Incendio grave en zona residencial", "Incendio en Barrio Norte", fuente1.getCodigoDeFuente());
 
         Hecho hecho1Fuente2 = new Hecho(2, coordenadas1, categoriaIncendio, null,
                 LocalDate.now(), null, Estado.ACEPTADO, null,
                 LocalDate.now(), LocalDate.now().minusDays(1),
                 TipoFuente.DINAMICA, null,
-                "Fuego detectado en área residencial", "Incendio en Barrio Norte");
+                "Fuego detectado en área residencial", "Incendio en Barrio Norte", fuente1.getCodigoDeFuente());
 
         Hecho hecho1Fuente3 = new Hecho(3, coordenadas1, categoriaIncendio, null,
                 LocalDate.now(), null, Estado.ACEPTADO, null,
                 LocalDate.now(), LocalDate.now().minusDays(1),
                 TipoFuente.ESTATICA, null,
-                "Se reporta incendio en vivienda", "Incendio en Barrio Norte");
+                "Se reporta incendio en vivienda", "Incendio en Barrio Norte", fuente2.getCodigoDeFuente());
 
         // Hechos diferentes
         Hecho hecho2 = new Hecho(4, coordenadas2, categoriaChoque, null,
                 LocalDate.now(), null, Estado.ACEPTADO, null,
                 LocalDate.now(), LocalDate.now().minusDays(2),
                 TipoFuente.ESTATICA, null,
-                "Colisión entre dos vehículos", "Accidente en Avenida Principal");
+                "Colisión entre dos vehículos", "Accidente en Avenida Principal", fuente2.getCodigoDeFuente());
 
         Hecho hecho3 = new Hecho(5, coordenadas3, categoriaIncendio, null,
                 LocalDate.now(), null, Estado.ACEPTADO, null,
                 LocalDate.now(), LocalDate.now().minusDays(3),
                 TipoFuente.PROXY, null,
-                "Incendio forestal detectado", "Incendio en Reserva Natural");
+                "Incendio forestal detectado", "Incendio en Reserva Natural", fuente2.getCodigoDeFuente());
 
         hechos.addAll(Arrays.asList(hecho1Fuente1, hecho1Fuente2, hecho1Fuente3, hecho2, hecho3));
 
         // Crear colección
         coleccion = new Coleccion(1, "Colección de Prueba",
                 "Colección para pruebas de consenso",
-                fuentes, criterios, hechos, "test-handle");
+                 criterios,fuentes, hechos, "test-handle");
 
         // Configurar modo de navegación y algoritmo de consenso
         coleccion.modoDeNavegacion = ModoDeNavegacion.CURADA;
@@ -114,13 +115,13 @@ public class TestColeccionConsenso {
                 LocalDate.now(), null, Estado.ACEPTADO, null,
                 LocalDate.now(), LocalDate.now(),
                 TipoFuente.ESTATICA, null,
-                "Incendio grave", "Incendio en Barrio Norte");
+                "Incendio grave", "Incendio en Barrio Norte", "c1");
 
         Hecho hecho2 = new Hecho(2, coordenadas1, categoriaIncendio, null,
                 LocalDate.now(), null, Estado.ACEPTADO, null,
                 LocalDate.now(), LocalDate.now(),
                 TipoFuente.ESTATICA, null,
-                "Incendio grave", "Incendio en Barrio Norte");
+                "Incendio grave", "Incendio en Barrio Norte", "c1");
 
         assertTrue(coleccion.algoritmoConsenso.sonHechosIguales(hecho1, hecho2));
     }
@@ -135,13 +136,13 @@ public class TestColeccionConsenso {
                 fechaHoy, null, Estado.ACEPTADO, null,
                 fechaHoy, fechaHoy,
                 TipoFuente.ESTATICA, null,
-                "Incendio grave", "Incendio en Barrio Norte");
+                "Incendio grave", "Incendio en Barrio Norte", "C1");
 
         Hecho hecho2 = new Hecho(2, coordenadas2, categoriaIncendio, null,
                 fechaAyer, null, Estado.ACEPTADO, null,
                 fechaAyer, fechaAyer,
                 TipoFuente.ESTATICA, null,
-                "Fuego en edificio", "Incendio en zona norte");
+                "Fuego en edificio", "Incendio en zona norte", "C1");
 
         assertTrue(coleccion.algoritmoConsenso.sonHechosSimilares(hecho1, hecho2));
     }
