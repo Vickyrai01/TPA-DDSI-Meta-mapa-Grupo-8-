@@ -1,9 +1,22 @@
 package models.entities.colecciones;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import models.entities.hecho.Hecho;
 import models.entities.fuentes.Fuente;
 
 import java.util.List;
-public class AlgoritmoConsenso {
+
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = StrategyAbsoluta.class, name = "absoluto"),
+        @JsonSubTypes.Type(value = StrategyMayoriaSimple.class, name = "mayoria simple"),
+        @JsonSubTypes.Type(value = StrategyMultiplesMenciones.class, name = "multiples menciones"),
+})
+
+public abstract class AlgoritmoConsenso {
 
     public List<Hecho> ejecutarAlgoritmo(List<Fuente> fuentes,List<Hecho> hechos) {
 

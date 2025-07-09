@@ -8,12 +8,12 @@ public class ColeccionDTO {
 
     public ColeccionDTO(){}
 
-    public ColeccionDTO(int id, String titulo, String descripcionColeccion, List<Criterio> listaCriterio, List<Integer> fuente, List<Integer> hechos, String identificadorHandle) {
+    public ColeccionDTO(int id, String titulo, String descripcionColeccion, List<Criterio> listaCriterio, List<Integer> fuentes, List<Integer> hechos, String identificadorHandle) {
         this.id = id;
         this.titulo = titulo;
         this.descripcionColeccion = descripcionColeccion;
         this.criterioDePertenencia = listaCriterio;
-        this.fuente = fuente;
+        this.fuente = fuentes;
         this.hechos = hechos;
         this.identificadorHandle = identificadorHandle;
     }

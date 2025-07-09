@@ -1,6 +1,7 @@
 package models.repository.seeders;
 
 import models.entities.colecciones.Coleccion;
+import models.entities.colecciones.TipoConsenso;
 import models.entities.colecciones.criterios.Criterio;
 import models.entities.colecciones.criterios.CriterioDescripcion;
 import models.entities.fuentes.Fuente;
@@ -69,6 +70,7 @@ public class ColeccionesRepositorySeeder {
         CriterioDescripcion criterioDescripcion =  new CriterioDescripcion("perro");
         criterios.add(criterioDescripcion);
         Coleccion coleccion1 = new Coleccion(1, "Incendios", "Incendios de cualquier objeto", criterios, fuentes1, coleccionHechos1, null);
+        coleccion1.cambiarAlgoritmoConsenso(TipoConsenso.ABSOLUTO);
         Coleccion coleccion2 = new Coleccion(2, "Choques", "Todos los choques", criterios, fuentes2, coleccionHechos2, null);
         Coleccion coleccion3 = new Coleccion(3, "Sin victimas fatales", "Accidentes de cualquier tipo sin accidentes", criterios, fuentes3, coleccionHechos3, null);
 
