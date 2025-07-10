@@ -63,7 +63,7 @@ public class SolicitudDeEliminacion implements DetectorDeSpam {
         this.stateEstadoDeSolicitud = stateEstadoDeSolicitud;
     }
 
-    private void aceptarSolicitud() {
+    public void aceptarSolicitud() {
         stateEstadoDeSolicitud.aceptarSolicitud(hecho);
     }
 
