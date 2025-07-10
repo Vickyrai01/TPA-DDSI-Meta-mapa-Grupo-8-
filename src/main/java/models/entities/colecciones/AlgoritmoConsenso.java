@@ -19,7 +19,6 @@ import java.util.List;
 public abstract class AlgoritmoConsenso {
 
     public List<Hecho> ejecutarAlgoritmo(List<Fuente> fuentes,List<Hecho> hechos) {
-
         return hechos;
     }
 
