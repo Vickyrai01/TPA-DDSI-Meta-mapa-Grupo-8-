@@ -1,11 +1,7 @@
 package models.entities.solicitud;
 
-import io.javalin.http.Handler;
-import lombok.Getter;
-import lombok.Setter;
 import models.entities.hecho.Hecho;
-import models.entities.hecho.Estado;
-import models.entities.solicitud.DetectorDeSpam;
+
 import java.time.LocalDateTime;
 
 public class SolicitudDeEliminacion implements DetectorDeSpam {
@@ -58,27 +54,24 @@ public class SolicitudDeEliminacion implements DetectorDeSpam {
         this.fechaDeRevision = fechaDeRevision;
     }
 
-    private StrategyEstadoDeSolicitud strategyEstadoDeSolicitud = new StrategyEstadoDeSolicitud(this) {
+    private StateEstadoDeSolicitud stateEstadoDeSolicitud = new StateSolicitudPendiente(this) {
     };
-    public StrategyEstadoDeSolicitud getStrategyEstadoDeSolicitud() {
-        return strategyEstadoDeSolicitud;
+    public StateEstadoDeSolicitud getStrategyEstadoDeSolicitud() {
+        return stateEstadoDeSolicitud;
     }
-    public void setStrategyEstadoDeSolicitud(StrategyEstadoDeSolicitud strategyEstadoDeSolicitud) {
-        this.strategyEstadoDeSolicitud = strategyEstadoDeSolicitud;
-    }
-
-
-    public void aceptarSolicitud(Hecho hecho) {
-        strategyEstadoDeSolicitud.aceptarSolicitud(hecho, this);
-        this.aceptada = true;
-        hecho.desactivarse();
+    public void setStateEstadoDeSolicitud(StateEstadoDeSolicitud stateEstadoDeSolicitud) {
+        this.stateEstadoDeSolicitud = stateEstadoDeSolicitud;
     }
 
-    public void rechazarSolicitud() {
-        this.aceptada = false;
+    private void aceptarSolicitud() {
+        stateEstadoDeSolicitud.aceptarSolicitud(hecho);
     }
 
-    public void rechazarPorSpam() {
+    private void rechazarSolicitud() {
+        stateEstadoDeSolicitud.rechazarSolicitud(hecho);
+    }
+
+    public void revisarPorSpam() {
         if (esSpam(descripcion)) {
             this.rechazarSolicitud();
         }
@@ -91,6 +84,16 @@ public class SolicitudDeEliminacion implements DetectorDeSpam {
                 ", aceptada=" + aceptada +
                 ", fechaDeRevision=" + fechaDeRevision +
                 '}';
+    }
+
+    public void aceptada(){
+        this.setAceptada(true);
+        this.setStateEstadoDeSolicitud(new StateSolicitudAceptada(this));
+    }
+
+    public void rechazada(){
+        this.setAceptada(false);
+        this.setStateEstadoDeSolicitud(new StateSolicitudRechazada(this));
     }
 
 }
