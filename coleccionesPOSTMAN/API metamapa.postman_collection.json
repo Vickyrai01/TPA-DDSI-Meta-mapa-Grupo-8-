@@ -2,6 +2,7 @@
 	"info": {
 		"_postman_id": "48da1d58-0d42-4ee3-b119-498aa101bc7d",
 		"name": "API metamapa",
+		"description": "\\*Consulta de hechos dentro de una colección.  \n\\*Generar una solicitud de eliminación a un hecho.  \n\\*Navegación filtrada sobre una colección.  \n\\*Navegación curada o irrestricta sobre una colección.  \n\\*Reportar un hechoEndFragment",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "42598532"
 	},
@@ -12,19 +13,20 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8081/api/colecciones/1/hechos",
+					"raw": "http://localhost:8082/api/colecciones/3/hechos",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8081",
+					"port": "8082",
 					"path": [
 						"api",
 						"colecciones",
-						"1",
+						"3",
 						"hechos"
 					]
-				}
+				},
+				"description": "### Consultar hechos de una coleccion\n\nAcepta como query params:\n\ncategoria, fecha_reporte_desde, fecha_reporte_hasta, fecha_acontecimiento_desde, fecha_acontecimiento_hasta, latitud, longitud."
 			},
 			"response": []
 		},
@@ -53,15 +55,70 @@
 						"api",
 						"solicitudes"
 					]
-				}
+				},
+				"description": "### Crear una solicitud de eliminación aun hecho"
 			},
 			"response": []
 		},
 		{
-			"name": "New Request",
+			"name": "Navegación modificada",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    \r\n    {       \"id\": 1,\r\n            \"titulo\": \"Incendio en casa\",\r\n            \"descripcion\": \"No hubo heridos, fue por una sartén\",\r\n            \"etiquetas\": null,\r\n            \"fuenteDeOrigen\": \"ESTATICA\",\r\n            \"fechaCarga\": [\r\n                2025,\r\n                7,\r\n                7\r\n            ],\r\n            \"fechaSuceso\": [\r\n                2025,\r\n                7,\r\n                6\r\n            ],\r\n            \"contribuyente\": null,\r\n            \"estado\": \"ACEPTADO\",\r\n            \"multimedia\": null,\r\n            \"ultimaFechaModificacion\": null,\r\n            \"sugerenciaDeCambio\": null,\r\n            \"categoria\": {\r\n                \"nombre\": \"Incendio\"\r\n            },\r\n            \"ubicacion\": {\r\n                \"latitud\": 123.0,\r\n                \"longitud\": 456.0\r\n            },\r\n            \"codigoDeFuente\": \"C1\"\r\n    }"
+				},
+				"url": {
+					"raw": "http://localhost:8082/api/colecciones/1/CURADA/hechos",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"colecciones",
+						"1",
+						"CURADA",
+						"hechos"
+					]
+				},
+				"description": "### Navegación curada o irrestricta sobre una colección\n\nel MODO puede ser IRRESTRICTO o CURADA"
+			},
+			"response": []
+		},
+		{
+			"name": "Reportar un hecho",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 5, \r\n    \"titulo\": \"prueba\", \r\n    \"descripcion\": \"descripcion\", \r\n    \"fechaSuceso\": [\r\n                    2025,\r\n                    7,\r\n                    6],\r\n    \"latitud\": 1, \r\n    \"longitud\": 2\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/api/hechos/reportar",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"hechos",
+						"reportar"
+					]
+				},
+				"description": "### Reportar un hecho"
 			},
 			"response": []
 		}
