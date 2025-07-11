@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 public class Coleccion {
 
-    public Coleccion(int id, String titulo, String descripcionColeccion, List<Criterio> criterioDePertenencia, List<Fuente> fuentes, List<Hecho> hechos, String identificadorHandle) {
+    public Coleccion(Integer id, String titulo, String descripcionColeccion, List<Criterio> criterioDePertenencia, List<Fuente> fuentes, List<Hecho> hechos, String identificadorHandle) {
         this.id = id;
         this.titulo = titulo;
         this.descripcionColeccion = descripcionColeccion;
@@ -21,9 +21,9 @@ public class Coleccion {
         this.algoritmoConsenso=null;
     }
 
-    private int id;
-    public int getId() {return id;}
-    public void setId(int id) {this.id = id;}
+    private Integer id;
+    public Integer getId() {return id;}
+    public void setId(Integer id) {this.id = id;}
 
     private String titulo;
     public String getTitulo() {return titulo;}

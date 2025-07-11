@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 
 public class StrategyCSV implements StrategyTipoConexion {
 
-
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("d/M/yyyy");
     FiltradorCriterios filtradorCriterios = FiltradorCriterios.getInstance();
     HechosRepository hechosRepository = HechosRepository.getInstance();
@@ -53,19 +52,14 @@ public class StrategyCSV implements StrategyTipoConexion {
                 Coordenadas coordenadas = new Coordenadas(latitud, longitud);
                 Categoria categoria1 = new Categoria(categoria);
 
-
-
                 Hecho hecho = new Hecho(i, coordenadas, categoria1, null, null,
                         null, Estado.ACEPTADO, null, LocalDate.now(),
                         fecha, TipoFuente.ESTATICA, null, descripcion, titulo, codigoFuente);
-
 
                 if (filtradorCriterios.cumpleCriterios(hecho,criterio))
                 {hechos.put(titulo, hecho);
                    hechosRepository.add(hecho);
                 i++;}
-
-
             }
         } catch (Exception e) {
             e.printStackTrace();
