@@ -8,17 +8,21 @@ import java.util.ArrayList;
 import java.util.List;
 public class Coleccion {
 
-    public Coleccion(Integer id, String titulo, String descripcionColeccion, List<Criterio> criterioDePertenencia, List<Fuente> fuentes, List<Hecho> hechos, String identificadorHandle) {
+    public Coleccion(Integer id, String titulo, String descripcionColeccion,
+                     List<Criterio> criterioDePertenencia,
+                     List<Fuente> fuentes,
+                     List<Hecho> hechos,
+                     String identificadorHandle) {
         this.id = id;
         this.titulo = titulo;
         this.descripcionColeccion = descripcionColeccion;
-        this.criterioDePertenencia = criterioDePertenencia;
-        this.fuentes = fuentes;
-        this.hechos = hechos;
+        this.criterioDePertenencia = criterioDePertenencia != null ? new ArrayList<>(criterioDePertenencia) : new ArrayList<>();
+        this.fuentes = fuentes != null ? new ArrayList<>(fuentes) : new ArrayList<>();
+        this.hechos = hechos != null ? new ArrayList<>(hechos) : new ArrayList<>();
         this.hechosVisibles = new ArrayList<>();
         this.identificadorHandle = identificadorHandle;
-        this.modoDeNavegacion=ModoDeNavegacion.IRRESTRICTO;
-        this.algoritmoConsenso=null;
+        this.modoDeNavegacion = ModoDeNavegacion.IRRESTRICTO;
+        this.algoritmoConsenso = null;
     }
 
     private Integer id;

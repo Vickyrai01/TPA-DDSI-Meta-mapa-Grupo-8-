@@ -12,6 +12,7 @@ public class SolicitudDeEliminacion implements DetectorDeSpam {
         this.aceptada = aceptada;
         this.fechaDeRevision = fechaDeRevision;
     }
+
     public SolicitudDeEliminacion() {}
 
     private Integer id;
@@ -56,6 +57,7 @@ public class SolicitudDeEliminacion implements DetectorDeSpam {
 
     private StateEstadoDeSolicitud stateEstadoDeSolicitud = new StateSolicitudPendiente(this) {
     };
+
     public StateEstadoDeSolicitud getStrategyEstadoDeSolicitud() {
         return stateEstadoDeSolicitud;
     }
