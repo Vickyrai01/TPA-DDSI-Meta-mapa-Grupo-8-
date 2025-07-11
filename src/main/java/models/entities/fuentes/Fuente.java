@@ -17,11 +17,11 @@ public class Fuente {
 
     public  Fuente(){}
 
-    private int id;
-    public int getId() {
+    private Integer id;
+    public Integer getId() {
         return id;
     }
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
