@@ -25,7 +25,7 @@ public class Scheduler {
     }
 
     private void verificarNuevosHechos() {
-         servicioDeAgregacion.actualizarColecciones();
+        //     servicioDeAgregacion.actualizarColecciones();
     }
 
     public void detenerScheduler() {

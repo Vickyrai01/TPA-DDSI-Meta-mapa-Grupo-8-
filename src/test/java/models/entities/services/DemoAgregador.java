@@ -12,7 +12,7 @@ import models.services.ServicioDeAgregacion;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/*
 public class DemoAgregador {
     public static void main(String[] args){
        ServicioDeAgregacion servicioDeAgregacion = ServicioDeAgregacion.getInstance();
@@ -68,9 +68,10 @@ public class DemoAgregador {
 
         System.out.println("La cantidad de hechos que hay en la coleccion es: " + coleccion1.getHechos().size() );
         System.out.println("--actualizando fuente...--");
-        servicioDeAgregacion.actualizarColecciones();*/
+        servicioDeAgregacion.actualizarColecciones();
 
      System.out.println("La cantidad de hechos que hay en la coleccion es: " + coleccion1.getHechos().size());
      System.out.println("La cantidad de hechos que hay en la coleccion es: " + coleccion2.getHechos().size());
     }
-}
+    */
+
