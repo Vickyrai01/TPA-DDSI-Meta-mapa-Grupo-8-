@@ -3,6 +3,7 @@ package models.entities.fuentes;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import models.entities.colecciones.criterios.Criterio;
 import models.entities.hecho.Hecho;
+import models.entities.normalizador.HechoAIntegrarDTO;
 
 import java.util.List;
 

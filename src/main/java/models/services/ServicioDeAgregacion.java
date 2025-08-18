@@ -6,23 +6,23 @@ import models.entities.colecciones.criterios.FiltradorColecciones;
 import models.entities.fuentes.Fuente;
 import java.util.*;
 import models.entities.hecho.Hecho;
+import models.entities.normalizador.HechoAIntegrarDTO;
+import models.repository.ColeccionesRepository;
+import models.repository.FuentesRepository;
 import models.repository.HechosRepository;
 
 public class ServicioDeAgregacion {
-    private List<Fuente> fuentes = new ArrayList<>(); // Es una lista con todas las fuentes de donde va a extraer los hechos
-    private List<Coleccion> colecciones = new ArrayList<>(); // Una lista con todas las colecciones que hay
-    private List<Hecho> hechosCargadosEnLaUltimaHora = new ArrayList<>();
+    // private List<Fuente> fuentes = new ArrayList<>(); // Es una lista con todas las fuentes de donde va a extraer los hechos, esto muere
+    //private List<Coleccion> colecciones = new ArrayList<>(); // Una lista con todas las colecciones que hay
 
+    private List<HechoAIntegrarDTO> hechosAIntegrar = new ArrayList<>();
+    private ColeccionesRepository coleccionesRepository = new ColeccionesRepository();
     private static volatile ServicioDeAgregacion instance;
 
     private ServicioDeAgregacion() {
         if (instance != null) {
             throw new RuntimeException("Usa getInstance() para obtener el Singleton");
         }
-    }
-
-    public List<Fuente> getFuentes() {
-        return fuentes;
     }
 
     public static ServicioDeAgregacion getInstance() {
@@ -39,26 +39,23 @@ public class ServicioDeAgregacion {
     FiltradorColecciones filtradorCriterios = FiltradorColecciones.getInstance();
 
     HechosRepository hechosRepository = HechosRepository.getInstance();
-
-    public void agregarColeccion(Coleccion nuevaColeccion){
-        this.colecciones.add(nuevaColeccion);
-    }
-
-    public void agregarFuente(Fuente nuevaFuente){
-        this.fuentes.add(nuevaFuente);
-    }
-
+/*
     private void obtenerTodosLosHechosNuevos () {
+        FuentesRepository fuentesRepository = FuentesRepository.getInstance();
+        List<Fuente> fuentes = fuentesRepository.obtenerTodas();
         for (Fuente fuente : fuentes) {
-            List<Hecho> lista = fuente.extraerHechosRecientes();
-            hechosCargadosEnLaUltimaHora.addAll(lista);
+            List<HechoAIntegrarDTO> lista = fuente.extraerHechosRecientes();
+            hechosAIntegrar.addAll(lista);
         }
     }
+*/
 
+    //VAN DESPUES DE NORMALIZAR Y EL FACTORY :)
+    /*
     private void agregarHechosAColecciones(Coleccion coleccion)
     {
             List<Criterio> criterios = coleccion.getCriterioDePertenencia();
-            List<Hecho> hechosFiltrados = filtradorCriterios.filtrarHechos(hechosCargadosEnLaUltimaHora, criterios);
+            List<Hecho> hechosFiltrados = filtradorCriterios.filtrarHechos(hechosAIntegrar, criterios);
             for (Hecho hecho : hechosFiltrados) {
                 if (hecho.perteneceAFuente(coleccion.extraerCodigosDeFuentes(fuentes))) {
                     coleccion.agregarHecho(hecho);
@@ -73,8 +70,42 @@ public class ServicioDeAgregacion {
         for (Coleccion coleccion : colecciones) {
             agregarHechosAColecciones(coleccion);
         }
-        hechosCargadosEnLaUltimaHora.clear();
+        hechosAIntegrar.clear();
     }
+    */
+
+    /*
+    public void evaluarDuplicado(HechoAIntegrarDTO hecho, List<HechoAIntegrarDTO> hechos) {
+        String titulo = ponerEnMinuscula(hecho.titulo); //MINUSCULA Y SACARLE LOS ARTICULOS
+        if(existeAlgunHechoMismoTitulo(titulo, hechos)){
+            //verificar cual reemplazar
+            for(HechoAIntegrarDTO hechoAIntegrar : hechos) {
+                if(hecho.tieneMismoTitulo(hechoAIntegrar.getTitulo())){
+                    if()
+                }
+            }
+        }
+        else if(coincidenAtributos(hecho, hechos)){
+            //obtener el hecho que coincide los atributos y verificar cual reemplazar
+        }
+        else{
+            //normalizarlo y crearlo
+        }
+    }
+
+
+    public Boolean existeAlgunHechoMismoTitulo(String titulo, List<HechoAIntegrarDTO> hechos){
+        return hechos.stream().anyMatch(h -> h.tieneMismoTitulo(titulo));
+        //Si existe algun hecho con el mismo titulo del pasado por parametro (sin tener en cuenta mayusculas)
+    }
+
+    public Boolean coincidenAtributos(HechoAIntegrarDTO hecho, List<HechoAIntegrarDTO> hechos){
+        //implementar porcentaje de coincidencia??;
+        return false;
+    }
+}
+*/
+
 
 }
 

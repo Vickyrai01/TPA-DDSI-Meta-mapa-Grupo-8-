@@ -26,7 +26,7 @@ public class PostRecahazarSolicitudHandler implements Handler {
         }
 
         SolicitudDeEliminacion solicitud = solicitudOpt.get();
-        solicitud.setAceptada(false);
+        solicitud.rechazada();
         solicitud.setFechaDeRevision(LocalDateTime.now());
 
         context.status(200).result("Solicitud rechazada");
