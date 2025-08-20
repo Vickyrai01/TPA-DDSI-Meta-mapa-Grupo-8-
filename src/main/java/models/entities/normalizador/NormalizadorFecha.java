@@ -4,8 +4,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.*;
 import java.time.temporal.ChronoField;
-import java.util.ArrayList;
-import java.util.List;
 
 public class NormalizadorFecha {
 
@@ -24,18 +22,14 @@ public class NormalizadorFecha {
         return instance;
     }
 
-    /** Excepción para forzar revisión manual cuando la fecha ambigua no se puede desambiguar. */
-    public static class NeedsManualReviewException extends RuntimeException {
-        public NeedsManualReviewException(String msg) { super(msg); }
-    }
+    //Despues del 30, en caso de que sea AA/MM/DD, se considera que era 1900.
+    //Si es del 00-29 es del 2000.
+    private static final int ANIO_BASE_DOS_DIGITOS = 1930;
 
-    // Ventana para años de 2 dígitos: 00–49 => 2000–2049; 50–99 => 1950–1999
-    private static final int TWO_DIGIT_YEAR_BASE = 1930;
-
-    private static final DateTimeFormatter ISO_OUT = DateTimeFormatter.ISO_LOCAL_DATE;
+    private static final DateTimeFormatter FORMATO_ISO_SALIDA = DateTimeFormatter.ISO_LOCAL_DATE;
 
     // yyyy/M/d
-    private static final DateTimeFormatter YMD_4 = new DateTimeFormatterBuilder()
+    private static final DateTimeFormatter ANIO_MES_DIA_4 = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
             .appendValue(ChronoField.YEAR, 4).appendLiteral('/')
             .appendValue(ChronoField.MONTH_OF_YEAR).appendLiteral('/')
@@ -43,7 +37,7 @@ public class NormalizadorFecha {
             .toFormatter().withResolverStyle(ResolverStyle.STRICT);
 
     // d/M/yyyy
-    private static final DateTimeFormatter DMY_4 = new DateTimeFormatterBuilder()
+    private static final DateTimeFormatter DIA_MES_ANIO_4 = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
             .appendValue(ChronoField.DAY_OF_MONTH).appendLiteral('/')
             .appendValue(ChronoField.MONTH_OF_YEAR).appendLiteral('/')
@@ -51,7 +45,7 @@ public class NormalizadorFecha {
             .toFormatter().withResolverStyle(ResolverStyle.STRICT);
 
     // M/d/yyyy
-    private static final DateTimeFormatter MDY_4 = new DateTimeFormatterBuilder()
+    private static final DateTimeFormatter MES_DIA_ANIO_4 = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
             .appendValue(ChronoField.MONTH_OF_YEAR).appendLiteral('/')
             .appendValue(ChronoField.DAY_OF_MONTH).appendLiteral('/')
@@ -59,80 +53,122 @@ public class NormalizadorFecha {
             .toFormatter().withResolverStyle(ResolverStyle.STRICT);
 
     // d/M/yy
-    private static final DateTimeFormatter DMY_2 = new DateTimeFormatterBuilder()
+    private static final DateTimeFormatter DIA_MES_ANIO_2 = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
             .appendValue(ChronoField.DAY_OF_MONTH).appendLiteral('/')
             .appendValue(ChronoField.MONTH_OF_YEAR).appendLiteral('/')
-            .appendValueReduced(ChronoField.YEAR, 2, 2, TWO_DIGIT_YEAR_BASE)
+            .appendValueReduced(ChronoField.YEAR, 2, 2, ANIO_BASE_DOS_DIGITOS)
             .toFormatter().withResolverStyle(ResolverStyle.STRICT);
 
     // M/d/yy
-    private static final DateTimeFormatter MDY_2 = new DateTimeFormatterBuilder()
+    private static final DateTimeFormatter MES_DIA_ANIO_2 = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
             .appendValue(ChronoField.MONTH_OF_YEAR).appendLiteral('/')
             .appendValue(ChronoField.DAY_OF_MONTH).appendLiteral('/')
-            .appendValueReduced(ChronoField.YEAR, 2, 2, TWO_DIGIT_YEAR_BASE)
+            .appendValueReduced(ChronoField.YEAR, 2, 2, ANIO_BASE_DOS_DIGITOS)
             .toFormatter().withResolverStyle(ResolverStyle.STRICT);
 
-    public static String toIsoOrReview(String raw) {
-        LocalDate today = LocalDate.now(ZoneId.systemDefault());
+    public static String normalizarAIso(String raw) {
+        LocalDate fechaActual = LocalDate.now(ZoneId.systemDefault());
         if (raw == null) throw new IllegalArgumentException("Fecha nula");
-        String s = raw.trim().replace('-', '/');
-        String[] parts = s.split("/");
-        if (parts.length != 3) throw new IllegalArgumentException("Formato no reconocido: " + raw);
+        String fechaNormalizada = raw.trim().replace('-', '/');
+        String[] partesFecha = fechaNormalizada.split("/");
+        if (partesFecha.length != 3) throw new IllegalArgumentException("Formato no reconocido: " + raw);
 
-        boolean yearFirst = parts[0].length() == 4;
-        boolean year2 = parts[2].length() <= 2;
+        boolean anioPrimero = partesFecha[0].length() == 4;
+        boolean anio2digitos = partesFecha[2].length() <= 2;
 
-        if (yearFirst) {
-            // yyyy/M/d (no ambiguo)
-            return ISO_OUT.format(LocalDate.parse(s, YMD_4));
+        //YYYY/MM/DD (no ambiguo)
+        if (anioPrimero) {
+            return FORMATO_ISO_SALIDA.format(LocalDate.parse(fechaNormalizada, ANIO_MES_DIA_4));
         }
 
         int a, b;
-        try { a = Integer.parseInt(parts[0]); b = Integer.parseInt(parts[1]); }
-        catch (NumberFormatException e) { throw new IllegalArgumentException("Partes no numéricas: " + raw); }
+        try { a = Integer.parseInt(partesFecha[0]);
+              b = Integer.parseInt(partesFecha[1]); }
+        catch (NumberFormatException e)
+        { throw new IllegalArgumentException("Componentes de fecha no numéricos: " + raw);}
 
-        // No ambiguo por rango:
+        // CASOS NO AMBIGUOS. DESCARTE POR RANGO DE VALORES:
         if (a > 12 && b <= 12) { // DMY
-            return ISO_OUT.format(LocalDate.parse(s, year2 ? DMY_2 : DMY_4));
+            return FORMATO_ISO_SALIDA.format(LocalDate.parse(fechaNormalizada, anio2digitos ? DIA_MES_ANIO_2 : DIA_MES_ANIO_4));
         }
+
         if (b > 12 && a <= 12) { // MDY
-            return ISO_OUT.format(LocalDate.parse(s, year2 ? MDY_2 : MDY_4));
+            return FORMATO_ISO_SALIDA.format(LocalDate.parse(fechaNormalizada, anio2digitos ? MES_DIA_ANIO_2 : MES_DIA_ANIO_4));
         }
 
-        // Ambiguo (a <= 12 && b <= 12): probamos ambas interpretaciones
-        LocalDate dmy, mdy;
-        try { dmy = LocalDate.parse(s, year2 ? DMY_2 : DMY_4); } catch (DateTimeParseException e) { dmy = null; }
-        try { mdy = LocalDate.parse(s, year2 ? MDY_2 : MDY_4); } catch (DateTimeParseException e) { mdy = null; }
-
-        // Si solo una parsea, usamos esa
-        if (dmy != null && mdy == null) return ISO_OUT.format(dmy);
-        if (mdy != null && dmy == null) return ISO_OUT.format(mdy);
-        if (dmy == null && mdy == null) throw new IllegalArgumentException("Fecha inválida: " + raw);
-
-        // — Regla que pediste —
-        boolean dmyFuture = dmy.isAfter(today);
-        boolean mdyFuture = mdy.isAfter(today);
-
-        if (dmyFuture && !mdyFuture) return ISO_OUT.format(mdy); // DMY se pasa → es MDY
-        if (mdyFuture && !dmyFuture) return ISO_OUT.format(dmy); // MDY se pasa → es DMY
-
-        // Ambas pasadas o ambas futuras ⇒ no se puede decidir
-        throw new NeedsManualReviewException(
-                "Ambiguo: \"" + raw + "\" puede ser " + dmy + " (DMY) o " + mdy + " (MDY). Revisión manual requerida.");
+        // Caso ultra ambiguo (a <= 12 && b <= 12)
+        return resolverFechaAmbigua(fechaNormalizada, anio2digitos, fechaActual, raw);
     }
 
-    public LocalDate normalizarFecha(String fecha) throws RevisionManualDeFechas {
+    private static String resolverFechaAmbigua(String fecha, boolean anio2digitos,
+                                               LocalDate fechaActual, String raw) {
+        LocalDate fechaDiaMesAnio = null;
+        LocalDate fechaMesDiaAnio = null;
+
         try {
-            String iso = toIsoOrReview(fecha);
-            return LocalDate.parse(iso, DateTimeFormatter.ISO_LOCAL_DATE);
-        }catch(NeedsManualReviewException e){
-            throw new RevisionManualDeFechas(e.getMessage());
+            fechaDiaMesAnio = LocalDate.parse(fecha,
+                    anio2digitos ? DIA_MES_ANIO_2 : DIA_MES_ANIO_4);
+        } catch (DateTimeParseException e) {
+            // No se puede parsear como DD/MM/YYYY
+        }
+
+        try {
+            fechaMesDiaAnio = LocalDate.parse(fecha,
+                    anio2digitos ? MES_DIA_ANIO_2 : MES_DIA_ANIO_4);
+        } catch (DateTimeParseException e) {
+            // No se puede parsear como MM/DD/YYYY
+        }
+
+        // Si solo una interpretación es válida
+        if (fechaDiaMesAnio != null && fechaMesDiaAnio == null) {
+            return FORMATO_ISO_SALIDA.format(fechaDiaMesAnio);
+        }
+        if (fechaMesDiaAnio != null && fechaDiaMesAnio == null) {
+            return FORMATO_ISO_SALIDA.format(fechaMesDiaAnio);
+        }
+        if (fechaDiaMesAnio == null && fechaMesDiaAnio == null) {
+            throw new IllegalArgumentException("Fecha inválida: " + raw);
+        }
+
+        // Ambas interpretaciones son válidas, usar lógica de fecha futura/pasada
+        boolean esFechaDiaMesFutura = fechaDiaMesAnio.isAfter(fechaActual);
+        boolean esFechaMesDiaFutura = fechaMesDiaAnio.isAfter(fechaActual);
+
+        if (esFechaDiaMesFutura && !esFechaMesDiaFutura) {
+            return FORMATO_ISO_SALIDA.format(fechaMesDiaAnio); // DMY es futura → probablemente es MDY
+        }
+        if (esFechaMesDiaFutura && !esFechaDiaMesFutura) {
+            return FORMATO_ISO_SALIDA.format(fechaDiaMesAnio); // MDY es futura → probablemente es DMY
+        }
+
+        //Ambas son futuras o ambas son pasadas → no se puede determinar automáticamente
+        throw new ExcepcionFechaAmbigua(
+                "Fecha ambigua: \"" + raw + "\" puede ser " +
+                        fechaDiaMesAnio + " (DD/MM/YYYY) o " + fechaMesDiaAnio + " (MM/DD/YYYY). " +
+                        "Se requiere revisión manual."
+        );
+    }
+
+    public LocalDate normalizarFecha(String fecha) throws ExcepcionRevisionManualFecha {
+        try {
+            String fechaIso = normalizarAIso(fecha);
+            return LocalDate.parse(fechaIso, DateTimeFormatter.ISO_LOCAL_DATE);
+        } catch(ExcepcionFechaAmbigua e) {
+            throw new ExcepcionRevisionManualFecha(e.getMessage());
         }
     }
 
-    public class RevisionManualDeFechas extends Exception{
-        public RevisionManualDeFechas(String msg) { super(msg); }
+    public static class ExcepcionFechaAmbigua extends RuntimeException {
+        public ExcepcionFechaAmbigua(String mensaje) {
+            super(mensaje);
+        }
+    }
+
+    public static class ExcepcionRevisionManualFecha extends Exception {
+        public ExcepcionRevisionManualFecha(String mensaje) {
+            super(mensaje);
+        }
     }
 }

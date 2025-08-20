@@ -37,7 +37,7 @@ public class FlexibleDateParser {
         for (String t : tests) {
             try {
                 System.out.printf("%s -> %s%n", t, NormalizadorFecha.getInstance().normalizarFecha(t));
-            } catch (NormalizadorFecha.RevisionManualDeFechas e) {
+            } catch (NormalizadorFecha.ExcepcionFechaAmbigua e) {
                 System.out.printf("%s -> REVISIÓN: %s%n", t, e.getMessage());
             } catch (Exception e) {
                 System.out.printf("%s -> ERROR: %s%n", t, e.getMessage());

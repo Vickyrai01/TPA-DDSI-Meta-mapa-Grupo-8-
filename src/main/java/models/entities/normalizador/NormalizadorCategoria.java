@@ -1,20 +1,24 @@
 package models.entities.normalizador;
 
 import api.dto.HechoDTO;
+import models.entities.hecho.Categoria;
 import models.entities.hecho.Hecho;
 
 public class NormalizadorCategoria {
 
     private static NormalizadorCategoria instance;
 
-    public NormalizadorCategoria getInstance(){
+    public static NormalizadorCategoria getInstance(){
         if (instance == null) instance = new NormalizadorCategoria();
 
         return instance;
     };
 
-    /*
-    public Hecho normalizar(HechoAIntegrarDTO hecho){
+    public Categoria obtenerCategoria(HechoAIntegrarDTO hecho){
+        //Necesitamos un repositorio de Categorias? para saber donde buscar
+        return new Categoria(hecho.getCategoria());
+    }
 
-    }*/
+    /*
+    public Hecho normalizar(HechoAIntegrarDTO hecho){ }*/
 }

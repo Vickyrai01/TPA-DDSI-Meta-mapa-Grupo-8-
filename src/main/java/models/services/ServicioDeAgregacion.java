@@ -12,7 +12,7 @@ import models.repository.FuentesRepository;
 import models.repository.HechosRepository;
 
 public class ServicioDeAgregacion {
-    // private List<Fuente> fuentes = new ArrayList<>(); // Es una lista con todas las fuentes de donde va a extraer los hechos, esto muere
+    //private List<Fuente> fuentes = new ArrayList<>(); // Es una lista con todas las fuentes de donde va a extraer los hechos, esto muere
     //private List<Coleccion> colecciones = new ArrayList<>(); // Una lista con todas las colecciones que hay
 
     private List<HechoAIntegrarDTO> hechosAIntegrar = new ArrayList<>();
@@ -36,9 +36,11 @@ public class ServicioDeAgregacion {
         return instance;
     }
 
-    FiltradorColecciones filtradorCriterios = FiltradorColecciones.getInstance();
+    //FiltradorColecciones filtradorCriterios = FiltradorColecciones.getInstance();
 
     HechosRepository hechosRepository = HechosRepository.getInstance();
+
+    //1. OBTENEMOS LOS HECHOS A INTEGRAR
 /*
     private void obtenerTodosLosHechosNuevos () {
         FuentesRepository fuentesRepository = FuentesRepository.getInstance();
@@ -47,11 +49,17 @@ public class ServicioDeAgregacion {
             List<HechoAIntegrarDTO> lista = fuente.extraerHechosRecientes();
             hechosAIntegrar.addAll(lista);
         }
-    }
-*/
+    }     */
 
-    //VAN DESPUES DE NORMALIZAR Y EL FACTORY :)
-    /*
+    //FLUJO:
+//Un metodo que por cada hecho a integrar verifique los duplicados contra la lista de hechosAIntegrar.
+//En caso de haber una coincidencia...elegimo una categoria para ponerle!
+//Cranear un poco mas lo de la categoria, onda cual tomamos. -> NormalizadorCategoria
+//normalizar la fecha
+// Enviar al factory
+
+
+/*
     private void agregarHechosAColecciones(Coleccion coleccion)
     {
             List<Criterio> criterios = coleccion.getCriterioDePertenencia();
@@ -64,6 +72,7 @@ public class ServicioDeAgregacion {
             }
     }
 
+
     public void actualizarColecciones()
     {
         obtenerTodosLosHechosNuevos();
@@ -72,7 +81,7 @@ public class ServicioDeAgregacion {
         }
         hechosAIntegrar.clear();
     }
-    */
+ */ //CAMBIAR A HECHO A INTEGRAR DTO
 
     /*
     public void evaluarDuplicado(HechoAIntegrarDTO hecho, List<HechoAIntegrarDTO> hechos) {
@@ -92,7 +101,7 @@ public class ServicioDeAgregacion {
             //normalizarlo y crearlo
         }
     }
-
+*/
 
     public Boolean existeAlgunHechoMismoTitulo(String titulo, List<HechoAIntegrarDTO> hechos){
         return hechos.stream().anyMatch(h -> h.tieneMismoTitulo(titulo));
@@ -104,8 +113,6 @@ public class ServicioDeAgregacion {
         return false;
     }
 }
-*/
 
 
-}
 
