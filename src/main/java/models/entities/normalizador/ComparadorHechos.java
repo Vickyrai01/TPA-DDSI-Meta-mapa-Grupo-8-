@@ -76,6 +76,11 @@ public class ComparadorHechos {
         return similitudDeHechos(a, b) >= this.threshold;
     }
 
+    public boolean hechoDuplicado(HechoAIntegrarDTO a, HechoAIntegrarDTO b)
+    {
+        return similitudDeHechos(a, b) >= 0.95;
+    }
+
     //Devuelve el score
     public double similitudDeHechos(HechoAIntegrarDTO a, HechoAIntegrarDTO b) {
         return similitudDeHechos(a, b, null);
