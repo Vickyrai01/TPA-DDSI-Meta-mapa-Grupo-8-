@@ -5,8 +5,12 @@ import models.entities.colecciones.criterios.Criterio;
 import models.entities.colecciones.criterios.FiltradorColecciones;
 import models.entities.fuentes.Fuente;
 import java.util.*;
+
+import models.entities.fuentes.TipoFuente;
 import models.entities.hecho.Hecho;
+import models.entities.normalizador.ComparadorHechos;
 import models.entities.normalizador.HechoAIntegrarDTO;
+import models.entities.solicitud.DetectorDeSpam;
 import models.repository.ColeccionesRepository;
 import models.repository.FuentesRepository;
 import models.repository.HechosRepository;
@@ -16,8 +20,12 @@ public class ServicioDeAgregacion {
     //private List<Coleccion> colecciones = new ArrayList<>(); // Una lista con todas las colecciones que hay
 
     private List<HechoAIntegrarDTO> hechosAIntegrar = new ArrayList<>();
+    private List<Hecho> hechosLimpios = new ArrayList<>();
     private ColeccionesRepository coleccionesRepository = new ColeccionesRepository();
+    private FuentesRepository fuentesRepository = FuentesRepository.getInstance();
     private static volatile ServicioDeAgregacion instance;
+    private ComparadorHechos comparadorHechos = ComparadorHechos.getInstance();
+
 
     private ServicioDeAgregacion() {
         if (instance != null) {
@@ -40,24 +48,51 @@ public class ServicioDeAgregacion {
 
     HechosRepository hechosRepository = HechosRepository.getInstance();
 
-    //1. OBTENEMOS LOS HECHOS A INTEGRAR
-/*
+    //FLUJO:
+    //1.  Obtenemos todos los HechosDTO a integrar de las fuentes, eliminando duplicados fuente a fuente. Pensar un algoritmo.
+    //2.  Eliminamos los spam
+    //3.  Por cada hecho a integrar verifique los duplicados contra la lista de hechosAIntegrar.
+    //  - En caso de haber una coincidencia...elegimos una categoria para ponerle!
+    //    Cranear un poco mas lo de la categoria, onda cual tomamos. -> NormalizadorCategoria
+    // 4. Normalizar la fecha
+    //  - 4.1 si no se puede normalizar se manda a revisión manual
+    // 5. Enviar al Factory para crear el hecho
+    // 6. Agregar a las colecciones correspondientes (ver lo de los criterios de pertenencia)
+
     private void obtenerTodosLosHechosNuevos () {
-        FuentesRepository fuentesRepository = FuentesRepository.getInstance();
         List<Fuente> fuentes = fuentesRepository.obtenerTodas();
         for (Fuente fuente : fuentes) {
-            List<HechoAIntegrarDTO> lista = fuente.extraerHechosRecientes();
-            hechosAIntegrar.addAll(lista);
+            if(fuente.getTipoFuente().equals(TipoFuente.DINAMICA)){
+                List<Hecho> listaHechos = fuente.extraerHechosRecientes();
+                hechosLimpios.addAll(listaHechos);
+            } else {
+                List<HechoAIntegrarDTO> lista = fuente.extraerHechosRecientes();
+                eliminarSpam(lista);
+                eliminarDuplicados(lista);
+                hechosAIntegrar.addAll(lista);
+            }
         }
-    }     */
+    }
 
-    //FLUJO:
-//Un metodo que por cada hecho a integrar verifique los duplicados contra la lista de hechosAIntegrar.
-//En caso de haber una coincidencia...elegimo una categoria para ponerle!
-//Cranear un poco mas lo de la categoria, onda cual tomamos. -> NormalizadorCategoria
-//normalizar la fecha
-// Enviar al factory
+    private void eliminarSpam(List <HechoAIntegrarDTO> lista){
+        for(HechoAIntegrarDTO hecho : lista){
+            if(DetectorDeSpam.esSpam(hecho.getTitulo()) || DetectorDeSpam.esSpam(hecho.getDescripcion())){
+                lista.remove(hecho);
+            }
+        }
+    }
 
+    public void eliminarDuplicados(List<HechoAIntegrarDTO> hechos) {
+        Objects.requireNonNull(hechos, "lista nula");
+        int n = hechos.size();
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (comparadorHechos.esElMismoHecho(hechos.get(i), hechos.get(j))) {
+                    hechos.remove(j);
+                }
+            }
+        }
+    }
 
 /*
     private void agregarHechosAColecciones(Coleccion coleccion)
