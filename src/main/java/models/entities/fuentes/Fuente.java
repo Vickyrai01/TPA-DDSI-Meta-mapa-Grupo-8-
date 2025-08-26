@@ -16,6 +16,7 @@ public class Fuente {
         this.link = link;
         this.tipoFuente = tipoFuente;
         this.strategyTipoConexion = strategyTipoConexion;
+        this.ultimoProcesado = null;
     }
 
     public  Fuente(){}
@@ -68,7 +69,6 @@ public class Fuente {
     public void actualizarUltimoProcesado() {
         this.ultimoProcesado = LocalDateTime.now();
     }
-
 
     @JsonIgnore
     private StrategyTipoConexion strategyTipoConexion;

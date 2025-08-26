@@ -44,10 +44,6 @@ public class ServicioDeAgregacion {
         return instance;
     }
 
-
-
-
-
     //FLUJO:
     //1.  Obtenemos todos los HechosDTO a integrar de las fuentes, eliminando duplicados fuente a fuente. Pensar un algoritmo.
     //2.  Eliminamos los spam
@@ -65,12 +61,14 @@ public class ServicioDeAgregacion {
             if(fuente.getTipoFuente().equals(TipoFuente.DINAMICA)){
                 List<Hecho> listaHechos = fuente.extraerHechosRecientes();
                 hechosLimpios.addAll(listaHechos);
+                fuente.actualizarUltimoProcesado();
             } else {
                 //List<HechoAIntegrarDTO> lista = fuente.extraerHechosRecientes();
                 //eliminarSpam(lista);
                 //eliminarDuplicados(lista);
                 //normalizadorCategoria.estandarizarCategoriasDuplicadas(lista);
                 //hechosAIntegrar.addAll(lista);
+                //fuente.actualizarUltimoProcesado();
             }
         }
         normalizarYCrearHechos();
