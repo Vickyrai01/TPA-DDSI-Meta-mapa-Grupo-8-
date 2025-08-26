@@ -9,6 +9,7 @@ import models.entities.hecho.Coordenadas;
 import models.entities.hecho.Estado;
 import models.entities.hecho.Hecho;
 import api.dto.HechoDTO;
+import models.entities.normalizador.HechoAIntegrarDTO;
 import models.repository.HechosRepository;
 import org.apache.cxf.jaxrs.client.WebClient;
 
@@ -23,7 +24,7 @@ public class StrategyAPIREST implements StrategyTipoConexion {
     HechosRepository hechosRepository = HechosRepository.getInstance();
 
     @Override
-    public List<Hecho> extraerHecho(List<Criterio> criterios, String fuente, String codigoFuente){
+    public List<HechoAIntegrarDTO> extraerHecho(List<Criterio> criterios, String fuente, String codigoFuente){
         List<Hecho> hechosExtraidos = new ArrayList<>();
         WebClient clientUsers = WebClient.create(fuente);
 
@@ -78,7 +79,7 @@ public class StrategyAPIREST implements StrategyTipoConexion {
                 }
 
             }
-            return hechosExtraidos;
+            //return hechosExtraidos;
 
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
