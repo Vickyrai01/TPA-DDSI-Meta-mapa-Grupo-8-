@@ -73,6 +73,7 @@ public class ServicioDeAgregacion {
                 //hechosAIntegrar.addAll(lista);
             }
         }
+        normalizarYCrearHechos();
     }
 
     private void eliminarSpam(List <HechoAIntegrarDTO> lista){

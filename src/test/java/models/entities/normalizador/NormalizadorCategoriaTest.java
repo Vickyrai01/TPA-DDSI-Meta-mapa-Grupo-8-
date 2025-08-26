@@ -18,7 +18,7 @@ public class NormalizadorCategoriaTest {
     @BeforeEach
     void setUp(){
     }
-    
+
     @Test
     void estandarizaCategoriaCuandoSonElMismoHechoYDistintaCategoria() {
         HechoAIntegrarDTO h1 = new HechoAIntegrarDTO("Choque Av X", "...", "choque", "-34.6", "-58.4", "2025-08-20");
