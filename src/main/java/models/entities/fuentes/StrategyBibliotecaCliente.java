@@ -9,7 +9,7 @@ import java.util.List;
 public class StrategyBibliotecaCliente implements StrategyTipoConexion {
 
     @Override
-    public List<HechoAIntegrarDTO> extraerHecho(List<Criterio> criterio, String fuente, String codigoFuente){return null;}; //toma los hechos!!
+    public List<Hecho> extraerHecho(List<Criterio> criterio, String fuente, String codigoFuente){return null;}; //toma los hechos!!
 
     @Override
     public List<Hecho> agregarHecho(String FuenteBase,  Hecho hecho) {return null;} //es un POST a la fuente
