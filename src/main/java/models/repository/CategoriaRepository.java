@@ -43,6 +43,20 @@ public class CategoriaRepository {
                     .findFirst()
                     .orElse(null);
         }
+
+
+        public Categoria buscarPorNombre(String nombre) {
+            if (nombre == null) return null;
+            return categorias.stream()
+                    .filter(c -> c.getNombre() != null && c.getNombre().equalsIgnoreCase(nombre.trim()))
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        public Boolean existe(String nombre){
+            return this.buscarPorNombre(nombre) != null;
+        }
+
         public  void add(Categoria h){
             categorias.add(h);
         }

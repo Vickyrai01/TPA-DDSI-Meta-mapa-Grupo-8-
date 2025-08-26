@@ -35,7 +35,7 @@ public class ComparadorHechos {
     private double wFecha = 0.20;
 
     //Umbral global
-    private double threshold = 0.70;
+    private double threshold = 0.80;
 
     //Máxima distancia geográfica (m) para similitud lineal ubicación
     private double maxMeters = 500.0;
