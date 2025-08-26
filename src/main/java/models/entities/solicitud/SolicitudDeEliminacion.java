@@ -74,7 +74,7 @@ public class SolicitudDeEliminacion implements DetectorDeSpam {
     }
 
     public void revisarPorSpam() {
-        if (esSpam(descripcion)) {
+        if (DetectorDeSpam.esSpam(descripcion)) {
             this.rechazarSolicitud();
         }
     }
