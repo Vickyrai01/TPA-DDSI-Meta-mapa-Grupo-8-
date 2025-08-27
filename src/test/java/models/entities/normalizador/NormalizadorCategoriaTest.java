@@ -1,6 +1,8 @@
 package models.entities.normalizador;
 
+import models.entities.hecho.Categoria;
 import models.entities.normalizador.HechoAIntegrarDTO;
+import models.repository.CategoriaRepository;
 import models.services.ServicioDeAgregacion;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class NormalizadorCategoriaTest {
     NormalizadorCategoria normalizadorCategoria = NormalizadorCategoria.getInstance();
+    CategoriaRepository categoriaRepository = CategoriaRepository.getInstance();
 
     @BeforeEach
     void setUp(){
@@ -55,6 +58,42 @@ public class NormalizadorCategoriaTest {
         assertEquals("choque", h2.getCategoria());
         assertEquals("choque", h3.getCategoria());
     }
+
+    @Test
+    void testCategoriaYaExiste() {
+        Categoria RoboExistente = new Categoria("robo");
+        categoriaRepository.add(RoboExistente);
+        Categoria resultado = normalizadorCategoria.obtenerCategoria("robo");
+
+        assertEquals(RoboExistente, resultado);
+        System.out.println("Categoria Existente: " + RoboExistente.getNombre());
+        System.out.println("Resultado testCategoriaElegida: " + resultado.getNombre());
+
+    }
+
+
+    @Test
+    void testCategoriaExisteEnSingular() {
+        Categoria ChoqueExistente = new Categoria("choque");
+        categoriaRepository.add(ChoqueExistente);
+
+        Categoria resultado = normalizadorCategoria.obtenerCategoria("choques");
+        assertEquals(ChoqueExistente, resultado);
+        System.out.println("Categoria Existente: " + ChoqueExistente.getNombre());
+        System.out.println("Resultado testCategoriaElegida: " + resultado.getNombre());
+    }
+
+    @Test
+    void testCategoriaExisteEnPlural() {
+        Categoria IncendioExistente = new Categoria("incendios");
+        categoriaRepository.add(IncendioExistente);
+
+        Categoria resultado = normalizadorCategoria.obtenerCategoria("incendio");
+        assertEquals(IncendioExistente, resultado);
+        System.out.println("Categoria Existente: " + IncendioExistente.getNombre());
+        System.out.println("Resultado testCategoriaElegida: " + resultado.getNombre());
+    }
+
 
 }
 

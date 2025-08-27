@@ -86,7 +86,7 @@ public class StrategyAPIREST implements StrategyTipoConexion {
             e.printStackTrace();
             return new ArrayList<>();
         }
-    };
+    return hechosExtraidos;};
 
     @Override
     public List<Hecho> agregarHecho(String FuenteBase, Hecho hecho) {

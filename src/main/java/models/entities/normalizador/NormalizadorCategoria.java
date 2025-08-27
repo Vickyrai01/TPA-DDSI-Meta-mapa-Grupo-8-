@@ -30,11 +30,11 @@ public class NormalizadorCategoria {
             String singular = categoriaBase.substring(0, categoriaBase.length() - 1);
             if (categoriaRepository.existe(singular)) {
                 return categoriaRepository.buscarPorNombre(singular);
-            } else {
-                String plural = categoriaBase + "s";
-                if (categoriaRepository.existe(plural)) {
-                    return categoriaRepository.buscarPorNombre(plural);
-                }
+            }
+        } else {
+            String plural = categoriaBase + "s";
+            if (categoriaRepository.existe(plural)) {
+                return categoriaRepository.buscarPorNombre(plural);
             }
         }
 
