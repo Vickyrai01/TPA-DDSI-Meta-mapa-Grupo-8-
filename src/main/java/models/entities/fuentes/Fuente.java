@@ -25,7 +25,6 @@ public class Fuente {
         this.id = id;
     }
 
-
     private String nombre;
     public String getNombre() {
         return nombre;

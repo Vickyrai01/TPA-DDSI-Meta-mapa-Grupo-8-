@@ -2,6 +2,7 @@ package models.repository;
 
 import models.entities.colecciones.Coleccion;
 import models.entities.fuentes.Fuente;
+import models.entities.fuentes.TipoFuente;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,5 +45,11 @@ public class FuentesRepository {
     }
     public  void add(Fuente h){
         fuentes.add(h);
+    }
+
+
+    public List<Fuente> filtrarFuente(TipoFuente tipoFuente) {
+        return fuentes.stream()
+                .filter(f -> f.getTipoFuente() == tipoFuente).toList();
     }
 }
