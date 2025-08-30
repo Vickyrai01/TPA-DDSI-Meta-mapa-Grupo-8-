@@ -5,14 +5,16 @@ import models.entities.hecho.Hecho;
 import models.repository.FuentesRepository;
 import models.entities.fuentes.Fuente;
 import models.entities.HechoAIntegrarDTO.HechoAIntegrarDTO;
-
+import java.util.ArrayList;
 import java.util.List;
 
-public class CargadorDinamico {
+public class CargadorDinamico implements CargadorFuente{
 
     private static final TipoFuente tipoConexion = TipoFuente.DINAMICA;
 
+
     private static volatile models.services.CargadorDinamico instance;
+
 
     public static models.services.CargadorDinamico getInstance() {
         if (instance == null) {
@@ -24,28 +26,23 @@ public class CargadorDinamico {
         }
         return instance;
     }
+
     private List<Fuente> fuentesDinamicas;
 
     public List<Fuente> obtenerFuentes() {
         return FuentesRepository.getInstance().filtrarFuente(tipoConexion); //VER GETINSTANCE()
     }
 
-    public List<HechoAIntegrarDTO> extraerHechosAIntegrar() {
+    public List<Hecho> extraerHechosAIntegrar() { //CAMBIAR TIPO A FUENTES DTO
         List<Fuente> fuentesObtenidas = obtenerFuentes();
-        List<HechoAIntegrarDTO> hechosAIntegrar = new ArrayList<>();
+        List<Hecho> hechosAIntegrar = new ArrayList<>();
 
         for (Fuente fuente : fuentesObtenidas) {
-            List<HechoAIntegrarDTO> hechosDeFuente = fuente.extraerHechosRecientes();
+            List<Hecho> hechosDeFuente = fuente.extraerHechosRecientes();
+            //public List<Hecho> extraerHechosRecientes(String fuente,  String codigoFuente)
 
-            hechos.addAll(hechosDeFuente);
+            hechosAIntegrar.addAll(hechosDeFuente);
         }
-
-        return hechos;
+        return hechosAIntegrar;
     }
-
-
-
-
-
-
 }
