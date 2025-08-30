@@ -70,7 +70,7 @@ public class Fuente {
         return strategyTipoConexion.extraerHecho(criterios, link, codigoDeFuente);
     };
 
-    public List<Hecho> extraerHechosRecientes(){
+        public List<Hecho> extraerHechosRecientes(){
         return strategyTipoConexion.extraerHechosRecientes(link, codigoDeFuente);
     };
 }
