@@ -50,4 +50,13 @@ public class HechosRepository {
         return this.hechos.stream()
                 .anyMatch(h -> h.getTitulo().equalsIgnoreCase(hecho.getTitulo()));
     }
+
+    public Boolean existeElHecho(String hash){
+        if (hechos.stream().anyMatch(h -> h.getHash().equalsIgnoreCase(hash))){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }

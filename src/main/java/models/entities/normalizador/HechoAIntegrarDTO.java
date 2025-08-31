@@ -1,12 +1,14 @@
 package models.entities.normalizador;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import models.services.HandlerRecientes;
 
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class HechoAIntegrarDTO {
 
+    public String hash;
     public String titulo;
     public String descripcion;
     public String categoria;
@@ -16,11 +18,13 @@ public class HechoAIntegrarDTO {
     public List<String> etiquetas;
     public String contribuyente;
     public List<String> multimedia; //A CHEQUEAR !!!!
+    public Boolean fueExtraido;
 
     public HechoAIntegrarDTO() {}
 
     public HechoAIntegrarDTO(String titulo, String descripcion, String categoria, String latitud, String longitud, String fechaDeHecho)
     {
+        this.hash = HandlerRecientes.generarHash(titulo+descripcion+categoria+latitud+longitud+fechaDeHecho.substring(0,10));
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.categoria = categoria;
@@ -92,6 +96,10 @@ public class HechoAIntegrarDTO {
 
     public void setFechaDeHecho(String fechaDeHecho) {
         this.fechaDeHecho = fechaDeHecho;
+    }
+
+    public String getHash() {
+        return hash;
     }
 
     public Boolean tieneMismoTitulo(String tituloExterno){

@@ -17,6 +17,7 @@ public class CargadorProxy implements CargadorFuente{
     private static volatile CargadorProxy instance;
 
     private static final TipoFuente tipoConexion = TipoFuente.PROXY;
+    private static HandlerRecientes handlerRecientes = HandlerRecientes.getInstance();
 
     private CargadorProxy() {}
 
@@ -31,37 +32,24 @@ public class CargadorProxy implements CargadorFuente{
         return instance;
     }
 
-    /*
-    public List<HechoAIntegrarDTO> extraerHechosAIntegrar() {
-        List<Fuente> fuentesObtenidas = obtenerFuentes();
-
-        List<HechoAIntegrarDTO> hechosAIntegrar = new ArrayList<>();
-
-        for(Fuente fuente : fuentesObtenidas){
-
-            hechosAIntegrar.addAll(fuente.extraerHechosRecientes());
-        }
-
-        return hechosAIntegrar;
-    }
-    */
-
-
     public List<HechoAIntegrarDTO> extraerHechosAIntegrar() { //CAMBIAR TIPO A FUENTES DTO
         List<Fuente> fuentesObtenidas = obtenerFuentes();
         List<HechoAIntegrarDTO> hechosAIntegrar = new ArrayList<>();
 
         for (Fuente fuente : fuentesObtenidas) {
-            List<HechoAIntegrarDTO> hechosDeFuente = fuente.extraerHechosRecientes();
-            //public List<Hecho> extraerHechosRecientes(String fuente,  String codigoFuente)
-            hechosAIntegrar.addAll(hechosDeFuente);
+            List<HechoAIntegrarDTO> hechosDeFuente = fuente.extraerHechos();
+            for (HechoAIntegrarDTO hecho : hechosDeFuente) {
+                if (handlerRecientes.esReciente(hecho)) {
+                    hechosAIntegrar.add(hecho);
+                }
+            }
             fuente.actualizarUltimoProcesado();
         }
-        return hechosAIntegrar;}
+        return hechosAIntegrar;
+    }
 
     public List<Fuente> obtenerFuentes() {
         return FuentesRepository.filtrarFuente(tipoConexion);
     }
-
 
 }

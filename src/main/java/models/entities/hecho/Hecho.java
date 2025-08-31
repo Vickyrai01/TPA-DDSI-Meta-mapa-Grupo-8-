@@ -22,7 +22,34 @@ public class Hecho {
                  Estado estado, Contribuyente contribuyente,
                  LocalDate fechaCarga, LocalDate fechaSuceso,
                  TipoFuente fuenteDeOrigen,
+                 List<Etiqueta> etiquetas, String descripcion, String titulo,String codigoDeFuente, String hash) {
+
+        this.id = id;
+        this.ubicacion = ubicacion;
+        this.categoria = categoria;
+        this.sugerenciaDeCambio = sugerenciaDeCambio;
+        this.ultimaFechaModificacion = ultimaFechaModificacion;
+        this.multimedia = multimedia;
+        this.estado = estado;
+        this.contribuyente = contribuyente;
+        this.fechaCarga = fechaCarga;
+        this.fechaSuceso = fechaSuceso;
+        this.fuenteDeOrigen = fuenteDeOrigen;
+        this.etiquetas = etiquetas;
+        this.descripcion = descripcion;
+        this.titulo = titulo;
+        this.codigoDeFuente = codigoDeFuente;
+        this.hash = hash;
+    }
+
+    public Hecho(Integer id, Coordenadas ubicacion, Categoria categoria,
+                 List<SugerenciaDeCambio> sugerenciaDeCambio,
+                 LocalDate ultimaFechaModificacion, List<String> multimedia,
+                 Estado estado, Contribuyente contribuyente,
+                 LocalDate fechaCarga, LocalDate fechaSuceso,
+                 TipoFuente fuenteDeOrigen,
                  List<Etiqueta> etiquetas, String descripcion, String titulo,String codigoDeFuente) {
+
         this.id = id;
         this.ubicacion = ubicacion;
         this.categoria = categoria;
@@ -155,6 +182,14 @@ public class Hecho {
     private String codigoDeFuente;
     public String getCodigoDeFuente() {
         return codigoDeFuente;
+    }
+
+    public String hash;
+    public String getHash() {
+        return hash;
+    }
+    public void setHash(String hash) {
+        this.hash = hash;
     }
 
     public Hecho(){}

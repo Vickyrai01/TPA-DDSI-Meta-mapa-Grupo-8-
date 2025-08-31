@@ -3,40 +3,65 @@ package models.repository;
 import models.entities.colecciones.Coleccion;
 import models.entities.fuentes.Fuente;
 import models.entities.fuentes.TipoFuente;
+import models.entities.hecho.Hecho;
 import models.entities.normalizador.HechoAIntegrarDTO;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 public class DinamicaRepository {
 
-        private static volatile DinamicaRepository instance;
+    private static volatile DinamicaRepository instance;
 
-        private DinamicaRepository() {
-            if (instance != null) {
-                throw new RuntimeException("Usa getInstance() para obtener el Singleton");
-            }
+    private List<Map<HechoAIntegrarDTO, Boolean>> tablaHechos =
+            new ArrayList<>(Arrays.asList(new HashMap<>(), new HashMap<>()));
+
+
+    private DinamicaRepository() {
+        if (instance != null) {
+            throw new RuntimeException("Usa getInstance() para obtener el Singleton");
         }
+    }
 
-        public static DinamicaRepository getInstance() {
-            if (instance == null) {
-                synchronized (DinamicaRepository.class) {
-                    if (instance == null) {
-                        instance = new DinamicaRepository();
-                    }
+    public static DinamicaRepository getInstance() {
+        if (instance == null) {
+            synchronized (DinamicaRepository.class) {
+                if (instance == null) {
+                    instance = new DinamicaRepository();
                 }
             }
-            return instance;
         }
-
-        private static final List<HechoAIntegrarDTO> hechos= new ArrayList<>();
-
-        public List<HechoAIntegrarDTO> obtenerTodas(){
-            return hechos;
-        }
-
-        public  void add(HechoAIntegrarDTO h){
-            hechos.add(h);
-        }
-
+        return instance;
     }
+
+    private static final List<HechoAIntegrarDTO> hechosDinamicos = new ArrayList<>();
+
+    public List<HechoAIntegrarDTO> obtenerTodas() {
+        return hechosDinamicos;
+    }
+
+    public void add(HechoAIntegrarDTO h) {
+        Map<HechoAIntegrarDTO, Boolean> elemento = new HashMap<>();
+        elemento.put(h, false);
+        tablaHechos.add(elemento);
+    }
+
+    public void delete(HechoAIntegrarDTO h) {
+        hechosDinamicos.remove(h);
+    }
+
+    public List<HechoAIntegrarDTO> getHechosNoProcesados() {
+        List<HechoAIntegrarDTO> noProcesados = new ArrayList<>();
+
+        for (Map<HechoAIntegrarDTO, Boolean> elemento : tablaHechos) {
+            for (Map.Entry<HechoAIntegrarDTO, Boolean> entry : elemento.entrySet()) {
+                if (!entry.getValue()) { // si es false
+                    noProcesados.add(entry.getKey()); // agrego el hecho
+                    entry.setValue(true);             // marco como procesado
+                }
+            }
+        }
+
+        return noProcesados;
+    }
+
+}

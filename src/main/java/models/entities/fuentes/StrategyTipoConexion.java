@@ -24,7 +24,6 @@ import java.util.List;
 })
 public interface StrategyTipoConexion {
 
-    public List<HechoAIntegrarDTO> extraerHecho(List<Criterio> criterio, String fuente, String codigoFuente);
+    public List<HechoAIntegrarDTO> extraerHecho(String fuente, String codigoFuente);
 
-    public List<HechoAIntegrarDTO> extraerHechosRecientes(String fuente, String codigoFuente);
 }

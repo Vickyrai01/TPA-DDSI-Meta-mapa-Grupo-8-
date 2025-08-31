@@ -25,11 +25,10 @@ public class ServicioDeAgregacion {
     private CargadorProxy cargadorProxy = CargadorProxy.getInstance();
     private CargadorEstatico cargadorEstatico = CargadorEstatico.getInstance();
     private List<CargadorFuente> cargadoresFuentes = List.of(
-            cargadorDinamico,
             cargadorProxy,
-            cargadorEstatico
+            cargadorEstatico,
+            cargadorDinamico
     );
-
 
     private ComparadorHechos comparadorHechos = ComparadorHechos.getInstance();
     private NormalizadorFecha normalizadorFecha = NormalizadorFecha.getInstance();
