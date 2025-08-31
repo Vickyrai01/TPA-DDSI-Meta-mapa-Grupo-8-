@@ -20,7 +20,7 @@ public class ApiAdminMetaMapaConfig {
         app.delete("api/colecciones/{id}", new DeleteColeccionHandler());
         app.patch("api/colecciones/{id}", new PatchColeccionHandler());
         app.post("/api/solicitudes/{id}/aceptar", new PostAceptarSolicitudHandler());
-        app.post("/api/solicitudes/{id}/rechazar", new PostRecahazarSolicitudHandler());
+        app.post("/api/solicitudes/{id}/rechazar", new PostRechazarSolicitudHandler());
         app.get("/api/solicitudes/{id}", new GetSolicitudIdHandler());
         app.patch("api/colecciones/{id}/fuentes/agregar", new PatchAgregarFuentesColeccionHandler());
         app.patch("api/colecciones/{id}/fuentes/eliminar", new PatchEliminarFuentesColeccionHandler());

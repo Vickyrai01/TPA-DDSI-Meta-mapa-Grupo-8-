@@ -1,11 +1,8 @@
 package models.entities.fuentes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import models.entities.colecciones.criterios.Criterio;
-import models.entities.hecho.Hecho;
-import models.entities.normalizador.HechoAIntegrarDTO;
+import models.entities.hecho.HechoAIntegrarDTO;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 

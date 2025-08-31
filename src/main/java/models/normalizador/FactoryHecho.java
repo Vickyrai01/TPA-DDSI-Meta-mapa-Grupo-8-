@@ -1,13 +1,11 @@
-package models.entities.normalizador;
+package models.normalizador;
 
 import models.entities.fuentes.TipoFuente;
 import models.entities.hecho.*;
-import models.repository.CategoriaRepository;
 
 import java.time.LocalDate;
-import java.util.List;
 
-    //Esto va a pasar un hecho DTO a un hecho
+//Esto va a pasar un hecho DTO a un hecho
 public class FactoryHecho {
      private static volatile FactoryHecho instance;
 
@@ -50,8 +48,8 @@ public class FactoryHecho {
                 hecho.getDescripcion(),
                 hecho.getTitulo(),
                 null,
-                hecho.getHash()
-
+                hecho.getHash(),
+                null //VER ID DE FUENTE
         );
     }
 

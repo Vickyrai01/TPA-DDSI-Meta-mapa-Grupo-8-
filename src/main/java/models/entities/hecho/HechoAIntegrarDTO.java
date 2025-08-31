@@ -1,7 +1,7 @@
-package models.entities.normalizador;
+package models.entities.hecho;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import models.services.HandlerRecientes;
+import models.agregador.HandlerRecientes;
 
 import java.util.List;
 
@@ -39,6 +39,7 @@ public class HechoAIntegrarDTO {
     public HechoAIntegrarDTO(String titulo, String descripcion, String categoria, String latitud, String longitud, String fechaDeHecho,
                              List<String> etiquetas, String contribuyente, List<String> multimedia)
     {
+        this.hash = HandlerRecientes.generarHash(titulo+descripcion+categoria+latitud+longitud+fechaDeHecho.substring(0,10));
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.categoria = categoria;

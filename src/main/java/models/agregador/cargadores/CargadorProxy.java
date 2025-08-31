@@ -1,18 +1,15 @@
-package models.services;
+package models.agregador.cargadores;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import models.entities.fuentes.Fuente;
 import models.entities.fuentes.TipoFuente;
-import models.entities.hecho.Hecho;
-import models.entities.normalizador.HechoAIntegrarDTO;
+import models.entities.hecho.HechoAIntegrarDTO;
 import models.repository.FuentesRepository;
+import models.agregador.HandlerRecientes;
 
-
-import java.util.stream.Collectors;
-
-public class CargadorProxy implements CargadorFuente{
+public class CargadorProxy implements CargadorFuente {
 
     private static volatile CargadorProxy instance;
 

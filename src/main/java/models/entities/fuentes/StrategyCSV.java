@@ -2,15 +2,11 @@ package models.entities.fuentes;
 
 
 import com.opencsv.CSVReader;
-import models.entities.colecciones.criterios.Criterio;
 import models.entities.colecciones.criterios.FiltradorCriterios;
-import models.entities.hecho.*;
-import models.entities.hecho.Hecho;
-import models.entities.normalizador.HechoAIntegrarDTO;
+import models.entities.hecho.HechoAIntegrarDTO;
 import models.repository.HechosRepository;
 
 import java.io.FileReader;
-import java.time.LocalDate;
 
 import java.util.*;
 import java.util.stream.Collectors;

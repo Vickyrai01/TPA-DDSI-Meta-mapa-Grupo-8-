@@ -1,6 +1,7 @@
-package models.entities.normalizador;
+package models.normalizador;
 
-import models.services.ServicioDeAgregacion;
+import models.entities.hecho.HechoAIntegrarDTO;
+import models.agregador.ServicioDeAgregacion;
 
 import java.text.Normalizer;
 import java.time.LocalDate;

@@ -79,7 +79,7 @@ public class Coleccion {
             if(algoritmoConsenso==null){
                 hechosVisibles= hechos;
             }else{
-                hechosVisibles= algoritmoConsenso.ejecutarAlgoritmo(fuentes,hechos);
+                hechosVisibles= algoritmoConsenso.ejecutarAlgoritmo();
             }
         }
         else{

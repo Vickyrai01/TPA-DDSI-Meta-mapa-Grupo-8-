@@ -1,7 +1,6 @@
-package models.services;
+package models.agregador;
 
-import models.entities.normalizador.HechoAIntegrarDTO;
-import models.entities.normalizador.NormalizadorCategoria;
+import models.entities.hecho.HechoAIntegrarDTO;
 import models.repository.HechosRepository;
 
 import java.security.MessageDigest;

@@ -1,10 +1,9 @@
-package models.entities.services;
+package models.entities.agregador;
 
-import models.entities.normalizador.HechoAIntegrarDTO;
-import models.services.ServicioDeAgregacion;
+import models.entities.hecho.HechoAIntegrarDTO;
+import models.agregador.ServicioDeAgregacion;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestClassOrder;
 
 import java.util.ArrayList;
 import java.util.List;

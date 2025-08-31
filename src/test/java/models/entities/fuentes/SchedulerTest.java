@@ -1,8 +1,8 @@
 package models.entities.fuentes;
 
-import models.services.Scheduler;
+import models.agregador.SchedulerAgregador;
 
 public class SchedulerTest {
     public static void main(String[] args) throws Exception {
-        Scheduler scheduler = new Scheduler(false);
+        SchedulerAgregador scheduler = new SchedulerAgregador(false);
         scheduler.iniciarScheduler();}}

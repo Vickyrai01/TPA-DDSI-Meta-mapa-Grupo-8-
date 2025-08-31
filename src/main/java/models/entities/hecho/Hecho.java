@@ -22,7 +22,7 @@ public class Hecho {
                  Estado estado, Contribuyente contribuyente,
                  LocalDate fechaCarga, LocalDate fechaSuceso,
                  TipoFuente fuenteDeOrigen,
-                 List<Etiqueta> etiquetas, String descripcion, String titulo,String codigoDeFuente, String hash) {
+                 List<Etiqueta> etiquetas, String descripcion, String titulo,String codigoDeFuente, String hash, Integer idFuente) {
 
         this.id = id;
         this.ubicacion = ubicacion;
@@ -40,6 +40,7 @@ public class Hecho {
         this.titulo = titulo;
         this.codigoDeFuente = codigoDeFuente;
         this.hash = hash;
+        this.idFuente =idFuente;
     }
 
     public Hecho(Integer id, Coordenadas ubicacion, Categoria categoria,
@@ -191,6 +192,10 @@ public class Hecho {
     public void setHash(String hash) {
         this.hash = hash;
     }
+
+    public Integer idFuente;
+    public Integer getIdFuente() {return idFuente;}
+    public void setIdFuente(Integer idFuente) {this.idFuente = idFuente;}
 
     public Hecho(){}
 

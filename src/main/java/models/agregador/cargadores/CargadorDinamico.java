@@ -1,12 +1,12 @@
-package models.services;
+package models.agregador.cargadores;
 
 import models.repository.DinamicaRepository;
 import models.entities.fuentes.Fuente;
-import models.entities.normalizador.HechoAIntegrarDTO;
+import models.entities.hecho.HechoAIntegrarDTO;
 
 import java.util.List;
 
-public class CargadorDinamico implements CargadorFuente{
+public class CargadorDinamico implements CargadorFuente {
 
     private DinamicaRepository dinamicaRepository = DinamicaRepository.getInstance();
 
