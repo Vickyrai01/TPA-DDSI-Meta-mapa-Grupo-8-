@@ -69,7 +69,7 @@ public class SolicitudDeEliminacion implements DetectorDeSpam {
         stateEstadoDeSolicitud.aceptarSolicitud(hecho);
     }
 
-    private void rechazarSolicitud() {
+    public void rechazarSolicitud() {
         stateEstadoDeSolicitud.rechazarSolicitud(hecho);
     }
 
@@ -90,11 +90,13 @@ public class SolicitudDeEliminacion implements DetectorDeSpam {
 
     public void aceptada(){
         this.setAceptada(true);
+        this.setFechaDeRevision(LocalDateTime.now());
         this.setStateEstadoDeSolicitud(new StateSolicitudAceptada(this));
     }
 
     public void rechazada(){
         this.setAceptada(false);
+        this.setFechaDeRevision(LocalDateTime.now());
         this.setStateEstadoDeSolicitud(new StateSolicitudRechazada(this));
     }
 

@@ -3,18 +3,12 @@ package models.entities.fuentes;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import models.entities.colecciones.criterios.Criterio;
 import models.entities.colecciones.criterios.FiltradorCriterios;
-import models.entities.hecho.Coordenadas;
-import models.entities.hecho.Estado;
-import models.entities.hecho.Hecho;
-import api.dto.HechoDTO;
-import models.entities.normalizador.HechoAIntegrarDTO;
+import models.entities.hecho.HechoAIntegrarDTO;
 import models.repository.HechosRepository;
 import org.apache.cxf.jaxrs.client.WebClient;
 
 import javax.ws.rs.core.Response;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 

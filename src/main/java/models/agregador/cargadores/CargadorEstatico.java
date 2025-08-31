@@ -1,9 +1,10 @@
-package models.services;
+package models.agregador.cargadores;
 
 import models.entities.fuentes.Fuente;
 import models.entities.fuentes.TipoFuente;
-import models.entities.normalizador.HechoAIntegrarDTO;
+import models.entities.hecho.HechoAIntegrarDTO;
 import models.repository.FuentesRepository;
+import models.agregador.HandlerRecientes;
 
 import java.util.ArrayList;
 import java.util.List;

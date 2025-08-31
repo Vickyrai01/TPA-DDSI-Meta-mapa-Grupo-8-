@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public class PostRecahazarSolicitudHandler implements Handler {
+public class PostRechazarSolicitudHandler implements Handler {
     private final SolicitudEliminacionRepository repo = SolicitudEliminacionRepository.getInstance();
 
     @Override
@@ -26,8 +26,7 @@ public class PostRecahazarSolicitudHandler implements Handler {
         }
 
         SolicitudDeEliminacion solicitud = solicitudOpt.get();
-        solicitud.rechazada();
-        solicitud.setFechaDeRevision(LocalDateTime.now());
+        solicitud.rechazarSolicitud();
 
         context.status(200).result("Solicitud rechazada");
     }

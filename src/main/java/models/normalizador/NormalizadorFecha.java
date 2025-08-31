@@ -1,4 +1,4 @@
-package models.entities.normalizador;
+package models.normalizador;
 
 import java.time.LocalDate;
 import java.time.ZoneId;

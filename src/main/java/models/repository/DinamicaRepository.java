@@ -1,10 +1,6 @@
 package models.repository;
 
-import models.entities.colecciones.Coleccion;
-import models.entities.fuentes.Fuente;
-import models.entities.fuentes.TipoFuente;
-import models.entities.hecho.Hecho;
-import models.entities.normalizador.HechoAIntegrarDTO;
+import models.entities.hecho.HechoAIntegrarDTO;
 
 import java.util.*;
 

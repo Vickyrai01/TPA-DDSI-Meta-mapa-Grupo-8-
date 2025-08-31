@@ -31,4 +31,16 @@ public class FiltradorCriterios {
         else{
         return criterios.stream().allMatch(criterio -> criterio.cumpleCriterio(hecho));}
     }
+
+    public List<Hecho> filtrarHechos(List<Hecho> hechos, List<Criterio> criterios){
+        List<Hecho> filtrados = hechos;
+
+        for(Hecho hecho : hechos){
+            if(this.cumpleCriterios(hecho,criterios)){
+                filtrados.add(hecho);
+            }
+        }
+
+        return filtrados;
+    }
 }

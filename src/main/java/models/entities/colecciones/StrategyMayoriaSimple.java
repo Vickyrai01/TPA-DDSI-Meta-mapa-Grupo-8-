@@ -2,6 +2,8 @@ package models.entities.colecciones;
 
 import models.entities.fuentes.Fuente;
 import models.entities.hecho.Hecho;
+import models.repository.HechosRepository;
+import models.repository.FuentesRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,30 +11,55 @@ import java.util.List;
 public class StrategyMayoriaSimple extends AlgoritmoConsenso {
 
     @Override
-    public List<Hecho> ejecutarAlgoritmo(List<Fuente> fuentes, List<Hecho> hechos) {
+    public List<Hecho> ejecutarAlgoritmo() {
+
+        List<Fuente> fuentes = FuentesRepository.getInstance().obtenerTodas();
+        List<Hecho> hechos = HechosRepository.getInstance().obtenerTodas();
+
         List<Hecho> hechosVisibles = new ArrayList<>();
+        List<String> idFuente = new ArrayList<>();
 
-      /*  int minimoFuentesRequeridas = (int) (fuentes.size() / 2);
+        boolean estaEnFuente = false;
 
-        for (Hecho hecho : hechos) {
-            int fuentesQueContienen = 0;
+        for (Fuente fuente : fuentes) {
+            String id = fuente.getId().toString();
+            if (!idFuente.contains(id)) {
+                idFuente.add(id);
+            }
+        }
 
-            for (Fuente fuente : fuentes) {
-                List<Hecho> hechosDeLaFuente = fuente.extraerHechos(null);
+        for(Hecho hecho: hechos){
+            int valido = 0;
+            String hash= hecho.getHash();
+            List<Hecho> hechosMismoHash = obtenerHechosPorHash(hechos, hash);
 
-                for (Hecho hechoFuente : hechosDeLaFuente) {
-                    if (sonHechosIguales(hecho, hechoFuente)) {
-                        fuentesQueContienen++;
-                        break;
-                    }
+            for(String id: idFuente){
+                estaEnFuente = hechosMismoHash.stream()
+                        .anyMatch(hechoVerifica -> hechoVerifica.getIdFuente().toString() == id);
+
+                if (estaEnFuente) {
+                    valido++;
                 }
             }
 
-            if (fuentesQueContienen >= minimoFuentesRequeridas) {
+            if (valido>=fuentes.size()/2) {
                 hechosVisibles.add(hecho);
             }
-        }*/
-
+        }
         return hechosVisibles;
     }
+
+    public List<Hecho> obtenerHechosPorHash(List<Hecho> hechos, String hash) {
+
+        List<Hecho> hechosConMismoHash = new ArrayList<>();
+
+        for (Hecho hecho : hechos) {
+            if (hecho.getHash().equals(hash)) {
+                hechosConMismoHash.add(hecho);
+            }
+        }
+
+        return hechosConMismoHash;
+    }
+
 }

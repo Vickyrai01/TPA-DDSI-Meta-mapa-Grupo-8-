@@ -1,14 +1,14 @@
-package models.services;
+package models.agregador;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class Scheduler {
+public class SchedulerAgregador {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private boolean enEjecucion = false;
     private final ServicioDeAgregacion servicioDeAgregacion = ServicioDeAgregacion.getInstance();
 
-    public Scheduler(boolean enEjecucion) {
+    public SchedulerAgregador(boolean enEjecucion) {
         this.enEjecucion = enEjecucion;
     }
 

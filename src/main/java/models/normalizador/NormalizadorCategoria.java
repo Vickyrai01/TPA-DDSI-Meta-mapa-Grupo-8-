@@ -1,6 +1,7 @@
-package models.entities.normalizador;
+package models.normalizador;
 
 import models.entities.hecho.Categoria;
+import models.entities.hecho.HechoAIntegrarDTO;
 import models.repository.CategoriaRepository;
 
 import java.util.List;

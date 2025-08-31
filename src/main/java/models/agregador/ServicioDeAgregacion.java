@@ -1,25 +1,33 @@
-package models.services;
-
-import models.entities.fuentes.Fuente;
+package models.agregador;
 
 import java.time.LocalDate;
 import java.util.*;
 
-import models.entities.fuentes.TipoFuente;
+import models.entities.colecciones.Coleccion;
+import models.entities.colecciones.criterios.Criterio;
+import models.entities.colecciones.criterios.FiltradorCriterios;
 import models.entities.hecho.Categoria;
 import models.entities.hecho.Hecho;
-import models.entities.normalizador.*;
+import models.entities.hecho.HechoAIntegrarDTO;
+import models.normalizador.*;
 import models.entities.solicitud.DetectorDeSpam;
+import models.normalizador.ComparadorHechos;
+import models.normalizador.FactoryHecho;
+import models.normalizador.NormalizadorCategoria;
+import models.normalizador.NormalizadorFecha;
 import models.repository.ColeccionesRepository;
-import models.repository.FuentesRepository;
-import models.repository.HechosRepository;
+import models.agregador.cargadores.CargadorDinamico;
+import models.agregador.cargadores.CargadorEstatico;
+import models.agregador.cargadores.CargadorFuente;
+import models.agregador.cargadores.CargadorProxy;
 
 public class ServicioDeAgregacion {
     private List<HechoAIntegrarDTO> hechosAIntegrar = new ArrayList<>();
     private List<Hecho> hechosLimpios = new ArrayList<>();
 
     private ColeccionesRepository coleccionesRepository = new ColeccionesRepository();
-    private HechosRepository hechosRepository = HechosRepository.getInstance();
+
+    private FiltradorCriterios filtradorCriterios = FiltradorCriterios.getInstance();
 
     private CargadorDinamico cargadorDinamico = CargadorDinamico.getInstance();
     private CargadorProxy cargadorProxy = CargadorProxy.getInstance();
@@ -72,7 +80,6 @@ public class ServicioDeAgregacion {
                 normalizadorCategoria.estandarizarCategoriasDuplicadas(lista);
                 hechosAIntegrar.addAll(lista);
             }
-        normalizarYCrearHechos();
     }
 
     private void eliminarSpam(List <HechoAIntegrarDTO> lista){
@@ -103,9 +110,10 @@ public class ServicioDeAgregacion {
     public void normalizarYCrearHechos() {
         for (HechoAIntegrarDTO dto : hechosAIntegrar) {
             try{
-                Categoria categoria = normalizadorCategoria.obtenerCategoria(dto.getCategoria()); //ULTRA PENSAR!!
+                Categoria categoria = normalizadorCategoria.obtenerCategoria(dto.getCategoria());
                 LocalDate fecha = normalizadorFecha.normalizarFecha(dto.getFechaDeHecho());
                 Hecho hecho = factoryHecho.convertirHecho(dto, fecha, categoria);
+                hechosLimpios.add(hecho);
             } catch (NormalizadorFecha.ExcepcionRevisionManualFecha e) {
                 //Enviar a revisión manual
                 throw new RuntimeException(e);
@@ -113,16 +121,12 @@ public class ServicioDeAgregacion {
         }
     }
 
-/*
     private void agregarHechosAColecciones(Coleccion coleccion)
     {
             List<Criterio> criterios = coleccion.getCriterioDePertenencia();
-            List<Hecho> hechosFiltrados = filtradorCriterios.filtrarHechos(hechosAIntegrar, criterios);
+            List<Hecho> hechosFiltrados = filtradorCriterios.filtrarHechos(hechosLimpios, criterios);
             for (Hecho hecho : hechosFiltrados) {
-                if (hecho.perteneceAFuente(coleccion.extraerCodigosDeFuentes(fuentes))) {
-                    coleccion.agregarHecho(hecho);
-                    hechosRepository.add(hecho);
-                }
+                coleccion.agregarHecho(hecho);
             }
     }
 
@@ -130,12 +134,12 @@ public class ServicioDeAgregacion {
     {
         obtenerTodosLosHechosNuevos();
         normalizarYCrearHechos();
-        for (Coleccion coleccion : colecciones) {
+        for (Coleccion coleccion : coleccionesRepository.obtenerTodas()) {
             agregarHechosAColecciones(coleccion);
         }
-        hechosAIntegrar.clear();
+        hechosLimpios.clear();
     }
-*/
+
 
 }
 

@@ -1,14 +1,12 @@
 package models.entities.normalizador;
 
 import models.entities.hecho.Categoria;
-import models.entities.normalizador.HechoAIntegrarDTO;
+import models.entities.hecho.HechoAIntegrarDTO;
+import models.normalizador.NormalizadorCategoria;
 import models.repository.CategoriaRepository;
-import models.services.ServicioDeAgregacion;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestClassOrder;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
