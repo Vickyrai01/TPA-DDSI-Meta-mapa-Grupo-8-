@@ -21,14 +21,8 @@ public class StrategyCSV implements StrategyTipoConexion {
     HechosRepository hechosRepository = HechosRepository.getInstance();
     int i = 5; // A SOLUCIONAR DSP!!
 
-    //ELIMINAR
     @Override
-    public List<Hecho> extraerHecho(List<Criterio> criterio, String fuenteBase, String codigoFuente) {
-        List<Hecho> hechos = new ArrayList<>();
-        return hechos;}
-
-    //ES EL CORRECTO
-    /*public List<HechoAIntegrarDTO> extraerHecho(List<Criterio> criterio, String fuenteBase, String codigoFuente) {
+    public List<HechoAIntegrarDTO> extraerHecho(List<Criterio> criterio, String fuenteBase, String codigoFuente) {
         List<HechoAIntegrarDTO> hechos = new ArrayList<>();
 
         try (CSVReader reader = new CSVReader(new FileReader(fuenteBase))) {
@@ -67,18 +61,8 @@ public class StrategyCSV implements StrategyTipoConexion {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
-*/
-    @Override
-    public List<Hecho> agregarHecho(String fuenteBase, Hecho hecho) {
-        return null;
-    }
 
-    @Override
-    public List<Hecho> extraerHechosRecientes(String fuenteBase, String codigoFuente) {
-        List<Hecho> hechos = new ArrayList<>();
-        return  hechos;}
-
-   /* @Override
+   @Override
     public List<HechoAIntegrarDTO> extraerHechosRecientes(String fuenteBase, String codigoFuente) {
         List<HechoAIntegrarDTO> hechos = new ArrayList<>();
 
@@ -110,11 +94,11 @@ public class StrategyCSV implements StrategyTipoConexion {
                 );
 
                 // Mantengo la lógica del repo para duplicados “reales”
-                if (!hechosRepository.esHechoDuplicado(hecho)) {
+                /*    if (!hechosRepository.esHechoDuplicado(hecho)) {
                     hechos.add(hecho);          // <— sin Map, agrega todos (aunque repitan título)
                     hechosRepository.add(hecho);
                     i++;
-                }
+                }*/
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -123,6 +107,6 @@ public class StrategyCSV implements StrategyTipoConexion {
         return hechos.stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-    }*/
+    }
 }
 

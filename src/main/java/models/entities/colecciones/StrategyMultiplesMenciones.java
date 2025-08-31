@@ -12,7 +12,7 @@ public class StrategyMultiplesMenciones extends AlgoritmoConsenso {
     public List<Hecho> ejecutarAlgoritmo(List<Fuente> fuentes, List<Hecho> hechos) {
         List<Hecho> hechosVisibles = new ArrayList<>();
 
-        int minimoFuentesRequeridas = 2;
+       /* int minimoFuentesRequeridas = 2;
         boolean similar = false;
 
         for (Hecho hecho : hechos) {
@@ -36,7 +36,7 @@ public class StrategyMultiplesMenciones extends AlgoritmoConsenso {
             if (fuentesQueContienen >= minimoFuentesRequeridas && !similar) {
                 hechosVisibles.add(hecho);
             }
-        }
+        }*/
 
         return hechosVisibles;
     }

@@ -1,36 +1,27 @@
 package models.services;
 
-import models.entities.fuentes.TipoFuente;
-import models.entities.hecho.Hecho;
-import models.repository.FuentesRepository;
 import models.entities.fuentes.Fuente;
+import models.entities.fuentes.TipoFuente;
 import models.entities.normalizador.HechoAIntegrarDTO;
+import models.repository.FuentesRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CargadorDinamico implements CargadorFuente{
+public class CargadorEstatico implements CargadorFuente {
 
-    private static final TipoFuente tipoConexion = TipoFuente.DINAMICA;
+    private static volatile CargadorEstatico instance;
+    private static final TipoFuente tipoConexion = TipoFuente.ESTATICA;
 
-    private static volatile CargadorDinamico instance;
-
-
-    public static CargadorDinamico getInstance() {
+    public static CargadorEstatico getInstance() {
         if (instance == null) {
-            synchronized (CargadorDinamico.class) {
+            synchronized (CargadorEstatico.class) {
                 if (instance == null) {
-                    instance = new CargadorDinamico();
+                    instance = new CargadorEstatico();
                 }
             }
         }
         return instance;
-    }
-
-    private List<Fuente> fuentesDinamicas;
-
-    public List<Fuente> obtenerFuentes() {
-        return FuentesRepository.getInstance().filtrarFuente(tipoConexion); //VER GETINSTANCE()
     }
 
     public List<HechoAIntegrarDTO> extraerHechosAIntegrar() { //CAMBIAR TIPO A FUENTES DTO
@@ -45,4 +36,10 @@ public class CargadorDinamico implements CargadorFuente{
         }
         return hechosAIntegrar;
     }
+
+    public List<Fuente> obtenerFuentes() {
+        return FuentesRepository.filtrarFuente(tipoConexion);
+    }
+
+
 }

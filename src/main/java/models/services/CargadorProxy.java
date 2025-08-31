@@ -1,20 +1,18 @@
 package models.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import models.entities.fuentes.Fuente;
 import models.entities.fuentes.TipoFuente;
 import models.entities.hecho.Hecho;
-import models.entities.hecho.HechoAIntegrarDTO;
-import models.services.ServicioDeAgregacion;
+import models.entities.normalizador.HechoAIntegrarDTO;
 import models.repository.FuentesRepository;
 
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
-public class CargadorProxy {
+public class CargadorProxy implements CargadorFuente{
 
     private static volatile CargadorProxy instance;
 
@@ -48,17 +46,20 @@ public class CargadorProxy {
     }
     */
 
-    public List<Hecho> extraerHechosAIntegrar() {
+
+    public List<HechoAIntegrarDTO> extraerHechosAIntegrar() { //CAMBIAR TIPO A FUENTES DTO
         List<Fuente> fuentesObtenidas = obtenerFuentes();
+        List<HechoAIntegrarDTO> hechosAIntegrar = new ArrayList<>();
 
-        List<Hecho> hechosAIntegrar = fuentesObtenidas.stream()
-                .flatMap(fuente -> fuente.extraerHechosRecientes().stream()) // aplana todas las listas
-                .collect(Collectors.toList()); // junta todo en una lista
+        for (Fuente fuente : fuentesObtenidas) {
+            List<HechoAIntegrarDTO> hechosDeFuente = fuente.extraerHechosRecientes();
+            //public List<Hecho> extraerHechosRecientes(String fuente,  String codigoFuente)
+            hechosAIntegrar.addAll(hechosDeFuente);
+            fuente.actualizarUltimoProcesado();
+        }
+        return hechosAIntegrar;}
 
-        return hechosAIntegrar;
-    }
-
-    private List<Fuente> obtenerFuentes() {
+    public List<Fuente> obtenerFuentes() {
         return FuentesRepository.filtrarFuente(tipoConexion);
     }
 
