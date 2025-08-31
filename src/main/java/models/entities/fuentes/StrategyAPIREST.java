@@ -9,6 +9,7 @@ import models.entities.hecho.Coordenadas;
 import models.entities.hecho.Estado;
 import models.entities.hecho.Hecho;
 import api.dto.HechoDTO;
+import models.entities.normalizador.HechoAIntegrarDTO;
 import models.repository.HechosRepository;
 import org.apache.cxf.jaxrs.client.WebClient;
 
@@ -78,14 +79,14 @@ public class StrategyAPIREST implements StrategyTipoConexion {
                 }
 
             }
-            return hechosExtraidos;
+            //return hechosExtraidos;
 
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             e.printStackTrace();
             return new ArrayList<>();
         }
-    };
+    return hechosExtraidos;};
 
     @Override
     public List<Hecho> agregarHecho(String FuenteBase, Hecho hecho) {

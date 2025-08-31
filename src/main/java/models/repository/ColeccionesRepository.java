@@ -9,7 +9,7 @@ public class ColeccionesRepository {
 
     private static volatile ColeccionesRepository instance;
 
-    private ColeccionesRepository() {
+    public ColeccionesRepository() {
         if (instance != null) {
             throw new RuntimeException("Usa getInstance() para obtener el Singleton");
         }

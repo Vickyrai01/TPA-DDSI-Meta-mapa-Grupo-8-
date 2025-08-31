@@ -6,30 +6,34 @@ import models.entities.colecciones.criterios.Criterio;
 import models.entities.colecciones.criterios.FiltradorCriterios;
 import models.entities.hecho.*;
 import models.entities.hecho.Hecho;
+import models.entities.normalizador.HechoAIntegrarDTO;
 import models.repository.HechosRepository;
 
 import java.io.FileReader;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 import java.util.*;
-import java.util.HashMap;
 import java.util.stream.Collectors;
 
 public class StrategyCSV implements StrategyTipoConexion {
 
-    private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("d/M/yyyy");
     FiltradorCriterios filtradorCriterios = FiltradorCriterios.getInstance();
     HechosRepository hechosRepository = HechosRepository.getInstance();
-    int i = 5; //A SOLUCIONAR DSP!!
+    int i = 5; // A SOLUCIONAR DSP!!
 
+    //ELIMINAR
     @Override
     public List<Hecho> extraerHecho(List<Criterio> criterio, String fuenteBase, String codigoFuente) {
-        Map<String, Hecho> hechos = new HashMap<>();
+        List<Hecho> hechos = new ArrayList<>();
+        return hechos;}
+
+    //ES EL CORRECTO
+    /*public List<HechoAIntegrarDTO> extraerHecho(List<Criterio> criterio, String fuenteBase, String codigoFuente) {
+        List<HechoAIntegrarDTO> hechos = new ArrayList<>();
 
         try (CSVReader reader = new CSVReader(new FileReader(fuenteBase))) {
             String[] fila;
-            reader.readNext();
+            reader.readNext(); // header
 
             while ((fila = reader.readNext()) != null) {
                 if (fila.length != 6) {
@@ -45,45 +49,42 @@ public class StrategyCSV implements StrategyTipoConexion {
                 String titulo = fila[0].trim();
                 String descripcion = fila[1].trim();
                 String categoria = fila[2].trim();
-                Double latitud = Double.valueOf(fila[3].trim());
-                Double longitud = Double.valueOf(fila[4].trim());
-                LocalDate fecha = LocalDate.parse(fila[5].trim(), FORMATO_FECHA);
+                String latitud = fila[3].trim();
+                String longitud = fila[4].trim();
+                String fecha = fila[5].trim();
 
-                Coordenadas coordenadas = new Coordenadas(latitud, longitud);
-                Categoria categoria1 = new Categoria(categoria);
+                HechoAIntegrarDTO hechoAIntegrarDTO = new HechoAIntegrarDTO(
+                        titulo, descripcion, categoria, latitud,
+                        longitud, fecha
+                );
 
-                Hecho hecho = new Hecho(i, coordenadas, categoria1, null, null,
-                        null, Estado.ACEPTADO, null, LocalDate.now(),
-                        fecha, TipoFuente.ESTATICA, null, descripcion, titulo, codigoFuente);
-
-                if (filtradorCriterios.cumpleCriterios(hecho,criterio))
-                {hechos.put(titulo, hecho);
-                   hechosRepository.add(hecho);
-                i++;}
+                hechos.add(hechoAIntegrarDTO);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        List<Hecho> listaHechos = hechos.values()
-                .stream()
+        return hechos.stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-
-        return listaHechos;
+    }
+*/
+    @Override
+    public List<Hecho> agregarHecho(String fuenteBase, Hecho hecho) {
+        return null;
     }
 
     @Override
-    public List<Hecho> agregarHecho(String fuenteBase,  Hecho hecho) { return null;
-    }
+    public List<Hecho> extraerHechosRecientes(String fuenteBase, String codigoFuente) {
+        List<Hecho> hechos = new ArrayList<>();
+        return  hechos;}
 
-    @Override
-    public List<Hecho> extraerHechosRecientes(String fuenteBase,  String codigoFuente){
-
-        Map<String, Hecho> hechos = new HashMap<>();
+   /* @Override
+    public List<HechoAIntegrarDTO> extraerHechosRecientes(String fuenteBase, String codigoFuente) {
+        List<HechoAIntegrarDTO> hechos = new ArrayList<>();
 
         try (CSVReader reader = new CSVReader(new FileReader(fuenteBase))) {
             String[] fila;
-            reader.readNext();
+            reader.readNext(); // header
 
             while ((fila = reader.readNext()) != null) {
                 if (fila.length != 6) {
@@ -99,36 +100,29 @@ public class StrategyCSV implements StrategyTipoConexion {
                 String titulo = fila[0].trim();
                 String descripcion = fila[1].trim();
                 String categoria = fila[2].trim();
-                Double latitud = Double.valueOf(fila[3].trim());
-                Double longitud = Double.valueOf(fila[4].trim());
-                LocalDate fecha = LocalDate.parse(fila[5].trim(), FORMATO_FECHA);
+                String latitud = fila[3].trim();
+                String longitud = fila[4].trim();
+                String fecha = fila[5].trim();
 
-                Coordenadas coordenadas = new Coordenadas(latitud, longitud);
-                Categoria categoria1 = new Categoria(categoria);
+                HechoAIntegrarDTO hechoAIntegrarDTO = new HechoAIntegrarDTO(
+                        titulo, descripcion, categoria, latitud,
+                        longitud, fecha
+                );
 
-
-
-                Hecho hecho = new Hecho(i, coordenadas, categoria1, null, null,
-                        null, Estado.ACEPTADO, null, LocalDate.now(),
-                        fecha, TipoFuente.ESTATICA, null, descripcion, titulo, codigoFuente);
-
-
-                if (!hechosRepository.esHechoDuplicado(hecho))
-                {hechos.put(titulo, hecho);
+                // Mantengo la lógica del repo para duplicados “reales”
+                if (!hechosRepository.esHechoDuplicado(hecho)) {
+                    hechos.add(hecho);          // <— sin Map, agrega todos (aunque repitan título)
                     hechosRepository.add(hecho);
-                    i++;}
-
+                    i++;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        List<Hecho> listaHechos = hechos.values()
-                .stream()
+        return hechos.stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-
-        return listaHechos;
-    }
+    }*/
 }
 

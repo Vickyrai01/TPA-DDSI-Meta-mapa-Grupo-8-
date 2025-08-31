@@ -29,7 +29,7 @@ public class PostAceptarSolicitudHandler implements Handler {
         }
 
         SolicitudDeEliminacion solicitud = solicitudOpt.get();
-        solicitud.setAceptada(true);
+        solicitud.aceptarSolicitud();
         solicitud.setFechaDeRevision(LocalDateTime.now());
 
         repoHechos.delete(solicitud.getHecho());
