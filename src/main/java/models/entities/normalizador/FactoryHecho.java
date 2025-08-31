@@ -49,7 +49,9 @@ public class FactoryHecho {
                 null,
                 hecho.getDescripcion(),
                 hecho.getTitulo(),
-                null //poner la logica
+                null,
+                hecho.getHash()
+
         );
     }
 
