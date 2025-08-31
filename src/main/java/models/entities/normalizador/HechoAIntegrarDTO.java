@@ -1,5 +1,10 @@
 package models.entities.normalizador;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.util.List;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class HechoAIntegrarDTO {
 
     public String titulo;
@@ -8,6 +13,11 @@ public class HechoAIntegrarDTO {
     public String latitud;
     public String longitud;
     public String fechaDeHecho;
+    public List<String> etiquetas;
+    public String contribuyente;
+    public List<String> multimedia; //A CHEQUEAR !!!!
+
+    public HechoAIntegrarDTO() {}
 
     public HechoAIntegrarDTO(String titulo, String descripcion, String categoria, String latitud, String longitud, String fechaDeHecho)
     {
@@ -17,6 +27,23 @@ public class HechoAIntegrarDTO {
         this.latitud = latitud;
         this.longitud = longitud;
         this.fechaDeHecho = fechaDeHecho;
+        this.etiquetas = null;
+        this.contribuyente = null;
+        this.multimedia = null;
+    }
+
+    public HechoAIntegrarDTO(String titulo, String descripcion, String categoria, String latitud, String longitud, String fechaDeHecho,
+                             List<String> etiquetas, String contribuyente, List<String> multimedia)
+    {
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.categoria = categoria;
+        this.latitud = latitud;
+        this.longitud = longitud;
+        this.fechaDeHecho = fechaDeHecho;
+        this.etiquetas = etiquetas;
+        this.contribuyente = contribuyente;
+        this.multimedia = multimedia;
     }
 
     public String getTitulo() {
@@ -73,4 +100,19 @@ public class HechoAIntegrarDTO {
         //Los pone en minusculas y le elimina los espacios
         return tituloPropioLimpio.equals(tituloExternoLimpio);
     }
+    @Override
+    public String toString() {
+        return "HechoAIntegrarDTO{" +
+                "titulo='" + titulo + '\'' +
+                ", descripcion='" + descripcion + '\'' +
+                ", categoria='" + categoria + '\'' +
+                ", latitud='" + latitud + '\'' +
+                ", longitud='" + longitud + '\'' +
+                ", fechaDeHecho='" + fechaDeHecho + '\'' +
+                ", etiquetas=" + etiquetas +
+                ", contribuyente='" + contribuyente + '\'' +
+                ", multimedia=" + multimedia +
+                '}';
+    }
+
 }

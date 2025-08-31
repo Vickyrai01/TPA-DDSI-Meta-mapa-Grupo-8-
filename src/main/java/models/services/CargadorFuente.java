@@ -7,9 +7,10 @@ import models.entities.hecho.Hecho;
 import java.util.ArrayList;
 import java.util.List;
 import models.entities.hecho.Hecho;
+import models.entities.normalizador.HechoAIntegrarDTO;
 import models.repository.FuentesRepository;
 
 public interface CargadorFuente {
         List<Fuente> obtenerFuentes();
-        List<Hecho> extraerHechosAIntegrar();
+        List<HechoAIntegrarDTO> extraerHechosAIntegrar();
 }

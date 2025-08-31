@@ -12,7 +12,7 @@ public class StrategyMayoriaSimple extends AlgoritmoConsenso {
     public List<Hecho> ejecutarAlgoritmo(List<Fuente> fuentes, List<Hecho> hechos) {
         List<Hecho> hechosVisibles = new ArrayList<>();
 
-        int minimoFuentesRequeridas = (int) (fuentes.size() / 2);
+      /*  int minimoFuentesRequeridas = (int) (fuentes.size() / 2);
 
         for (Hecho hecho : hechos) {
             int fuentesQueContienen = 0;
@@ -31,7 +31,7 @@ public class StrategyMayoriaSimple extends AlgoritmoConsenso {
             if (fuentesQueContienen >= minimoFuentesRequeridas) {
                 hechosVisibles.add(hecho);
             }
-        }
+        }*/
 
         return hechosVisibles;
     }

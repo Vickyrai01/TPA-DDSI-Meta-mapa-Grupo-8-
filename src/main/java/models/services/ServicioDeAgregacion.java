@@ -20,7 +20,17 @@ public class ServicioDeAgregacion {
 
     private ColeccionesRepository coleccionesRepository = new ColeccionesRepository();
     private HechosRepository hechosRepository = HechosRepository.getInstance();
-    private FuentesRepository fuentesRepository = FuentesRepository.getInstance();
+
+    private CargadorDinamico cargadorDinamico = CargadorDinamico.getInstance();
+    private CargadorProxy cargadorProxy = CargadorProxy.getInstance();
+    private CargadorEstatico cargadorEstatico = CargadorEstatico.getInstance();
+    private List<CargadorFuente> cargadoresFuentes = List.of(
+            cargadorDinamico,
+            cargadorProxy,
+            cargadorEstatico
+    );
+
+
     private ComparadorHechos comparadorHechos = ComparadorHechos.getInstance();
     private NormalizadorFecha normalizadorFecha = NormalizadorFecha.getInstance();
     private NormalizadorCategoria normalizadorCategoria = NormalizadorCategoria.getInstance();
@@ -56,21 +66,13 @@ public class ServicioDeAgregacion {
     // 6. Agregar a las colecciones correspondientes (ver lo de los criterios de pertenencia)
 
     private void obtenerTodosLosHechosNuevos () {
-        List<Fuente> fuentes = fuentesRepository.obtenerTodas();
-        for (Fuente fuente : fuentes) {
-            if(fuente.getTipoFuente().equals(TipoFuente.DINAMICA)){
-                List<Hecho> listaHechos = fuente.extraerHechosRecientes();
-                hechosLimpios.addAll(listaHechos);
-                fuente.actualizarUltimoProcesado();
-            } else {
-                //List<HechoAIntegrarDTO> lista = fuente.extraerHechosRecientes();
-                //eliminarSpam(lista);
-                //eliminarDuplicados(lista);
-                //normalizadorCategoria.estandarizarCategoriasDuplicadas(lista);
-                //hechosAIntegrar.addAll(lista);
-                //fuente.actualizarUltimoProcesado();
+        for (CargadorFuente cargador : cargadoresFuentes) {
+                List<HechoAIntegrarDTO> lista = cargador.extraerHechosAIntegrar();  //extraerHechosRecientes();
+                eliminarSpam(lista);
+                eliminarDuplicados(lista);
+                normalizadorCategoria.estandarizarCategoriasDuplicadas(lista);
+                hechosAIntegrar.addAll(lista);
             }
-        }
         normalizarYCrearHechos();
     }
 
