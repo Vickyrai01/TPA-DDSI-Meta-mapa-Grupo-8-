@@ -3,7 +3,10 @@ package models.entities.fuentes;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import models.entities.colecciones.criterios.Criterio;
 import models.entities.hecho.Hecho;
+import models.entities.normalizador.HechoAIntegrarDTO;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Fuente {
@@ -13,6 +16,7 @@ public class Fuente {
         this.link = link;
         this.tipoFuente = tipoFuente;
         this.strategyTipoConexion = strategyTipoConexion;
+        this.ultimoProcesado = null;
     }
 
     public  Fuente(){}
@@ -55,6 +59,14 @@ public class Fuente {
     }
     public String setCodigoDeFuente(String codigoDeFuente) {
         return this.codigoDeFuente = codigoDeFuente;
+    }
+
+    private LocalDateTime ultimoProcesado;
+    public LocalDateTime getUltimoProcesado() {
+        return ultimoProcesado;
+    }
+    public void actualizarUltimoProcesado() {
+        this.ultimoProcesado = LocalDateTime.now();
     }
 
     @JsonIgnore

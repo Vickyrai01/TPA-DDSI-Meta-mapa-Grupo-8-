@@ -27,7 +27,7 @@ public class FuentesRepository {
         return instance;
     }
 
-    private final List<Fuente> fuentes = new ArrayList<>();
+    private static final List<Fuente> fuentes = new ArrayList<>();
 
     public List<Fuente> obtenerTodas(){
         return fuentes;
@@ -47,9 +47,9 @@ public class FuentesRepository {
         fuentes.add(h);
     }
 
-
-    public List<Fuente> filtrarFuente(TipoFuente tipoFuente) {
+    public static List<Fuente> filtrarFuente(TipoFuente tipoFuente) {
         return fuentes.stream()
                 .filter(f -> f.getTipoFuente() == tipoFuente).toList();
+    }
     }
 }
