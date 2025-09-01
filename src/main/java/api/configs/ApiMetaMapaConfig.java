@@ -12,9 +12,9 @@ public class ApiMetaMapaConfig {
     public static void configurarEndpoints(Javalin app) {
         app.get("/api/colecciones/{id}/hechos", new GetHechosDeColeccionesHandler());
         app.post("api/solicitudes", new PostSolicitudHandler());
-        app.post("/api/hechos/reportar", new PostHechoHandler());
         app.get("api/colecciones", new GetColeccionHandler());
         app.get("api/solicitudes", new GetSolicitudHandler()); //para prueba solo
         app.get("/api/colecciones/{id}/{modoVisualizacion}/hechos", new GetHechosDeColeccionCurados());
+        app.post("/api/hechos/reportar", new PostHechoHandler());
     }
 }

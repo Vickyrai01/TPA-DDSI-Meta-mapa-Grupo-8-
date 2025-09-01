@@ -65,7 +65,7 @@ public class TestFiltrador {
             TipoFuente.ESTATICA, null, "Se robó unas manzanas y bolsas", "Hurto en una verdulería", null);
 
     void inicializarColeccion (){
-             coleccion1.agregarHecho(hecho1);
+                coleccion1.agregarHecho(hecho1);
                 coleccion1.agregarHecho(hecho3);
                 coleccion1.agregarHecho(hecho4);
                 coleccion1.agregarHecho(hecho2);

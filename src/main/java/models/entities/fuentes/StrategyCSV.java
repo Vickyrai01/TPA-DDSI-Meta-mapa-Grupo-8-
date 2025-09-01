@@ -44,15 +44,19 @@ public class StrategyCSV implements StrategyTipoConexion {
                 String fecha = fila[5].trim();
 
                 HechoAIntegrarDTO hechoAIntegrarDTO = new HechoAIntegrarDTO(
-                        titulo, descripcion, categoria, latitud,
-                        longitud, fecha
+                        titulo, descripcion, categoria, latitud, longitud, fecha
                 );
-
                 hechos.add(hechoAIntegrarDTO);
+
+                // 👇 límite de 100
+                if (hechos.size() >= 100) {
+                    break;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return hechos.stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());

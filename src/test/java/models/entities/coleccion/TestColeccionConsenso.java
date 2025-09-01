@@ -1,6 +1,6 @@
 package models.entities.coleccion;
 
-import java.net.URL;
+
 import java.net.MalformedURLException;
 import models.entities.colecciones.Coleccion;
 import models.entities.colecciones.ModoDeNavegacion;
@@ -19,7 +19,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import models.entities.colecciones.SchedulerActualizarVisibles;
 
 public class TestColeccionConsenso {
     private Coleccion coleccion;
@@ -123,7 +122,7 @@ public class TestColeccionConsenso {
                 TipoFuente.ESTATICA, null,
                 "Incendio grave", "Incendio en Barrio Norte", "c1");
 
-       // assertTrue(coleccion.algoritmoConsenso.sonHechosIguales(hecho1, hecho2));
+        //assertTrue(coleccion.algoritmoConsenso.sonHechosIguales(hecho1, hecho2));
     }
 
     @Test
@@ -144,7 +143,7 @@ public class TestColeccionConsenso {
                 TipoFuente.ESTATICA, null,
                 "Fuego en edificio", "Incendio en zona norte", "C1");
 
-      //  assertTrue(coleccion.algoritmoConsenso.sonHechosSimilares(hecho1, hecho2));
+        //assertTrue(coleccion.algoritmoConsenso.sonHechosSimilares(hecho1, hecho2));
     }
 
     @Test

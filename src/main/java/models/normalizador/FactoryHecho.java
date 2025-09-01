@@ -33,7 +33,7 @@ public class FactoryHecho {
         Coordenadas ubicacion = new Coordenadas(latitud, longitud);
 
         return new Hecho(
-                999, //Analizar como asignar el ID
+                null, //Analizar como asignar el ID
                 ubicacion,
                 categoria,
                 null,

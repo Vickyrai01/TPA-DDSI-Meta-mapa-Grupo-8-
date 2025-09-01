@@ -21,11 +21,11 @@ public class SchedulerAgregador {
         enEjecucion = true;
         System.out.println("Iniciando scheduler...");
 
-        scheduler.scheduleAtFixedRate(this::verificarNuevosHechos,0,5, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(this::verificarNuevosHechos,0,10, TimeUnit.MINUTES);
     }
 
     private void verificarNuevosHechos() {
-        //     servicioDeAgregacion.actualizarColecciones();
+        servicioDeAgregacion.actualizarColecciones();
     }
 
     public void detenerScheduler() {

@@ -15,6 +15,7 @@ public class CargadorProxy implements CargadorFuente {
 
     private static final TipoFuente tipoConexion = TipoFuente.PROXY;
     private static HandlerRecientes handlerRecientes = HandlerRecientes.getInstance();
+    private  FuentesRepository fuentesRepository = FuentesRepository.getInstance();
 
     private CargadorProxy() {}
 
@@ -29,24 +30,35 @@ public class CargadorProxy implements CargadorFuente {
         return instance;
     }
 
-    public List<HechoAIntegrarDTO> extraerHechosAIntegrar() { //CAMBIAR TIPO A FUENTES DTO
+    public List<HechoAIntegrarDTO> extraerHechosAIntegrar() {
         List<Fuente> fuentesObtenidas = obtenerFuentes();
         List<HechoAIntegrarDTO> hechosAIntegrar = new ArrayList<>();
+        System.out.println("Cargando hechos de fuentes proxy: " + fuentesObtenidas.size());
 
         for (Fuente fuente : fuentesObtenidas) {
-            List<HechoAIntegrarDTO> hechosDeFuente = fuente.extraerHechos();
-            for (HechoAIntegrarDTO hecho : hechosDeFuente) {
-                if (handlerRecientes.esReciente(hecho)) {
-                    hechosAIntegrar.add(hecho);
+            try {
+                List<HechoAIntegrarDTO> hechosDeFuente = fuente.extraerHechos();
+                if (hechosDeFuente == null) {
+                    System.out.println("Fuente " + fuente.getNombre() + " devolvió null, se ignora.");
+                    continue;
                 }
+                for (HechoAIntegrarDTO hecho : hechosDeFuente) {
+                    if (handlerRecientes.esReciente(hecho)) {
+                        hechosAIntegrar.add(hecho);
+                    }
+                }
+                fuente.actualizarUltimoProcesado();
+            } catch (Exception e) {
+                System.out.println("Error obteniendo de fuente " + fuente.getNombre() + ": " + e.getMessage());
             }
-            fuente.actualizarUltimoProcesado();
         }
+        System.out.println("Total hechos proxy obtenidos: " + hechosAIntegrar.size());
         return hechosAIntegrar;
     }
 
+
     public List<Fuente> obtenerFuentes() {
-        return FuentesRepository.filtrarFuente(tipoConexion);
+        return fuentesRepository.filtrarFuente(tipoConexion);
     }
 
 }

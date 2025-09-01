@@ -1,7 +1,6 @@
 package models.normalizador;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.*;
 import java.time.temporal.ChronoField;
 
@@ -68,39 +67,67 @@ public class NormalizadorFecha {
             .appendValueReduced(ChronoField.YEAR, 2, 2, ANIO_BASE_DOS_DIGITOS)
             .toFormatter().withResolverStyle(ResolverStyle.STRICT);
 
+    //EVALUAR LO DEL LOCALDATETIME
     public static String normalizarAIso(String raw) {
         LocalDate fechaActual = LocalDate.now(ZoneId.systemDefault());
         if (raw == null) throw new IllegalArgumentException("Fecha nula");
-        String fechaNormalizada = raw.trim().replace('-', '/');
+
+        String s = raw.trim();
+
+        // 0) Si viene fecha+hora (ISO) ej: 2001-01-01T05:01:49.933Z o con offset
+        int tIdx = s.indexOf('T');
+        if (tIdx > 0) {
+            // normalizamos separadores a '-' para usar ISO parsers
+            String iso = s.replace('/', '-');
+            // Intento 1: ISO con offset/Z (maneja 'Z' y ±hh:mm)
+            try {
+                LocalDate d = OffsetDateTime.parse(iso, DateTimeFormatter.ISO_OFFSET_DATE_TIME).toLocalDate();
+                return FORMATO_ISO_SALIDA.format(d);
+            } catch (DateTimeParseException ignore) {}
+
+            // Intento 2: Instant puro (por si viene exactamente con Z compatible)
+            try {
+                LocalDate d = Instant.parse(iso).atOffset(ZoneOffset.UTC).toLocalDate();
+                return FORMATO_ISO_SALIDA.format(d);
+            } catch (DateTimeParseException ignore) {}
+
+            // Fallback: recortar hasta la fecha y seguir como antes
+            s = iso.substring(0, tIdx); // "2001-01-01"
+        }
+
+        // A partir de acá, tu flujo original (pero usando 's')
+        String fechaNormalizada = s.replace('-', '/');
         String[] partesFecha = fechaNormalizada.split("/");
         if (partesFecha.length != 3) throw new IllegalArgumentException("Formato no reconocido: " + raw);
 
         boolean anioPrimero = partesFecha[0].length() == 4;
         boolean anio2digitos = partesFecha[2].length() <= 2;
 
-        //YYYY/MM/DD (no ambiguo)
+        // YYYY/MM/DD (no ambiguo)
         if (anioPrimero) {
             return FORMATO_ISO_SALIDA.format(LocalDate.parse(fechaNormalizada, ANIO_MES_DIA_4));
         }
 
         int a, b;
-        try { a = Integer.parseInt(partesFecha[0]);
-              b = Integer.parseInt(partesFecha[1]); }
-        catch (NumberFormatException e)
-        { throw new IllegalArgumentException("Componentes de fecha no numéricos: " + raw);}
+        try {
+            a = Integer.parseInt(partesFecha[0]);
+            b = Integer.parseInt(partesFecha[1]);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Componentes de fecha no numéricos: " + raw);
+        }
 
-        // CASOS NO AMBIGUOS. DESCARTE POR RANGO DE VALORES:
+        // Casos no ambiguos por rango
         if (a > 12 && b <= 12) { // DMY
             return FORMATO_ISO_SALIDA.format(LocalDate.parse(fechaNormalizada, anio2digitos ? DIA_MES_ANIO_2 : DIA_MES_ANIO_4));
         }
-
         if (b > 12 && a <= 12) { // MDY
             return FORMATO_ISO_SALIDA.format(LocalDate.parse(fechaNormalizada, anio2digitos ? MES_DIA_ANIO_2 : MES_DIA_ANIO_4));
         }
 
-        // Caso ultra ambiguo (a <= 12 && b <= 12)
+        // Ambiguo (a <= 12 && b <= 12)
         return resolverFechaAmbigua(fechaNormalizada, anio2digitos, fechaActual, raw);
     }
+
 
     private static String resolverFechaAmbigua(String fecha, boolean anio2digitos,
                                                LocalDate fechaActual, String raw) {

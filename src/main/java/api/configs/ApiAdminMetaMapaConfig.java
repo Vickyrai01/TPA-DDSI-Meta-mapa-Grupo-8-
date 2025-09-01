@@ -15,8 +15,8 @@ public class ApiAdminMetaMapaConfig {
         app.get("api/solicitudes", new GetSolicitudHandler());
         app.post("api/solicitudes", new PostSolicitudHandler());
         app.get("api/colecciones", new GetColeccionHandler());
-        app.get("api/colecciones/{id}", new GetColeccionIdHandler());
         app.post("api/colecciones", new PostColeccionHandler());
+        app.get("api/colecciones/{id}", new GetColeccionIdHandler());
         app.delete("api/colecciones/{id}", new DeleteColeccionHandler());
         app.patch("api/colecciones/{id}", new PatchColeccionHandler());
         app.post("/api/solicitudes/{id}/aceptar", new PostAceptarSolicitudHandler());

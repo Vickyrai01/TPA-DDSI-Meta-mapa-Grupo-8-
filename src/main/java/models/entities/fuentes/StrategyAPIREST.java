@@ -44,7 +44,6 @@ public class StrategyAPIREST implements StrategyTipoConexion {
 
             for (HechoAIntegrarDTO dto : array) {
                     hechosExtraidos.add(dto);
-                    System.out.println("Hecho filtrado: " + dto.getTitulo());
             }
 
             return hechosExtraidos;
