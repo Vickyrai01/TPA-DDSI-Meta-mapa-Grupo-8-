@@ -104,4 +104,10 @@ public class Coleccion {
     private String identificadorHandle;
     public String getIdentificadorHandle() {return identificadorHandle;}
     public void setIdentificadorHandle(String identificadorHandle) {this.identificadorHandle = identificadorHandle;}
+
+
+    @Override
+    public String toString() {
+        return titulo;
+    }
 }

@@ -1,11 +1,11 @@
 package models.entities.colecciones.criterios;
 
 import models.entities.hecho.Hecho;
-
 import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class FiltradorCriterios {
-
     private static volatile FiltradorCriterios instance;
 
     private FiltradorCriterios() {
@@ -26,21 +26,19 @@ public class FiltradorCriterios {
     }
 
     public Boolean cumpleCriterios(Hecho hecho, List<Criterio> criterios) {
-        if(criterios == null || criterios.isEmpty())
-        {return true;}
-        else{
-        return criterios.stream().allMatch(criterio -> criterio.cumpleCriterio(hecho));}
+        if(criterios == null || criterios.isEmpty()) {
+            return true;
+        }
+        return criterios.stream().allMatch(criterio -> criterio.cumpleCriterio(hecho));
     }
 
-    public List<Hecho> filtrarHechos(List<Hecho> hechos, List<Criterio> criterios){
-        List<Hecho> filtrados = hechos;
-
-        for(Hecho hecho : hechos){
-            if(this.cumpleCriterios(hecho,criterios)){
-                filtrados.add(hecho);
-            }
+    public List<Hecho> filtrarHechos(List<Hecho> hechos, List<Criterio> criterios) {
+        if (hechos == null || hechos.isEmpty()) {
+            return new ArrayList<>();
         }
 
-        return filtrados;
+        return hechos.stream()
+                .filter(hecho -> this.cumpleCriterios(hecho, criterios))
+                .collect(Collectors.toList());
     }
 }

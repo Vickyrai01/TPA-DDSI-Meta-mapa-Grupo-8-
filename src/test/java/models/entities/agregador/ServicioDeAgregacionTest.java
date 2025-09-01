@@ -21,7 +21,7 @@ public class ServicioDeAgregacionTest {
     }
 
     List<HechoAIntegrarDTO> hechos = new ArrayList<>(List.of(
-            new HechoAIntegrarDTO("Robo en Palermo", "Ingresaron a un local", "Robo", "-34.5800", "-58.4200", "2025-08-20"),
+            new HechoAIntegrarDTO("Robo en Palermo", "Ingresaron a un local", "Robo", "-34.5803", "-58.4200", "2025-08-20"),
             new HechoAIntegrarDTO("  robo  en  palermo ", "ingresaron a un local", "Robo", "-34.5805", "-58.4200", "2025-08-20"),
             new HechoAIntegrarDTO("  robo  en  palermo ", "ingresaron a un local", "Robo", "-34.5805", "-58.4200", "2025-08-20"),
 
@@ -40,6 +40,7 @@ public class ServicioDeAgregacionTest {
     @Test
     void eliminoDuplicadosExitosamente(){
             servicioDeAgregacion.eliminarDuplicados(hechos);
+            System.out.print(hechos);
             assertEquals(3, hechos.size());
     }
 

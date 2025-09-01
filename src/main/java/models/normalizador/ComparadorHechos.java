@@ -112,7 +112,7 @@ public class ComparadorHechos {
         if (sGeo != null) add("ubicacion", sGeo, wUbicacion, parts, scores, weights);
 
         // Fecha
-        Double sFecha = dateSim(a.getFechaDeHecho(), b.getFechaDeHecho());
+        Double sFecha = dateSim(a.getFechaSuceso(), b.getFechaSuceso());
         if (sFecha != null) add("fecha", sFecha, wFecha, parts, scores, weights);
 
         double totalWeight = weights.stream().mapToDouble(Double::doubleValue).sum();
