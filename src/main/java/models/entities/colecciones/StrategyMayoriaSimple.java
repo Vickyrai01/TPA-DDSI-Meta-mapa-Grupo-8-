@@ -49,17 +49,6 @@ public class StrategyMayoriaSimple extends AlgoritmoConsenso {
         return hechosVisibles;
     }
 
-    public List<Hecho> obtenerHechosPorHash(List<Hecho> hechos, String hash) {
 
-        List<Hecho> hechosConMismoHash = new ArrayList<>();
-
-        for (Hecho hecho : hechos) {
-            if (hecho.getHash().equals(hash)) {
-                hechosConMismoHash.add(hecho);
-            }
-        }
-
-        return hechosConMismoHash;
-    }
 
 }

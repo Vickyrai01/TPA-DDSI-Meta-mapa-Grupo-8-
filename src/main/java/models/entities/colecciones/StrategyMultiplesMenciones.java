@@ -69,20 +69,6 @@ public class StrategyMultiplesMenciones extends AlgoritmoConsenso {
         return false;
     }
 
-    public List<Hecho> obtenerHechosPorHash(List<Hecho> hechos, String hash) {
-
-        List<Hecho> hechosConMismoHash = new ArrayList<>();
-
-        for (Hecho hecho : hechos) {
-            if (hecho.getHash().equals(hash)) {
-                hechosConMismoHash.add(hecho);
-            }
-        }
-
-        return hechosConMismoHash;
-    }
-
-
     public List<Hecho> obtenerHechosDiferentesAHash(List<Hecho> hechos, String hash) {
         List<Hecho> hechosConDiferenteHash = new ArrayList<>();
 
