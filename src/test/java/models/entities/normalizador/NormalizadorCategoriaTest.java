@@ -1,7 +1,7 @@
 package models.entities.normalizador;
 
 import models.entities.hecho.Categoria;
-import models.entities.hecho.HechoAIntegrarDTO;
+import api.dto.HechoAIntegrarDTO;
 import models.normalizador.NormalizadorCategoria;
 import models.repository.CategoriaRepository;
 import org.junit.jupiter.api.BeforeEach;

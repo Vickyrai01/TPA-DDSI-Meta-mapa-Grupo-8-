@@ -21,7 +21,7 @@ public class SchedulerAgregador {
         enEjecucion = true;
         System.out.println("Iniciando scheduler...");
 
-        scheduler.scheduleAtFixedRate(this::verificarNuevosHechos,0,10, TimeUnit.MINUTES);
+        scheduler.scheduleAtFixedRate(this::verificarNuevosHechos,0,30, TimeUnit.SECONDS);
     }
 
     private void verificarNuevosHechos() {

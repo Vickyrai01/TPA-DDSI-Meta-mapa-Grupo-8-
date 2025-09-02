@@ -1,6 +1,6 @@
 package models.repository;
 
-import models.entities.hecho.HechoAIntegrarDTO;
+import api.dto.HechoAIntegrarDTO;
 
 import java.util.*;
 

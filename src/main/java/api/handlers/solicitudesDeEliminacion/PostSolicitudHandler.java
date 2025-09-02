@@ -27,9 +27,7 @@ public class PostSolicitudHandler implements Handler {
         SolicitudDeEliminacion solicitud = new SolicitudDeEliminacion(
                 dto.id,
                 hecho,
-                dto.descripcion,
-                dto.aceptada,
-                dto.fechaDeRevision
+                dto.descripcion
         );
 
         System.out.println(solicitud);

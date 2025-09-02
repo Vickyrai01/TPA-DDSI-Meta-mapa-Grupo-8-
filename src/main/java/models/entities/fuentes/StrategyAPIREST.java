@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import models.entities.colecciones.criterios.FiltradorCriterios;
-import models.entities.hecho.HechoAIntegrarDTO;
+import api.dto.HechoAIntegrarDTO;
 import models.repository.HechosRepository;
 import org.apache.cxf.jaxrs.client.WebClient;
 

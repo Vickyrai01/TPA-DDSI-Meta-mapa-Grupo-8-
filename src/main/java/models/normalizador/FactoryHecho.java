@@ -1,5 +1,6 @@
 package models.normalizador;
 
+import api.dto.HechoAIntegrarDTO;
 import models.entities.fuentes.TipoFuente;
 import models.entities.hecho.*;
 

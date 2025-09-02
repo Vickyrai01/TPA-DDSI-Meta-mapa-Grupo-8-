@@ -1,4 +1,4 @@
-package models.entities.hecho;
+package api.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -42,7 +42,7 @@ public class HechoAIntegrarDTO {
             @JsonProperty(value = "longitud",     required = true) String longitud,
             @JsonProperty(value = "fechaSuceso",  required = true) String fechaSuceso
     ) {
-        this.hash = HandlerRecientes.generarHash(titulo+descripcion+categoria+latitud+longitud+ fechaSuceso.substring(0,10));
+        this.hash = HandlerRecientes.generarHash(titulo+descripcion+categoria+latitud+longitud);
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.categoria = categoria;
@@ -61,7 +61,7 @@ public class HechoAIntegrarDTO {
     public HechoAIntegrarDTO(String titulo, String descripcion, String categoria, String latitud, String longitud, String fechaSuceso,
                              List<String> etiquetas, String contribuyente, List<String> multimedia)
     {
-        this.hash = HandlerRecientes.generarHash(titulo+descripcion+categoria+latitud+longitud+ fechaSuceso.substring(0,10));
+        this.hash = HandlerRecientes.generarHash(titulo+descripcion+categoria+latitud+longitud);
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.categoria = categoria;

@@ -1,6 +1,6 @@
 package models.agregador;
 
-import models.entities.hecho.HechoAIntegrarDTO;
+import api.dto.HechoAIntegrarDTO;
 import models.repository.HechosRepository;
 
 import java.security.MessageDigest;

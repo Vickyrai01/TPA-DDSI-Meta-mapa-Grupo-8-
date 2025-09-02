@@ -1,7 +1,7 @@
 package models.entities.fuentes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import models.entities.hecho.HechoAIntegrarDTO;
+import api.dto.HechoAIntegrarDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;

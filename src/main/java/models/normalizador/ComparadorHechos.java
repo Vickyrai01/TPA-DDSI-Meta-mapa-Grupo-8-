@@ -1,6 +1,6 @@
 package models.normalizador;
 
-import models.entities.hecho.HechoAIntegrarDTO;
+import api.dto.HechoAIntegrarDTO;
 import models.agregador.ServicioDeAgregacion;
 
 import java.text.Normalizer;

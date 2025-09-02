@@ -1,6 +1,6 @@
 package models.entities.agregador;
 
-import models.entities.hecho.HechoAIntegrarDTO;
+import api.dto.HechoAIntegrarDTO;
 import models.agregador.ServicioDeAgregacion;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

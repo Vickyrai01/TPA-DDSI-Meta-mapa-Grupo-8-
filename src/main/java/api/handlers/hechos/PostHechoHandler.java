@@ -2,7 +2,7 @@ package api.handlers.hechos;
 
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
-import models.entities.hecho.HechoAIntegrarDTO;
+import api.dto.HechoAIntegrarDTO;
 import models.repository.DinamicaRepository;
 import org.jetbrains.annotations.NotNull;
 

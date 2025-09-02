@@ -3,7 +3,7 @@ package models.entities.fuentes;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import models.entities.colecciones.criterios.*;
-import models.entities.hecho.HechoAIntegrarDTO;
+import api.dto.HechoAIntegrarDTO;
 
 import java.util.List;
 

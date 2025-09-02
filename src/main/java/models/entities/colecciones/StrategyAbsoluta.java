@@ -1,12 +1,10 @@
 package models.entities.colecciones;
 import models.entities.fuentes.Fuente;
 import models.entities.hecho.Hecho;
-import models.entities.hecho.HechoAIntegrarDTO;
 import models.repository.HechosRepository;
 import models.repository.FuentesRepository;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class StrategyAbsoluta extends AlgoritmoConsenso {

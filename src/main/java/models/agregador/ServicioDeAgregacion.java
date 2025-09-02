@@ -8,7 +8,7 @@ import models.entities.colecciones.criterios.Criterio;
 import models.entities.colecciones.criterios.FiltradorCriterios;
 import models.entities.hecho.Categoria;
 import models.entities.hecho.Hecho;
-import models.entities.hecho.HechoAIntegrarDTO;
+import api.dto.HechoAIntegrarDTO;
 import models.entities.solicitud.DetectorDeSpam;
 import models.normalizador.ComparadorHechos;
 import models.normalizador.FactoryHecho;
@@ -80,13 +80,13 @@ public class ServicioDeAgregacion {
         for (CargadorFuente cargador : cargadoresFuentes) {
                 List<HechoAIntegrarDTO> lista = cargador.extraerHechosAIntegrar();  //extraerHechosRecientes();
                 eliminarSpam(lista);
-            System.out.println("Pase eliminar spam");
+            //System.out.println("Pase eliminar spam");
                 eliminarDuplicados(lista);
-            System.out.println("Pase eliminar duplicados");
+            //System.out.println("Pase eliminar duplicados");
                 normalizadorCategoria.estandarizarCategoriasDuplicadas(lista);
-            System.out.println("Pase el normalizador");
+            //System.out.println("Pase el normalizador");
                 hechosAIntegrar.addAll(lista);
-                System.out.println("Hechos extraidos de la fuente: " + cargador.getClass().getSimpleName() + " " + lista.size() + "");
+                //System.out.println("Hechos extraidos de la fuente: " + cargador.getClass().getSimpleName() + " " + lista.size() + "");
             }
     }
 
@@ -96,7 +96,7 @@ public class ServicioDeAgregacion {
 
 
     public void eliminarDuplicados(List<HechoAIntegrarDTO> hechos) {
-        System.out.print(hechos);
+        //System.out.print(hechos);
         Objects.requireNonNull(hechos, "lista nula");
         if (hechos.isEmpty() || hechos.size() == 1) return;
         for (int i = 0; i < hechos.size(); i++) {
@@ -124,7 +124,6 @@ public class ServicioDeAgregacion {
                 LocalDate fecha = normalizadorFecha.normalizarFecha(dto.getFechaSuceso());
                 Hecho hecho = factoryHecho.convertirHecho(dto, fecha, categoria);
                 hechosLimpios.add(hecho);
-                hechoRepository.add(hecho);
             } catch (NormalizadorFecha.ExcepcionRevisionManualFecha e) {
                 //Enviar a revisión manual
                 hechoRevisionManual.add(dto);
@@ -137,7 +136,7 @@ public class ServicioDeAgregacion {
             List<Criterio> criterios = coleccion.getCriterioDePertenencia();
             List<Hecho> hechosFiltrados = filtradorCriterios.filtrarHechos(hechosLimpios, criterios);
             for (Hecho hecho : hechosFiltrados) {
-
+                hechoRepository.add(hecho);
                 coleccion.agregarHecho(hecho);
             }
     }
@@ -148,16 +147,18 @@ public class ServicioDeAgregacion {
         hechosLimpios.clear();
 
         obtenerTodosLosHechosNuevos();
-        System.out.println("Obtuve todos los hechos nuevos!");
+        System.out.println("Obtuve los hechos nuevos...");
         normalizarYCrearHechos();
-        System.out.println("Hechos limpiados y normalizados!");
+        System.out.println("Hechos limpiados y normalizados....");
 
         for (Coleccion coleccion : coleccionesRepository.obtenerTodas()) {
             System.out.println(coleccion.toString());
             agregarHechosAColecciones(coleccion);
-            System.out.println("Agregue a colección");
+            System.out.println("**Agregue a colección**");
         }
 
+        System.out.println("**Hay " + hechosLimpios.size() + " nuevos hechos extraidos**");
+        System.out.println("**Hay " + hechoRepository.obtenerTodas().size() + " hechos en el repositorio**");
         hechosAIntegrar.clear();
         hechosLimpios.clear();
     }
