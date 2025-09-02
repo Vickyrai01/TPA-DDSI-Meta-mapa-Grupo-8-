@@ -49,7 +49,7 @@ public class Hecho {
                  Estado estado, Contribuyente contribuyente,
                  LocalDate fechaCarga, LocalDate fechaSuceso,
                  TipoFuente fuenteDeOrigen,
-                 List<Etiqueta> etiquetas, String descripcion, String titulo,String codigoDeFuente) {
+                 List<Etiqueta> etiquetas, String descripcion, String titulo,String codigoDeFuente, String hash) {
 
         this.id = id;
         this.ubicacion = ubicacion;
@@ -66,6 +66,7 @@ public class Hecho {
         this.descripcion = descripcion;
         this.titulo = titulo;
         this.codigoDeFuente = codigoDeFuente;
+        this.hash = hash;
     }
 
     private Integer id;

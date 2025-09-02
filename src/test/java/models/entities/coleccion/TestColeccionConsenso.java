@@ -57,32 +57,32 @@ public class TestColeccionConsenso {
                 LocalDate.now(), null, Estado.ACEPTADO, null,
                 LocalDate.now(), LocalDate.now().minusDays(1),
                 TipoFuente.ESTATICA, null,
-                "Incendio grave en zona residencial", "Incendio en Barrio Norte", fuente1.getCodigoDeFuente());
+                "Incendio grave en zona residencial", "Incendio en Barrio Norte", fuente1.getCodigoDeFuente(),"12");
 
         Hecho hecho1Fuente2 = new Hecho(2, coordenadas1, categoriaIncendio, null,
                 LocalDate.now(), null, Estado.ACEPTADO, null,
                 LocalDate.now(), LocalDate.now().minusDays(1),
                 TipoFuente.DINAMICA, null,
-                "Fuego detectado en área residencial", "Incendio en Barrio Norte", fuente1.getCodigoDeFuente());
+                "Fuego detectado en área residencial", "Incendio en Barrio Norte", fuente1.getCodigoDeFuente(),"12");
 
         Hecho hecho1Fuente3 = new Hecho(3, coordenadas1, categoriaIncendio, null,
                 LocalDate.now(), null, Estado.ACEPTADO, null,
                 LocalDate.now(), LocalDate.now().minusDays(1),
                 TipoFuente.ESTATICA, null,
-                "Se reporta incendio en vivienda", "Incendio en Barrio Norte", fuente2.getCodigoDeFuente());
+                "Se reporta incendio en vivienda", "Incendio en Barrio Norte", fuente2.getCodigoDeFuente(),"12");
 
         // Hechos diferentes
         Hecho hecho2 = new Hecho(4, coordenadas2, categoriaChoque, null,
                 LocalDate.now(), null, Estado.ACEPTADO, null,
                 LocalDate.now(), LocalDate.now().minusDays(2),
                 TipoFuente.ESTATICA, null,
-                "Colisión entre dos vehículos", "Accidente en Avenida Principal", fuente2.getCodigoDeFuente());
+                "Colisión entre dos vehículos", "Accidente en Avenida Principal", fuente2.getCodigoDeFuente(),"12");
 
         Hecho hecho3 = new Hecho(5, coordenadas3, categoriaIncendio, null,
                 LocalDate.now(), null, Estado.ACEPTADO, null,
                 LocalDate.now(), LocalDate.now().minusDays(3),
                 TipoFuente.PROXY, null,
-                "Incendio forestal detectado", "Incendio en Reserva Natural", fuente2.getCodigoDeFuente());
+                "Incendio forestal detectado", "Incendio en Reserva Natural", fuente2.getCodigoDeFuente(), "12");
 
         hechos.addAll(Arrays.asList(hecho1Fuente1, hecho1Fuente2, hecho1Fuente3, hecho2, hecho3));
 
@@ -114,15 +114,19 @@ public class TestColeccionConsenso {
                 LocalDate.now(), null, Estado.ACEPTADO, null,
                 LocalDate.now(), LocalDate.now(),
                 TipoFuente.ESTATICA, null,
-                "Incendio grave", "Incendio en Barrio Norte", "c1");
+                "Incendio grave", "Incendio en Barrio Norte", "c1", "1234");
 
         Hecho hecho2 = new Hecho(2, coordenadas1, categoriaIncendio, null,
                 LocalDate.now(), null, Estado.ACEPTADO, null,
                 LocalDate.now(), LocalDate.now(),
                 TipoFuente.ESTATICA, null,
-                "Incendio grave", "Incendio en Barrio Norte", "c1");
+                "Incendio grave", "Incendio en Barrio Norte", "c1", "1234");
 
-        //assertTrue(coleccion.algoritmoConsenso.sonHechosIguales(hecho1, hecho2));
+        List<Hecho> hechos = Arrays.asList(hecho1, hecho2);
+
+        List<Hecho> hechosConMismoHash = coleccion.algoritmoConsenso.obtenerHechosPorHash(hechos, hecho1.getHash());
+
+        assertEquals(2, (hechosConMismoHash).size());
     }
 
     @Test
@@ -135,13 +139,13 @@ public class TestColeccionConsenso {
                 fechaHoy, null, Estado.ACEPTADO, null,
                 fechaHoy, fechaHoy,
                 TipoFuente.ESTATICA, null,
-                "Incendio grave", "Incendio en Barrio Norte", "C1");
+                "Incendio grave", "Incendio en Barrio Norte", "C1","12");
 
         Hecho hecho2 = new Hecho(2, coordenadas2, categoriaIncendio, null,
                 fechaAyer, null, Estado.ACEPTADO, null,
                 fechaAyer, fechaAyer,
                 TipoFuente.ESTATICA, null,
-                "Fuego en edificio", "Incendio en zona norte", "C1");
+                "Fuego en edificio", "Incendio en zona norte", "C1","12");
 
         //assertTrue(coleccion.algoritmoConsenso.sonHechosSimilares(hecho1, hecho2));
     }

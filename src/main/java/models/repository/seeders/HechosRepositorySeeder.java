@@ -37,23 +37,23 @@ public class HechosRepositorySeeder {
     Hecho hecho1 = new Hecho(1, coordenadas1, categoriaIncendio, null,
             null, null, Estado.ACEPTADO, null,
             LocalDate.now().minusDays(2), LocalDate.now().minusDays(3),
-            TipoFuente.ESTATICA, null, "No hubo heridos, fue por una sartén", "Incendio en casa", "C1");
+            TipoFuente.ESTATICA, null, "No hubo heridos, fue por una sartén", "Incendio en casa", "C1","12");
     Hecho hecho2 = new Hecho(2, coordenadas2, categoriaChoque, null,
             null, null, Estado.ACEPTADO, null,
             LocalDate.now().minusDays(2), LocalDate.now().minusDays(3),
-            TipoFuente.ESTATICA, null, "Un perro cruzo por la calle y frenó de golpe, todos a salvo.", "Choque entre moto y gol", "C1");
+            TipoFuente.ESTATICA, null, "Un perro cruzo por la calle y frenó de golpe, todos a salvo.", "Choque entre moto y gol", "C1","12");
     Hecho hecho3 = new Hecho(3, coordenadas3, categoriaIncendio, null,
             null, null, Estado.ACEPTADO, null,
             LocalDate.now().minusDays(1), LocalDate.now().minusDays(2),
-            TipoFuente.ESTATICA, null, "Causa desconocida", "Departamento en un edicio", "C3");
+            TipoFuente.ESTATICA, null, "Causa desconocida", "Departamento en un edicio", "C3","12");
     Hecho hecho4 = new Hecho(4, coordenadas4, categoriaChoque, null,
             null, null, Estado.ACEPTADO, null,
             LocalDate.now().minusDays(1), LocalDate.now().minusDays(2),
-            TipoFuente.ESTATICA, null, "Parecía que el conductor iba borracho, se llevó puesto una maceta que estaba en la calle", "Choque con maceta", "C2");
+            TipoFuente.ESTATICA, null, "Parecía que el conductor iba borracho, se llevó puesto una maceta que estaba en la calle", "Choque con maceta", "C2","12");
     Hecho hecho5 = new Hecho(5, coordenadas1, categoriaRobo, null,
             null, null, Estado.ACEPTADO, null,
             LocalDate.now().minusDays(5), LocalDate.now().minusDays(6),
-            TipoFuente.ESTATICA, null, "Se robó unas manzanas y bolsas", "Hurto en una verdulería", "C4");
+            TipoFuente.ESTATICA, null, "Se robó unas manzanas y bolsas", "Hurto en una verdulería", "C4","12");
 
     HechosRepository hechosRepository = HechosRepository.getInstance();
 
