@@ -2,7 +2,7 @@ package models.agregador.cargadores;
 
 import models.entities.fuentes.Fuente;
 import models.entities.fuentes.TipoFuente;
-import models.entities.hecho.HechoAIntegrarDTO;
+import api.dto.HechoAIntegrarDTO;
 import models.repository.FuentesRepository;
 import models.agregador.HandlerRecientes;
 
@@ -40,6 +40,7 @@ public class CargadorEstatico implements CargadorFuente {
             }
             fuente.actualizarUltimoProcesado();
         }
+        System.out.println("Total hechos estaticos obtenidos: " + hechosAIntegrar.size());
         return hechosAIntegrar;
     }
 

@@ -2,7 +2,7 @@ package models.agregador.cargadores;
 
 import models.repository.DinamicaRepository;
 import models.entities.fuentes.Fuente;
-import models.entities.hecho.HechoAIntegrarDTO;
+import api.dto.HechoAIntegrarDTO;
 
 import java.util.List;
 

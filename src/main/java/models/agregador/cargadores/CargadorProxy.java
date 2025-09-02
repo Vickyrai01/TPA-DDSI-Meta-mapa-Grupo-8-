@@ -5,7 +5,7 @@ import java.util.List;
 
 import models.entities.fuentes.Fuente;
 import models.entities.fuentes.TipoFuente;
-import models.entities.hecho.HechoAIntegrarDTO;
+import api.dto.HechoAIntegrarDTO;
 import models.repository.FuentesRepository;
 import models.agregador.HandlerRecientes;
 
@@ -33,7 +33,6 @@ public class CargadorProxy implements CargadorFuente {
     public List<HechoAIntegrarDTO> extraerHechosAIntegrar() {
         List<Fuente> fuentesObtenidas = obtenerFuentes();
         List<HechoAIntegrarDTO> hechosAIntegrar = new ArrayList<>();
-        System.out.println("Cargando hechos de fuentes proxy: " + fuentesObtenidas.size());
 
         for (Fuente fuente : fuentesObtenidas) {
             try {
