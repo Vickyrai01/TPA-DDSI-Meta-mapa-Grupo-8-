@@ -1,10 +1,11 @@
 {
 	"info": {
-		"_postman_id": "48da1d58-0d42-4ee3-b119-498aa101bc7d",
+		"_postman_id": "b4cae596-a240-496e-82bd-1954a8a08c12",
 		"name": "API metamapa",
 		"description": "\\*Consulta de hechos dentro de una colección.  \n\\*Generar una solicitud de eliminación a un hecho.  \n\\*Navegación filtrada sobre una colección.  \n\\*Navegación curada o irrestricta sobre una colección.  \n\\*Reportar un hechoEndFragment",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "42598532"
+		"_exporter_id": "45683968",
+		"_collection_link": "https://juanignacio-1433487.postman.co/workspace/Juan-Ignacio's-Workspace~3e3ffc2e-1fb1-473e-88b2-15a99c4bd564/collection/45683968-b4cae596-a240-496e-82bd-1954a8a08c12?action=share&source=collection_link&creator=45683968"
 	},
 	"item": [
 		{
@@ -37,7 +38,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": " {\r\n        \"id\": 4,\r\n        \"hecho\": 2,\r\n        \"descripcion\": \"pruebaaa\",\r\n        \"aceptada\": null,\r\n        \"fechaDeRevision\": null\r\n    }",
+					"raw": " {\r\n        \"id\": 4,\r\n        \"hecho\": 2,\r\n        \"descripcion\": \"pruebaaa\"\r\n    }",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -45,12 +46,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8081/api/solicitudes",
+					"raw": "http://localhost:8082/api/solicitudes",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8081",
+					"port": "8082",
 					"path": [
 						"api",
 						"solicitudes"
@@ -98,7 +99,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": 5, \r\n    \"titulo\": \"prueba\", \r\n    \"descripcion\": \"descripcion\", \r\n    \"fechaSuceso\": [\r\n                    2025,\r\n                    7,\r\n                    6],\r\n    \"latitud\": 1, \r\n    \"longitud\": 2\r\n}\r\n",
+					"raw": "{\r\n    \"id\": 5, \r\n    \"titulo\": \"prueba\", \r\n    \"descripcion\": \"descripcion\", \r\n    \"fechaSuceso\": \"2025-7-6\",\r\n    \"latitud\": 1, \r\n    \"longitud\": 2,\r\n    \"categoria\": \"PRUEBA\"\r\n}\r\n",
 					"options": {
 						"raw": {
 							"language": "json"

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.time.LocalDate;
 import java.util.List;
-
+import java.util.Objects;
 
 
 public class Hecho {
@@ -195,7 +195,10 @@ public class Hecho {
     }
 
     public Integer idFuente;
-    public Integer getIdFuente() {return idFuente;}
+    public Integer getIdFuente() {
+        return Objects.requireNonNullElse(idFuente, -1);
+    }
+
     public void setIdFuente(Integer idFuente) {this.idFuente = idFuente;}
 
     public Hecho(){}
