@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import models.agregador.HandlerRecientes;
+import models.entities.fuentes.TipoFuente;
 
 import java.util.List;
 
@@ -26,11 +27,11 @@ public class HechoAIntegrarDTO {
     public List<String> etiquetas;
     public String contribuyente;
     public List<String> multimedia; //A CHEQUEAR !!!!
+    public String tipoFuente;
 
     @JsonProperty(access = Access.READ_ONLY)             // flag interno; no lo pidas en el request
     public Boolean fueExtraido;
 
-    // Jackson puede usar este no-args si querés, pero preferimos el @JsonCreator
     public HechoAIntegrarDTO() {}
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -54,6 +55,7 @@ public class HechoAIntegrarDTO {
         this.etiquetas = null;
         this.contribuyente = null;
         this.multimedia = null;
+        this.tipoFuente = null;
 
         this.fueExtraido = Boolean.FALSE; // default interno
     }
@@ -71,6 +73,7 @@ public class HechoAIntegrarDTO {
         this.etiquetas = etiquetas;
         this.contribuyente = contribuyente;
         this.multimedia = multimedia;
+        this.tipoFuente = null;
     }
 
     public String getTitulo() { return titulo; }
@@ -86,6 +89,8 @@ public class HechoAIntegrarDTO {
     public String getFechaSuceso() { return fechaSuceso; }
     public void setFechaSuceso(String fechaSuceso) { this.fechaSuceso = fechaSuceso; }
     public String getHash() { return hash; }
+    public String getTipoFuente() {return tipoFuente;}
+    public void setTipoFuente(String fuente) {this.tipoFuente = fuente;};
 
     public Boolean tieneMismoTitulo(String tituloExterno){
         String tituloPropioLimpio = this.getTitulo().toLowerCase().replace(" ","");

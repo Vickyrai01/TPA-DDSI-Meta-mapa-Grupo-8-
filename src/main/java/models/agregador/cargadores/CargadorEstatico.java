@@ -35,6 +35,7 @@ public class CargadorEstatico implements CargadorFuente {
             List<HechoAIntegrarDTO> hechosDeFuente = fuente.extraerHechos();
             for (HechoAIntegrarDTO hecho : hechosDeFuente) {
                 if (handlerRecientes.esReciente(hecho)) {
+                    hecho.setTipoFuente("ESTATICA");
                     hechosAIntegrar.add(hecho);
                 }
             }

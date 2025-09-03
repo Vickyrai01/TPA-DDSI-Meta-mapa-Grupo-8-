@@ -20,9 +20,10 @@ import models.agregador.cargadores.CargadorEstatico;
 import models.agregador.cargadores.CargadorFuente;
 import models.agregador.cargadores.CargadorProxy;
 import models.repository.HechosRepository;
+import models.repository.RevisionManualRepository;
 
 public class ServicioDeAgregacion {
-    private List<HechoAIntegrarDTO> hechoRevisionManual = new ArrayList<>();
+    private RevisionManualRepository revisionManualRepository = RevisionManualRepository.getInstance();
 
     private List<HechoAIntegrarDTO> hechosAIntegrar = new ArrayList<>();
     private List<Hecho> hechosLimpios = new ArrayList<>();
@@ -126,7 +127,7 @@ public class ServicioDeAgregacion {
                 hechosLimpios.add(hecho);
             } catch (NormalizadorFecha.ExcepcionRevisionManualFecha e) {
                 //Enviar a revisión manual
-                hechoRevisionManual.add(dto);
+                revisionManualRepository.add(dto);
              }
         }
     }
@@ -159,6 +160,8 @@ public class ServicioDeAgregacion {
 
         System.out.println("**Hay " + hechosLimpios.size() + " nuevos hechos extraidos**");
         System.out.println("**Hay " + hechoRepository.obtenerTodas().size() + " hechos en el repositorio**");
+        System.out.println("**Hay " + revisionManualRepository.obtenerTodas().size() + " hechos aguardando revisión manual**");
+        System.out.println("*************************");
         hechosAIntegrar.clear();
         hechosLimpios.clear();
     }

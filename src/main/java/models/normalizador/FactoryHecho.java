@@ -31,6 +31,7 @@ public class FactoryHecho {
         // Convertir Coordenadas
         double latitud = Double.parseDouble(hecho.getLatitud());
         double longitud = Double.parseDouble(hecho.getLongitud());
+        TipoFuente tipoFuente = TipoFuente.valueOf(hecho.getTipoFuente());
         Coordenadas ubicacion = new Coordenadas(latitud, longitud);
 
         return new Hecho(
@@ -44,7 +45,7 @@ public class FactoryHecho {
                 null,
                 LocalDate.now(),
                 fecha,
-                TipoFuente.ESTATICA, //Evaluar
+                tipoFuente, //Evaluar
                 null,
                 hecho.getDescripcion(),
                 hecho.getTitulo(),
