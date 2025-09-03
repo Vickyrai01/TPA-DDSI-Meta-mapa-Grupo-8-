@@ -1,10 +1,11 @@
 package models.entities.solicitud;
 
+import models.agregador.DetectorDeSpam;
 import models.entities.hecho.Hecho;
 
 import java.time.LocalDateTime;
 
-public class SolicitudDeEliminacion implements DetectorDeSpam {
+public class SolicitudDeEliminacion {
 
     public SolicitudDeEliminacion(Integer id, Hecho hecho, String descripcion, Boolean aceptada, LocalDateTime fechaDeRevision) {
         this.id = id;
