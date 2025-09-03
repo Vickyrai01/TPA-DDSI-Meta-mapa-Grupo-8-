@@ -45,13 +45,13 @@ public class FactoryHecho {
                 null,
                 LocalDate.now(),
                 fecha,
-                tipoFuente, //Evaluar
+                tipoFuente,
                 null,
                 hecho.getDescripcion(),
                 hecho.getTitulo(),
                 null,
                 hecho.getHash(),
-                null //VER ID DE FUENTE
+                hecho.getIdFuente()
         );
     }
 

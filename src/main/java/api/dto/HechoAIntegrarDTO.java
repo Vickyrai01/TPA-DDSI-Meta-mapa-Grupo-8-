@@ -32,6 +32,8 @@ public class HechoAIntegrarDTO {
     @JsonProperty(access = Access.READ_ONLY)             // flag interno; no lo pidas en el request
     public Boolean fueExtraido;
 
+    public Integer idFuente;
+
     public HechoAIntegrarDTO() {}
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -91,6 +93,9 @@ public class HechoAIntegrarDTO {
     public String getHash() { return hash; }
     public String getTipoFuente() {return tipoFuente;}
     public void setTipoFuente(String fuente) {this.tipoFuente = fuente;};
+    public Integer getIdFuente() {return idFuente;}
+    public void setIdFuente(Integer idFuente) {this.idFuente = idFuente;};
+
 
     public Boolean tieneMismoTitulo(String tituloExterno){
         String tituloPropioLimpio = this.getTitulo().toLowerCase().replace(" ","");

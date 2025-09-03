@@ -2,6 +2,7 @@ package models.agregador;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import models.entities.colecciones.Coleccion;
 import models.entities.colecciones.criterios.Criterio;
@@ -135,8 +136,12 @@ public class ServicioDeAgregacion {
     private void agregarHechosAColecciones(Coleccion coleccion)
     {
             List<Criterio> criterios = coleccion.getCriterioDePertenencia();
-            List<Hecho> hechosFiltrados = filtradorCriterios.filtrarHechos(hechosLimpios, criterios);
-            for (Hecho hecho : hechosFiltrados) {
+            List<Integer> linkFuentesDeColeccion = coleccion.getFuentes().stream()
+                .map(f -> f.getId())
+                .toList();
+            List<Hecho> hechosFiltradosFuentes = hechosLimpios.stream().filter(h -> linkFuentesDeColeccion.contains(h.getIdFuente())).toList();
+            List<Hecho> hechosFiltradosCriterio = filtradorCriterios.filtrarHechos(hechosFiltradosFuentes, criterios);
+            for (Hecho hecho : hechosFiltradosCriterio) {
                 hechoRepository.add(hecho);
                 coleccion.agregarHecho(hecho);
             }
@@ -151,6 +156,7 @@ public class ServicioDeAgregacion {
         System.out.println("Obtuve los hechos nuevos...");
         normalizarYCrearHechos();
         System.out.println("Hechos limpiados y normalizados....");
+        System.out.println("**Hay " + hechosLimpios.size() + " nuevos hechos extraidos**");
 
         for (Coleccion coleccion : coleccionesRepository.obtenerTodas()) {
             System.out.println(coleccion.toString());
@@ -158,8 +164,7 @@ public class ServicioDeAgregacion {
             System.out.println("**Agregue a colección**");
         }
 
-        System.out.println("**Hay " + hechosLimpios.size() + " nuevos hechos extraidos**");
-        System.out.println("**Hay " + hechoRepository.obtenerTodas().size() + " hechos en el repositorio**");
+        System.out.println("**Se agregaron " + hechoRepository.obtenerTodas().size() + " hechos en el repositorio**");
         System.out.println("**Hay " + revisionManualRepository.obtenerTodas().size() + " hechos aguardando revisión manual**");
         System.out.println("*************************");
         hechosAIntegrar.clear();
