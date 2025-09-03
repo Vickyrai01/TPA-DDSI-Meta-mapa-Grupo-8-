@@ -1,4 +1,4 @@
-package models.normalizador;
+package models.agregador.normalizador;
 
 import java.time.*;
 import java.time.format.*;

@@ -47,8 +47,9 @@ public class FuentesRepository {
         fuentes.add(h);
     }
 
-    public static List<Fuente> filtrarFuente(TipoFuente tipoFuente) {
+    public static List<Fuente> filtrarFuente(String tipoFuente) {
+        TipoFuente tipoFuenteClase = TipoFuente.valueOf(tipoFuente.trim().toUpperCase());
         return fuentes.stream()
-                .filter(f -> f.getTipoFuente() == tipoFuente).toList();
+                .filter(f -> f.getTipoFuente() == tipoFuenteClase).toList();
     }
     }

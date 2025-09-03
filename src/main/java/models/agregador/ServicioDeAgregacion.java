@@ -2,7 +2,6 @@ package models.agregador;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import models.entities.colecciones.Coleccion;
 import models.entities.colecciones.criterios.Criterio;
@@ -10,11 +9,10 @@ import models.entities.colecciones.criterios.FiltradorCriterios;
 import models.entities.hecho.Categoria;
 import models.entities.hecho.Hecho;
 import api.dto.HechoAIntegrarDTO;
-import models.entities.solicitud.DetectorDeSpam;
-import models.normalizador.ComparadorHechos;
-import models.normalizador.FactoryHecho;
-import models.normalizador.NormalizadorCategoria;
-import models.normalizador.NormalizadorFecha;
+import models.agregador.normalizador.ComparadorHechos;
+import models.agregador.normalizador.FactoryHecho;
+import models.agregador.normalizador.NormalizadorCategoria;
+import models.agregador.normalizador.NormalizadorFecha;
 import models.repository.ColeccionesRepository;
 import models.agregador.cargadores.CargadorDinamico;
 import models.agregador.cargadores.CargadorEstatico;

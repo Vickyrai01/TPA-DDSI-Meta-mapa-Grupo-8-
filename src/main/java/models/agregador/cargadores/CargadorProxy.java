@@ -12,8 +12,6 @@ import models.agregador.HandlerRecientes;
 public class CargadorProxy implements CargadorFuente {
 
     private static volatile CargadorProxy instance;
-
-    private static final TipoFuente tipoConexion = TipoFuente.PROXY;
     private static HandlerRecientes handlerRecientes = HandlerRecientes.getInstance();
     private  FuentesRepository fuentesRepository = FuentesRepository.getInstance();
 
@@ -59,7 +57,7 @@ public class CargadorProxy implements CargadorFuente {
 
 
     public List<Fuente> obtenerFuentes() {
-        return fuentesRepository.filtrarFuente(tipoConexion);
+        return fuentesRepository.filtrarFuente("PROXY");
     }
 
 }

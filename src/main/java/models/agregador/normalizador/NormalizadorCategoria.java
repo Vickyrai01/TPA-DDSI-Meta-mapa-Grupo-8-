@@ -1,4 +1,4 @@
-package models.normalizador;
+package models.agregador.normalizador;
 
 import models.entities.hecho.Categoria;
 import api.dto.HechoAIntegrarDTO;

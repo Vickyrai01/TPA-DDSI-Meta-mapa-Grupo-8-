@@ -12,7 +12,6 @@ import java.util.List;
 public class CargadorEstatico implements CargadorFuente {
 
     private static volatile CargadorEstatico instance;
-    private static final TipoFuente tipoConexion = TipoFuente.ESTATICA;
     private static HandlerRecientes handlerRecientes = HandlerRecientes.getInstance();
     private  FuentesRepository fuentesRepository = FuentesRepository.getInstance();
     
@@ -47,7 +46,7 @@ public class CargadorEstatico implements CargadorFuente {
     }
 
     public List<Fuente> obtenerFuentes() {
-        return fuentesRepository.filtrarFuente(tipoConexion);
+        return fuentesRepository.filtrarFuente("ESTATICA");
     }
 
 

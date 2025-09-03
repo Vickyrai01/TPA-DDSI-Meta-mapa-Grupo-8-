@@ -1,4 +1,4 @@
-package models.normalizador;
+package models.agregador.normalizador;
 
 import api.dto.HechoAIntegrarDTO;
 import models.entities.fuentes.TipoFuente;
