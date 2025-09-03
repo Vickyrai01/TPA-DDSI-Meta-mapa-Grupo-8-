@@ -2,6 +2,7 @@ package models.agregador;
 
 import api.dto.HechoAIntegrarDTO;
 import models.repository.HechosRepository;
+import models.repository.RevisionManualRepository;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -18,6 +19,7 @@ public class HandlerRecientes {
     }
 
     HechosRepository hechosRepository = HechosRepository.getInstance();
+    private RevisionManualRepository revisionManualRepository = RevisionManualRepository.getInstance();
 
     public static String generarHash(String input) {
         try {
@@ -36,8 +38,10 @@ public class HandlerRecientes {
     }
 
     public boolean esReciente(HechoAIntegrarDTO hechoAIntegrarDTO){
-        if (hechosRepository.existeElHecho(hechoAIntegrarDTO.getHash()))
+        if (revisionManualRepository.existeElHecho(hechoAIntegrarDTO.getHash()))
             return false;
+        if(hechosRepository.existeElHecho(hechoAIntegrarDTO.getHash()))
+            {return  false; }
         else {return true;}
     }
 }

@@ -43,6 +43,7 @@ public class CargadorProxy implements CargadorFuente {
                 }
                 for (HechoAIntegrarDTO hecho : hechosDeFuente) {
                     if (handlerRecientes.esReciente(hecho)) {
+                        hecho.setTipoFuente("PROXY");
                         hechosAIntegrar.add(hecho);
                     }
                 }

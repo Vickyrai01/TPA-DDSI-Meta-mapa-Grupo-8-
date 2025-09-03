@@ -30,7 +30,9 @@ public class CargadorDinamico implements CargadorFuente {
     }
 
     public List<HechoAIntegrarDTO> extraerHechosAIntegrar() {
-        return dinamicaRepository.getHechosNoProcesados();
+        List<HechoAIntegrarDTO> hechos = dinamicaRepository.getHechosNoProcesados();
+        hechos.forEach(h -> h.setTipoFuente("DINAMICA"));
+        return hechos;
     }
 
 
