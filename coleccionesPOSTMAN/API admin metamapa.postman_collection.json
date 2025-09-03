@@ -1,10 +1,11 @@
 {
 	"info": {
-		"_postman_id": "b2d5baa9-1891-4e4b-bd0c-aa2e66faf485",
+		"_postman_id": "84f1e263-bb9b-4bd9-9a0c-abf1b4e26fbf",
 		"name": "API admin metamapa",
 		"description": "\\*Operaciones CRUD sobre las colecciones.  \n\\*Modificación del algoritmo de consenso.  \n\\*Agregar o quitar fuentes de hechos de una colección.  \n\\*Aprobar o denegar una solicitud de eliminación de un hechoEndFragment",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "42598532"
+		"_exporter_id": "45683968",
+		"_collection_link": "https://juanignacio-1433487.postman.co/workspace/Juan-Ignacio's-Workspace~3e3ffc2e-1fb1-473e-88b2-15a99c4bd564/collection/45683968-84f1e263-bb9b-4bd9-9a0c-abf1b4e26fbf?action=share&source=collection_link&creator=45683968"
 	},
 	"item": [
 		{
@@ -212,7 +213,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/colecciones/1/consenso/modificar",
+							"raw": "http://localhost:8080/api/colecciones/2/consenso/modificar",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -221,7 +222,7 @@
 							"path": [
 								"api",
 								"colecciones",
-								"1",
+								"2",
 								"consenso",
 								"modificar"
 							]
@@ -263,7 +264,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/solicitud/1/aceptar",
+							"raw": "http://localhost:8080/api/solicitudes/1/aceptar",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -271,7 +272,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"solicitud",
+								"solicitudes",
 								"1",
 								"aceptar"
 							]
@@ -286,7 +287,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/solicitud/2/rechazar",
+							"raw": "http://localhost:8080/api/solicitudes/2/rechazar",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -294,7 +295,7 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"solicitud",
+								"solicitudes",
 								"2",
 								"rechazar"
 							]
