@@ -28,7 +28,6 @@ public class DemoAgregadorCasoInicial {
 
         List<Fuente> fuentes = new ArrayList<>();
         fuentes.add(fuenteCSV);
-        fuentes.add(fuenteAPI);
 
         ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();
         Coleccion coleccionPrueba  = new Coleccion(1, "Todos", "Todos los hechos que existen", null, fuentes, null, null);
