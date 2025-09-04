@@ -1,4 +1,5 @@
 package models.entities.colecciones;
+import models.agregador.normalizador.ComparadorHechos;
 import models.entities.fuentes.Fuente;
 import models.entities.hecho.Hecho;
 import models.repository.HechosRepository;
@@ -6,6 +7,7 @@ import models.repository.FuentesRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class StrategyAbsoluta extends AlgoritmoConsenso {
 
@@ -29,11 +31,10 @@ public class StrategyAbsoluta extends AlgoritmoConsenso {
         }
 
         for(Hecho hecho: hechos){
-            String hash= hecho.getHash();
-            List<Hecho> hechosMismoHash = obtenerHechosPorHash(hechos, hash);
+            List<Hecho> hechosIguales = obtenerHechosIguales(hecho, hechos);
 
             for(String id: idFuente){
-                estaEnFuente = hechosMismoHash.stream()
+                estaEnFuente = hechosIguales.stream()
                         .anyMatch(hechoVerifica -> hechoVerifica.getIdFuente().toString() == id);
 
                 if (!estaEnFuente) {

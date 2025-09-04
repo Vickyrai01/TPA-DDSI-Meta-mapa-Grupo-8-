@@ -35,28 +35,26 @@ public class StrategyMultiplesMenciones extends AlgoritmoConsenso {
     }
 
     public boolean ningunOtro(Hecho hecho) {
-        verificarSimilares = obtenerHechosDiferentesAHash(hechos, hecho.getHash());
+        verificarSimilares = obtenerHechosSimilares(hecho, hechos);
         boolean haySimilar = false;
 
         for (Hecho hechoSimilar : verificarSimilares) {
-            haySimilar = sonHechosSimilares(hecho, hechoSimilar);
+            haySimilar = esHechoSimilar(hecho, hechoSimilar);
 
             if(haySimilar){
                 break;
             }
         }
-
         return haySimilar;
     }
 
     public boolean alMenosDos(Hecho hecho) {
         boolean estaEnFuente = false;
         int valido = 0;
-        String hash = hecho.getHash();
-        List<Hecho> hechosMismoHash = obtenerHechosPorHash(hechos, hash);
+        List<Hecho> hechosIguales = obtenerHechosIguales(hecho, hechos);
 
         for (String id : idFuente) {
-            estaEnFuente = hechosMismoHash.stream()
+            estaEnFuente = hechosIguales.stream()
                     .anyMatch(hechoVerifica -> hechoVerifica.getIdFuente().toString() == id);
             if (estaEnFuente) {
                 valido++;
@@ -67,40 +65,5 @@ public class StrategyMultiplesMenciones extends AlgoritmoConsenso {
             return true;
         }
         return false;
-    }
-
-    public List<Hecho> obtenerHechosDiferentesAHash(List<Hecho> hechos, String hash) {
-        List<Hecho> hechosConDiferenteHash = new ArrayList<>();
-
-        for (Hecho hecho : hechos) {
-            if (!hecho.getHash().equals(hash)) {
-                hechosConDiferenteHash.add(hecho);
-            }
-        }
-
-        return hechosConDiferenteHash;
-    }
-
-public boolean sonHechosSimilares(Hecho hecho1, Hecho hecho2) {
-        if (hecho1 == null || hecho2 == null) {
-            return false;
-        }
-
-        // Comparar por título (ignorando mayúsculas/minúsculas)
-        boolean titulosIguales = hecho1.getTitulo() != null &&
-                hecho2.getTitulo() != null &&
-                !hecho1.getTitulo().equalsIgnoreCase(hecho2.getTitulo());
-
-        // Comparar por fecha de suceso si ambas existen
-        boolean fechasDistintas = hecho1.getFechaSuceso() != null &&
-                hecho2.getFechaSuceso() != null &&
-                !hecho1.getFechaSuceso().equals(hecho2.getFechaSuceso());
-
-        // Comparar por ubicación si ambas existen
-        boolean ubicacionesDistintas = hecho1.getUbicacion() != null &&
-                hecho2.getUbicacion() != null &&
-                !hecho1.getUbicacion().equals(hecho2.getUbicacion());
-
-        return titulosIguales && fechasDistintas && ubicacionesDistintas;
     }
 }

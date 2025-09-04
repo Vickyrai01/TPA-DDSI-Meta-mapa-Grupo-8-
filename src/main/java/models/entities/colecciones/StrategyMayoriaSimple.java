@@ -12,7 +12,6 @@ public class StrategyMayoriaSimple extends AlgoritmoConsenso {
 
     @Override
     public List<Hecho> ejecutarAlgoritmo() {
-
         List<Fuente> fuentes = FuentesRepository.getInstance().obtenerTodas();
         List<Hecho> hechos = HechosRepository.getInstance().obtenerTodas();
 
@@ -30,11 +29,10 @@ public class StrategyMayoriaSimple extends AlgoritmoConsenso {
 
         for(Hecho hecho: hechos){
             int valido = 0;
-            String hash= hecho.getHash();
-            List<Hecho> hechosMismoHash = obtenerHechosPorHash(hechos, hash);
+            List<Hecho> hechosIguales = obtenerHechosIguales(hecho, hechos);
 
             for(String id: idFuente){
-                estaEnFuente = hechosMismoHash.stream()
+                estaEnFuente = hechosIguales.stream()
                         .anyMatch(hechoVerifica -> hechoVerifica.getIdFuente().toString() == id);
 
                 if (estaEnFuente) {
@@ -48,7 +46,4 @@ public class StrategyMayoriaSimple extends AlgoritmoConsenso {
         }
         return hechosVisibles;
     }
-
-
-
 }
