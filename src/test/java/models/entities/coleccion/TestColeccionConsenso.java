@@ -2,7 +2,10 @@ package models.entities.coleccion;
 
 
 import java.net.MalformedURLException;
+
+import models.entities.colecciones.AlgoritmoConsenso;
 import models.entities.colecciones.Coleccion;
+import models.agregador.normalizador.ComparadorHechos;
 import models.entities.colecciones.ModoDeNavegacion;
 import models.entities.colecciones.StrategyAbsoluta;
 
@@ -114,7 +117,7 @@ public class TestColeccionConsenso {
                 LocalDate.now(), null, Estado.ACEPTADO, null,
                 LocalDate.now(), LocalDate.now(),
                 TipoFuente.ESTATICA, null,
-                "Incendio grave", "Incendio en Barrio Norte", "c1", "1234");
+                "Incendio graBe", "InSendio en Barrio Norte", "c1", "12345");
 
         Hecho hecho2 = new Hecho(2, coordenadas1, categoriaIncendio, null,
                 LocalDate.now(), null, Estado.ACEPTADO, null,
@@ -124,9 +127,9 @@ public class TestColeccionConsenso {
 
         List<Hecho> hechos = Arrays.asList(hecho1, hecho2);
 
-        List<Hecho> hechosConMismoHash = coleccion.algoritmoConsenso.obtenerHechosPorHash(hechos, hecho1.getHash());
+        List<Hecho> hechosIguales = coleccion.algoritmoConsenso.obtenerHechosIguales(hecho1,hechos);
 
-        assertEquals(2, (hechosConMismoHash).size());
+        assertEquals(2, (hechosIguales).size());
     }
 
     @Test
@@ -141,13 +144,16 @@ public class TestColeccionConsenso {
                 TipoFuente.ESTATICA, null,
                 "Incendio grave", "Incendio en Barrio Norte", "C1","12");
 
-        Hecho hecho2 = new Hecho(2, coordenadas2, categoriaIncendio, null,
-                fechaAyer, null, Estado.ACEPTADO, null,
-                fechaAyer, fechaAyer,
+        Hecho hecho2 = new Hecho(1, coordenadas1, categoriaIncendio, null,
+                fechaHoy, null, Estado.ACEPTADO, null,
+                fechaHoy, fechaHoy,
                 TipoFuente.ESTATICA, null,
-                "Fuego en edificio", "Incendio en zona norte", "C1","12");
+                " grabe", " Barrio Oeste", "C10","13");
 
-        //assertTrue(coleccion.algoritmoConsenso.sonHechosSimilares(hecho1, hecho2));
+        System.out.println(coleccion.algoritmoConsenso.similitudHechos(hecho1,hecho2));
+
+
+        assertTrue(coleccion.algoritmoConsenso.esHechoSimilar(hecho1, hecho2));
     }
 
     @Test

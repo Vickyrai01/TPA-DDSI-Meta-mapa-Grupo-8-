@@ -2,10 +2,11 @@ package models.entities.colecciones;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import models.entities.hecho.Hecho;
-import models.entities.fuentes.Fuente;
-
+import api.dto.HechoAIntegrarDTO;
+import models.agregador.normalizador.ComparadorHechos;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -26,16 +27,50 @@ public abstract class AlgoritmoConsenso {
         return hechosVisibles;
     }
 
-    public List<Hecho> obtenerHechosPorHash(List<Hecho> hechos, String hash) {
-
-        List<Hecho> hechosConMismoHash = new ArrayList<>();
-
-        for (Hecho hecho : hechos) {
-            if (hecho.getHash().equals(hash)) {
-                hechosConMismoHash.add(hecho);
-            }
-        }
-
-        return hechosConMismoHash;
+    public boolean esElMismoHecho(Hecho h1, Hecho h2) {
+        return ComparadorHechos.getInstance().esElMismoHecho(convertirADTO(h1), convertirADTO(h2));
     }
+
+    public boolean hechoDuplicado(Hecho h1, Hecho h2) {
+        return ComparadorHechos.getInstance().hechoDuplicado(convertirADTO(h1), convertirADTO(h2));
+    }
+
+    public boolean esHechoSimilarDTO(HechoAIntegrarDTO a, HechoAIntegrarDTO b) {
+        return (ComparadorHechos.getInstance().similitudDeHechos(a, b) >= 0.5 && ComparadorHechos.getInstance().similitudDeHechos(a, b) <0.8);
+    }
+
+    public boolean esHechoSimilar(Hecho h1, Hecho h2) {
+        return  esHechoSimilarDTO(convertirADTO(h1), convertirADTO(h2));
+    }
+
+    public List<Hecho> obtenerHechosIguales(Hecho hecho, List<Hecho> hechos) {
+        return hechos.stream()
+                .filter(h -> esElMismoHecho(hecho, h))
+                .collect(Collectors.toList());
+    }
+
+    public List<Hecho> obtenerHechosSimilares(Hecho hecho, List<Hecho> hechos) {
+        return hechos.stream()
+                .filter(h -> esHechoSimilar(hecho, h))
+                .collect(Collectors.toList());
+    }
+
+    public double similitudHechos(Hecho h1, Hecho h2) {
+        return ComparadorHechos.getInstance().similitudDeHechos(convertirADTO(h1), convertirADTO(h2));
+    }
+
+    private HechoAIntegrarDTO convertirADTO(Hecho hecho) {
+        HechoAIntegrarDTO dto = new HechoAIntegrarDTO();
+        dto.setTitulo(hecho.getTitulo());
+        dto.setDescripcion(hecho.getDescripcion());
+        dto.setCategoria(hecho.getCategoria().getNombre()); // o como lo tengas
+        dto.setLatitud(hecho.getUbicacion().getLatitud().toString());
+        dto.setLongitud(hecho.getUbicacion().getLongitud().toString());
+        dto.setFechaSuceso(
+                hecho.getFechaSuceso() != null ? hecho.getFechaSuceso().toString() : null
+        );
+        return dto;
+    }
+
+
 }
