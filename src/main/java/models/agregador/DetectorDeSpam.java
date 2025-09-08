@@ -1,8 +1,7 @@
 package models.agregador;
 
+public class DetectorDeSpam {
 
-
-public interface DetectorDeSpam {
-
-    static boolean esSpam(String solicitud) {return false;}
+    static boolean esSpam(String solicitud)
+    {return false;}
 }
