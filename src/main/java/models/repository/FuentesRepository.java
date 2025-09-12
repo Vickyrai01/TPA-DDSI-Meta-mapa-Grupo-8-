@@ -50,6 +50,6 @@ public class FuentesRepository {
     public static List<Fuente> filtrarFuente(String tipoFuente) {
         TipoFuente tipoFuenteClase = TipoFuente.valueOf(tipoFuente.trim().toUpperCase());
         return fuentes.stream()
-                .filter(f -> f.getTipoFuente() == tipoFuenteClase).toList();
+                .filter(f -> f.getTipoFuente() == tipoFuente).toList();
     }
-    }
+}
