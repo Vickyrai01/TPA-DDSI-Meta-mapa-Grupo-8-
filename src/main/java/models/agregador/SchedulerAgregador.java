@@ -1,14 +1,14 @@
-package models.services;
+package models.agregador;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class Scheduler {
+public class SchedulerAgregador {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private boolean enEjecucion = false;
     private final ServicioDeAgregacion servicioDeAgregacion = ServicioDeAgregacion.getInstance();
 
-    public Scheduler(boolean enEjecucion) {
+    public SchedulerAgregador(boolean enEjecucion) {
         this.enEjecucion = enEjecucion;
     }
 
@@ -21,11 +21,11 @@ public class Scheduler {
         enEjecucion = true;
         System.out.println("Iniciando scheduler...");
 
-        scheduler.scheduleAtFixedRate(this::verificarNuevosHechos,0,5, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(this::verificarNuevosHechos,0,30, TimeUnit.SECONDS);
     }
 
     private void verificarNuevosHechos() {
-         servicioDeAgregacion.actualizarColecciones();
+        servicioDeAgregacion.actualizarColecciones();
     }
 
     public void detenerScheduler() {

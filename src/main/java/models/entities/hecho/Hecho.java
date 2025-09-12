@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.time.LocalDate;
 import java.util.List;
-
+import java.util.Objects;
 
 
 public class Hecho {
@@ -22,7 +22,8 @@ public class Hecho {
                  Estado estado, Contribuyente contribuyente,
                  LocalDate fechaCarga, LocalDate fechaSuceso,
                  TipoFuente fuenteDeOrigen,
-                 List<Etiqueta> etiquetas, String descripcion, String titulo,String codigoDeFuente) {
+                 List<Etiqueta> etiquetas, String descripcion, String titulo,String codigoDeFuente, String hash, Integer idFuente) {
+
         this.id = id;
         this.ubicacion = ubicacion;
         this.categoria = categoria;
@@ -38,6 +39,34 @@ public class Hecho {
         this.descripcion = descripcion;
         this.titulo = titulo;
         this.codigoDeFuente = codigoDeFuente;
+        this.hash = hash;
+        this.idFuente =idFuente;
+    }
+
+    public Hecho(Integer id, Coordenadas ubicacion, Categoria categoria,
+                 List<SugerenciaDeCambio> sugerenciaDeCambio,
+                 LocalDate ultimaFechaModificacion, List<String> multimedia,
+                 Estado estado, Contribuyente contribuyente,
+                 LocalDate fechaCarga, LocalDate fechaSuceso,
+                 TipoFuente fuenteDeOrigen,
+                 List<Etiqueta> etiquetas, String descripcion, String titulo,String codigoDeFuente, String hash) {
+
+        this.id = id;
+        this.ubicacion = ubicacion;
+        this.categoria = categoria;
+        this.sugerenciaDeCambio = sugerenciaDeCambio;
+        this.ultimaFechaModificacion = ultimaFechaModificacion;
+        this.multimedia = multimedia;
+        this.estado = estado;
+        this.contribuyente = contribuyente;
+        this.fechaCarga = fechaCarga;
+        this.fechaSuceso = fechaSuceso;
+        this.fuenteDeOrigen = fuenteDeOrigen;
+        this.etiquetas = etiquetas;
+        this.descripcion = descripcion;
+        this.titulo = titulo;
+        this.codigoDeFuente = codigoDeFuente;
+        this.hash = hash;
     }
 
     private Integer id;
@@ -156,6 +185,21 @@ public class Hecho {
     public String getCodigoDeFuente() {
         return codigoDeFuente;
     }
+
+    public String hash;
+    public String getHash() {
+        return hash;
+    }
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
+
+    public Integer idFuente;
+    public Integer getIdFuente() {
+        return Objects.requireNonNullElse(idFuente, -1);
+    }
+
+    public void setIdFuente(Integer idFuente) {this.idFuente = idFuente;}
 
     public Hecho(){}
 
