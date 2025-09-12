@@ -1,5 +1,7 @@
 package cargadorProxy.model;
 
+import cargadorProxy.repository.RepositoryFuentes;
+
 import java.util.ArrayList;
 import java.util.List;
 

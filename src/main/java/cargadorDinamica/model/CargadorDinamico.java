@@ -1,9 +1,7 @@
 package cargadorDinamica.model;
 
-import cargadorDinamica.DinamicaRepository;
-import cargadorDinamica.model.HechoAIntegrarDTO;
+import cargadorDinamica.repository.DinamicaRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CargadorDinamico {

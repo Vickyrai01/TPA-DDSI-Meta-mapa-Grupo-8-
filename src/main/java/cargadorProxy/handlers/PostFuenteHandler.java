@@ -1,7 +1,7 @@
 package cargadorProxy.handlers;
 
 import cargadorProxy.model.Fuente;
-import cargadorProxy.model.RepositoryFuentes;
+import cargadorProxy.repository.RepositoryFuentes;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import org.jetbrains.annotations.NotNull;

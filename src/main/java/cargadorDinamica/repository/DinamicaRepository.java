@@ -1,11 +1,11 @@
-package cargadorDinamica;
+package cargadorDinamica.repository;
 
 import cargadorDinamica.model.HechoAIntegrarDTO;
 
 import java.util.*;
 
 public class DinamicaRepository {
-    private static volatile cargadorDinamica.DinamicaRepository instance;
+    private static volatile DinamicaRepository instance;
 
     private List<Map<HechoAIntegrarDTO, Boolean>> tablaHechos =
             new ArrayList<>(Arrays.asList(new HashMap<>(), new HashMap<>()));
@@ -17,9 +17,9 @@ public class DinamicaRepository {
         }
     }
 
-    public static cargadorDinamica.DinamicaRepository getInstance() {
+    public static DinamicaRepository getInstance() {
         if (instance == null) {
-            synchronized (cargadorDinamica.DinamicaRepository.class) {
+            synchronized (DinamicaRepository.class) {
                 if (instance == null) {
                     instance = new DinamicaRepository();
                 }
