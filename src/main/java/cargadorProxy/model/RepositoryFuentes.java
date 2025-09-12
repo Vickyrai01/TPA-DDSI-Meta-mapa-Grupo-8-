@@ -1,13 +1,10 @@
-package cargadorDINAMICO.model;
-
-import cargadorDINAMICO.RepositoryFuentesSeeder;
-import models.repository.seeders.FuentesRepositorySeeder;
+package cargadorProxy.model;
 
 import java.util.List;
 
 public class RepositoryFuentes {
     private static volatile RepositoryFuentes instance;
-    private List<Fuente> fuentesDinamicas;
+    private List<Fuente> fuentesProxy;
 
     private RepositoryFuentes() {
         if (instance != null) {
@@ -26,12 +23,10 @@ public class RepositoryFuentes {
         return instance;
     }
 
-    public List<HechoAIntegrarDTO> extraerHechosAIntegrar(){
-        return List.of();
+    public void agregarFuente(Fuente fuente){
+        fuentesProxy.add(fuente);
     }
 
-    public void agregarFuente(Fuente fuente){
-        fuentesDinamicas.add(fuente);
-    }
+    public List<Fuente> getAll(){return fuentesProxy;}
 
 }

@@ -1,7 +1,7 @@
-package cargadorDINAMICO.handlers;
+package cargadorProxy.handlers;
 
-import cargadorDINAMICO.model.Fuente;
-import cargadorDINAMICO.model.RepositoryFuentes;
+import cargadorProxy.model.Fuente;
+import cargadorProxy.model.RepositoryFuentes;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import org.jetbrains.annotations.NotNull;

@@ -1,4 +1,4 @@
-package cargadorDINAMICO;
+package cargadorProxy;
 
 
 public class RepositoryFuentesSeeder {

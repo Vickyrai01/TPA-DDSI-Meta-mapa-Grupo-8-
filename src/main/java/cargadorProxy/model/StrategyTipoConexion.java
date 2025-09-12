@@ -1,7 +1,4 @@
-package cargadorDINAMICO.model;
-
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+package cargadorProxy.model;
 
 import java.util.List;
 

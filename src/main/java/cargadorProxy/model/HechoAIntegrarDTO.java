@@ -1,4 +1,4 @@
-package cargadorDINAMICO.model;
+package cargadorProxy.model;
 import java.util.List;
 
 public class HechoAIntegrarDTO {
@@ -15,4 +15,8 @@ public class HechoAIntegrarDTO {
     public Boolean FueExtraido;
     public Integer IdFuente;
 
+
+    public void setTipoFuente(String tipoFuente) {
+        TipoFuente = tipoFuente;
+    }
 }
