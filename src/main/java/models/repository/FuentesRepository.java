@@ -52,5 +52,4 @@ public class FuentesRepository {
         return fuentes.stream()
                 .filter(f -> f.getTipoFuente() == tipoFuente).toList();
     }
-    }
 }
