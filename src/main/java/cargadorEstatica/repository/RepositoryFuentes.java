@@ -1,11 +1,11 @@
-package cargadorEstatica.model;
+package cargadorEstatica.repository;
 
 import cargadorEstatica.model.Fuente;
 
 import java.util.List;
 
 public class RepositoryFuentes {
-    private static volatile cargadorEstatica.model.RepositoryFuentes instance;
+    private static volatile RepositoryFuentes instance;
     private List<cargadorEstatica.model.Fuente> fuentesEstaticas;
 
     private RepositoryFuentes() {
@@ -16,9 +16,9 @@ public class RepositoryFuentes {
 
     public static RepositoryFuentes getInstance() {
         if (instance == null) {
-            synchronized (cargadorEstatica.model.RepositoryFuentes.class) {
+            synchronized (RepositoryFuentes.class) {
                 if (instance == null) {
-                    instance = new cargadorEstatica.model.RepositoryFuentes();
+                    instance = new RepositoryFuentes();
                 }
             }
         }

@@ -1,4 +1,6 @@
-package cargadorProxy.model;
+package cargadorProxy.repository;
+
+import cargadorProxy.model.Fuente;
 
 import java.util.List;
 

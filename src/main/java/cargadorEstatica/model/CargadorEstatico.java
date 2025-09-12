@@ -1,6 +1,5 @@
 package cargadorEstatica.model;
-import cargadorEstatica.model.RepositoryFuentes;
-import cargadorProxy.model.Fuente;
+import cargadorEstatica.repository.RepositoryFuentes;
 
 import java.util.ArrayList;
 import java.util.List;
