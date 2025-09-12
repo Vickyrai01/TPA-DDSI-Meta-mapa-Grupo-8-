@@ -34,7 +34,4 @@ public class CargadorDinamico implements CargadorFuente {
         hechos.forEach(h -> h.setTipoFuente("DINAMICA"));
         return hechos;
     }
-
-
-
 }

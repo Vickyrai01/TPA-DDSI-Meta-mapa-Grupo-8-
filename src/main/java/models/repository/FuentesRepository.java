@@ -6,6 +6,7 @@ import models.entities.fuentes.TipoFuente;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FuentesRepository {
     private static volatile FuentesRepository instance;
@@ -50,6 +51,7 @@ public class FuentesRepository {
     public static List<Fuente> filtrarFuente(String tipoFuente) {
         TipoFuente tipoFuenteClase = TipoFuente.valueOf(tipoFuente.trim().toUpperCase());
         return fuentes.stream()
-                .filter(f -> f.getTipoFuente() == tipoFuente).toList();
+                .filter(f -> tipoFuenteClase.equals(f.getTipoFuente()))
+                .collect(Collectors.toList());
     }
 }

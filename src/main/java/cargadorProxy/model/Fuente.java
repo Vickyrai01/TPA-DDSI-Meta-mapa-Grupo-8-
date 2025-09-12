@@ -1,4 +1,4 @@
-package cargadorDINAMICO.model;
+package cargadorProxy.model;
 import java.util.List;
 
 public class Fuente {

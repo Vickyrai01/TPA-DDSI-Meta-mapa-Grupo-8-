@@ -43,8 +43,7 @@ public class Fuente {
     }
 
     private TipoFuente tipoFuente;
-    public TipoFuente getTipoFuente() {
-        return tipoFuente;
+    public TipoFuente getTipoFuente() {return tipoFuente;
     }
     public void setTipoFuente(TipoFuente tipoFuente) {
         this.tipoFuente = tipoFuente;
