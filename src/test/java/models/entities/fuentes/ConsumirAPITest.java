@@ -18,13 +18,7 @@ public class ConsumirAPITest {
         System.out.println("Hay " + hechosRepository.obtenerTodas().size() + " hechos en el repositorio");
         System.out.println("Extrayendo hechos de API...");
 
-        LocalDate fechaInicio = LocalDate.of(2023, 4,30);
-        LocalDate fechaFin = LocalDate.of(2023, 6, 30);
-        CriterioFechaSuceso fechaSuceso = new CriterioFechaSuceso(fechaInicio, fechaFin);
-        List<Criterio> criterios = new ArrayList<>(List.of(fechaSuceso));
-
-
-        fuente.extraerHechos(criterios);
+        fuente.extraerHechos();
         System.out.println("Hay " + hechosRepository.obtenerTodas().size() + " hechos nuevos en el repositorio");
 
     }

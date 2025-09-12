@@ -1,20 +1,6 @@
-package models.entities.services;
+package models.entities.agregador;
 
-import models.entities.colecciones.Coleccion;
-import models.entities.colecciones.criterios.Criterio;
-import models.entities.colecciones.criterios.CriterioCategoria;
-import models.entities.colecciones.criterios.CriterioDescripcion;
-import models.entities.fuentes.Fuente;
-import models.entities.fuentes.FuenteFactory;
-import models.entities.fuentes.TipoConexion;
-import models.entities.fuentes.TipoFuente;
-import models.entities.hecho.Categoria;
-import models.entities.hecho.Hecho;
-import models.services.ServicioDeAgregacion;
-
-import java.util.ArrayList;
-import java.util.List;
-
+/*
 public class DemoAgregoUnaNuevaFuente {
     public static void main(String[] args){
         ServicioDeAgregacion servicioDeAgregacion = ServicioDeAgregacion.getInstance();
@@ -54,3 +40,4 @@ public class DemoAgregoUnaNuevaFuente {
         System.out.println("La cantidad de hechos que hay en la coleccion es: " + coleccion1.getHechos().size());
     }
 }
+*/

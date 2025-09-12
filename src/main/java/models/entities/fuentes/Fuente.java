@@ -1,9 +1,9 @@
 package models.entities.fuentes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import models.entities.colecciones.criterios.Criterio;
-import models.entities.hecho.Hecho;
+import api.dto.HechoAIntegrarDTO;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Fuente {
@@ -13,6 +13,7 @@ public class Fuente {
         this.link = link;
         this.tipoFuente = tipoFuente;
         this.strategyTipoConexion = strategyTipoConexion;
+        this.ultimoProcesado = null;
     }
 
     public  Fuente(){}
@@ -24,7 +25,6 @@ public class Fuente {
     public void setId(Integer id) {
         this.id = id;
     }
-
 
     private String nombre;
     public String getNombre() {
@@ -58,6 +58,14 @@ public class Fuente {
         return this.codigoDeFuente = codigoDeFuente;
     }
 
+    private LocalDateTime ultimoProcesado;
+    public LocalDateTime getUltimoProcesado() {
+        return ultimoProcesado;
+    }
+    public void actualizarUltimoProcesado() {
+        this.ultimoProcesado = LocalDateTime.now();
+    }
+
     @JsonIgnore
     private StrategyTipoConexion strategyTipoConexion;
     public StrategyTipoConexion getStrategyTipoConexion() {
@@ -67,12 +75,9 @@ public class Fuente {
         this.strategyTipoConexion = strategyTipoConexion;
     }
 
-    public List<Hecho> extraerHechos(List<Criterio> criterios){
-        return strategyTipoConexion.extraerHecho(criterios, link, codigoDeFuente);
+    public List<HechoAIntegrarDTO> extraerHechos(){
+        return strategyTipoConexion.extraerHecho(link, codigoDeFuente);
     };
 
-    public List<Hecho> extraerHechosRecientes(){
-        return strategyTipoConexion.extraerHechosRecientes(link, codigoDeFuente);
-    };
 }
 

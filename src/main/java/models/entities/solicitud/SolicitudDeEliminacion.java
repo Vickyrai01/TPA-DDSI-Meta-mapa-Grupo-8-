@@ -1,10 +1,12 @@
 package models.entities.solicitud;
 
+import models.agregador.DetectorDeSpam;
 import models.entities.hecho.Hecho;
 
 import java.time.LocalDateTime;
 
-public class SolicitudDeEliminacion implements DetectorDeSpam {
+public class SolicitudDeEliminacion {
+
     public SolicitudDeEliminacion(Integer id, Hecho hecho, String descripcion, Boolean aceptada, LocalDateTime fechaDeRevision) {
         this.id = id;
         this.hecho = hecho;
@@ -13,9 +15,18 @@ public class SolicitudDeEliminacion implements DetectorDeSpam {
         this.fechaDeRevision = fechaDeRevision;
     }
 
+    public SolicitudDeEliminacion(Integer id, Hecho hecho, String descripcion) {
+        this.id = id;
+        this.hecho = hecho;
+        this.descripcion = descripcion;
+        this.aceptada = null;
+        this.fechaDeRevision = null;
+    }
+
     public SolicitudDeEliminacion() {}
 
     private Integer id;
+
     public Integer getId() {
         return id;
     }
@@ -69,12 +80,12 @@ public class SolicitudDeEliminacion implements DetectorDeSpam {
         stateEstadoDeSolicitud.aceptarSolicitud(hecho);
     }
 
-    private void rechazarSolicitud() {
+    public void rechazarSolicitud() {
         stateEstadoDeSolicitud.rechazarSolicitud(hecho);
     }
 
     public void revisarPorSpam() {
-        if (esSpam(descripcion)) {
+        if (DetectorDeSpam.esSpam(descripcion)) {
             this.rechazarSolicitud();
         }
     }
@@ -90,11 +101,13 @@ public class SolicitudDeEliminacion implements DetectorDeSpam {
 
     public void aceptada(){
         this.setAceptada(true);
+        this.setFechaDeRevision(LocalDateTime.now());
         this.setStateEstadoDeSolicitud(new StateSolicitudAceptada(this));
     }
 
     public void rechazada(){
         this.setAceptada(false);
+        this.setFechaDeRevision(LocalDateTime.now());
         this.setStateEstadoDeSolicitud(new StateSolicitudRechazada(this));
     }
 

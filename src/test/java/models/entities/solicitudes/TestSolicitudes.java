@@ -26,7 +26,7 @@ public class TestSolicitudes {
     Hecho hecho1 = new Hecho(1, coordenadas1, categoriaIncendio,
             null, null, null, Estado.ACEPTADO, null,
             LocalDate.now().minusDays(2), LocalDate.now().minusDays(3),
-            TipoFuente.ESTATICA, null, "No hubo heridos, fue por una sartén", "incendio en Casa", null);
+            TipoFuente.ESTATICA, null, "No hubo heridos, fue por una sartén", "incendio en Casa", null,"12");
     HechosRepository hechosRepository = HechosRepository.getInstance();
     HechosRepositorySeeder hechosRepositorySeeder = HechosRepositorySeeder.getInstance();
 

@@ -3,10 +3,9 @@ package models.entities.fuentes;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import models.entities.colecciones.criterios.*;
-import models.entities.hecho.Hecho;
+import api.dto.HechoAIntegrarDTO;
 
 import java.util.List;
-import java.util.Map;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -24,9 +23,6 @@ import java.util.Map;
 })
 public interface StrategyTipoConexion {
 
-    public List<Hecho> extraerHecho(List<Criterio> criterio, String fuente, String codigoFuente);
+    public List<HechoAIntegrarDTO> extraerHecho(String fuente, String codigoFuente);
 
-    public List<Hecho> agregarHecho(String FuenteBase, Hecho hecho);
-
-    public List<Hecho> extraerHechosRecientes(String fuente, String codigoFuente);
 }

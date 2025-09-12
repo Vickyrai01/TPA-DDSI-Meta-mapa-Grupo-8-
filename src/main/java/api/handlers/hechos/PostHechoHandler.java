@@ -1,42 +1,37 @@
 package api.handlers.hechos;
 
-import api.dto.HechoDTO;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
-import models.entities.hecho.Coordenadas;
-import models.entities.hecho.Hecho;
-import models.repository.HechosRepository;
+import api.dto.HechoAIntegrarDTO;
+import models.repository.DinamicaRepository;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.LocalDate;
-
 public class PostHechoHandler implements Handler {
-    private final HechosRepository repoHechos = HechosRepository.getInstance();
+    private final DinamicaRepository repoDinamicos = DinamicaRepository.getInstance();
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
-        HechoDTO dto = context.bodyAsClass(HechoDTO.class);
+        HechoAIntegrarDTO dto = context.bodyAsClass(HechoAIntegrarDTO.class);
         System.out.println("Creando hecho: " + context.body());
 
 
-        Hecho hecho = new Hecho();
-        hecho.setId(dto.getId());
-        hecho.setTitulo(dto.getTitulo());
+        HechoAIntegrarDTO hechoDTO = new HechoAIntegrarDTO(
+                dto.getTitulo(),
+                dto.getDescripcion(),
+                dto.getCategoria(),
+                dto.getLatitud(),
+                dto.getLongitud(),
+                dto.getFechaSuceso()
+        );
 
-        Coordenadas coordenadas = new Coordenadas(dto.getLatitud(), dto.getLongitud());
+        validarNuevoHecho(hechoDTO);
 
-        hecho.setUbicacion(coordenadas);
-        hecho.setFechaSuceso(dto.getFechaSuceso());
-        hecho.setFechaCarga(LocalDate.now());
-        hecho.setDescripcion(dto.getDescripcion());
-
-        validarNuevoHecho(hecho);
-        repoHechos.add(hecho);
+        repoDinamicos.add(hechoDTO);
         context.status(201);
     }
 
 
-    private void validarNuevoHecho(Hecho hecho) {
+    private void validarNuevoHecho(HechoAIntegrarDTO hecho) {
         if (hecho.getTitulo() == null) {
             throw new IllegalArgumentException("El nombre es obligatorio, elegí otro");
         }
