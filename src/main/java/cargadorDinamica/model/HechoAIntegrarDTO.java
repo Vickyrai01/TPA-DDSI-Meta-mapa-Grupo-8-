@@ -20,5 +20,7 @@ public class HechoAIntegrarDTO {
     public void setTipoFuente(String tipoFuente) {
         TipoFuente = tipoFuente;
     }
+
+
 }
 

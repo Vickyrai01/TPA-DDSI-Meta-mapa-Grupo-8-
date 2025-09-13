@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import models.agregador.HandlerRecientes;
 import models.entities.fuentes.TipoFuente;
 
+import java.util.Collections;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)              // ignora campos extra en el JSON
@@ -118,4 +119,24 @@ public class HechoAIntegrarDTO {
                 ", multimedia=" + multimedia +
                 '}';
     }
+
+    public HechoAIntegrarDTO(String titulo, String descripcion, String categoria,
+                             String latitud, String longitud, String fechaSuceso,
+                             List<String> etiquetas, String contribuyente,
+                             String multimedia, String tipoFuente,
+                             Boolean fueExtraido, Integer idFuente) {
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.categoria = categoria;
+        this.latitud = latitud;
+        this.longitud = longitud;
+        this.fechaSuceso = fechaSuceso;
+        this.multimedia = Collections.singletonList(multimedia);
+        this.etiquetas = etiquetas;
+        this.contribuyente = contribuyente;
+        this.tipoFuente = tipoFuente;
+        this.fueExtraido = fueExtraido;
+        this.idFuente = idFuente;
+    }
+
 }

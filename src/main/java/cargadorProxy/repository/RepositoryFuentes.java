@@ -29,6 +29,7 @@ public class RepositoryFuentes {
         fuentesProxy.add(fuente);
     }
 
+
     public List<Fuente> getAll(){return fuentesProxy;}
 
 }

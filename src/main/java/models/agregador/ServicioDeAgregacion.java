@@ -145,7 +145,7 @@ public class ServicioDeAgregacion {
             }
     }
 
-    public void actualizarColecciones()
+    /*public void actualizarColecciones()
     {
         hechosAIntegrar.clear();
         hechosLimpios.clear();
@@ -167,8 +167,24 @@ public class ServicioDeAgregacion {
         System.out.println("*************************");
         hechosAIntegrar.clear();
         hechosLimpios.clear();
+    }*/
+
+    public void limpiarHechos() {
+         eliminarSpam(hechosAIntegrar);
+                eliminarDuplicados(hechosAIntegrar);
+                normalizadorCategoria.estandarizarCategoriasDuplicadas(hechosAIntegrar);
     }
 
+    public void actualizarColecciones(List<HechoAIntegrarDTO> lista){
+        hechosAIntegrar.addAll(lista);
+        limpiarHechos();
+        normalizarYCrearHechos();
+        for (Coleccion coleccion : coleccionesRepository.obtenerTodas()) {
+            System.out.println(coleccion.toString());
+            agregarHechosAColecciones(coleccion);
+            System.out.println("**Agregue a colección**");
+        }
+    }
 
 }
 

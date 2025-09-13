@@ -44,5 +44,9 @@ public class PatchAgregarFuentesColeccionHandler implements Handler
 
         context.status(200).result("Fuentes agregadas correctamente");
     }
+
+    private void enviarFuenteAlCargador(Fuente fuente){
+        
+    }
 }
 

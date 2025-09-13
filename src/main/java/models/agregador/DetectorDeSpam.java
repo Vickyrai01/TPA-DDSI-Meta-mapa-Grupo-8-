@@ -2,7 +2,7 @@ package models.agregador;
 
 public class DetectorDeSpam {
 
-    static boolean esSpam(String solicitud) {return false;}
+    public static boolean esSpam(String solicitud) {return false;}
 
     private static volatile DetectorDeSpam instance;
 

@@ -25,7 +25,7 @@ public class RepositoryFuentes {
         return instance;
     }
 
-    public void agregarFuente(cargadorEstatica.model.Fuente fuente){
+    public void agregarFuente(Fuente fuente){
         fuentesEstaticas.add(fuente);
     }
 
