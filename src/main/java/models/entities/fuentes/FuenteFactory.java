@@ -21,6 +21,22 @@ public class FuenteFactory {
         return fuente;
     }
 
+
+    public static Fuente crearFuente2(Integer id, String nombre, String link, TipoFuente tipo, TipoConexion strategy){
+        StrategyTipoConexion strategyTipoConexion = crearStrategy(strategy);
+        String codigo = generarCodigo(strategy);
+        Fuente fuente = new Fuente();
+        fuente.setNombre(nombre);
+        fuente.setLink(link);
+        fuente.setTipoFuente(tipo);
+        fuente.setStrategyTipoConexion(strategyTipoConexion);
+        fuente.setCodigoDeFuente(codigo);
+        int nuevoId = idContador.getAndIncrement();
+        fuente.setId(nuevoId);
+        return fuente;
+    }
+
+
     private static StrategyTipoConexion crearStrategy(TipoConexion tipoConexion) {
         switch (tipoConexion) {
             case CSV:

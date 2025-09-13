@@ -22,8 +22,8 @@ public class DemoAgregadorCasoInicial {
         ServicioDeAgregacion servicioDeAgregacion = ServicioDeAgregacion.getInstance();
 
         FuentesRepository fuentesRepository = FuentesRepository.getInstance();
-        Fuente fuenteCSV = FuenteFactory.crearFuente("Desastres Sanitarios", "desastres_sanitarios_contaminacion_argentina.csv", TipoFuente.ESTATICA, TipoConexion.CSV);
-        Fuente fuenteAPI = FuenteFactory.crearFuente("API de ejemplo","https://684b1942165d05c5d35b843b.mockapi.io/metamapa/hechos",TipoFuente.PROXY, TipoConexion.APIREST);
+        Fuente fuenteCSV = FuenteFactory.crearFuente2(1, "Desastres Sanitarios", "desastres_sanitarios_contaminacion_argentina.csv", TipoFuente.ESTATICA, TipoConexion.CSV);
+        Fuente fuenteAPI = FuenteFactory.crearFuente2(2, "API de ejemplo","https://684b1942165d05c5d35b843b.mockapi.io/metamapa/hechos",TipoFuente.PROXY, TipoConexion.APIREST);
         fuentesRepository.add(fuenteCSV);
         fuentesRepository.add(fuenteAPI);
 
@@ -45,7 +45,7 @@ public class DemoAgregadorCasoInicial {
                 Arrays.asList("incendio", "emergencia", "reserva"),
                 "Protección Civil",
                 "http://ejemplo.com/incendio1.jpg",
-                "API", true, 1
+                "ESTATICA", true, 1
         );
 
         HechoAIntegrarDTO hecho2 = new HechoAIntegrarDTO(
@@ -57,7 +57,7 @@ public class DemoAgregadorCasoInicial {
                 Arrays.asList("protesta", "educacion"),
                 "Diario Local",
                 "http://ejemplo.com/protesta.png",
-                "Web", true, 2
+                "ESTATICA", true, 2
         );
 
         HechoAIntegrarDTO hecho3 = new HechoAIntegrarDTO(
@@ -69,7 +69,7 @@ public class DemoAgregadorCasoInicial {
                 Arrays.asList("satelite", "espacio", "tecnologia"),
                 "CONAE",
                 "http://ejemplo.com/satelite.jpg",
-                "Oficial", false, 3
+                "PROXY", false, 1
         );
 
         HechoAIntegrarDTO hecho4 = new HechoAIntegrarDTO(
@@ -81,7 +81,43 @@ public class DemoAgregadorCasoInicial {
                 Arrays.asList("energia", "corte", "servicios"),
                 "EDELAP",
                 "http://ejemplo.com/corte.jpg",
-                "API", true, 4
+                "PROXY", true, 1
+        );
+
+        HechoAIntegrarDTO hecho15 = new HechoAIntegrarDTO(
+                "Corte de energía en barrio céntrico",
+                "Más de 20 manzanas quedaron sin luz durante 4 horas.",
+                "Servicios",
+                "-34.9214", "-57.9545",
+                "2025-09-10",
+                Arrays.asList("energia", "corte", "servicios"),
+                "EDELAP",
+                "http://ejemplo.com/corte.jpg",
+                "PROXY", true, 1
+        );
+
+        HechoAIntegrarDTO hecho16 = new HechoAIntegrarDTO(
+                "Corte de energía en barrio céntrico",
+                "Más de 20 manzanas quedaron sin luz durante 4 horas.",
+                "Servicios",
+                "-34.9214", "-57.9545",
+                "2025-09-10",
+                Arrays.asList("energia", "corte", "servicios"),
+                "EDELAP",
+                "http://ejemplo.com/corte.jpg",
+                "PROXY", true, 1
+        );
+
+        HechoAIntegrarDTO hecho17 = new HechoAIntegrarDTO(
+                "Corte de energía en barrio céntrico",
+                "Más de 20 manzanas quedaron sin luz durante 4 horas.",
+                "Servicios",
+                "-34.9214", "-57.9545",
+                "2025-09-10",
+                Arrays.asList("energia", "corte", "servicios"),
+                "EDELAP",
+                "http://ejemplo.com/corte.jpg",
+                "PROXY", true, 2
         );
 
         HechoAIntegrarDTO hecho5 = new HechoAIntegrarDTO(
@@ -93,7 +129,7 @@ public class DemoAgregadorCasoInicial {
                 Arrays.asList("arte", "cultura", "mural"),
                 "Municipalidad",
                 "http://ejemplo.com/mural.jpg",
-                "Nota", false, 5
+                "ESTATICA", false, 2
         );
 
         HechoAIntegrarDTO hecho6 = new HechoAIntegrarDTO(
@@ -105,7 +141,7 @@ public class DemoAgregadorCasoInicial {
                 Arrays.asList("musica", "evento", "obelisco"),
                 "Canal 7",
                 "http://ejemplo.com/concierto.mp4",
-                "TV", true, 6
+                "PROXY", true, 2
         );
 
         HechoAIntegrarDTO hecho7 = new HechoAIntegrarDTO(
@@ -117,7 +153,7 @@ public class DemoAgregadorCasoInicial {
                 Arrays.asList("arqueologia", "historia", "descubrimiento"),
                 "Universidad Nacional de Jujuy",
                 "http://ejemplo.com/arqueologia.jpg",
-                "Investigación", false, 7
+                "ESTATICA", false, 2
         );
 
         HechoAIntegrarDTO hecho8 = new HechoAIntegrarDTO(
@@ -129,7 +165,7 @@ public class DemoAgregadorCasoInicial {
                 Arrays.asList("ajedrez", "torneo", "deportes"),
                 "Federación Argentina de Ajedrez",
                 "http://ejemplo.com/ajedrez.jpg",
-                "Evento", true, 8
+                "PROXY", true, 2
         );
 
         HechoAIntegrarDTO hecho9 = new HechoAIntegrarDTO(
@@ -141,7 +177,7 @@ public class DemoAgregadorCasoInicial {
                 Arrays.asList("reciclaje", "medioambiente", "plásticos"),
                 "Gobierno Provincial",
                 "http://ejemplo.com/reciclaje.jpg",
-                "Oficial", true, 9
+                "ESTATICA", true, 1
         );
 
         HechoAIntegrarDTO hecho10 = new HechoAIntegrarDTO(
@@ -153,7 +189,7 @@ public class DemoAgregadorCasoInicial {
                 Arrays.asList("cine", "festival", "independiente"),
                 "Asociación de Cine Independiente",
                 "http://ejemplo.com/cine.mp4",
-                "Web", false, 10
+                "PROXY", false, 1
         );
 
         HechoAIntegrarDTO hecho11 = new HechoAIntegrarDTO(
@@ -165,7 +201,7 @@ public class DemoAgregadorCasoInicial {
                 Arrays.asList("maraton", "solidaria", "deportes"),
                 "Fundación Esperanza",
                 "http://ejemplo.com/maraton.jpg",
-                "Nota", true, 11
+                "ESTATICA", true, 1
         );
 
         HechoAIntegrarDTO hecho12 = new HechoAIntegrarDTO(
@@ -177,7 +213,7 @@ public class DemoAgregadorCasoInicial {
                 Arrays.asList("libro", "historia", "ferrocarril"),
                 "Editorial Nacional",
                 "http://ejemplo.com/libro.jpg",
-                "Evento", false, 12
+                "ESTATICA", false, 1
         );
 
         HechoAIntegrarDTO hecho13 = new HechoAIntegrarDTO(
@@ -189,7 +225,7 @@ public class DemoAgregadorCasoInicial {
                 Arrays.asList("subte", "transporte", "inauguracion"),
                 "GCBA",
                 "http://ejemplo.com/subte.jpg",
-                "Oficial", true, 13
+                "DINAMICA", true, 1
         );
 
         HechoAIntegrarDTO hecho14 = new HechoAIntegrarDTO(
@@ -201,27 +237,24 @@ public class DemoAgregadorCasoInicial {
                 Arrays.asList("robotica", "competencia", "tecnologia"),
                 "Universidad de Salta",
                 "http://ejemplo.com/robotica.mp4",
-                "Evento", true, 14
+                "DINAMICA", true, 1
         );
 
         // Podés agruparlos en una lista si querés:
         List<HechoAIntegrarDTO> hechos = Arrays.asList(
                 hecho1, hecho2, hecho3, hecho4, hecho5, hecho6, hecho7,
-                hecho8, hecho9, hecho10, hecho11, hecho12, hecho13, hecho14
+                hecho8, hecho9, hecho10, hecho11, hecho12, hecho13, hecho14, hecho15, hecho16, hecho17
         );
 
         System.out.println("**Hay " + hechosRepository.obtenerTodas().size() + " hechos en el repositorio**");
         servicioDeAgregacion.actualizarColecciones(hechos);
 
+        System.out.println("Hechos colección:" + coleccionPrueba.getHechos().size() );
         Hecho random1 = hechosRepository.obtenerTodas().get(new Random().nextInt(hechosRepository.obtenerTodas().size()));
         System.out.println("Hecho random: " + random1.getTitulo()  + "- Tipo de Fuente: " + random1.getFuenteDeOrigen());
         Hecho random2 = hechosRepository.obtenerTodas().get(new Random().nextInt(hechosRepository.obtenerTodas().size()));
         System.out.println("Hecho random: " + random2.getTitulo()  + "- Tipo de Fuente: " + random2.getFuenteDeOrigen());
         Hecho random3 = hechosRepository.obtenerTodas().get(new Random().nextInt(hechosRepository.obtenerTodas().size()));
         System.out.println("Hecho random: " + random3.getTitulo()  + "- Tipo de Fuente: " + random3.getFuenteDeOrigen());
-        Hecho random4 = hechosRepository.obtenerTodas().get(new Random().nextInt(hechosRepository.obtenerTodas().size()));
-        System.out.println("Hecho random: " + random4.getTitulo()  + "- Tipo de Fuente: " + random4.getFuenteDeOrigen());
-        Hecho random5 = hechosRepository.obtenerTodas().get(new Random().nextInt(hechosRepository.obtenerTodas().size()));
-        System.out.println("Hecho random: " + random5.getTitulo()  + "- Tipo de Fuente: " + random5.getFuenteDeOrigen());
     }
 }
