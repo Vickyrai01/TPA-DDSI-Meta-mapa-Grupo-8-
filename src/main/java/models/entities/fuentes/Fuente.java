@@ -16,6 +16,15 @@ public class Fuente {
         this.ultimoProcesado = null;
     }
 
+    public Fuente(Integer id, String nombre, String link, TipoFuente tipoFuente, StrategyTipoConexion strategyTipoConexion) {
+        this.nombre = nombre;
+        this.link = link;
+        this.tipoFuente = tipoFuente;
+        this.strategyTipoConexion = strategyTipoConexion;
+        this.ultimoProcesado = null;
+        this.id = id;
+    }
+
     public  Fuente(){}
 
     private Integer id;

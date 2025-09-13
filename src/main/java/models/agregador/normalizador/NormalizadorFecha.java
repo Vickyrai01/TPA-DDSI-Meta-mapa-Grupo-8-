@@ -183,7 +183,8 @@ public class NormalizadorFecha {
             String fechaIso = normalizarAIso(fecha);
             return LocalDate.parse(fechaIso, DateTimeFormatter.ISO_LOCAL_DATE);
         } catch(ExcepcionFechaAmbigua e) {
-            throw new ExcepcionRevisionManualFecha(e.getMessage());
+             throw new ExcepcionRevisionManualFecha(e.getMessage());
+
         }
     }
 

@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DemoAgregadorConActualizacion {
-    public static void main(String[] args){
+    /*public static void main(String[] args){
         ServicioDeAgregacion servicioDeAgregacion = ServicioDeAgregacion.getInstance();
 
         SchedulerAgregador scheduler = new SchedulerAgregador(false);
@@ -48,5 +48,5 @@ public class DemoAgregadorConActualizacion {
         //System.out.println("La coleccion " + coleccionPrueba.toString() + " tiene " + coleccionPrueba.getHechos().size() + " hechos");
 
     }
-
+*/
 }
