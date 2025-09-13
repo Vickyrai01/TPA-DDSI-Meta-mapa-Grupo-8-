@@ -7,7 +7,7 @@ import java.util.List;
 public class CargadorDinamico {
 
     private static CargadorDinamico instance;
-    private final DinamicaRepository dinamicaRepository = DinamicaRepository.getInstance();
+    private final DinamicaRepository dinamicaRepository = DinamicaRepository.getInstance(); //despues se va
 
     public static CargadorDinamico getInstance() {
         if (instance == null) {
@@ -20,9 +20,11 @@ public class CargadorDinamico {
         return instance;
     }
 
-    public List<HechoAIntegrarDTO> extraerHechosAIntegrar(){
+    public List<HechoAIntegrarDTO> extraerHechosAIntegrar(){ //se cambia
         List<HechoAIntegrarDTO> hechos =dinamicaRepository.getHechosNoProcesados();
         hechos.forEach(h -> h.setTipoFuente("DINAMICA"));
         return hechos;
     }
 }
+
+

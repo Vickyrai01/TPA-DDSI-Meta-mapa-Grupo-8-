@@ -1,4 +1,7 @@
 package models.agregador;
+import models.agregador.cargadores.ConfigLoader;
+import models.agregador.cargadores.HandlerCargadores;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -7,6 +10,8 @@ public class SchedulerAgregador {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private boolean enEjecucion = false;
     private final ServicioDeAgregacion servicioDeAgregacion = ServicioDeAgregacion.getInstance();
+    private final HandlerCargadores handlerCargadores = HandlerCargadores.getInstance();
+
 
     public SchedulerAgregador(boolean enEjecucion) {
         this.enEjecucion = enEjecucion;
@@ -25,7 +30,8 @@ public class SchedulerAgregador {
     }
 
     private void verificarNuevosHechos() {
-        servicioDeAgregacion.actualizarColecciones();
+
+        servicioDeAgregacion.actualizarColecciones(handlerCargadores.extraerHechosAIntegrar());
     }
 
     public void detenerScheduler() {

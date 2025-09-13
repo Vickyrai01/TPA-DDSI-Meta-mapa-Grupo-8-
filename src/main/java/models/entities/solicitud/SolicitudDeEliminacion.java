@@ -84,8 +84,10 @@ public class SolicitudDeEliminacion {
         stateEstadoDeSolicitud.rechazarSolicitud(hecho);
     }
 
+    public DetectorDeSpam detectorDeSpam = new DetectorDeSpam();
+
     public void revisarPorSpam() {
-        if (DetectorDeSpam.esSpam(descripcion)) {
+        if (detectorDeSpam.esSpam(descripcion)) {
             this.rechazarSolicitud();
         }
     }

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DemoAgregadorCriterios {
-    public static void main(String[] args){
+    /*public static void main(String[] args){
         ServicioDeAgregacion servicioDeAgregacion = ServicioDeAgregacion.getInstance();
 
         FuentesRepository fuentesRepository = FuentesRepository.getInstance();
@@ -48,5 +48,5 @@ public class DemoAgregadorCriterios {
        // System.out.println("**La coleccion " + coleccionPrueba.toString() + " tiene " + coleccionPrueba.getHechos().size() + " hechos**");
        // System.out.println("**Hay " + hechosRepository.obtenerTodas().size() + " hechos en el repositorio**");
 
-    }
+    }*/
 }
