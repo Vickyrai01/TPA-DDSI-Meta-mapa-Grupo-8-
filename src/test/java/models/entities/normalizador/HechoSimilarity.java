@@ -1,7 +1,7 @@
 package models.entities.normalizador;
 
-import api.dto.HechoAIntegrarDTO;
-import models.agregador.normalizador.ComparadorHechos;
+import core.api.DTO.HechoAIntegrarDTO;
+import core.models.agregador.normalizador.ComparadorHechos;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

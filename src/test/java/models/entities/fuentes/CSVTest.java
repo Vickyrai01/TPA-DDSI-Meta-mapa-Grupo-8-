@@ -1,7 +1,8 @@
 package models.entities.fuentes;
 
-import api.dto.HechoAIntegrarDTO;
-import models.repository.HechosRepository;
+import core.api.DTO.HechoAIntegrarDTO;
+import core.models.entities.fuentes.*;
+import core.models.repository.HechosRepository;
 
 import java.io.File;
 import java.util.List;

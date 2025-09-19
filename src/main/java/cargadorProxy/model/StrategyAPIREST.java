@@ -1,16 +1,11 @@
 package cargadorProxy.model;
 
-import api.dto.HechoAIntegrarDTO;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import models.entities.colecciones.criterios.FiltradorCriterios;
-import models.entities.fuentes.StrategyTipoConexion;
-import models.repository.HechosRepository;
-import org.apache.cxf.jaxrs.client.WebClient;
+import core.api.DTO.HechoAIntegrarDTO;
+import core.models.entities.colecciones.criterios.FiltradorCriterios;
+import core.models.entities.fuentes.StrategyTipoConexion;
+import core.models.repository.HechosRepository;
 
-import javax.ws.rs.core.Response;
-import java.util.ArrayList;
+//import javax.ws.rs.core.Response;
 import java.util.List;
 
 public class StrategyAPIREST implements StrategyTipoConexion {
@@ -20,6 +15,7 @@ public class StrategyAPIREST implements StrategyTipoConexion {
 
     @Override
     public List<HechoAIntegrarDTO> extraerHecho(String fuente, String codigoFuente){
+        /*
         List<HechoAIntegrarDTO> hechosExtraidos = new ArrayList<>();
         WebClient clientUsers = WebClient.create(fuente);
 
@@ -53,6 +49,8 @@ public class StrategyAPIREST implements StrategyTipoConexion {
             System.out.println("Error: " + e.getMessage());
             e.printStackTrace();
             return new ArrayList<>();
-        }};
+        }*/
+        return List.of();
+    };
 
 }

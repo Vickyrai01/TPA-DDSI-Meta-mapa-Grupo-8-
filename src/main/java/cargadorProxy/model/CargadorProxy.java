@@ -23,6 +23,7 @@ public class CargadorProxy {
 
     public List<HechoAIntegrarDTO> extraerHechosAIntegrar(){
         List<Fuente> fuentes = repositoryFuentes.getAll();
+        if(fuentes.isEmpty()) return new ArrayList<>();
         for (Fuente f : fuentes) {
             hechos.addAll(f.extraerHechos());
         }

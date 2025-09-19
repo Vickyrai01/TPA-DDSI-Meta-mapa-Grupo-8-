@@ -1,11 +1,11 @@
 package models.entities.coleccion;
 
-import models.entities.colecciones.criterios.*;
-import models.entities.fuentes.TipoFuente;
-import models.entities.hecho.Categoria;
-import models.entities.hecho.Coordenadas;
-import models.entities.hecho.Estado;
-import models.entities.hecho.Hecho;
+import core.models.entities.colecciones.criterios.*;
+import core.models.entities.fuentes.TipoFuente;
+import core.models.entities.hecho.Categoria;
+import core.models.entities.hecho.Coordenadas;
+import core.models.entities.hecho.Estado;
+import core.models.entities.hecho.Hecho;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

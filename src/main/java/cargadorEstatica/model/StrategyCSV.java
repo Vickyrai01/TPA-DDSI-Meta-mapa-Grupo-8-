@@ -1,11 +1,11 @@
 package cargadorEstatica.model;
 
 
-import api.dto.HechoAIntegrarDTO;
+import core.api.DTO.HechoAIntegrarDTO;
 import com.opencsv.CSVReader;
-import models.entities.colecciones.criterios.FiltradorCriterios;
-import models.entities.fuentes.StrategyTipoConexion;
-import models.repository.HechosRepository;
+import core.models.entities.colecciones.criterios.FiltradorCriterios;
+import core.models.entities.fuentes.StrategyTipoConexion;
+import core.models.repository.HechosRepository;
 
 import java.io.FileReader;
 import java.util.ArrayList;

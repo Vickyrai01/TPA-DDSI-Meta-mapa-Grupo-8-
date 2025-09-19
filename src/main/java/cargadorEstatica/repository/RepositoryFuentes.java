@@ -2,11 +2,12 @@ package cargadorEstatica.repository;
 
 import cargadorEstatica.model.Fuente;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RepositoryFuentes {
     private static volatile RepositoryFuentes instance;
-    private List<cargadorEstatica.model.Fuente> fuentesEstaticas;
+    private List<Fuente> fuentesEstaticas = new ArrayList<>();
 
     private RepositoryFuentes() {
         if (instance != null) {

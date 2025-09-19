@@ -2,11 +2,12 @@ package cargadorProxy.repository;
 
 import cargadorProxy.model.Fuente;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RepositoryFuentes {
     private static volatile RepositoryFuentes instance;
-    private List<Fuente> fuentesProxy;
+    private List<Fuente> fuentesProxy = new ArrayList<>();
 
     private RepositoryFuentes() {
         if (instance != null) {

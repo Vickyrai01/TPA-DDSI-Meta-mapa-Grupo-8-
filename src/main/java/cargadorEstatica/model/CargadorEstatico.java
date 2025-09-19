@@ -23,6 +23,7 @@ public class CargadorEstatico {
 
     public List<HechoAIntegrarDTO> extraerHechosAIntegrar(){
         List<cargadorEstatica.model.Fuente> fuentes = repositoryFuentes.getAll();
+        if(fuentes.isEmpty()) return new ArrayList<>();
         fuentes.forEach(f -> hechos.addAll(f.extraerHechos()));
         hechos.forEach(h -> h.setTipoFuente("ESTATICA"));
         return hechos;

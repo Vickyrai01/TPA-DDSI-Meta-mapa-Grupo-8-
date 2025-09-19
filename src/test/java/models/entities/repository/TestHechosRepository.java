@@ -1,12 +1,12 @@
 package models.entities.repository;
 
-import models.entities.fuentes.TipoFuente;
-import models.entities.hecho.Categoria;
-import models.entities.hecho.Coordenadas;
-import models.entities.hecho.Estado;
-import models.entities.hecho.Hecho;
-import models.repository.HechosRepository;
-import models.repository.seeders.HechosRepositorySeeder;
+import core.models.entities.fuentes.TipoFuente;
+import core.models.entities.hecho.Categoria;
+import core.models.entities.hecho.Coordenadas;
+import core.models.entities.hecho.Estado;
+import core.models.entities.hecho.Hecho;
+import core.models.repository.HechosRepository;
+import core.models.repository.seeders.HechosRepositorySeeder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -1,7 +1,7 @@
 package cargadorProxy.model;
 
-import api.dto.HechoAIntegrarDTO;
-import models.entities.fuentes.StrategyTipoConexion;
+import core.api.DTO.HechoAIntegrarDTO;
+import core.models.entities.fuentes.StrategyTipoConexion;
 
 import java.util.List;
 
