@@ -1,22 +1,49 @@
 package cargadorEstatica.application;
 
-import cargadorDinamica.GetHechosDinamicaHandler;
 import cargadorEstatica.handlers.PostFuenteNuevaEstatica;
-import io.javalin.Javalin;
+import cargadorEstatica.model.Fuente;
+import cargadorEstatica.model.HechoAIntegrarDTO;
+import cargadorEstatica.repository.RepositoryFuentes;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import cargadorEstatica.model.CargadorEstatico;
 
+import java.util.List;
+
+@SpringBootApplication
+@RestController
+@RequestMapping("/fuentesEstaticas")
 public class Application {
-    public static void main(String[] args) {
 
-        Javalin app = Javalin.create()
-                .get("/", ctx -> ctx.result("API Cargador Estatico ACTIVA"))
-                .start(8083);
+    private final CargadorEstatico cargadorEstatico;
+    private final RepositoryFuentes repoFuentes = RepositoryFuentes.getInstance();
 
-        configurarEndpoints(app);
+    public Application() {
+        this.cargadorEstatico = CargadorEstatico.getInstance();
     }
 
-    private static void configurarEndpoints(Javalin app) {
-        app.get("fuentesEstaticas/obtenerHechos", new GetHechosDinamicaHandler());
-        app.post("fuentesEstaticas/agregarFuente", new PostFuenteNuevaEstatica());
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+    @GetMapping("/health")
+    public String health() {
+        return "API Cargador Estatico ACTIVA";
+    }
+
+    @GetMapping("/obtenerHechos")
+    public ResponseEntity<List<HechoAIntegrarDTO>> obtenerHechos() {
+        List<HechoAIntegrarDTO> hechos = cargadorEstatico.extraerHechosAIntegrar();
+        if(hechos.isEmpty()) return ResponseEntity.status(204).build();
+        return ResponseEntity.ok(hechos);
+    }
+
+    @PostMapping("/agregarFuente")
+    public ResponseEntity<?> agregarFuente(@RequestBody Fuente fuente) {
+        repoFuentes.agregarFuente(fuente);
+        return ResponseEntity.status(201).body("Fuente guardada correctamente");
     }
 }
 

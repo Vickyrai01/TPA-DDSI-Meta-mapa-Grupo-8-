@@ -3,15 +3,19 @@ package models.entities.coleccion;
 
 import java.net.MalformedURLException;
 
-import models.entities.colecciones.AlgoritmoConsenso;
-import models.entities.colecciones.Coleccion;
-import models.agregador.normalizador.ComparadorHechos;
-import models.entities.colecciones.ModoDeNavegacion;
-import models.entities.colecciones.StrategyAbsoluta;
+import core.models.entities.colecciones.Coleccion;
+import core.models.entities.colecciones.ModoDeNavegacion;
+import core.models.entities.colecciones.StrategyAbsoluta;
 
-import models.entities.colecciones.criterios.*;
-import models.entities.fuentes.*;
-import models.entities.hecho.*;
+import core.models.entities.colecciones.criterios.Criterio;
+import core.models.entities.fuentes.Fuente;
+import core.models.entities.fuentes.FuenteFactory;
+import core.models.entities.fuentes.TipoConexion;
+import core.models.entities.fuentes.TipoFuente;
+import core.models.entities.hecho.Categoria;
+import core.models.entities.hecho.Coordenadas;
+import core.models.entities.hecho.Estado;
+import core.models.entities.hecho.Hecho;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

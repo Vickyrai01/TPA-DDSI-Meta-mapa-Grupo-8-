@@ -1,6 +1,6 @@
 package models.entities.fuentes;
 
-import models.agregador.SchedulerAgregador;
+import core.models.agregador.SchedulerAgregador;
 
 public class SchedulerTest {
     public static void main(String[] args) throws Exception {

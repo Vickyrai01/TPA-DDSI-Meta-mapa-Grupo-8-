@@ -1,22 +1,5 @@
 package models.entities.agregador;
 
-import models.agregador.SchedulerAgregador;
-import models.agregador.ServicioDeAgregacion;
-import models.entities.colecciones.Coleccion;
-import models.entities.colecciones.criterios.Criterio;
-import models.entities.colecciones.criterios.CriterioDescripcion;
-import models.entities.colecciones.criterios.CriterioNombre;
-import models.entities.fuentes.Fuente;
-import models.entities.fuentes.FuenteFactory;
-import models.entities.fuentes.TipoConexion;
-import models.entities.fuentes.TipoFuente;
-import models.repository.ColeccionesRepository;
-import models.repository.FuentesRepository;
-import models.repository.HechosRepository;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class DemoAgregadorConActualizacion {
     /*public static void main(String[] args){
         ServicioDeAgregacion servicioDeAgregacion = ServicioDeAgregacion.getInstance();

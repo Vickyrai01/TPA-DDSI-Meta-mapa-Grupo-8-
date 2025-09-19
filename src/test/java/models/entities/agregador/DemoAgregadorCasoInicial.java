@@ -1,16 +1,16 @@
 package models.entities.agregador;
 
-import models.agregador.ServicioDeAgregacion;
-import models.entities.colecciones.Coleccion;
-import models.entities.fuentes.Fuente;
-import models.entities.fuentes.FuenteFactory;
-import models.entities.fuentes.TipoConexion;
-import models.entities.fuentes.TipoFuente;
-import models.entities.hecho.Hecho;
-import models.repository.ColeccionesRepository;
-import models.repository.FuentesRepository;
-import models.repository.HechosRepository;
-import api.dto.HechoAIntegrarDTO;
+import core.models.agregador.ServicioDeAgregacion;
+import core.models.entities.colecciones.Coleccion;
+import core.models.entities.fuentes.Fuente;
+import core.models.entities.fuentes.FuenteFactory;
+import core.models.entities.fuentes.TipoConexion;
+import core.models.entities.fuentes.TipoFuente;
+import core.models.entities.hecho.Hecho;
+import core.models.repository.ColeccionesRepository;
+import core.models.repository.FuentesRepository;
+import core.models.repository.HechosRepository;
+import core.api.DTO.HechoAIntegrarDTO;
 
 import java.util.ArrayList;
 import java.util.Arrays;

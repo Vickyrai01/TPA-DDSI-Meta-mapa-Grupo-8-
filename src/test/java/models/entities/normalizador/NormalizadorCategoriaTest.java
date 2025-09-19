@@ -1,9 +1,9 @@
 package models.entities.normalizador;
 
-import models.entities.hecho.Categoria;
-import api.dto.HechoAIntegrarDTO;
-import models.agregador.normalizador.NormalizadorCategoria;
-import models.repository.CategoriaRepository;
+import core.models.entities.hecho.Categoria;
+import core.api.DTO.HechoAIntegrarDTO;
+import core.models.agregador.normalizador.NormalizadorCategoria;
+import core.models.repository.CategoriaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

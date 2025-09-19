@@ -1,17 +1,18 @@
 package models.entities.agregador;
 
-import models.agregador.ServicioDeAgregacion;
-import models.entities.colecciones.Coleccion;
-import models.entities.colecciones.criterios.Criterio;
-import models.entities.colecciones.criterios.CriterioDescripcion;
-import models.entities.colecciones.criterios.CriterioNombre;
-import models.entities.fuentes.Fuente;
-import models.entities.fuentes.FuenteFactory;
-import models.entities.fuentes.TipoConexion;
-import models.entities.fuentes.TipoFuente;
-import models.repository.ColeccionesRepository;
-import models.repository.FuentesRepository;
-import models.repository.HechosRepository;
+import core.api.DTO.HechoAIntegrarDTO;
+import core.models.agregador.ServicioDeAgregacion;
+import core.models.entities.colecciones.Coleccion;
+import core.models.entities.colecciones.criterios.Criterio;
+import core.models.entities.colecciones.criterios.CriterioDescripcion;
+import core.models.entities.colecciones.criterios.CriterioNombre;
+import core.models.entities.fuentes.Fuente;
+import core.models.entities.fuentes.FuenteFactory;
+import core.models.entities.fuentes.TipoConexion;
+import core.models.entities.fuentes.TipoFuente;
+import core.models.repository.ColeccionesRepository;
+import core.models.repository.FuentesRepository;
+import core.models.repository.HechosRepository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +33,7 @@ public class DemoAgregadorCriterios {
         fuentes.add(fuenteCSV);
         fuentes.add(fuenteAPI);
 
-        api.dto.HechoAIntegrarDTO hecho1 = new api.dto.HechoAIntegrarDTO(
+        HechoAIntegrarDTO hecho1 = new HechoAIntegrarDTO(
                 "Incendio en reserva natural Buenos Aires",
                 "Se detectó un incendio de gran magnitud en la zona norte de la reserva.",
                 "Medio Ambiente",
@@ -44,7 +45,7 @@ public class DemoAgregadorCriterios {
                 "ESTATICA", true, 1
         );
 
-        api.dto.HechoAIntegrarDTO hecho2 = new api.dto.HechoAIntegrarDTO(
+        HechoAIntegrarDTO hecho2 = new HechoAIntegrarDTO(
                 "Protesta estudiantil  Buenos Aires",
                 "Estudiantes se movilizaron reclamando mejoras edilicias.",
                 "Social",
@@ -56,7 +57,7 @@ public class DemoAgregadorCriterios {
                 "ESTATICA", true, 2
         );
 
-        api.dto.HechoAIntegrarDTO hecho3 = new api.dto.HechoAIntegrarDTO(
+        HechoAIntegrarDTO hecho3 = new HechoAIntegrarDTO(
                 "Lanzamiento de satélite argentino  Buenos Aires",
                 "La CONAE lanzó un nuevo satélite de observación terrestre. emergencia",
                 "Ciencia y Tecnología",
@@ -68,7 +69,7 @@ public class DemoAgregadorCriterios {
                 "PROXY", false, 1
         );
 
-        api.dto.HechoAIntegrarDTO hecho4 = new api.dto.HechoAIntegrarDTO(
+        HechoAIntegrarDTO hecho4 = new HechoAIntegrarDTO(
                 "Corte de energía en barrio céntrico Buenos Aires",
                 "Más de 20 manzanas quedaron sin luz durante 4 horas. emergencia",
                 "Servicios",
@@ -80,7 +81,7 @@ public class DemoAgregadorCriterios {
                 "PROXY", true, 1
         );
 
-        api.dto.HechoAIntegrarDTO hecho15 = new api.dto.HechoAIntegrarDTO(
+        HechoAIntegrarDTO hecho15 = new HechoAIntegrarDTO(
                 "Corte de energía en barrio céntrico  Buenos Aires",
                 "Más de 20 manzanas quedaron sin luz durante 4 horas. emergencia",
                 "Servicios",
@@ -93,7 +94,7 @@ public class DemoAgregadorCriterios {
         );
 
 
-        api.dto.HechoAIntegrarDTO hecho17 = new api.dto.HechoAIntegrarDTO(
+        HechoAIntegrarDTO hecho17 = new HechoAIntegrarDTO(
                 " Corte de energía en barrio céntrico Buenos Aires",
                 "Más de 20 manzanas quedaron sin luz durante 4 horas. emergencia",
                 "Servicios",
@@ -105,7 +106,7 @@ public class DemoAgregadorCriterios {
                 "PROXY", true, 2
         );
 
-        api.dto.HechoAIntegrarDTO hecho18 = new api.dto.HechoAIntegrarDTO(
+        HechoAIntegrarDTO hecho18 = new HechoAIntegrarDTO(
                 " Corte de energía en barrio céntrico Buenos Aires",
                 "Más de 20 manzanas quedaron sin luz durante 4 horas. emergencia",
                 "Servicios",
@@ -116,7 +117,7 @@ public class DemoAgregadorCriterios {
                 "http://ejemplo.com/corte.jpg",
                 "PROXY", true, 2
         );
-        api.dto.HechoAIntegrarDTO hecho19 = new api.dto.HechoAIntegrarDTO(
+        HechoAIntegrarDTO hecho19 = new HechoAIntegrarDTO(
                 " Corte de energía en barrio céntrico Buenos Aires",
                 "Más de 20 manzanas quedaron sin luz durante 4 horas. emergencia",
                 "Servicios",
@@ -127,7 +128,7 @@ public class DemoAgregadorCriterios {
                 "http://ejemplo.com/corte.jpg",
                 "PROXY", true, 2
         );
-        api.dto.HechoAIntegrarDTO hecho20 = new api.dto.HechoAIntegrarDTO(
+        HechoAIntegrarDTO hecho20 = new HechoAIntegrarDTO(
                 " Corte de energía en barrio céntrico Buenos Aires",
                 "Más de 20 manzanas quedaron sin luz durante 4 horas.  emergencia",
                 "Servicios",
@@ -143,7 +144,7 @@ public class DemoAgregadorCriterios {
         CriterioDescripcion criterioNombre2 = new CriterioDescripcion("emergencia");
         List<Criterio> criterios = List.of(criterioNombre1, criterioNombre2);
 
-        List<api.dto.HechoAIntegrarDTO> hechos = Arrays.asList(
+        List<HechoAIntegrarDTO> hechos = Arrays.asList(
                 hecho1, hecho2, hecho3, hecho4, hecho15, hecho17, hecho18, hecho19, hecho20
         );
         ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();

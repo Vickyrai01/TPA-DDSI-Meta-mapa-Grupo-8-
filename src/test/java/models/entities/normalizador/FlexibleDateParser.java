@@ -1,6 +1,6 @@
 package models.entities.normalizador;
 
-import models.agregador.normalizador.NormalizadorFecha;
+import core.models.agregador.normalizador.NormalizadorFecha;
 
 import java.time.LocalDate;
 
