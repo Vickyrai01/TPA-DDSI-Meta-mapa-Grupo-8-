@@ -1,27 +1,26 @@
-package cargadorEstatica.application;
+package cargadorProxy.application;
 
-import cargadorEstatica.handlers.PostFuenteNuevaEstatica;
-import cargadorEstatica.model.Fuente;
-import cargadorEstatica.model.HechoAIntegrarDTO;
-import cargadorEstatica.repository.RepositoryFuentes;
+import cargadorProxy.model.Fuente;
+import cargadorProxy.model.HechoAIntegrarDTO;
+import cargadorProxy.model.CargadorProxy;
+import cargadorProxy.repository.RepositoryFuentes;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import cargadorEstatica.model.CargadorEstatico;
 
 import java.util.List;
 
 @SpringBootApplication
 @RestController
-@RequestMapping("/fuentesEstaticas")
+@RequestMapping("/fuentesProxy")
 public class Application {
 
-    private final CargadorEstatico cargadorEstatico;
+    private final CargadorProxy cargadorProxy;
     private final RepositoryFuentes repoFuentes = RepositoryFuentes.getInstance();
 
     public Application() {
-        this.cargadorEstatico = CargadorEstatico.getInstance();
+        this.cargadorProxy = CargadorProxy.getInstance();
     }
 
     public static void main(String[] args) {
@@ -30,12 +29,12 @@ public class Application {
 
     @GetMapping("/health")
     public String health() {
-        return "API Cargador Estatico ACTIVA";
+        return "API Cargador Proxy ACTIVA";
     }
 
     @GetMapping("/obtenerHechos")
     public ResponseEntity<List<HechoAIntegrarDTO>> obtenerHechos() {
-        List<HechoAIntegrarDTO> hechos = cargadorEstatico.extraerHechosAIntegrar();
+        List<HechoAIntegrarDTO> hechos = cargadorProxy.extraerHechosAIntegrar();
         if(hechos.isEmpty()) return ResponseEntity.status(204).build();
         return ResponseEntity.ok(hechos);
     }

@@ -1,26 +1,26 @@
-package cargadorProxy.application;
+package cargadorEstatica.application;
 
-import cargadorProxy.model.Fuente;
-import cargadorProxy.model.HechoAIntegrarDTO;
-import cargadorProxy.model.CargadorProxy;
-import cargadorProxy.repository.RepositoryFuentes;
+import cargadorEstatica.model.Fuente;
+import cargadorEstatica.model.HechoAIntegrarDTO;
+import cargadorEstatica.repository.RepositoryFuentes;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import cargadorEstatica.model.CargadorEstatico;
 
 import java.util.List;
 
 @SpringBootApplication
 @RestController
-@RequestMapping("/fuentesProxy")
+@RequestMapping("/fuentesEstaticas")
 public class Application {
 
-    private final CargadorProxy cargadorProxy;
+    private final CargadorEstatico cargadorEstatico;
     private final RepositoryFuentes repoFuentes = RepositoryFuentes.getInstance();
 
     public Application() {
-        this.cargadorProxy = CargadorProxy.getInstance();
+        this.cargadorEstatico = CargadorEstatico.getInstance();
     }
 
     public static void main(String[] args) {
@@ -34,7 +34,7 @@ public class Application {
 
     @GetMapping("/obtenerHechos")
     public ResponseEntity<List<HechoAIntegrarDTO>> obtenerHechos() {
-        List<HechoAIntegrarDTO> hechos = cargadorProxy.extraerHechosAIntegrar();
+        List<HechoAIntegrarDTO> hechos = cargadorEstatico.extraerHechosAIntegrar();
         if(hechos.isEmpty()) return ResponseEntity.status(204).build();
         return ResponseEntity.ok(hechos);
     }

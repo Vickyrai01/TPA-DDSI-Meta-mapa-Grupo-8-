@@ -30,7 +30,7 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
-    @GetMapping("/")
+    @GetMapping("/health")
     public String health() {
         return "API Cargador Dinámico ACTIVA";
     }
