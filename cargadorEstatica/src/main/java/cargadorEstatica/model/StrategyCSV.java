@@ -1,11 +1,9 @@
 package cargadorEstatica.model;
 
 
-import core.api.DTO.HechoAIntegrarDTO;
+import cargadorEstatica.model.HechoAIntegrarDTO;
 import com.opencsv.CSVReader;
-import core.models.entities.colecciones.criterios.FiltradorCriterios;
-import core.models.entities.fuentes.StrategyTipoConexion;
-import core.models.repository.HechosRepository;
+import cargadorEstatica.model.StrategyTipoConexion;
 
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -16,12 +14,10 @@ import java.util.stream.Collectors;
 
 public class StrategyCSV implements StrategyTipoConexion {
 
-    FiltradorCriterios filtradorCriterios = FiltradorCriterios.getInstance();
-    HechosRepository hechosRepository = HechosRepository.getInstance();
-    int i = 5; // A SOLUCIONAR DSP!!
+    public StrategyCSV() {}
 
     @Override
-    public List<HechoAIntegrarDTO> extraerHecho(String fuenteBase, String codigoFuente) {
+    public List<HechoAIntegrarDTO> extraerHechosRecientes(String fuenteBase, String codigoFuente) {
         List<HechoAIntegrarDTO> hechos = new ArrayList<>();
 
         try (CSVReader reader = new CSVReader(new FileReader(fuenteBase))) {

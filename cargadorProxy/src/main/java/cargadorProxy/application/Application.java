@@ -1,8 +1,7 @@
 package cargadorProxy.application;
 
-import cargadorProxy.model.Fuente;
-import cargadorProxy.model.HechoAIntegrarDTO;
-import cargadorProxy.model.CargadorProxy;
+import cargadorProxy.RepositoryFuentesSeeder;
+import cargadorProxy.model.*;
 import cargadorProxy.repository.RepositoryFuentes;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,14 +15,17 @@ import java.util.List;
 @RequestMapping("/fuentesProxy")
 public class Application {
 
+    private static RepositoryFuentesSeeder repoFuentesSeeder = RepositoryFuentesSeeder.getInstance();
     private final CargadorProxy cargadorProxy;
     private final RepositoryFuentes repoFuentes = RepositoryFuentes.getInstance();
+
 
     public Application() {
         this.cargadorProxy = CargadorProxy.getInstance();
     }
 
     public static void main(String[] args) {
+        repoFuentesSeeder.cargarRepos();
         SpringApplication.run(Application.class, args);
     }
 
@@ -40,9 +42,25 @@ public class Application {
     }
 
     @PostMapping("/agregarFuente")
-    public ResponseEntity<?> agregarFuente(@RequestBody Fuente fuente) {
+    public ResponseEntity<?> agregarFuente(@RequestBody FuenteDTO fuenteDTO) {
+        StrategyTipoConexion strategyFuente = obtenerStrategyFuente(fuenteDTO.getTipoFuente());
+        if (strategyFuente == null) return ResponseEntity.status(400).body("Tipo de fuente no reconocido");
+        Fuente fuente = new Fuente(null, fuenteDTO.getNombre(), fuenteDTO.getLink(), strategyFuente, fuenteDTO.getTipoFuente());
         repoFuentes.agregarFuente(fuente);
         return ResponseEntity.status(201).body("Fuente guardada correctamente");
     }
-}
 
+    private StrategyTipoConexion obtenerStrategyFuente(String tipoFuente) {
+        if (tipoFuente.equals("BIBLIOTECA")) return new StrategyBibliotecaCliente();
+        else if (tipoFuente.equals("APIREST")) return new StrategyAPIREST();
+        else return null;
+    }
+
+    @GetMapping("/obtenerFuentes")
+    public ResponseEntity<List<Fuente>> obtenerFuentes(){
+        List<Fuente> fuentes = repoFuentes.getAll();
+        if(fuentes.isEmpty()) return ResponseEntity.status(204).build();
+        return ResponseEntity.ok(fuentes);
+    }
+
+}

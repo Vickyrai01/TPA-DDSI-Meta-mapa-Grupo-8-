@@ -1,14 +1,22 @@
 package cargadorProxy.model;
 
-import core.api.DTO.HechoAIntegrarDTO;
-import core.models.entities.fuentes.StrategyTipoConexion;
+import cargadorProxy.model.HechoAIntegrarDTO;
+import cargadorProxy.model.StrategyTipoConexion;
 
 import java.util.List;
 
 public class StrategyBibliotecaCliente implements StrategyTipoConexion {
 
+    public StrategyBibliotecaCliente() {
+    }
+
     @Override
-    public List<HechoAIntegrarDTO> extraerHecho(String fuente, String codigoFuente){return null;}; //toma los hechos!!
+    public List<HechoAIntegrarDTO> agregarHecho(String FuenteBase, HechoAIntegrarDTO hecho) {
+        return null;
+    }
+
+    @Override
+    public List<HechoAIntegrarDTO> extraerHechosRecientes(String fuente, String codigoFuente){return null;}; //toma los hechos!!
 
 
 }
