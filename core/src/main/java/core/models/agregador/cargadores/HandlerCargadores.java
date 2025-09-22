@@ -9,6 +9,7 @@ import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import javax.ws.rs.core.MultivaluedMap;
 import org.apache.cxf.jaxrs.client.WebClient;
 
 import java.util.ArrayList;
@@ -42,10 +43,30 @@ public class HandlerCargadores {
     List<HechoAIntegrarDTO> hechosAIntegrar = new ArrayList<>();
 
     public List<HechoAIntegrarDTO> extraerHechosAIntegrar(){
-        hechosAIntegrar.addAll(extraerHecho(dinamico));
-        hechosAIntegrar.addAll(extraerHecho(proxy));
-        hechosAIntegrar.addAll(extraerHecho(estatico));
-        return hechosAIntegrar;
+        List<HechoAIntegrarDTO> resultado = new ArrayList<>();
+
+        try {
+            List<HechoAIntegrarDTO> d = extraerHecho(dinamico);
+            if (d != null) resultado.addAll(d);
+        } catch (Exception e) {
+            System.err.println("No se pudo extraer de DINAMICO: " + e.getMessage());
+        }
+
+        try {
+            List<HechoAIntegrarDTO> p = extraerHecho(proxy);
+            if (p != null) resultado.addAll(p);
+        } catch (Exception e) {
+            System.err.println("No se pudo extraer de PROXY: " + e.getMessage());
+        }
+
+        try {
+            List<HechoAIntegrarDTO> eList = extraerHecho(estatico);
+            if (eList != null) resultado.addAll(eList);
+        } catch (Exception e) {
+            System.err.println("No se pudo extraer de ESTATICO: " + e.getMessage());
+        }
+
+        return resultado;
     }
 
     public List<HechoAIntegrarDTO> extraerHecho(String fuente){
@@ -59,7 +80,6 @@ public class HandlerCargadores {
         objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 
         try {
-
             Client client = ClientBuilder.newClient();
             Response response = client.target(fuente)
                     .request(MediaType.APPLICATION_JSON)

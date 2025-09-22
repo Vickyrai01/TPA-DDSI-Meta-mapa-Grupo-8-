@@ -1,6 +1,8 @@
 package core.models.agregador;
+import core.api.DTO.HechoAIntegrarDTO;
 import core.models.agregador.cargadores.HandlerCargadores;
 
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -28,9 +30,16 @@ public class SchedulerAgregador {
         scheduler.scheduleAtFixedRate(this::verificarNuevosHechos,0,30, TimeUnit.SECONDS);
     }
 
-    private void verificarNuevosHechos() {
-        servicioDeAgregacion.actualizarColecciones(handlerCargadores.extraerHechosAIntegrar());
+    public void verificarNuevosHechos() {
+        List<HechoAIntegrarDTO> hechos = handlerCargadores.extraerHechosAIntegrar();
+        System.out.println("Nuevos hechos a integrar: " + hechos.size());
+        servicioDeAgregacion.actualizarColecciones(hechos);
     }
+
+    public List<HechoAIntegrarDTO> obtenerHechosAIntegrar(){
+        List<HechoAIntegrarDTO> hechos = handlerCargadores.extraerHechosAIntegrar();
+        return hechos;}
+
 
     public void detenerScheduler() {
         enEjecucion = false;
