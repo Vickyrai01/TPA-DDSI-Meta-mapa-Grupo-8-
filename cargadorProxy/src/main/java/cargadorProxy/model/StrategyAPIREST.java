@@ -1,6 +1,5 @@
 package cargadorProxy.model;
 
-import cargadorProxy.model.StrategyTipoConexion;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
