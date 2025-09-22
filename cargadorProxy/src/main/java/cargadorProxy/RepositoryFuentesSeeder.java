@@ -1,9 +1,11 @@
 package cargadorProxy;
 
 
-import cargadorEstatica.repository.RepositoryFuentes;
-import cargadorEstatica.model.Fuente;
-import core.models.entities.fuentes.TipoConexion;
+import cargadorProxy.model.StrategyAPIREST;
+import cargadorProxy.model.StrategyTipoConexion;
+import cargadorProxy.repository.RepositoryFuentes;
+import cargadorProxy.model.Fuente;
+import cargadorProxy.model.TipoConexion;
 
 public class RepositoryFuentesSeeder {
 
@@ -21,8 +23,8 @@ public class RepositoryFuentesSeeder {
         return instance;
     }
 
-
-    TipoConexion strategyAPIREST = TipoConexion.APIREST;
+    StrategyTipoConexion strategyAPIREST = StrategyAPIREST.getInstance();
+    TipoConexion strategyAPIRESTENUM = TipoConexion.APIREST;
 
     Fuente fuente = new Fuente(
             1,

@@ -41,6 +41,7 @@ public class Application {
 
     @PostMapping("/agregarFuente")
     public ResponseEntity<?> agregarFuente(@RequestBody Fuente fuente) {
+        
         repoFuentes.agregarFuente(fuente);
         return ResponseEntity.status(201).body("Fuente guardada correctamente");
     }
