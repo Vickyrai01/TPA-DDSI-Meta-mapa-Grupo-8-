@@ -105,7 +105,7 @@ public class HechoAIntegrarDTO {
     }
 
     @Override
-    public String toString() {
+    public  String toString() {
         return "HechoAIntegrarDTO{" +
                 "titulo='" + titulo + '\'' +
                 ", descripcion='" + descripcion + '\'' +

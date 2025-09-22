@@ -14,4 +14,20 @@
     <artifactId>core</artifactId>
     <name>core</name>
     <packaging>jar</packaging>
+
+    <dependencies>
+        <!-- Cliente JAX-RS de Apache CXF (usa javax en la 3.x) -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-client</artifactId>
+            <version>3.4.3</version>
+        </dependency>
+
+        <!-- API JAX-RS (javax.*) -->
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+    </dependencies>
 </project>
