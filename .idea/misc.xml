@@ -8,6 +8,7 @@
         <option value="$PROJECT_DIR$/cargadorDinamica/pom.xml" />
         <option value="$PROJECT_DIR$/cargadorEstatica/pom.xml" />
         <option value="$PROJECT_DIR$/cargadorProxy/pom.xml" />
+        <option value="$PROJECT_DIR$/core/pom.xml" />
       </list>
     </option>
   </component>

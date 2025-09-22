@@ -1,13 +1,13 @@
 package core.api.application;
 
-import core.api.configs.ApiMetaMapaConfig;
+import core.api.configs.ApiAdminMetaMapaConfig;
 import io.javalin.Javalin;
 import core.models.repository.seeders.ColeccionesRepositorySeeder;
 import core.models.repository.seeders.FuentesRepositorySeeder;
 import core.models.repository.seeders.HechosRepositorySeeder;
 import core.models.repository.seeders.SolicitudEliminacioRepositorySeeder;
 
-public class ApiMetaMapa {
+public class ApiAdminMetaMapa {
 
     public static void main(String[] args) {
         HechosRepositorySeeder hechosRepositorySeeder = HechosRepositorySeeder.getInstance();
@@ -23,9 +23,9 @@ public class ApiMetaMapa {
         coleccionesRepositorySeeder.cargarColeccionesRepositorySeeder();
 
         Javalin app = Javalin.create()
-                .get("/", ctx -> ctx.result("API MetaMapa ACTIVA"))
-                .start(8082);
+                .get("/", ctx -> ctx.result("API ADMINISTRATIVA MetaMapa ACTIVA"))
+                .start(8080);
 
-        ApiMetaMapaConfig.configurarEndpoints(app);
+        ApiAdminMetaMapaConfig.configurarEndpoints(app);
     }
 }
