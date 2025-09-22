@@ -49,9 +49,9 @@ public class DinamicaRepository {
 
         for (Map<HechoAIntegrarDTO, Boolean> elemento : tablaHechos) {
             for (Map.Entry<HechoAIntegrarDTO, Boolean> entry : elemento.entrySet()) {
-                if (!entry.getValue()) { // si es false
-                    noProcesados.add(entry.getKey()); // agrego el hecho
-                    entry.setValue(true);             // marco como procesado
+                if (!entry.getValue()) {
+                    noProcesados.add(entry.getKey());
+                    entry.setValue(true);
                 }
             }
         }
