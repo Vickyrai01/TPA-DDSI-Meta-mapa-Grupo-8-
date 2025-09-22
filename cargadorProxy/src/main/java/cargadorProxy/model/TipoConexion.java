@@ -1,6 +1,6 @@
 package cargadorProxy.model;
 
 public enum TipoConexion {
-APIREST,
+    APIREST,
     BIBLIOTECA
 }

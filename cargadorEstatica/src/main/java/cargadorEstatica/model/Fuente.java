@@ -9,9 +9,9 @@ public class Fuente {
     private String codigoFuente;
     private String nombre;
     private String link;
-    private TipoConexion strategyManeraDeObtenerHechos;
+    private StrategyTipoConexion strategyManeraDeObtenerHechos;
 
-    public Fuente(Integer id, String nombre, String link, TipoConexion strategyManeraDeObtenerHechos, String codigoFuente) {
+    public Fuente(Integer id, String nombre, String link, StrategyTipoConexion strategyManeraDeObtenerHechos, String codigoFuente) {
         this.id = id;
         this.nombre = nombre;
         this.link = link;
@@ -19,13 +19,7 @@ public class Fuente {
         this.codigoFuente = codigoFuente;
     }
 
-
-
     public List<HechoAIntegrarDTO> extraerHechos(){
-        if (strategyManeraDeObtenerHechos == TipoConexion.APIREST) {
-            //return strategyManeraDeObtenerHechos.extraerHechosRecientes(link, codigoFuente);
-        }
-        //else();
-        return List.of();
+            return strategyManeraDeObtenerHechos.extraerHechosRecientes(link, codigoFuente);
     }
 }
