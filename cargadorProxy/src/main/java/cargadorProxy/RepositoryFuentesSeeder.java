@@ -23,7 +23,7 @@ public class RepositoryFuentesSeeder {
         return instance;
     }
 
-    StrategyTipoConexion strategyAPIREST = StrategyAPIREST.getInstance();
+    StrategyTipoConexion strategyAPIREST = new StrategyAPIREST();
     TipoConexion strategyAPIRESTENUM = TipoConexion.APIREST;
 
     Fuente fuente = new Fuente(

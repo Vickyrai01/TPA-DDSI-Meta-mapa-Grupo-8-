@@ -13,19 +13,11 @@ public class StrategyAPIREST implements StrategyTipoConexion {
 
     private final WebClient webClient;
 
-    private static StrategyAPIREST instance;
 
-    private StrategyAPIREST() {
+    public StrategyAPIREST() {
         this.webClient = WebClient.builder()
                 .defaultHeader("Content-Type", "application/json")
                 .build();
-    }
-
-    public static synchronized StrategyAPIREST getInstance() {
-        if (instance == null) {
-            instance = new StrategyAPIREST();
-        }
-        return instance;
     }
 
     @Override

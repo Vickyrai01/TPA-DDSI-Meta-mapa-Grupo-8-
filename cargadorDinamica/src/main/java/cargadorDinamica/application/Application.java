@@ -40,10 +40,21 @@ public class Application {
         return ResponseEntity.ok(hechos);
     }
 
-    //Hay que hacer el post del hecho de UI
     @PostMapping("/agregarHecho")
-    public ResponseEntity<?> agregarHecho(@RequestBody HechoAIntegrarDTO hecho) {
-        dinamicaRepository.add(hecho);
-        return ResponseEntity.status(201).body("Fuente guardada correctamente");
+    public ResponseEntity<String> agregarHecho(@RequestBody HechoAIntegrarDTO hecho) {
+
+        HechoAIntegrarDTO hechoDTO = new HechoAIntegrarDTO(
+                hecho.getHash(),
+                hecho.getTitulo(),
+                hecho.getDescripcion(),
+                hecho.getCategoria(),
+                hecho.getLatitud(),
+                hecho.getLongitud(),
+                hecho.getFechaSuceso()
+        );
+
+        dinamicaRepository.add(hechoDTO);
+        return ResponseEntity.status(201).body("Hecho agregado correctamente");
     }
+
 }
