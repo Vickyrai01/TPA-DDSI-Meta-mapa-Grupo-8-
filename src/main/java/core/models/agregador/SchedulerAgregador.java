@@ -29,9 +29,7 @@ public class SchedulerAgregador {
     }
 
     private void verificarNuevosHechos() {
-    /*
         servicioDeAgregacion.actualizarColecciones(handlerCargadores.extraerHechosAIntegrar());
-    */
     }
 
     public void detenerScheduler() {

@@ -1,7 +1,18 @@
 package core.models.agregador.cargadores;
 
-//import javax.ws.rs.core.Response;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import core.api.DTO.HechoAIntegrarDTO;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import org.apache.cxf.jaxrs.client.WebClient;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HandlerCargadores {
 
@@ -24,7 +35,7 @@ public class HandlerCargadores {
         }
         return instance;
     }
-    /*
+
     String dinamico = ConfigLoader.getProperty("CargadorDinamico");
     String proxy = ConfigLoader.getProperty("CargadorProxy");
     String estatico = ConfigLoader.getProperty("CargadorEstatico");
@@ -48,12 +59,15 @@ public class HandlerCargadores {
         objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 
         try {
-            Response response = clientUsers
-                    .header("Content-Type", "application/json")
+
+            Client client = ClientBuilder.newClient();
+            Response response = client.target(fuente)
+                    .request(MediaType.APPLICATION_JSON)
                     .get();
 
             int status = response.getStatus();
             String responseBody = response.readEntity(String.class);
+
 
             if (status != 200) {
                 throw new RuntimeException("Error en la llamada a /api/user: " + responseBody);
@@ -73,5 +87,5 @@ public class HandlerCargadores {
             return new ArrayList<>();
         }};
 
-     */
+
 }
