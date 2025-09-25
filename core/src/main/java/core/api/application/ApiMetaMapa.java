@@ -1,0 +1,31 @@
+package core.api.application;
+
+import core.api.configs.ApiMetaMapaConfig;
+import io.javalin.Javalin;
+import core.models.repository.seeders.ColeccionesRepositorySeeder;
+import core.models.repository.seeders.FuentesRepositorySeeder;
+import core.models.repository.seeders.HechosRepositorySeeder;
+import core.models.repository.seeders.SolicitudEliminacioRepositorySeeder;
+
+public class ApiMetaMapa {
+
+    public static void main(String[] args) {
+        HechosRepositorySeeder hechosRepositorySeeder = HechosRepositorySeeder.getInstance();
+        hechosRepositorySeeder.cargarHechosSeeder();
+
+        FuentesRepositorySeeder fuentesRepositorySeeder = FuentesRepositorySeeder.getInstance();
+        fuentesRepositorySeeder.cargarFuentesSeeder();
+
+        SolicitudEliminacioRepositorySeeder solicitudEliminacioRepositorySeeder = SolicitudEliminacioRepositorySeeder.getInstance();
+        solicitudEliminacioRepositorySeeder.cargarSolicitudDeEliminacionSeeder();
+
+        ColeccionesRepositorySeeder coleccionesRepositorySeeder = ColeccionesRepositorySeeder.getInstance();
+        coleccionesRepositorySeeder.cargarColeccionesRepositorySeeder();
+
+        Javalin app = Javalin.create()
+                .get("/", ctx -> ctx.result("API MetaMapa ACTIVA"))
+                .start(8081);
+
+        ApiMetaMapaConfig.configurarEndpoints(app);
+    }
+}
