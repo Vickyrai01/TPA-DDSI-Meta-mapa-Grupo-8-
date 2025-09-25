@@ -13,7 +13,7 @@ import java.util.List;
 
 @SpringBootApplication
 @RestController
-@RequestMapping("/fuentesDinamicas")
+@RequestMapping("/cargadorDinamico")
 public class Application {
 
     private final CargadorDinamico cargadorDinamico;

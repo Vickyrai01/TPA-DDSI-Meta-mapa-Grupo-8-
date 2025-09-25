@@ -38,7 +38,8 @@ public class SchedulerAgregador {
 
     public List<HechoAIntegrarDTO> obtenerHechosAIntegrar(){
         List<HechoAIntegrarDTO> hechos = handlerCargadores.extraerHechosAIntegrar();
-        return hechos;}
+        return hechos;
+    }
 
 
     public void detenerScheduler() {
