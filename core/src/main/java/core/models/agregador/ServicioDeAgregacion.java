@@ -182,11 +182,11 @@ public class ServicioDeAgregacion {
         hechosAIntegrar.clear();
         hechosLimpios.clear();
 
-        System.out.println("**Cantidad de hechos a limpiar: **" + lista.size());
+        System.out.println("Cantidad de hechos a limpiar: " + lista.size());
         hechosAIntegrar.addAll(lista);
         limpiarHechos();
         normalizarYCrearHechos();
-        System.out.println("**Cantidad de hechos a integrar: **" + hechosAIntegrar.size());
+        System.out.println("Cantidad de hechos a integrar: " + hechosAIntegrar.size());
         for (Coleccion coleccion : coleccionesRepository.obtenerTodas()) {
             System.out.println(coleccion.toString());
             agregarHechosAColecciones(coleccion);
