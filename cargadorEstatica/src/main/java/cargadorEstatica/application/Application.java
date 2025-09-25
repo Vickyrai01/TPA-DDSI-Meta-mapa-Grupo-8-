@@ -12,7 +12,7 @@ import java.util.List;
 
 @SpringBootApplication
 @RestController
-@RequestMapping("/fuentesEstaticas")
+@RequestMapping("/cargadorEstatico")
 public class Application {
 
     private final RepositoryFuentesSeeder repositoryFuentesSeeder = RepositoryFuentesSeeder.getInstance();

@@ -12,7 +12,7 @@ import java.util.List;
 
 @SpringBootApplication
 @RestController
-@RequestMapping("/fuentesProxy")
+@RequestMapping("/cargadorProxy")
 public class Application {
 
     private static RepositoryFuentesSeeder repoFuentesSeeder = RepositoryFuentesSeeder.getInstance();

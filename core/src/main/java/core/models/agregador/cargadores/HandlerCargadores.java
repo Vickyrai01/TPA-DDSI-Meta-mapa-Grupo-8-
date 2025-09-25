@@ -1,22 +1,19 @@
 package core.models.agregador.cargadores;
 
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import core.api.DTO.HechoAIntegrarDTO;
-import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import javax.ws.rs.core.MultivaluedMap;
-import org.apache.cxf.jaxrs.client.WebClient;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HandlerCargadores {
-
 
     private static volatile HandlerCargadores instance;
 
@@ -42,7 +39,7 @@ public class HandlerCargadores {
     String estatico = ConfigLoader.getProperty("CargadorEstatico");
     List<HechoAIntegrarDTO> hechosAIntegrar = new ArrayList<>();
 
-    public List<HechoAIntegrarDTO> extraerHechosAIntegrar(){
+    public List<HechoAIntegrarDTO> extraerHechosAIntegrar() {
         List<HechoAIntegrarDTO> resultado = new ArrayList<>();
 
         try {
@@ -69,43 +66,54 @@ public class HandlerCargadores {
         return resultado;
     }
 
-    public List<HechoAIntegrarDTO> extraerHecho(String fuente){
+    public List<HechoAIntegrarDTO> extraerHecho(String fuente) {
         List<HechoAIntegrarDTO> hechosExtraidos = new ArrayList<>();
-        WebClient clientUsers = WebClient.create(fuente);
 
+        if (fuente == null || fuente.isBlank()) {
+            System.err.println("Fuente vacía o nula");
+            return hechosExtraidos;
+        }
+
+        // ObjectMapper configuration
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
         objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 
+        // Use Java 21 HttpClient instead of CXF/JAX-RS to avoid javax/jakarta conflicts
+        HttpClient client = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(10))
+                .build();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(fuente))
+                .timeout(Duration.ofSeconds(20))
+                .header("Accept", "application/json")
+                .GET()
+                .build();
+
         try {
-            Client client = ClientBuilder.newClient();
-            Response response = client.target(fuente)
-                    .request(MediaType.APPLICATION_JSON)
-                    .get();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            int status = response.getStatus();
-            String responseBody = response.readEntity(String.class);
-
+            int status = response.statusCode();
+            String responseBody = response.body();
 
             if (status != 200) {
-                throw new RuntimeException("Error en la llamada a /api/user: " + responseBody);
+                throw new RuntimeException("Error en la llamada HTTP (" + status + "): " + responseBody);
             }
 
             HechoAIntegrarDTO[] array = objectMapper.readValue(responseBody, HechoAIntegrarDTO[].class);
-
-            for (HechoAIntegrarDTO dto: array) {
+            for (HechoAIntegrarDTO dto : array) {
                 hechosExtraidos.add(dto);
             }
 
             return hechosExtraidos;
 
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("Error al extraer hechos desde " + fuente + ": " + e.getMessage());
+            //e.printStackTrace();
             return new ArrayList<>();
-        }};
-
-
+        }
+    }
 }

@@ -10,9 +10,9 @@ public class DemoObtenerDeCargadores {
         SchedulerAgregador scheduler = new SchedulerAgregador(false);
 
        List<HechoAIntegrarDTO> hechoAIntegrarDTOList = scheduler.obtenerHechosAIntegrar();
-        for (int i = 0; i < hechoAIntegrarDTOList.size(); i++) {
-            HechoAIntegrarDTO h = hechoAIntegrarDTOList.get(i);
-            h.toString();
+       if(hechoAIntegrarDTOList.isEmpty()){System.out.println("Sin hechos.");}
+        for (HechoAIntegrarDTO h : hechoAIntegrarDTOList) {
+            System.out.println(h.toString());
         }
         System.out.println("========================================");
     }
