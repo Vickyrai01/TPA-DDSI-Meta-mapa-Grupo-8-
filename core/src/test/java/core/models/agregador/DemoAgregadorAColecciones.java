@@ -20,6 +20,7 @@ public class DemoAgregadorAColecciones {
                 fuentesRepository.add(fuenteAPI);
 
             List<Fuente> fuentes = new ArrayList<>();
+                fuentes.add(fuenteAPI);
                 fuentes.add(fuenteCSV);
 
             ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();
@@ -30,8 +31,6 @@ public class DemoAgregadorAColecciones {
         SchedulerAgregador scheduler = new SchedulerAgregador(false);
 
         scheduler.verificarNuevosHechos();
-
-
     }
 
 
