@@ -5,6 +5,7 @@ import cargadorEstatica.repository.RepositoryFuentes;
 import cargadorEstatica.repository.RepositoryFuentesSeeder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,11 +35,10 @@ public class Application {
         return "API Cargador Estatico ACTIVA";
     }
 
-    @GetMapping("/obtenerHechos")
+    @GetMapping(value = "/obtenerHechos", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<HechoAIntegrarDTO>> obtenerHechos() {
         List<HechoAIntegrarDTO> hechos = cargadorEstatico.extraerHechosAIntegrar();
-        if(hechos.isEmpty()) return ResponseEntity.status(204).build();
-        return ResponseEntity.ok(hechos);
+        return ResponseEntity.ok(hechos); // 200 con [] si está vacío
     }
 
     @PostMapping("/agregarFuente")
