@@ -1,6 +1,8 @@
 package cargadorEstatica.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 public class Fuente {
@@ -12,6 +14,17 @@ public class Fuente {
     @JsonIgnore
     private StrategyTipoConexion strategyManeraDeObtenerHechos;
     private String codigoFuente;
+
+    @JsonIgnore
+    private Instant ultimoProcesamiento; // puede ser null la primera vez
+
+    public Instant getUltimoProcesamiento() { return ultimoProcesamiento; }
+    public void setUltimoProcesamiento(Instant t) { this.ultimoProcesamiento = t; }
+
+    public boolean necesitaProcesarse(Duration umbral) {
+        Instant u = ultimoProcesamiento;
+        return (u == null) || u.isBefore(Instant.now().minus(umbral));
+    }
 
     public Fuente(Integer id, String nombre, String link, StrategyTipoConexion strategyManeraDeObtenerHechos, String codigoFuente) {
         this.id = id;

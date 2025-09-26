@@ -1,6 +1,9 @@
 package cargadorEstatica.model;
 import cargadorEstatica.repository.RepositoryFuentes;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +11,10 @@ public class CargadorEstatico {
 
     private static CargadorEstatico instance;
     private RepositoryFuentes repositoryFuentes = RepositoryFuentes.getInstance() ;
+    private volatile Duration umbralProcesamiento = Duration.ofSeconds(30);
+
+    public void setUmbral(Duration d) { this.umbralProcesamiento = d; }
+
 
     public static CargadorEstatico getInstance() {
         if (instance == null) {
@@ -19,19 +26,32 @@ public class CargadorEstatico {
         }
         return instance;
     }
-
     public List<HechoAIntegrarDTO> extraerHechosAIntegrar() {
-        List<Fuente> fuentes = repositoryFuentes.getAll();
+        List<Fuente> fuentes = fuentesAProcesar();
         if (fuentes.isEmpty()) return List.of();
 
-        // ✅ lista LOCAL nueva por request (no acumula)
         List<HechoAIntegrarDTO> hechos = new ArrayList<>();
         for (Fuente f : fuentes) {
-            List<HechoAIntegrarDTO> lote = f.extraerHechos();
-            if (lote != null) hechos.addAll(lote);
+            try {
+                List<HechoAIntegrarDTO> lote = f.extraerHechos();
+                if (lote != null) hechos.addAll(lote);
+                // marcar como procesada solo si salió bien
+                f.setUltimoProcesamiento(Instant.now());
+            } catch (Exception e) {
+                // no marcamos como procesada si falló
+                System.err.println("Error procesando fuente " + f.getId() + ": " + e.getMessage());
+            }
         }
         hechos.forEach(h -> h.setTipoFuente("ESTATICA"));
         return hechos;
     }
 
+    //Devuelve las fuentes que debo procesar: nunca procesadas o más viejas que umbral
+    public List<Fuente> fuentesAProcesar() {
+        Instant corte = Instant.now().minus(umbralProcesamiento);
+        return repositoryFuentes.getAll().stream()
+                .filter(f -> f.getUltimoProcesamiento() == null || f.getUltimoProcesamiento().isBefore(corte))
+                .toList();
+    }
 }
+
