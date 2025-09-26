@@ -1,8 +1,5 @@
 package core.models.agregador;
 
-import core.api.DTO.HechoAIntegrarDTO;
-import core.models.agregador.SchedulerAgregador;
-
 import java.util.List;
 
 public class DemoObtenerDeCargadores {

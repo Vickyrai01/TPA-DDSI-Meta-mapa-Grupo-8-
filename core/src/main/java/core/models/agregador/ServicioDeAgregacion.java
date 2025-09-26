@@ -1,6 +1,5 @@
 package core.models.agregador;
 
-import core.api.DTO.HechoAIntegrarDTO;
 import core.models.agregador.normalizador.ComparadorHechos;
 import core.models.agregador.normalizador.FactoryHecho;
 import core.models.agregador.normalizador.NormalizadorCategoria;
