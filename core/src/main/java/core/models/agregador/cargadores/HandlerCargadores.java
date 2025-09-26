@@ -33,10 +33,10 @@ public class HandlerCargadores {
         }
         return instance;
     }
-
-    String dinamico = ConfigLoader.getProperty("CargadorDinamico");
-    String proxy = ConfigLoader.getProperty("CargadorProxy");
-    String estatico = ConfigLoader.getProperty("CargadorEstatico");
+    String path = "/obtenerHechos";
+    String dinamico = ConfigLoader.getProperty("CargadorDinamico").concat(path);
+    String proxy = ConfigLoader.getProperty("CargadorProxy").concat(path);
+    String estatico = ConfigLoader.getProperty("CargadorEstatico").concat(path);
     List<HechoAIntegrarDTO> hechosAIntegrar = new ArrayList<>();
 
     public List<HechoAIntegrarDTO> extraerHechosAIntegrar() {

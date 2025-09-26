@@ -48,6 +48,7 @@ public class ServicioDeAgregacion {
     private FactoryHecho factoryHecho = FactoryHecho.getInstance();
 
     private static volatile ServicioDeAgregacion instance;
+
     private ServicioDeAgregacion() {
         if (instance != null) {
             throw new RuntimeException("Usa getInstance() para obtener el Singleton");

@@ -8,6 +8,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class SchedulerAgregador {
+
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private boolean enEjecucion = false;
     private final ServicioDeAgregacion servicioDeAgregacion = ServicioDeAgregacion.getInstance();
