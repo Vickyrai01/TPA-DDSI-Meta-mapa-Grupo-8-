@@ -2,9 +2,11 @@ package core.models.agregador;
 
 public class DetectorDeSpam {
 
+    private static volatile DetectorDeSpam instance;
+
     public static boolean esSpam(String solicitud) {return false;}
 
-    private static volatile DetectorDeSpam instance;
+
 
     public DetectorDeSpam() {
         if (instance != null) {

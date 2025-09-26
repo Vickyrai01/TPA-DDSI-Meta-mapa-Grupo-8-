@@ -34,7 +34,7 @@ public class FuentesRepository {
         return fuentes;
     }
 
-    public void delete(Coleccion c){
+    public void delete(Fuente c){
         fuentes.remove(c);
     }
 
