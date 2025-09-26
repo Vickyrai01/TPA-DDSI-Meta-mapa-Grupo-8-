@@ -108,19 +108,4 @@ public class PostHechoHandler implements Handler {
             return "{}";
         }
     }
-
-
-    public String fuenteAJson(Fuente fuente) {
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> jsonMap = new HashMap<>();
-        jsonMap.put("nombre", fuente.getNombre());
-        jsonMap.put("link", fuente.getLink());
-        jsonMap.put("tipoFuente", fuente.getStrategyTipoConexion().devolverTipoDeConexion()); // si quieres el string: this.tipoFuente.toString()
-        try {
-            return mapper.writeValueAsString(jsonMap);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return "{}";
-        }
-    }
 }
