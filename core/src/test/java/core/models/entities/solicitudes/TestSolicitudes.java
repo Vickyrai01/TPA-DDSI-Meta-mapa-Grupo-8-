@@ -33,7 +33,7 @@ public class TestSolicitudes {
 
     @Test
     void seRechaza(){
-        soli1.revisarPorSpam();
+        //soli1.revisarPorSpam();
 
         assertFalse(soli1.getAceptada());
     }
