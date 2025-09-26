@@ -1,7 +1,7 @@
 package core.models.agregador.normalizador;
 
 import core.models.entities.hecho.Categoria;
-import core.api.DTO.HechoAIntegrarDTO;
+import core.models.agregador.HechoAIntegrarDTO;
 import core.models.repository.CategoriaRepository;
 
 import java.util.List;

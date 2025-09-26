@@ -1,11 +1,10 @@
-package core.api.DTO;
+package core.models.agregador;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
-import core.models.agregador.HandlerRecientes;
 
 import java.util.Collections;
 import java.util.List;

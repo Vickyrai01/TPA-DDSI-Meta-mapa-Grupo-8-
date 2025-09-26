@@ -7,7 +7,7 @@ import core.models.agregador.ConfigLoader;
 import core.models.entities.fuentes.Fuente;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
-import core.api.DTO.HechoAIntegrarDTO;
+import core.models.agregador.HechoAIntegrarDTO;
 import core.models.repository.DinamicaRepository;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;

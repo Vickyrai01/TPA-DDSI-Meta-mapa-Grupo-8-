@@ -3,7 +3,7 @@ package core.models.entities.fuentes;
 
 import com.opencsv.CSVReader;
 import core.models.entities.colecciones.criterios.FiltradorCriterios;
-import core.api.DTO.HechoAIntegrarDTO;
+import core.models.agregador.HechoAIntegrarDTO;
 import core.models.repository.HechosRepository;
 
 import java.io.FileReader;
