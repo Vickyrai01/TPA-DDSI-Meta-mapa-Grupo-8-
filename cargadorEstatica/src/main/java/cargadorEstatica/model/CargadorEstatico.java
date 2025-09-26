@@ -8,7 +8,6 @@ public class CargadorEstatico {
 
     private static CargadorEstatico instance;
     private RepositoryFuentes repositoryFuentes = RepositoryFuentes.getInstance() ;
-    private List<HechoAIntegrarDTO> hechos = new ArrayList<>();
 
     public static CargadorEstatico getInstance() {
         if (instance == null) {
@@ -21,10 +20,16 @@ public class CargadorEstatico {
         return instance;
     }
 
-    public List<HechoAIntegrarDTO> extraerHechosAIntegrar(){
-        List<cargadorEstatica.model.Fuente> fuentes = repositoryFuentes.getAll();
-        if(fuentes.isEmpty()) return new ArrayList<>();
-        fuentes.forEach(f -> hechos.addAll(f.extraerHechos()));
+    public List<HechoAIntegrarDTO> extraerHechosAIntegrar() {
+        List<Fuente> fuentes = repositoryFuentes.getAll();
+        if (fuentes.isEmpty()) return List.of();
+
+        // ✅ lista LOCAL nueva por request (no acumula)
+        List<HechoAIntegrarDTO> hechos = new ArrayList<>();
+        for (Fuente f : fuentes) {
+            List<HechoAIntegrarDTO> lote = f.extraerHechos();
+            if (lote != null) hechos.addAll(lote);
+        }
         hechos.forEach(h -> h.setTipoFuente("ESTATICA"));
         return hechos;
     }
