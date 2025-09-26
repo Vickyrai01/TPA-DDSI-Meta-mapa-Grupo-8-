@@ -30,7 +30,7 @@ public class DemoAgregadorAColecciones {
 
         SchedulerAgregador scheduler = new SchedulerAgregador(false);
 
-        scheduler.verificarNuevosHechos();
+        scheduler.iniciarScheduler();
     }
 
 
