@@ -1,25 +1,23 @@
 package core.models.agregador;
 
-import java.time.LocalDate;
-import java.util.*;
-
-import core.models.entities.colecciones.Coleccion;
-import core.models.entities.colecciones.criterios.Criterio;
-import core.models.entities.colecciones.criterios.FiltradorCriterios;
-import core.models.entities.hecho.Categoria;
-import core.models.entities.hecho.Hecho;
 import core.api.DTO.HechoAIntegrarDTO;
 import core.models.agregador.normalizador.ComparadorHechos;
 import core.models.agregador.normalizador.FactoryHecho;
 import core.models.agregador.normalizador.NormalizadorCategoria;
 import core.models.agregador.normalizador.NormalizadorFecha;
+import core.models.entities.colecciones.Coleccion;
+import core.models.entities.colecciones.criterios.Criterio;
+import core.models.entities.colecciones.criterios.FiltradorCriterios;
+import core.models.entities.hecho.Categoria;
+import core.models.entities.hecho.Hecho;
 import core.models.repository.ColeccionesRepository;
-import core.models.agregador.cargadores.CargadorDinamico;
-import core.models.agregador.cargadores.CargadorEstatico;
-import core.models.agregador.cargadores.CargadorFuente;
-import core.models.agregador.cargadores.CargadorProxy;
 import core.models.repository.HechosRepository;
 import core.models.repository.RevisionManualRepository;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class ServicioDeAgregacion {
     private RevisionManualRepository revisionManualRepository = RevisionManualRepository.getInstance();
@@ -31,16 +29,6 @@ public class ServicioDeAgregacion {
     private HechosRepository hechoRepository = HechosRepository.getInstance();
 
     private FiltradorCriterios filtradorCriterios = FiltradorCriterios.getInstance();
-
-
-    private CargadorDinamico cargadorDinamico = CargadorDinamico.getInstance();
-    private CargadorProxy cargadorProxy = CargadorProxy.getInstance();
-    private CargadorEstatico cargadorEstatico = CargadorEstatico.getInstance();
-    private List<CargadorFuente> cargadoresFuentes = List.of(
-            cargadorProxy,
-            cargadorEstatico,
-            cargadorDinamico
-    );
 
     private ComparadorHechos comparadorHechos = ComparadorHechos.getInstance();
     private NormalizadorFecha normalizadorFecha = NormalizadorFecha.getInstance();
@@ -76,20 +64,6 @@ public class ServicioDeAgregacion {
     //  - 4.1 si no se puede normalizar se manda a revisión manual
     // 5. Enviar al Factory para crear el hecho
     // 6. Agregar a las colecciones correspondientes (ver lo de los criterios de pertenencia)
-
-    private void obtenerTodosLosHechosNuevos () {
-        for (CargadorFuente cargador : cargadoresFuentes) {
-                List<HechoAIntegrarDTO> lista = cargador.extraerHechosAIntegrar();  //extraerHechosRecientes();
-                eliminarSpam(lista);
-            //System.out.println("Pase eliminar spam");
-                eliminarDuplicados(lista);
-            //System.out.println("Pase eliminar duplicados");
-                normalizadorCategoria.estandarizarCategoriasDuplicadas(lista);
-            //System.out.println("Pase el normalizador");
-                hechosAIntegrar.addAll(lista);
-                //System.out.println("Hechos extraidos de la fuente: " + cargador.getClass().getSimpleName() + " " + lista.size() + "");
-            }
-    }
 
     private void eliminarSpam(List <HechoAIntegrarDTO> lista){
         lista.removeIf(h -> DetectorDeSpam.esSpam(h.getTitulo()) || DetectorDeSpam.esSpam(h.getDescripcion()));
@@ -147,30 +121,6 @@ public class ServicioDeAgregacion {
             }
     }
 
-    /*public void actualizarColecciones()
-    {
-        hechosAIntegrar.clear();
-        hechosLimpios.clear();
-
-        obtenerTodosLosHechosNuevos();
-        System.out.println("Obtuve los hechos nuevos...");
-        normalizarYCrearHechos();
-        System.out.println("Hechos limpiados y normalizados....");
-        System.out.println("**Hay " + hechosLimpios.size() + " nuevos hechos extraidos**");
-
-        for (Coleccion coleccion : coleccionesRepository.obtenerTodas()) {
-            System.out.println(coleccion.toString());
-            agregarHechosAColecciones(coleccion);
-            System.out.println("**Agregue a colección**");
-        }
-
-        System.out.println("**Se agregaron " + hechoRepository.obtenerTodas().size() + " hechos en el repositorio**");
-        System.out.println("**Hay " + revisionManualRepository.obtenerTodas().size() + " hechos aguardando revisión manual**");
-        System.out.println("*************************");
-        hechosAIntegrar.clear();
-        hechosLimpios.clear();
-    }*/
-
     public void limpiarHechos() {
          eliminarSpam(hechosAIntegrar);
          eliminarDuplicados(hechosAIntegrar);
@@ -178,6 +128,7 @@ public class ServicioDeAgregacion {
 
     }
 
+    //EL QUE SE USA!!
     public void actualizarColecciones(List<HechoAIntegrarDTO> lista){
 
         hechosAIntegrar.clear();
@@ -187,11 +138,10 @@ public class ServicioDeAgregacion {
         hechosAIntegrar.addAll(lista);
         limpiarHechos();
         normalizarYCrearHechos();
-        System.out.println("Cantidad de hechos a integrar: " + hechosAIntegrar.size());
+        System.out.println("Cantidad de hechos a agregar a coleccion: " + hechosLimpios.size());
         for (Coleccion coleccion : coleccionesRepository.obtenerTodas()) {
-            System.out.println(coleccion.toString());
             agregarHechosAColecciones(coleccion);
-            System.out.println("**Agregué a colección**");
+            System.out.println("Agregar a colección " + " '" + coleccion.getTitulo() + "' " + " fue exitoso");
         }
 
         hechosAIntegrar.clear();

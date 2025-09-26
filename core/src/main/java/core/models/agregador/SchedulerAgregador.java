@@ -1,7 +1,7 @@
 package core.models.agregador;
 import core.api.DTO.HechoAIntegrarDTO;
-import core.models.agregador.cargadores.HandlerCargadores;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -13,7 +13,7 @@ public class SchedulerAgregador {
     private boolean enEjecucion = false;
     private final ServicioDeAgregacion servicioDeAgregacion = ServicioDeAgregacion.getInstance();
     private final HandlerCargadores handlerCargadores = HandlerCargadores.getInstance();
-
+    private List<HechoAIntegrarDTO> hechos = new ArrayList<>();
 
     public SchedulerAgregador(boolean enEjecucion) {
         this.enEjecucion = enEjecucion;
@@ -28,18 +28,19 @@ public class SchedulerAgregador {
         enEjecucion = true;
         System.out.println("Iniciando scheduler...");
 
-        scheduler.scheduleAtFixedRate(this::verificarNuevosHechos,0,30, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(this::verificarNuevosHechos,0,20, TimeUnit.SECONDS);
     }
 
     public void verificarNuevosHechos() {
-        List<HechoAIntegrarDTO> hechos = handlerCargadores.extraerHechosAIntegrar();
+        hechos.addAll(handlerCargadores.extraerHechosAIntegrar());
         System.out.println("Nuevos hechos a integrar: " + hechos.size());
         servicioDeAgregacion.actualizarColecciones(hechos);
+        hechos.clear();
     }
 
     public List<HechoAIntegrarDTO> obtenerHechosAIntegrar(){
         List<HechoAIntegrarDTO> hechos = handlerCargadores.extraerHechosAIntegrar();
-        return hechos;
+      return hechos;
     }
 
 
