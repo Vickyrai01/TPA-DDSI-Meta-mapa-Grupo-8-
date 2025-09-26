@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- pom.xml para el módulo 'cargadorEstatica' -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -12,18 +11,12 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.example</groupId>
     <artifactId>cargadorEstatica</artifactId>
     <name>cargadorEstatica</name>
     <packaging>jar</packaging>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- Java 21 heredado del padre -->
-    </properties>
-
     <dependencies>
-        <!-- Lombok para el módulo (scope provided) -->
+        <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -31,11 +24,31 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Dependencias de test gestionadas por Spring Boot para evitar problemas de versiones -->
+        <!-- CSV -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>5.7.1</version>
+        </dependency>
+
+        <!-- Tests simples -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.10.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.11.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Sin spring-boot-maven-plugin -->
+        </plugins>
+    </build>
 </project>
