@@ -37,7 +37,6 @@ public class Application {
     @GetMapping("/obtenerHechos")
     public ResponseEntity<List<HechoAIntegrarDTO>> obtenerHechos() {
         List<HechoAIntegrarDTO> hechos = cargadorProxy.extraerHechosAIntegrar();
-        if(hechos.isEmpty()) return ResponseEntity.status(204).build();
         return ResponseEntity.ok(hechos);
     }
 
