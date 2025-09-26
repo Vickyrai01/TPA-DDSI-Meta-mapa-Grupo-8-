@@ -33,10 +33,10 @@ public class Application {
         EntityManager em = DBUtils.getEntityManager();
         DBUtils.comenzarTransaccion(em);
 
-        Fuente fuentePrueba = new Fuente("Fuente de prueba", "https://www.google.com", new StrategyBibliotecaCliente(), "BIBLIOTECA");
-        //Fuente fuente2 = new Fuente("Fuente 2", "https://www.facebook.com.", new StrategyAPIREST(), "APIREST");
-        em.persist(fuentePrueba);
-        //em.persist(fuente2);
+       // Fuente fuentePrueba = new Fuente("Fuente de prueba", "https://www.google.com", new StrategyBibliotecaCliente(), "BIBLIOTECA");
+        Fuente fuente2 = new Fuente("Fuente 2", "https://www.facebook.com.", new StrategyAPIREST(), "APIREST");
+        //em.persist(fuentePrueba);
+        em.persist(fuente2);
         DBUtils.commit(em);
     }
 
