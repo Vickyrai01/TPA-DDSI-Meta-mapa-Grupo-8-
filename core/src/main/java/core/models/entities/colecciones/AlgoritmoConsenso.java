@@ -2,7 +2,7 @@ package core.models.entities.colecciones;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import core.models.entities.hecho.Hecho;
-import core.api.DTO.HechoAIntegrarDTO;
+import core.models.agregador.HechoAIntegrarDTO;
 import core.models.agregador.normalizador.ComparadorHechos;
 import java.util.ArrayList;
 import java.util.List;

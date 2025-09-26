@@ -1,6 +1,6 @@
 package core.models.repository;
 
-import core.api.DTO.HechoAIntegrarDTO;
+import core.models.agregador.HechoAIntegrarDTO;
 
 import java.util.ArrayList;
 import java.util.List;

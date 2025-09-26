@@ -1,6 +1,6 @@
 package core.models.agregador.normalizador;
 
-import core.api.DTO.HechoAIntegrarDTO;
+import core.models.agregador.HechoAIntegrarDTO;
 import core.models.entities.fuentes.TipoFuente;
 import core.models.entities.hecho.Categoria;
 import core.models.entities.hecho.Coordenadas;

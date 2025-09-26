@@ -1,7 +1,5 @@
 package core.models.agregador;
 
-import core.api.DTO.HechoAIntegrarDTO;
-import core.models.agregador.ServicioDeAgregacion;
 import core.models.entities.colecciones.Coleccion;
 import core.models.entities.colecciones.criterios.Criterio;
 import core.models.entities.colecciones.criterios.CriterioDescripcion;
