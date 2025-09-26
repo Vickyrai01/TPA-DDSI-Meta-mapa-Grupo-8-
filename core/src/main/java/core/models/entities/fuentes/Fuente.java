@@ -1,7 +1,7 @@
 package core.models.entities.fuentes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import core.api.DTO.HechoAIntegrarDTO;
+import core.models.agregador.HechoAIntegrarDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -1,5 +1,4 @@
 package core.models.agregador;
-import core.api.DTO.HechoAIntegrarDTO;
 
 import java.util.ArrayList;
 import java.util.List;

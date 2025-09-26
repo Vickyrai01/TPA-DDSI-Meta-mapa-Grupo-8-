@@ -1,6 +1,5 @@
 package core.models.agregador;
 
-import core.api.DTO.HechoAIntegrarDTO;
 import core.models.repository.HechosRepository;
 import core.models.repository.RevisionManualRepository;
 

@@ -3,7 +3,6 @@ package core.models.agregador;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import core.api.DTO.HechoAIntegrarDTO;
 
 import java.net.URI;
 import java.net.http.HttpClient;

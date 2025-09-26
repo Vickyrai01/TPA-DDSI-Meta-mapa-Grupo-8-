@@ -1,6 +1,5 @@
 package core.models.agregador;
 
-import core.models.agregador.ServicioDeAgregacion;
 import core.models.entities.colecciones.Coleccion;
 import core.models.entities.fuentes.Fuente;
 import core.models.entities.fuentes.FuenteFactory;
@@ -10,7 +9,6 @@ import core.models.entities.hecho.Hecho;
 import core.models.repository.ColeccionesRepository;
 import core.models.repository.FuentesRepository;
 import core.models.repository.HechosRepository;
-import core.api.DTO.HechoAIntegrarDTO;
 
 import java.util.ArrayList;
 import java.util.Arrays;
