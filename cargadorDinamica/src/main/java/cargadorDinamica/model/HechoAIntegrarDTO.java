@@ -6,29 +6,66 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
+import javax.persistence.*;
 import java.util.Collections;
 import java.util.List;
-
+@Entity
+@Table(name = "hechos")
 @JsonIgnoreProperties(ignoreUnknown = true)              // ignora campos extra en el JSON
 @JsonInclude(JsonInclude.Include.NON_NULL)               // no serializa campos null en las respuestas
 public class HechoAIntegrarDTO {
 
+    @Id
+    @Column(name= "hash")
     public String hash;
+
+    @Column(name= "titulo")
     public String titulo;
+
+    @Column(name= "descripcion")
     public String descripcion;
+
+    @Column(name= "categoria")
     public String categoria;
+
+    @Column(name= "latitud")
     public String latitud;
+
+    @Column(name= "longitud")
     public String longitud;
+
+    @Column(name= "fecha_suceso")
     public String fechaSuceso;
 
+    @ElementCollection
+    @CollectionTable(
+            name = "hecho_etiqueta",
+            joinColumns = @JoinColumn(name = "hecho_id", foreignKey = @ForeignKey(name = "hecho_etiqueta_hecho"))
+    )
+    @Column(name = "etiqueta", length = 100, nullable = false)
     public List<String> etiquetas;
+
+    @Column (name = "contribuyente")
     public String contribuyente;
+
+    @ElementCollection
+    @CollectionTable(
+            name = "hecho_multimedia",
+            joinColumns = @JoinColumn(name = "hecho_id",
+                    foreignKey = @ForeignKey(name = "hecho_multimedia_hecho"))
+    )
+    @Column(name = "url", length = 500, nullable = false)
     public List<String> multimedia; //A CHEQUEAR !!!!
+
+    @Column (name = "tipo_fuente")
     public String tipoFuente;
 
     @JsonProperty(access = Access.READ_ONLY)             // flag interno; no lo pidas en el request
+
+    @Column (name = "fue_extraido")
     public Boolean fueExtraido;
 
+    @Column (name = "idFuente")
     public Integer idFuente;
 
     public HechoAIntegrarDTO() {}
@@ -94,6 +131,7 @@ public class HechoAIntegrarDTO {
     public void setTipoFuente(String fuente) {this.tipoFuente = fuente;};
     public Integer getIdFuente() {return idFuente;}
     public void setIdFuente(Integer idFuente) {this.idFuente = idFuente;};
+    public void setHash(String hash) { this.hash = hash; }
 
 
     @Override
