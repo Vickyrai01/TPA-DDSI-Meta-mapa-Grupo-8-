@@ -36,7 +36,7 @@ public class CategoriaRepository {
             categorias.remove(c);
         }
 
-        public Categoria getColeccion(int id) {
+        public Categoria getCategoria(int id) {
             return categorias.stream()
                     .filter(h -> h.getId() == id)
                     .findFirst()

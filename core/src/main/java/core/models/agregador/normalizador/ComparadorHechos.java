@@ -207,7 +207,7 @@ public class ComparadorHechos {
 
     private boolean isBlank(String s) { return s == null || s.trim().isEmpty(); }
 
-    private Double parseDouble(String s) {
+        private Double parseDouble(String s) {
         if (isBlank(s)) return null;
         try { return Double.parseDouble(s.trim()); }
         catch (Exception e) { return null; }
