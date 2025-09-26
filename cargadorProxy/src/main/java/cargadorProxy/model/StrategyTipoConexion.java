@@ -7,4 +7,6 @@ public interface StrategyTipoConexion {
     public List<HechoAIntegrarDTO> agregarHecho(String FuenteBase, HechoAIntegrarDTO hecho);
 
     public List<HechoAIntegrarDTO> extraerHechosRecientes(String fuente, String codigoFuente);
+
+    public String devolverTipoDeConexion();
 }

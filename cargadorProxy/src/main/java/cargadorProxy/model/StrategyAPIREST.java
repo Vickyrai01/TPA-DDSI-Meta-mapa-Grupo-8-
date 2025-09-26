@@ -39,4 +39,9 @@ public class StrategyAPIREST implements StrategyTipoConexion {
             return List.of();
         }
     }
+
+    @Override
+    public String devolverTipoDeConexion() {
+        return "APIREST";
+    }
 }
