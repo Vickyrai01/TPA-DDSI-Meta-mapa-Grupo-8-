@@ -113,11 +113,13 @@ public class ServicioDeAgregacion {
             List<Integer> linkFuentesDeColeccion = coleccion.getFuentes().stream()
                 .map(f -> f.getId())
                 .toList();
-            List<Hecho> hechosFiltradosFuentes = hechosLimpios.stream().filter(h -> linkFuentesDeColeccion.contains(h.getIdFuente())).toList();
-            List<Hecho> hechosFiltradosCriterio = filtradorCriterios.filtrarHechos(hechosFiltradosFuentes, criterios);
+            //List<Hecho> hechosFiltradosFuentes = hechosLimpios.stream().filter(h -> linkFuentesDeColeccion.contains(h.getIdFuente())).toList();
+            List<Hecho> hechosFiltradosCriterio = filtradorCriterios.filtrarHechos(hechosLimpios, criterios);
             for (Hecho hecho : hechosFiltradosCriterio) {
-                hechoRepository.add(hecho);
-                coleccion.agregarHecho(hecho);
+               if(!coleccion.hechoYaExistenteEnColeccion(hecho.getHash())){
+                    hechoRepository.add(hecho);
+                    coleccion.agregarHecho(hecho);
+                }
             }
     }
 
@@ -141,7 +143,8 @@ public class ServicioDeAgregacion {
         System.out.println("Cantidad de hechos a agregar a coleccion: " + hechosLimpios.size());
         for (Coleccion coleccion : coleccionesRepository.obtenerTodas()) {
             agregarHechosAColecciones(coleccion);
-            System.out.println("Agregar a colección " + " '" + coleccion.getTitulo() + "' " + " fue exitoso");
+            System.out.println("Agregar a colección " + " '" + coleccion.getTitulo() + "' " + " fue exitoso, tiene " + coleccion.getHechos().size() + " hechos.");
+
         }
 
         hechosAIntegrar.clear();
