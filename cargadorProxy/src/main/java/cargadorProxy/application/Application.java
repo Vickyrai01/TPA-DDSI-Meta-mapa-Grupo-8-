@@ -1,4 +1,6 @@
 package cargadorProxy.application;
+import utils.DBUtils;
+import javax.persistence.EntityManager;
 
 import cargadorProxy.RepositoryFuentesSeeder;
 import cargadorProxy.model.*;
@@ -8,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 @SpringBootApplication
@@ -27,6 +30,14 @@ public class Application {
     public static void main(String[] args) {
         repoFuentesSeeder.cargarRepos();
         SpringApplication.run(Application.class, args);
+        EntityManager em = DBUtils.getEntityManager();
+        DBUtils.comenzarTransaccion(em);
+
+        Fuente fuentePrueba = new Fuente("Fuente de prueba", "https://www.google.com", new StrategyBibliotecaCliente(), "BIBLIOTECA");
+        //Fuente fuente2 = new Fuente("Fuente 2", "https://www.facebook.com.", new StrategyAPIREST(), "APIREST");
+        em.persist(fuentePrueba);
+        //em.persist(fuente2);
+        DBUtils.commit(em);
     }
 
     @GetMapping("/health")

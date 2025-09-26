@@ -3,25 +3,46 @@ package cargadorProxy.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.List;
 
+
+@Entity
+@Table(name = "fuente")
 public class Fuente {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(name = "nombre")
     private String nombre;
+    @Column(name = "link")
     private String link;
+    @JsonIgnore
+    @Convert(converter = StrategyTipoConexionConverter.class)
+    @Column(name = "strategy_tipo_conexion")
+    private StrategyTipoConexion strategyManeraDeObtenerHechos;
+    @Column(name = "codigoFuente")
+    private String codigoFuente;
 
     @JsonIgnore
-    private StrategyTipoConexion strategyManeraDeObtenerHechos;
-    private String codigoFuente;
-    @JsonIgnore
+    @Column(name = "ultimoProcesamiento")
     private Instant ultimoProcesamiento;
+
+    public Fuente(){}
+
     public Instant getUltimoProcesamiento() { return ultimoProcesamiento; }
     public void setUltimoProcesamiento(Instant t) { this.ultimoProcesamiento = t; }
 
     public Fuente(Integer id, String nombre, String link, StrategyTipoConexion strategyManeraDeObtenerHechos, String codigoFuente) {
         this.id = id;
+        this.nombre = nombre;
+        this.link = link;
+        this.strategyManeraDeObtenerHechos = strategyManeraDeObtenerHechos;
+        this.codigoFuente = codigoFuente;
+    }
+    public Fuente( String nombre, String link, StrategyTipoConexion strategyManeraDeObtenerHechos, String codigoFuente) {
         this.nombre = nombre;
         this.link = link;
         this.strategyManeraDeObtenerHechos = strategyManeraDeObtenerHechos;
@@ -72,3 +93,4 @@ public class Fuente {
         return strategyManeraDeObtenerHechos.extraerHechosRecientes(link, codigoFuente);
     }
 }
+
