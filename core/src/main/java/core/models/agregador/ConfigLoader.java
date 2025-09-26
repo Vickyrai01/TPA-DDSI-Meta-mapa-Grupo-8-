@@ -1,4 +1,4 @@
-package core.models.agregador.cargadores;
+package core.models.agregador;
 
 import java.io.InputStream;
 import java.util.Properties;

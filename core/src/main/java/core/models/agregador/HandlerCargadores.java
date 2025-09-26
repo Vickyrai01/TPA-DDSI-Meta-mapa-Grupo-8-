@@ -1,4 +1,4 @@
-package core.models.agregador.cargadores;
+package core.models.agregador;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,25 +1,23 @@
 package core.models.agregador;
 
-import java.time.LocalDate;
-import java.util.*;
-
-import core.models.entities.colecciones.Coleccion;
-import core.models.entities.colecciones.criterios.Criterio;
-import core.models.entities.colecciones.criterios.FiltradorCriterios;
-import core.models.entities.hecho.Categoria;
-import core.models.entities.hecho.Hecho;
 import core.api.DTO.HechoAIntegrarDTO;
 import core.models.agregador.normalizador.ComparadorHechos;
 import core.models.agregador.normalizador.FactoryHecho;
 import core.models.agregador.normalizador.NormalizadorCategoria;
 import core.models.agregador.normalizador.NormalizadorFecha;
+import core.models.entities.colecciones.Coleccion;
+import core.models.entities.colecciones.criterios.Criterio;
+import core.models.entities.colecciones.criterios.FiltradorCriterios;
+import core.models.entities.hecho.Categoria;
+import core.models.entities.hecho.Hecho;
 import core.models.repository.ColeccionesRepository;
-import core.models.agregador.cargadores.CargadorDinamico;
-import core.models.agregador.cargadores.CargadorEstatico;
-import core.models.agregador.cargadores.CargadorFuente;
-import core.models.agregador.cargadores.CargadorProxy;
 import core.models.repository.HechosRepository;
 import core.models.repository.RevisionManualRepository;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class ServicioDeAgregacion {
     private RevisionManualRepository revisionManualRepository = RevisionManualRepository.getInstance();
@@ -31,11 +29,6 @@ public class ServicioDeAgregacion {
     private HechosRepository hechoRepository = HechosRepository.getInstance();
 
     private FiltradorCriterios filtradorCriterios = FiltradorCriterios.getInstance();
-
-
-    private CargadorDinamico cargadorDinamico = CargadorDinamico.getInstance();
-    private CargadorProxy cargadorProxy = CargadorProxy.getInstance();
-    private CargadorEstatico cargadorEstatico = CargadorEstatico.getInstance();
 
     private ComparadorHechos comparadorHechos = ComparadorHechos.getInstance();
     private NormalizadorFecha normalizadorFecha = NormalizadorFecha.getInstance();
