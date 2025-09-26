@@ -6,10 +6,11 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
 public class DBUtils {
+
     private static final EntityManagerFactory factory;
 
     static {
-        factory = Persistence.createEntityManagerFactory("cargador_proxy");
+        factory = Persistence.createEntityManagerFactory("cargador_estatica");
     }
 
     public static EntityManager getEntityManager() {
@@ -37,5 +38,7 @@ public class DBUtils {
             tx.rollback();
         }
     }
+
+
 
 }

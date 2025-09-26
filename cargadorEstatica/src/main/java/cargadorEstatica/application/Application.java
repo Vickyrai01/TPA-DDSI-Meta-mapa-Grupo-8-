@@ -1,4 +1,6 @@
 package cargadorEstatica.application;
+import utils.DBUtils;
+import javax.persistence.EntityManager;
 
 import cargadorEstatica.model.*;
 import cargadorEstatica.repository.RepositoryFuentes;
@@ -9,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 @SpringBootApplication
@@ -16,7 +19,7 @@ import java.util.List;
 @RequestMapping("/cargadorEstatico")
 public class Application {
 
-    private final RepositoryFuentesSeeder repositoryFuentesSeeder = RepositoryFuentesSeeder.getInstance();
+    private static final RepositoryFuentesSeeder repositoryFuentesSeeder = RepositoryFuentesSeeder.getInstance();
 
     private final CargadorEstatico cargadorEstatico;
     private final RepositoryFuentes repoFuentes = RepositoryFuentes.getInstance();
@@ -27,7 +30,16 @@ public class Application {
     }
 
     public static void main(String[] args) {
+        repositoryFuentesSeeder.cargarRepos();
         SpringApplication.run(Application.class, args);
+        EntityManager em = DBUtils.getEntityManager();
+        DBUtils.comenzarTransaccion(em);
+
+        Fuente fuentePrueba = new Fuente("Fuente de prueba 1", "incendios_en_san_luis.csv", new StrategyCSV(), "CSV");
+        Fuente fuente2 = new Fuente("Fuente 2", "hechosarevisar.csv", new StrategyCSV(), "CSV");
+        em.persist(fuentePrueba);
+        em.persist(fuente2);
+        DBUtils.commit(em);
     }
 
     @GetMapping("/health")
