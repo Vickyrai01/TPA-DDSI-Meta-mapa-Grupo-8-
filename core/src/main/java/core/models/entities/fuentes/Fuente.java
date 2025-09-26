@@ -86,6 +86,5 @@ public class Fuente {
     public List<HechoAIntegrarDTO> extraerHechos(){
         return strategyTipoConexion.extraerHecho(link, codigoDeFuente);
     };
-
 }
 
