@@ -3,7 +3,7 @@ package core.api.handlers.hechos;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import core.api.handlers.colecciones.PatchAgregarFuentesColeccionHandler;
-import core.models.agregador.cargadores.ConfigLoader;
+import core.models.agregador.ConfigLoader;
 import core.models.entities.fuentes.Fuente;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;

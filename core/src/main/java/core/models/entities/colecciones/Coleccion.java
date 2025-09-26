@@ -105,6 +105,9 @@ public class Coleccion {
     public String getIdentificadorHandle() {return identificadorHandle;}
     public void setIdentificadorHandle(String identificadorHandle) {this.identificadorHandle = identificadorHandle;}
 
+    public boolean hechoYaExistenteEnColeccion(String hash)
+    {return this.hechos.stream().anyMatch(h -> h.getHash().equals(hash));
+    }
 
     @Override
     public String toString() {
