@@ -8,10 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 
-@Entity(name = "sugerenciaDeCambio")
+@Entity(name = "sugerencia_de_cambio")
 public class SugerenciaDeCambio {
     @Id
-    @Column(name = "id_sugerenciaDeCambio")
+    @Column(name = "id_sugerencia_de_cambio")
     private Integer id;
     @Column(name = "detalle")
     private String detalle;
