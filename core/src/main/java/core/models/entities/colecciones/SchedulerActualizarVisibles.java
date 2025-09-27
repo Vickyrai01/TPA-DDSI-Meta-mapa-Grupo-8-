@@ -18,7 +18,7 @@ public class SchedulerActualizarVisibles {
             List<Fuente> fuentes= coleccion.getFuentes();
             List<Hecho> hechos= coleccion.getHechos();
 
-            coleccion.actualizarColeccionVisible(fuentes, hechos);
+            //coleccion.actualizarColeccionVisible(fuentes, hechos);
         }
     }
 }

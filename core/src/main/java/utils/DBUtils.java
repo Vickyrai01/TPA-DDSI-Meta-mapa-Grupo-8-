@@ -6,11 +6,10 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
 public class DBUtils {
-
     private static final EntityManagerFactory factory;
 
     static {
-        factory = Persistence.createEntityManagerFactory("cargador_dinamica");
+        factory = Persistence.createEntityManagerFactory("core");
     }
 
     public static EntityManager getEntityManager() {

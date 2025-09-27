@@ -1,10 +1,10 @@
 package core.models.entities.solicitud;
 
-import core.models.agregador.DetectorDeSpam;
 import core.models.entities.hecho.Hecho;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
-
+@Entity(name = "solicitud_de_eliminacion")
 public class SolicitudDeEliminacion {
 
     public SolicitudDeEliminacion(Integer id, Hecho hecho, String descripcion, Boolean aceptada, LocalDateTime fechaDeRevision) {
@@ -25,8 +25,9 @@ public class SolicitudDeEliminacion {
 
     public SolicitudDeEliminacion() {}
 
+    @Id
+    @Column(name = "id")
     private Integer id;
-
     public Integer getId() {
         return id;
     }
@@ -34,6 +35,7 @@ public class SolicitudDeEliminacion {
         this.id = id;
     }
 
+    @ManyToOne
     private Hecho hecho;
     public Hecho getHecho() {
         return hecho;
@@ -42,6 +44,7 @@ public class SolicitudDeEliminacion {
         this.hecho = hecho;
     }
 
+    @Column(name = "descripcion")
     private String descripcion;
     public String getDescripcion() {
         return descripcion;
@@ -50,6 +53,7 @@ public class SolicitudDeEliminacion {
         this.descripcion = descripcion;
     }
 
+    @Column(name = "aceptada")
     private Boolean aceptada;
     public Boolean getAceptada() {
         return aceptada;
@@ -58,6 +62,7 @@ public class SolicitudDeEliminacion {
         this.aceptada = aceptada;
     }
 
+    @Column(name = "fechaDeRevision")
     private LocalDateTime fechaDeRevision;
     public LocalDateTime getFechaDeRevision() {
         return fechaDeRevision;
@@ -66,26 +71,19 @@ public class SolicitudDeEliminacion {
         this.fechaDeRevision = fechaDeRevision;
     }
 
-    private StateEstadoDeSolicitud stateEstadoDeSolicitud = new StateSolicitudPendiente(this) {
-    };
-
-    public StateEstadoDeSolicitud getStrategyEstadoDeSolicitud() {
-        return stateEstadoDeSolicitud;
-    }
-    public void setStateEstadoDeSolicitud(StateEstadoDeSolicitud stateEstadoDeSolicitud) {
-        this.stateEstadoDeSolicitud = stateEstadoDeSolicitud;
-    }
 
     public void aceptarSolicitud() {
-        stateEstadoDeSolicitud.aceptarSolicitud(hecho);
+        if(aceptada != true) {
+            this.aceptada();
+        }
     }
 
     public void rechazarSolicitud() {
-        stateEstadoDeSolicitud.rechazarSolicitud(hecho);
+        this.rechazada();
     }
 
     public String toString() {
-        return "SolicitudDeEliminacion{" +
+        return "solicitud_de_eliminacion{" +
                 "hecho=" + hecho +
                 ", descripcion='" + descripcion + '\'' +
                 ", aceptada=" + aceptada +
@@ -96,13 +94,13 @@ public class SolicitudDeEliminacion {
     public void aceptada(){
         this.setAceptada(true);
         this.setFechaDeRevision(LocalDateTime.now());
-        this.setStateEstadoDeSolicitud(new StateSolicitudAceptada(this));
+        hecho.desactivarse();
     }
 
     public void rechazada(){
+        hecho.activarse();
         this.setAceptada(false);
         this.setFechaDeRevision(LocalDateTime.now());
-        this.setStateEstadoDeSolicitud(new StateSolicitudRechazada(this));
     }
 
 }

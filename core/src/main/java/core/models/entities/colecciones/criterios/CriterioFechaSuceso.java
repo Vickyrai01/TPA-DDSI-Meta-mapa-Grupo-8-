@@ -3,8 +3,10 @@ package core.models.entities.colecciones.criterios;
 import core.models.entities.hecho.Hecho;
 
 import java.time.LocalDate;
-
-public class CriterioFechaSuceso implements Criterio {
+import javax.persistence.*;
+@Entity
+@DiscriminatorValue("FECHA_SUCESO")
+public class CriterioFechaSuceso extends Criterio {
 
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
@@ -13,6 +15,8 @@ public class CriterioFechaSuceso implements Criterio {
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
     }
+
+    public CriterioFechaSuceso(){}
 
     @Override
     public boolean cumpleCriterio(Hecho hecho){

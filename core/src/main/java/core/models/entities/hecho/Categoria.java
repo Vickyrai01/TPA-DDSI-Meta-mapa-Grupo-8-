@@ -1,8 +1,18 @@
 package core.models.entities.hecho;
 
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity(name = "categoria")
 public class Categoria {
 
-    int id;
+    @Id
+    @Column(name = "id_categoria")
+    private Integer id;
+
+    @Column(name = "nombre")
     String nombre;
 
     public String getNombre() {
