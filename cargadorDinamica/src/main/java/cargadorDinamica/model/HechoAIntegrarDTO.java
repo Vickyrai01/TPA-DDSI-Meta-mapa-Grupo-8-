@@ -37,7 +37,7 @@ public class HechoAIntegrarDTO {
     @Column(name= "fecha_suceso")
     public String fechaSuceso;
 
-    @ElementCollection
+@ElementCollection
     @CollectionTable(
             name = "hecho_etiqueta",
             joinColumns = @JoinColumn(name = "hecho_id", foreignKey = @ForeignKey(name = "hecho_etiqueta_hecho"))
@@ -132,6 +132,7 @@ public class HechoAIntegrarDTO {
     public Integer getIdFuente() {return idFuente;}
     public void setIdFuente(Integer idFuente) {this.idFuente = idFuente;};
     public void setHash(String hash) { this.hash = hash; }
+
 
 
     @Override

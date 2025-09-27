@@ -6,6 +6,9 @@ import core.models.repository.seeders.ColeccionesRepositorySeeder;
 import core.models.repository.seeders.FuentesRepositorySeeder;
 import core.models.repository.seeders.HechosRepositorySeeder;
 import core.models.repository.seeders.SolicitudEliminacioRepositorySeeder;
+import utils.DBUtils;
+
+import javax.persistence.EntityManager;
 
 public class ApiMetaMapa {
 
@@ -27,5 +30,12 @@ public class ApiMetaMapa {
                 .start(8081);
 
         ApiMetaMapaConfig.configurarEndpoints(app);
+
+        EntityManager em = DBUtils.getEntityManager();
+        DBUtils.comenzarTransaccion(em);
+
+        //em.persist();
+        DBUtils.commit(em);
+
     }
 }

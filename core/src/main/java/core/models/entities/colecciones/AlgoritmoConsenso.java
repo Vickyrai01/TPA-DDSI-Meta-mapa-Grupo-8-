@@ -72,5 +72,9 @@ public abstract class AlgoritmoConsenso {
         return dto;
     }
 
+    public String devolverTipoDeConsenso() {
+        return null;
+    }
+
 
 }

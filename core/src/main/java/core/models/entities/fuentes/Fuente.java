@@ -3,9 +3,12 @@ package core.models.entities.fuentes;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import core.models.agregador.HechoAIntegrarDTO;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
+@Entity(name = "fuente")
 public class Fuente {
 
     public Fuente(String nombre, String link, TipoFuente tipoFuente, StrategyTipoConexion strategyTipoConexion) {
@@ -27,6 +30,9 @@ public class Fuente {
 
     public  Fuente(){}
 
+
+    @Id
+    @Column(name = "id_fuente")
     private Integer id;
     public Integer getId() {
         return id;
@@ -35,6 +41,8 @@ public class Fuente {
         this.id = id;
     }
 
+
+    @Column(name = "nombre")
     private String nombre;
     public String getNombre() {
         return nombre;
@@ -43,6 +51,8 @@ public class Fuente {
         this.nombre = nombre;
     }
 
+
+    @Column(name = "link")
     private String link;
     public String getLink() {
         return link;
@@ -51,6 +61,7 @@ public class Fuente {
         this.link = link;
     }
 
+    @Column(name = "tipo_fuente")
     private TipoFuente tipoFuente;
     public TipoFuente getTipoFuente() {return tipoFuente;
     }
@@ -58,6 +69,7 @@ public class Fuente {
         this.tipoFuente = tipoFuente;
     }
 
+    @Column(name = "codigo_de_fuente")
     private String codigoDeFuente;
     public String getCodigoDeFuente() {
         return codigoDeFuente;
@@ -66,6 +78,7 @@ public class Fuente {
         return this.codigoDeFuente = codigoDeFuente;
     }
 
+    @Column(name = "ultimo_procesado")
     private LocalDateTime ultimoProcesado;
     public LocalDateTime getUltimoProcesado() {
         return ultimoProcesado;
@@ -75,6 +88,8 @@ public class Fuente {
     }
 
     @JsonIgnore
+    @Convert(converter = StrategyTipoConexionConverter.class)
+    @Column(name = "strategy_tipo_conexion")
     private StrategyTipoConexion strategyTipoConexion;
     public StrategyTipoConexion getStrategyTipoConexion() {
         return strategyTipoConexion;

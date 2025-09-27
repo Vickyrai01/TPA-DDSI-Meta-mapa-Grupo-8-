@@ -11,12 +11,6 @@ public class DinamicaRepository {
             new ArrayList<>(Arrays.asList(new HashMap<>(), new HashMap<>()));
 
 
-    private DinamicaRepository() {
-        if (instance != null) {
-            throw new RuntimeException("Usa getInstance() para obtener el Singleton");
-        }
-    }
-
     public static DinamicaRepository getInstance() {
         if (instance == null) {
             synchronized (DinamicaRepository.class) {
@@ -27,21 +21,10 @@ public class DinamicaRepository {
         }
         return instance;
     }
-
-    private static final List<HechoAIntegrarDTO> hechosDinamicos = new ArrayList<>();
-
-    public List<HechoAIntegrarDTO> obtenerTodas() {
-        return hechosDinamicos;
-    }
-
     public void add(HechoAIntegrarDTO h) {
         Map<HechoAIntegrarDTO, Boolean> elemento = new HashMap<>();
         elemento.put(h, false);
         tablaHechos.add(elemento);
-    }
-
-    public void delete(HechoAIntegrarDTO h) {
-        hechosDinamicos.remove(h);
     }
 
     public List<HechoAIntegrarDTO> getHechosNoProcesados() {
