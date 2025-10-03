@@ -23,4 +23,8 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
         return instance;
     }
 
+    public Coleccion getColeccion(Integer idColeccion){
+        return findById(idColeccion);
+    }
+
 }

@@ -62,4 +62,8 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
             em.close();
         }
     }
+
+    public Hecho getHecho(int idHecho){
+        return findById(idHecho);
+    }
 }

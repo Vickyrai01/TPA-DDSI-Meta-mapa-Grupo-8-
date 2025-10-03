@@ -23,9 +23,9 @@ public class SolicitudEliminacioRepositorySeeder {
 
     HechosRepository hechosRepository = HechosRepository.getInstance();
 
-    Hecho hecho1 = hechosRepository.getHecho(1);
-    Hecho hecho2 = hechosRepository.getHecho(2);
-    Hecho hecho4 = hechosRepository.getHecho(4);
+    Hecho hecho1 = hechosRepository.findById(1);
+    Hecho hecho2 = hechosRepository.findById(2);
+    Hecho hecho4 = hechosRepository.findById(4);
 
     SolicitudEliminacionRepository solicitudDeEliminacion = SolicitudEliminacionRepository.getInstance();
 

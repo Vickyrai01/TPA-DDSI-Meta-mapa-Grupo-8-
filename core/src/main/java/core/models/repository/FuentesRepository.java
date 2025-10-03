@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FuentesRepository extends JpaRepositoryBase<Fuente, Integer>{
+public class FuentesRepository extends JpaRepositoryBase<Fuente, Integer> {
     private static volatile FuentesRepository instance;
 
     private FuentesRepository() {
@@ -47,4 +47,7 @@ public class FuentesRepository extends JpaRepositoryBase<Fuente, Integer>{
             em.close();
         }
     }
+
+    public Fuente getFuente(int id)
+    {return findById(id);}
 }
