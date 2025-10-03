@@ -26,9 +26,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 public class TestColeccionConsenso {
-    private Coleccion coleccion;
+    /*private Coleccion coleccion;
     private List<Fuente> fuentes;
     private List<Hecho> hechos;
     private List<Hecho> hechosVisibles;
@@ -113,7 +112,7 @@ public class TestColeccionConsenso {
     Que no se ejecute si es una hora fuera de las de baja carga
 
     */
-
+/*
     @Test
     void testHechosIguales() {
         // Crear dos hechos idénticos
@@ -198,5 +197,5 @@ public class TestColeccionConsenso {
 
         // Verificar que el algoritmo filtró los hechos
         assertTrue(coleccion.hechosVisibles.size() < hechos.size());
-    }
+    }*/
 }

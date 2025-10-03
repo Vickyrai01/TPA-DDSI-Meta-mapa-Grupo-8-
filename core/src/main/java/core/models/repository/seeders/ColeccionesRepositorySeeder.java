@@ -37,20 +37,20 @@ public class ColeccionesRepositorySeeder {
 
     public void cargarColeccionesRepositorySeeder() {
         // Obtener hechos (validar que existan)
-        Hecho hecho1 = hechosRepository.getHecho(1);
-        Hecho hecho2 = hechosRepository.getHecho(2);
-        Hecho hecho3 = hechosRepository.getHecho(3);
-        Hecho hecho4 = hechosRepository.getHecho(4);
-        Hecho hecho5 = hechosRepository.getHecho(5);
+        Hecho hecho1 = hechosRepository.findById(1);
+        Hecho hecho2 = hechosRepository.findById(2);
+        Hecho hecho3 = hechosRepository.findById(3);
+        Hecho hecho4 = hechosRepository.findById(4);
+        Hecho hecho5 = hechosRepository.findById(5);
 
         if (hecho1 == null || hecho2 == null || hecho3 == null || hecho4 == null || hecho5 == null) {
             throw new IllegalStateException("No se encontraron todos los hechos necesarios");
         }
 
         // Obtener fuentes (validar que existan)
-        Fuente fuente1 = fuentesRepository.getFuente(1);
-        Fuente fuente2 = fuentesRepository.getFuente(2);
-        Fuente fuente3 = fuentesRepository.getFuente(3);
+        Fuente fuente1 = fuentesRepository.findById(1);
+        Fuente fuente2 = fuentesRepository.findById(2);
+        Fuente fuente3 = fuentesRepository.findById(3);
 
         if (fuente1 == null || fuente2 == null || fuente3 == null) {
             throw new IllegalStateException("No se encontraron todas las fuentes necesarias");

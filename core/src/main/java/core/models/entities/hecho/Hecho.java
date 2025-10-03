@@ -64,10 +64,34 @@ public class Hecho {
         this.hash = hash;
     }
     public Hecho(){}
+    public Hecho(Coordenadas ubicacion, Categoria categoria,
+                 List<SugerenciaDeCambio> sugerenciaDeCambio,
+                 LocalDate ultimaFechaModificacion, List<String> multimedia,
+                 Estado estado, Contribuyente contribuyente,
+                 LocalDate fechaCarga, LocalDate fechaSuceso,
+                 TipoFuente fuenteDeOrigen,
+                 List<Etiqueta> etiquetas, String descripcion, String titulo,String codigoDeFuente, Integer idFuente) {
 
+        this.ubicacion = ubicacion;
+        this.categoria = categoria;
+        this.sugerenciaDeCambio = sugerenciaDeCambio;
+        this.ultimaFechaModificacion = ultimaFechaModificacion;
+        this.multimedia = multimedia;
+        this.estado = estado;
+        this.contribuyente = contribuyente;
+        this.fechaCarga = fechaCarga;
+        this.fechaSuceso = fechaSuceso;
+        this.fuenteDeOrigen = fuenteDeOrigen;
+        this.etiquetas = etiquetas;
+        this.descripcion = descripcion;
+        this.titulo = titulo;
+        this.codigoDeFuente = codigoDeFuente;
+        this.idFuente =idFuente;
+    }
 
     @Id
     @Column(name = "id_hecho")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     public Integer getId() {
         return id;

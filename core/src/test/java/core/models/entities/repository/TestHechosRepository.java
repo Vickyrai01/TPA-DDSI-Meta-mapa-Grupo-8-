@@ -22,17 +22,18 @@ public class TestHechosRepository {
     Categoria categoriaIncendio = new Categoria("Incendio");
 
 
-    Hecho hecho1 = new Hecho(1, coordenadas1, categoriaIncendio,
+    Hecho hecho1 = new Hecho(coordenadas1, categoriaIncendio,
             null, null, null, Estado.ACEPTADO, null,
             LocalDate.now().minusDays(2), LocalDate.now().minusDays(3),
-            TipoFuente.ESTATICA, null, "No hubo heridos, fue por una sartén", "incendio en Casa", null,"12");
+            TipoFuente.ESTATICA, null, "No hubo heridos, fue por una sartén", "incendio en Casa", null,null);
     HechosRepository hechosRepository = HechosRepository.getInstance();
     HechosRepositorySeeder hechosRepositorySeeder = HechosRepositorySeeder.getInstance();
 
-    Hecho hecho2 = new Hecho(1, coordenadas1, categoriaIncendio,
+    Hecho hecho2 = new Hecho( coordenadas1, categoriaIncendio,
             null, null, null, Estado.ACEPTADO, null,
             LocalDate.now().minusDays(2), LocalDate.now().minusDays(3),
-            TipoFuente.ESTATICA, null, "No hubo heridos, fue por una sartén", "en casa", null,"12");
+            TipoFuente.ESTATICA, null, "No hubo heridos, fue por una sartén", "en casa", null,null);
+
 
     @BeforeEach
     void SetUp(){
@@ -40,9 +41,15 @@ public class TestHechosRepository {
     }
 
     @Test
+    void agregarARepos(){
+        hechosRepository.add(hecho1);
+        hechosRepository.add(hecho2);
+    }
+
+
+    @Test
     void SIMatchDeTitulo(){
         hechosRepositorySeeder.cargarHechosSeeder();
-
         assertTrue(hechosRepository.esHechoDuplicado(hecho1));
     }
 

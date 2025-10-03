@@ -1,4 +1,4 @@
-package core.models.repository;
+package cargadorDinamica.repository;
 
 import utils.DBUtils;
 
@@ -31,7 +31,7 @@ public abstract class JpaRepositoryBase<T, ID> {
         }
     }
 
-        public List<T> obtenerTodas() {
+        public List<T> findAll() {
         EntityManager em = emSupplier.get();
         try {
             String ql = "SELECT e FROM " + entityClass.getSimpleName() + " e";
@@ -54,7 +54,7 @@ public abstract class JpaRepositoryBase<T, ID> {
     }
 
 
-    public T add(T entity) {
+    public T save(T entity) {
         EntityManager em = emSupplier.get();
         try {
             DBUtils.comenzarTransaccion(em);
