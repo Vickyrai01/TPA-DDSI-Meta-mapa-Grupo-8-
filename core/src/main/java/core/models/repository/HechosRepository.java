@@ -1,18 +1,19 @@
 package core.models.repository;
 
+import core.models.entities.fuentes.Fuente;
 import core.models.entities.hecho.Hecho;
+import utils.DBUtils;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HechosRepository {
+public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
 
     private static volatile HechosRepository instance;
 
     private HechosRepository() {
-        if (instance != null) {
-            throw new RuntimeException("Usa getInstance() para obtener el Singleton");
-        }
+        super(Hecho.class, DBUtils::getEntityManager, Hecho::getId);
     }
 
     public static HechosRepository getInstance() {
@@ -26,37 +27,39 @@ public class HechosRepository {
         return instance;
     }
 
-    private final List<Hecho> hechos = new ArrayList<>();
+    public boolean esHechoDuplicado(Hecho hecho) {
+        if (hecho == null || hecho.getTitulo() == null) return false;
 
-    public List<Hecho> obtenerTodas(){
-       return hechos;
-    }
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            Long cantidad = em.createQuery(
+                            "SELECT COUNT(h) " +
+                                    "FROM hecho h " +
+                                    "WHERE LOWER(TRIM(h.titulo)) = LOWER(:titulo)", Long.class)
+                    .setParameter("titulo", hecho.getTitulo().trim())
+                    .getSingleResult();
 
-    public void delete(Hecho h){
-        hechos.remove(h);
-    }
-
-    public Hecho getHecho(int id) {
-        return hechos.stream()
-                .filter(h -> h.getId() == id)
-                .findFirst()
-                .orElse(null);
-    }
-    public  void add(Hecho h){
-        hechos.add(h);
-    }
-
-    public Boolean esHechoDuplicado(Hecho hecho){
-        return this.hechos.stream()
-                .anyMatch(h -> h.getTitulo().equalsIgnoreCase(hecho.getTitulo()));
-    }
-
-    public Boolean existeElHecho(String hash){
-        if (hechos.stream().anyMatch(h -> h.getHash().equalsIgnoreCase(hash))){
-            return true;
+            return cantidad > 0;
+        } finally {
+            em.close();
         }
-        else {
-            return false;
+    }
+
+    public boolean existeElHecho(String hash) {
+        if (hash == null || hash.isBlank()) return false;
+
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            Long cantidad = em.createQuery(
+                            "SELECT COUNT(h) " +
+                                    "FROM hecho h " +
+                                    "WHERE LOWER(h.hash) = LOWER(:hash)", Long.class)
+                    .setParameter("hash", hash.trim())
+                    .getSingleResult();
+
+            return cantidad > 0;
+        } finally {
+            em.close();
         }
     }
 }

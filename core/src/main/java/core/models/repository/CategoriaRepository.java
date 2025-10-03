@@ -1,19 +1,20 @@
 package core.models.repository;
 
+import core.models.entities.colecciones.Coleccion;
 import core.models.entities.hecho.Categoria;
+import utils.DBUtils;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoriaRepository {
+public class CategoriaRepository extends JpaRepositoryBase<Categoria, Integer>{
 
         private static volatile CategoriaRepository instance;
 
-        public CategoriaRepository() {
-            if (instance != null) {
-                throw new RuntimeException("Usa getInstance() para obtener el Singleton");
-            }
-        }
+        private CategoriaRepository() {
+        super(Categoria.class, DBUtils::getEntityManager, Categoria::getId);
+         }
 
         public static CategoriaRepository getInstance() {
             if (instance == null) {
@@ -26,39 +27,29 @@ public class CategoriaRepository {
             return instance;
         }
 
-        private final List<Categoria> categorias = new ArrayList<>();
 
-        public List<Categoria> obtenerTodas(){
-            return categorias;
-        }
+    public Categoria buscarPorNombre(String nombre) {
+        if (nombre == null || nombre.isBlank()) return null;
 
-        public void delete(Categoria c){
-            categorias.remove(c);
-        }
-
-        public Categoria getCategoria(int id) {
-            return categorias.stream()
-                    .filter(h -> h.getId() == id)
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            return em.createQuery(
+                            "SELECT c FROM categoria c WHERE LOWER(TRIM(c.nombre)) = LOWER(:nombre)",
+                            Categoria.class)
+                    .setParameter("nombre", nombre.trim())
+                    .getResultStream() // evita excepción si no hay resultado
                     .findFirst()
                     .orElse(null);
+        } finally {
+            em.close();
         }
+    }
+
+    public boolean existe(String nombre) {
+        return buscarPorNombre(nombre) != null;
+    }
 
 
-        public Categoria buscarPorNombre(String nombre) {
-            if (nombre == null) return null;
-            return categorias.stream()
-                    .filter(c -> c.getNombre() != null && c.getNombre().equalsIgnoreCase(nombre.trim()))
-                    .findFirst()
-                    .orElse(null);
-        }
-
-        public Boolean existe(String nombre){
-            return this.buscarPorNombre(nombre) != null;
-        }
-
-        public  void add(Categoria h){
-            categorias.add(h);
-        }
 
     }
 

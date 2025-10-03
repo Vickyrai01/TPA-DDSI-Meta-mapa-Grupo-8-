@@ -1,18 +1,19 @@
 package core.models.repository;
 
 import core.models.agregador.HechoAIntegrarDTO;
+import core.models.entities.fuentes.Fuente;
+import utils.DBUtils;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RevisionManualRepository {
+public class RevisionManualRepository extends JpaRepositoryBase<HechoAIntegrarDTO, String> {
 
     private static volatile RevisionManualRepository instance;
 
     private RevisionManualRepository() {
-        if (instance != null) {
-            throw new RuntimeException("Usa getInstance() para obtener el Singleton");
-        }
+        super(HechoAIntegrarDTO.class, DBUtils::getEntityManager, HechoAIntegrarDTO::getHash);
     }
 
     public static RevisionManualRepository getInstance() {
@@ -28,31 +29,19 @@ public class RevisionManualRepository {
 
     private final List<HechoAIntegrarDTO> hechos = new ArrayList<>();
 
-    public List<HechoAIntegrarDTO> obtenerTodas(){
-        return hechos;
-    }
-
-    public void delete(HechoAIntegrarDTO h){
-        hechos.remove(h);
-    }
-
-    public HechoAIntegrarDTO getHecho(String id) {
-        return hechos.stream()
-                .filter(h -> h.getHash() == id)
-                .findFirst()
-                .orElse(null);
-    }
-
-    public  void add(HechoAIntegrarDTO h){
-        hechos.add(h);
-    }
-
+    //HACER
     public Boolean existeElHecho(String hash){
-        if (hechos.stream().anyMatch(h -> h.getHash().equalsIgnoreCase(hash))){
-            return true;
-        }
-        else {
-            return false;
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            return em.createQuery(
+                            "SELECT CASE WHEN COUNT(h) > 0 THEN true ELSE false END FROM hecho h WHERE h.hash = :hash",
+                            Boolean.class)
+                    .setParameter("hash", hash)
+                    .getSingleResult();
+
+
+        } finally {
+            em.close();
         }
     }
 

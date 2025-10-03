@@ -109,7 +109,7 @@ public class Coleccion {
     }
 
     @Column(name = "hechos")
-    @OneToMany
+    @ManyToMany
     @JoinColumn(name = "id_hecho")
     private List<Hecho> hechos;
     public List<Hecho> getHechos() {return hechos;}
