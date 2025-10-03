@@ -16,6 +16,7 @@ public class Coleccion {
                      List<Criterio> criterioDePertenencia,
                      List<Fuente> fuentes,
                      List<Hecho> hechos,
+                     List<Hecho> hechosVisibles,
                      String identificadorHandle) {
         this.id = id;
         this.titulo = titulo;
@@ -23,6 +24,7 @@ public class Coleccion {
         this.criterioDePertenencia = criterioDePertenencia != null ? new ArrayList<>(criterioDePertenencia) : new ArrayList<>();
         this.fuentes = fuentes != null ? new ArrayList<>(fuentes) : new ArrayList<>();
         this.hechos = hechos != null ? new ArrayList<>(hechos) : new ArrayList<>();
+        this.hechosVisibles = hechosVisibles != null ? new ArrayList<>(hechosVisibles) : new ArrayList<>();
         this.identificadorHandle = identificadorHandle;
         this.modoDeNavegacion = ModoDeNavegacion.IRRESTRICTO;
         this.algoritmoConsenso = null;
@@ -53,6 +55,13 @@ public class Coleccion {
     public void eliminarFuente (Fuente f) {fuentes.remove(f);}
 
     public List<String> extraerCodigosDeFuentes(List<Fuente> fuentes){return fuentes.stream().map(Fuente::getCodigoDeFuente).toList();}
+
+    @Column(name="hechosVisibles")
+    @ManyToMany
+    @JoinColumn(name = "id_hecho")
+    public List<Hecho> hechosVisibles;
+    public List<Hecho> getHechosVisibles() {return hechosVisibles;}
+
 
     @Column(name = "descripcionColeccion")
     private String descripcionColeccion;
@@ -90,19 +99,17 @@ public class Coleccion {
     @Column(name = "tipoConsenso")
     public TipoConsenso tipoConsenso;
 
-    public List<Hecho> getHechosVisibles(){
-        if(modoDeNavegacion == modoDeNavegacion.CURADA){
-            if(algoritmoConsenso==null){
-                return hechos;
-            }else{
-                return algoritmoConsenso.ejecutarAlgoritmo();
-            }
-        }
-        else{
-            return hechos;
-        }
 
-    }
+   public void actualizarColeccionVisible(){
+
+       if(modoDeNavegacion==modoDeNavegacion.IRRESTRICTO || algoritmoConsenso == null){
+           hechosVisibles=hechos;
+
+       }else{
+           hechosVisibles = algoritmoConsenso.ejecutarAlgoritmo();
+       }
+
+   }
 
     public void modificarModoNavegacion(ModoDeNavegacion modoDeNavegacion){
         this.modoDeNavegacion=modoDeNavegacion;

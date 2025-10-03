@@ -61,6 +61,10 @@ public class ColeccionesRepositorySeeder {
         List<Hecho> coleccionHechos2 = List.of(hecho4, hecho2);
         List<Hecho> coleccionHechos3 = List.of(hecho1, hecho3, hecho4, hecho2, hecho5);
 
+        List<Hecho> hechosVisibles1 = List.of(hecho1, hecho3);
+        List<Hecho> hechosVisibles2 = List.of();
+        List<Hecho> hechosVisibles3 = List.of(hecho1, hecho4, hecho5);
+
         List<Fuente> fuentes1 = List.of(fuente1);
         List<Fuente> fuentes2 = List.of(fuente2);
         List<Fuente> fuentes3 = List.of(fuente1, fuente2, fuente3);
@@ -69,10 +73,11 @@ public class ColeccionesRepositorySeeder {
         List<Criterio> criterios = new ArrayList<>();
         CriterioDescripcion criterioDescripcion =  new CriterioDescripcion("perro");
         criterios.add(criterioDescripcion);
-        Coleccion coleccion1 = new Coleccion(1, "Incendios", "Incendios de cualquier objeto", criterios, fuentes1, coleccionHechos1, null);
+        Coleccion coleccion1 = new Coleccion(1, "Incendios", "Incendios de cualquier objeto", criterios, fuentes1, coleccionHechos1,hechosVisibles1, null);
         coleccion1.cambiarAlgoritmoConsenso(TipoConsenso.ABSOLUTO);
-        Coleccion coleccion2 = new Coleccion(2, "Choques", "Todos los choques", criterios, fuentes2, coleccionHechos2, null);
-        Coleccion coleccion3 = new Coleccion(3, "Sin victimas fatales", "Accidentes de cualquier tipo sin accidentes", criterios, fuentes3, coleccionHechos3, null);
+        Coleccion coleccion2 = new Coleccion(2, "Choques", "Todos los choques", criterios, fuentes2, coleccionHechos2,hechosVisibles2, null);
+        Coleccion coleccion3 = new Coleccion(3, "Sin victimas fatales", "Accidentes de cualquier tipo sin accidentes", criterios, fuentes3, coleccionHechos3,hechosVisibles3, null);
+
 
         // Guardar colecciones
         coleccionesRepository.add(coleccion1);

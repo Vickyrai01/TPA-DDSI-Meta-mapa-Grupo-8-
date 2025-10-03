@@ -25,6 +25,7 @@ public class PostColeccionHandler implements Handler {
         System.out.println("Creando coleccion: " + dto.getTitulo());
 
         List<Hecho> hechosAsociados = new ArrayList<>();
+        List<Hecho> hechosVisibles = new ArrayList<>();
         List<Fuente> fuentes = new ArrayList<>();
 
         for (Integer idHecho : dto.getHechos()) {
@@ -54,6 +55,7 @@ public class PostColeccionHandler implements Handler {
                 dto.getCriterioDePertenencia(),
                 fuentes,
                 hechosAsociados,
+                hechosVisibles,
                 dto.getIdentificadorHandle()
         );
 
