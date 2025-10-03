@@ -24,16 +24,11 @@ public class DemoAgregadorAColecciones {
                 fuentes.add(fuenteCSV);
 
             ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();
-            Coleccion coleccionPrueba  = new Coleccion(1, "Todos", "Todos los hechos que existen", null, fuentes, null, null);
+            Coleccion coleccionPrueba  = new Coleccion(1, "Todos", "Todos los hechos que existen", null, fuentes, null,null, null);
                 coleccionesRepository.add(coleccionPrueba);
-
 
         SchedulerAgregador scheduler = new SchedulerAgregador(false);
 
         scheduler.iniciarScheduler();
     }
-
-
-
-
 }
