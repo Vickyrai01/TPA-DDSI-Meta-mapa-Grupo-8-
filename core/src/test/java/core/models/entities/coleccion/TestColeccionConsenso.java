@@ -95,7 +95,7 @@ public class TestColeccionConsenso {
         // Crear colección
         coleccion = new Coleccion(1, "Colección de Prueba",
                 "Colección para pruebas de consenso",
-                 criterios,fuentes, hechos, "test-handle");
+                 criterios,fuentes, hechos, hechosVisibles, "test-handle");
 
         // Configurar modo de navegación y algoritmo de consenso
         coleccion.modoDeNavegacion = ModoDeNavegacion.CURADA;
@@ -166,7 +166,7 @@ public class TestColeccionConsenso {
         coleccion.modoDeNavegacion = ModoDeNavegacion.CURADA;
 
         // Actualizar colección
-        coleccion.actualizarColeccionVisible(fuentes, hechos);
+        coleccion.actualizarColeccionVisible();
 
         // Verificar que devuelve todos los hechos
         assertEquals(hechos.size(), coleccion.hechosVisibles.size());
@@ -179,7 +179,7 @@ public class TestColeccionConsenso {
         coleccion.modoDeNavegacion = ModoDeNavegacion.IRRESTRICTO;
 
         // Actualizar colección
-        coleccion.actualizarColeccionVisible(fuentes, hechos);
+        coleccion.actualizarColeccionVisible();
 
         // Verificar que devuelve todos los hechos
         assertEquals(hechos.size(), coleccion.hechosVisibles.size());
@@ -193,7 +193,7 @@ public class TestColeccionConsenso {
         coleccion.modoDeNavegacion = ModoDeNavegacion.CURADA;
 
         // Actualizar colección
-        coleccion.actualizarColeccionVisible(fuentes, hechos);
+        coleccion.actualizarColeccionVisible();
 
         // Verificar que el algoritmo filtró los hechos
         assertTrue(coleccion.hechosVisibles.size() < hechos.size());

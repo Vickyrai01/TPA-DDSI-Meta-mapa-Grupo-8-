@@ -146,7 +146,7 @@ public class DemoAgregadorCriterios {
                 hecho1, hecho2, hecho3, hecho4, hecho15, hecho17, hecho18, hecho19, hecho20
         );
         ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();
-        Coleccion coleccionPrueba  = new Coleccion(1, "Emergencia en Buenos Aires", "", criterios, fuentes, null, null);
+        Coleccion coleccionPrueba  = new Coleccion(1, "Emergencia en Buenos Aires", "", criterios, fuentes, null, null, null);
         coleccionesRepository.add(coleccionPrueba);
 
 
