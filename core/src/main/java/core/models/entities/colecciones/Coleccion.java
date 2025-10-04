@@ -68,8 +68,14 @@ public class Coleccion {
     public String getDescripcionColeccion() {return descripcionColeccion;}
     public void setDescripcionColeccion(String descripcionColeccion) {this.descripcionColeccion = descripcionColeccion;}
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "coleccion_id") // FK en la tabla de Criterio
+    /*@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "coleccion_id") // FK en la tabla de Criterio*/
+    @ManyToMany
+    @JoinTable(
+            name = "coleccion_criterio",
+            joinColumns = @JoinColumn(name = "coleccion_id"),
+            inverseJoinColumns = @JoinColumn(name = "criterio_id")
+    )
     private List<Criterio> criterioDePertenencia;
     public List<Criterio> getCriterioDePertenencia() {
         return criterioDePertenencia;

@@ -1,18 +1,16 @@
 package cargadorEstatica.repository;
 
 import cargadorEstatica.model.Fuente;
+import utils.DBUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RepositoryFuentes {
+public class RepositoryFuentes extends JpaRepositoryBase<Fuente, Integer> {
     private static volatile RepositoryFuentes instance;
-    private List<Fuente> fuentesEstaticas = new ArrayList<>();
 
     private RepositoryFuentes() {
-        if (instance != null) {
-            throw new RuntimeException("Usa getInstance() para obtener el Singleton");
-        }
+        super(Fuente.class, DBUtils::getEntityManager, Fuente::getId);
     }
 
     public static RepositoryFuentes getInstance() {
@@ -25,11 +23,4 @@ public class RepositoryFuentes {
         }
         return instance;
     }
-
-    public void agregarFuente(Fuente fuente){
-        fuentesEstaticas.add(fuente);
-    }
-
-    public List<Fuente> getAll(){return fuentesEstaticas;}
-
 }

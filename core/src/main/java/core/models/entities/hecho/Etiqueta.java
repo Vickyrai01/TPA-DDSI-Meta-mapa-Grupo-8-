@@ -1,6 +1,5 @@
 package core.models.entities.hecho;
 
-
 import javax.persistence.*;
 
 @Entity(name = "etiqueta")
@@ -10,7 +9,12 @@ public class Etiqueta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_etiqueta")
     private Integer id;
-
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     @Column(name = "nombre")
     private String nombre;

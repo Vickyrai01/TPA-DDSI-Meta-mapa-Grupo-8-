@@ -13,6 +13,12 @@ public class Coordenadas {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_ubicacion")
     private Integer id;
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     @Column(name = "latitud")
     private Double latitud;

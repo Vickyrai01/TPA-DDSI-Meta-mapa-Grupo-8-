@@ -13,6 +13,12 @@ public class SugerenciaDeCambio {
     @Id
     @Column(name = "id_sugerencia_de_cambio")
     private Integer id;
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
+    }
     @Column(name = "detalle")
     private String detalle;
     public String getDetalle() {
