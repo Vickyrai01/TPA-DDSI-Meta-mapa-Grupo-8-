@@ -7,6 +7,7 @@ import core.models.entities.colecciones.criterios.CriterioDescripcion;
 import core.models.entities.fuentes.Fuente;
 import core.models.entities.hecho.Hecho;
 import core.models.repository.ColeccionesRepository;
+import core.models.repository.CriteriosRepository;
 import core.models.repository.FuentesRepository;
 import core.models.repository.HechosRepository;
 
@@ -70,9 +71,12 @@ public class ColeccionesRepositorySeeder {
         List<Fuente> fuentes3 = List.of(fuente1, fuente2, fuente3);
 
         // Crear colecciones
+        CriteriosRepository criteriosRepository = CriteriosRepository.getInstance();
         List<Criterio> criterios = new ArrayList<>();
         CriterioDescripcion criterioDescripcion =  new CriterioDescripcion("perro");
+        criteriosRepository.add(criterioDescripcion);
         criterios.add(criterioDescripcion);
+
         Coleccion coleccion1 = new Coleccion(1, "Incendios", "Incendios de cualquier objeto", criterios, fuentes1, coleccionHechos1,hechosVisibles1, null);
         coleccion1.cambiarAlgoritmoConsenso(TipoConsenso.ABSOLUTO);
         Coleccion coleccion2 = new Coleccion(2, "Choques", "Todos los choques", criterios, fuentes2, coleccionHechos2,hechosVisibles2, null);
