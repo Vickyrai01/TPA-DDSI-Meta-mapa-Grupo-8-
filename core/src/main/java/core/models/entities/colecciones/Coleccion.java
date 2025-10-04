@@ -43,9 +43,12 @@ public class Coleccion {
     public String getTitulo() {return titulo;}
     public void setTitulo(String titulo) {this.titulo = titulo;}
 
-    @Column(name = "fuentes")
     @ManyToMany
-    @JoinColumn(name = "id_fuente")
+    @JoinTable(
+            name = "coleccion_fuente", // nombre de la tabla intermedia
+            joinColumns = @JoinColumn(name = "id_coleccion"), // FK hacia tu entidad actual
+            inverseJoinColumns = @JoinColumn(name = "id_fuente") // FK hacia Hecho
+    )
     private List<Fuente> fuentes;
     public List<Fuente> getFuentes() {return this.fuentes;}
     public void setFuentes(List<Fuente> fuentes){this.fuentes = fuentes;}
@@ -56,9 +59,12 @@ public class Coleccion {
 
     public List<String> extraerCodigosDeFuentes(List<Fuente> fuentes){return fuentes.stream().map(Fuente::getCodigoDeFuente).toList();}
 
-    @Column(name="hechosVisibles")
     @ManyToMany
-    @JoinColumn(name = "id_hecho")
+    @JoinTable(
+            name = "hechos_visibles", // nombre de la tabla intermedia
+            joinColumns = @JoinColumn(name = "id_coleccion"), // FK hacia tu entidad actual
+            inverseJoinColumns = @JoinColumn(name = "id_hecho") // FK hacia Hecho
+    )
     public List<Hecho> hechosVisibles;
     public List<Hecho> getHechosVisibles() {return hechosVisibles;}
 
@@ -76,7 +82,7 @@ public class Coleccion {
             joinColumns = @JoinColumn(name = "coleccion_id"),
             inverseJoinColumns = @JoinColumn(name = "criterio_id")
     )
-    private List<Criterio> criterioDePertenencia;
+    private List<Criterio> criterioDePertenencia = new ArrayList<>();;
     public List<Criterio> getCriterioDePertenencia() {
         return criterioDePertenencia;
     }
@@ -121,9 +127,12 @@ public class Coleccion {
         this.modoDeNavegacion=modoDeNavegacion;
     }
 
-    @Column(name = "hechos")
     @ManyToMany
-    @JoinColumn(name = "id_hecho")
+    @JoinTable(
+            name = "coleccion_hecho", // nombre de la tabla intermedia
+            joinColumns = @JoinColumn(name = "id_coleccion"), // FK hacia tu entidad actual
+            inverseJoinColumns = @JoinColumn(name = "id_hecho") // FK hacia Hecho
+    )
     private List<Hecho> hechos;
     public List<Hecho> getHechos() {return hechos;}
     public void setHechos(List<Hecho> hechos) {this.hechos = hechos;}

@@ -1,6 +1,7 @@
 package core.models.repository.seeders;
 
 import core.models.agregador.normalizador.NormalizadorCategoria;
+import core.models.entities.colecciones.criterios.CriterioNombre;
 import core.models.entities.fuentes.TipoFuente;
 import core.models.entities.hecho.Categoria;
 import core.models.entities.hecho.Coordenadas;
@@ -30,10 +31,6 @@ public class HechosRepositorySeeder {
     Coordenadas coordenadas2 = new Coordenadas(893.0, 016.0);
     Coordenadas coordenadas3 = new Coordenadas(973.0, 656.0);
     Coordenadas coordenadas4 = new Coordenadas(223.0, 033.0);
-
-
-
- 
 
     HechosRepository hechosRepository = HechosRepository.getInstance();
     CategoriaRepository categoriaRepository = CategoriaRepository.getInstance();
