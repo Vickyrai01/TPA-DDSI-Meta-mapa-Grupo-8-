@@ -13,7 +13,13 @@ public class CriterioDescripcion extends Criterio {
     private String palabraClave;
 
     @Id
-    private Long id;
+    private Integer id;
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    public Integer getId() {
+        return id;
+    }
 
     public CriterioDescripcion(String palabraClave) {
         this.palabraClave = palabraClave;
@@ -29,11 +35,4 @@ public class CriterioDescripcion extends Criterio {
         return hecho.getDescripcion().toLowerCase().contains(palabraClave.toLowerCase());
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
 }

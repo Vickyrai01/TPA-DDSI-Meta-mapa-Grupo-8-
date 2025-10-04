@@ -15,6 +15,12 @@ public class Contribuyente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_contribuyente")
     private Integer id;
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     @Column(name = "nombre")
     private String nombre;
