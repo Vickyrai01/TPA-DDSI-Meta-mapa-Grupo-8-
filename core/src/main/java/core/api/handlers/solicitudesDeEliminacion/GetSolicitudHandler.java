@@ -10,8 +10,8 @@ public class GetSolicitudHandler implements Handler {
 
 
     @Override
-    public void handle(@NotNull Context context) throws Exception {
-        context.json(SolicitudEliminacionRepository.obtenerTodas());
+    public  void handle(@NotNull Context context) throws Exception {
+        context.json(repoSolicitudes.obtenerTodas());
     }
 
 

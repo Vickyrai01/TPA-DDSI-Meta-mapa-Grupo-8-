@@ -7,7 +7,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import utils.DBUtils;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 
@@ -26,7 +28,21 @@ public class Application {
     }
 
     public static void main(String[] args) {
+
         SpringApplication.run(Application.class, args);
+
+        EntityManager em = DBUtils.getEntityManager();
+        DBUtils.comenzarTransaccion(em);
+
+        HechoAIntegrarDTO hecho1 = new HechoAIntegrarDTO();
+        hecho1.setHash("shfkjdshgjkhdfkjghdfkgh");
+        hecho1.setDescripcion("de pruebaaaaa");
+        hecho1.setTitulo("hecho 1");
+        em.persist(hecho1);
+
+        DBUtils.commit(em);
+
+
     }
 
     @GetMapping("/health")

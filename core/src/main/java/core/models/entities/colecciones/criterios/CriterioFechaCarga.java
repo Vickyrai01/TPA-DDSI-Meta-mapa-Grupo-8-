@@ -3,8 +3,10 @@ package core.models.entities.colecciones.criterios;
 import core.models.entities.hecho.Hecho;
 
 import java.time.LocalDate;
-
-public class CriterioFechaCarga implements Criterio{
+import javax.persistence.*;
+@Entity
+@DiscriminatorValue("FECHA_CARGA")
+public class CriterioFechaCarga extends Criterio {
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
 
@@ -13,6 +15,8 @@ public class CriterioFechaCarga implements Criterio{
         this.fechaFin = fechaFin;
     }
 
+    public CriterioFechaCarga() {
+    }
     @Override
     public boolean cumpleCriterio(Hecho hecho) {
         return hecho.getFechaCarga().isBefore(fechaFin) && hecho.getFechaCarga().isAfter(fechaInicio);

@@ -2,11 +2,13 @@ package core.models.entities.hecho;
 
 import core.models.entities.fuentes.TipoFuente;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
 
+@Entity(name = "hecho")
 public class Hecho {
 
     public Hecho(Integer id, Coordenadas ubicacion, Categoria categoria,
@@ -61,7 +63,35 @@ public class Hecho {
         this.codigoDeFuente = codigoDeFuente;
         this.hash = hash;
     }
+    public Hecho(){}
+    public Hecho(Coordenadas ubicacion, Categoria categoria,
+                 List<SugerenciaDeCambio> sugerenciaDeCambio,
+                 LocalDate ultimaFechaModificacion, List<String> multimedia,
+                 Estado estado, Contribuyente contribuyente,
+                 LocalDate fechaCarga, LocalDate fechaSuceso,
+                 TipoFuente fuenteDeOrigen,
+                 List<Etiqueta> etiquetas, String descripcion, String titulo,String codigoDeFuente, Integer idFuente) {
 
+        this.ubicacion = ubicacion;
+        this.categoria = categoria;
+        this.sugerenciaDeCambio = sugerenciaDeCambio;
+        this.ultimaFechaModificacion = ultimaFechaModificacion;
+        this.multimedia = multimedia;
+        this.estado = estado;
+        this.contribuyente = contribuyente;
+        this.fechaCarga = fechaCarga;
+        this.fechaSuceso = fechaSuceso;
+        this.fuenteDeOrigen = fuenteDeOrigen;
+        this.etiquetas = etiquetas;
+        this.descripcion = descripcion;
+        this.titulo = titulo;
+        this.codigoDeFuente = codigoDeFuente;
+        this.idFuente =idFuente;
+    }
+
+    @Id
+    @Column(name = "id_hecho")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     public Integer getId() {
         return id;
@@ -70,6 +100,7 @@ public class Hecho {
         this.id = id;
     }
 
+    @Column(name = "titulo")
     private String titulo;
     public String getTitulo() {
         return titulo;
@@ -78,6 +109,7 @@ public class Hecho {
         this.titulo = titulo;
     }
 
+    @Column(name = "descripcion")
     private String descripcion;
     public String getDescripcion() {
         return descripcion;
@@ -86,6 +118,9 @@ public class Hecho {
         this.descripcion = descripcion;
     }
 
+    @OneToMany
+    @Column(name = "etiquetas")
+    @JoinColumn(name = "id_etiqueta")
     private List<Etiqueta> etiquetas;
     public List<Etiqueta> getEtiquetas() {
         return etiquetas;
@@ -94,6 +129,7 @@ public class Hecho {
         this.etiquetas = etiquetas;
     }
 
+    @Column(name = "tipo_de_fuente")
     private TipoFuente fuenteDeOrigen;
     public TipoFuente getFuenteDeOrigen() {
         return fuenteDeOrigen;
@@ -102,6 +138,7 @@ public class Hecho {
         this.fuenteDeOrigen = fuenteDeOrigen;
     }
 
+    @Column(name = "fecha_carga")
     private LocalDate fechaCarga;
     public LocalDate getFechaCarga() {
         return fechaCarga;
@@ -110,6 +147,7 @@ public class Hecho {
         this.fechaCarga = fechaCarga;
     }
 
+    @Column(name = "fecha_suceso")
     private LocalDate fechaSuceso;
     public LocalDate getFechaSuceso() {
         return fechaSuceso;
@@ -118,6 +156,9 @@ public class Hecho {
         this.fechaSuceso = fechaSuceso;
     }
 
+    //@Column(name = "contribuyente")
+    @ManyToOne
+    @JoinColumn(name = "id_contribuyente")
     private Contribuyente contribuyente;
     public Contribuyente getContribuyente() {
         return contribuyente;
@@ -126,6 +167,7 @@ public class Hecho {
         this.contribuyente = contribuyente;
     }
 
+    @Column(name = "estado")
     private Estado estado;
     public Estado getEstado() {
         return estado;
@@ -134,6 +176,13 @@ public class Hecho {
         this.estado = estado;
     }
 
+    @Column(name = "multimedia")
+    @ElementCollection
+    @CollectionTable(
+            name = "hecho_multimedia",
+            joinColumns = @JoinColumn(name = "hecho_id",
+                    foreignKey = @ForeignKey(name = "hecho_multimedia_hecho"))
+    )
     private List<String> multimedia;
     public List<String> getMultimedia() {
         return multimedia;
@@ -142,6 +191,7 @@ public class Hecho {
         this.multimedia = multimedia;
     }
 
+    @Column(name = "ultima_fecha_modificacion")
     private LocalDate ultimaFechaModificacion;
     public LocalDate getUltimaFechaModificacion() {
         return ultimaFechaModificacion;
@@ -150,6 +200,9 @@ public class Hecho {
         this.ultimaFechaModificacion = ultimaFechaModificacion;
     }
 
+    @OneToMany
+    @Column(name = "sugerenciaDeCambio")
+    @JoinColumn(name = "id_sugerenciaDeCambio")
     private List<SugerenciaDeCambio> sugerenciaDeCambio;
     public List<SugerenciaDeCambio> getSugerenciaDeCambio() {
         return sugerenciaDeCambio;
@@ -158,6 +211,9 @@ public class Hecho {
         this.sugerenciaDeCambio = sugerenciaDeCambio;
     }
 
+    @ManyToOne
+    //@Column(name = "categoria")
+    @JoinColumn(name = "id_categoria")
     private Categoria categoria;
     public Categoria getCategoria() {
         return categoria;
@@ -166,6 +222,9 @@ public class Hecho {
         this.categoria = categoria;
     }
 
+    //@Column(name = "ubicacion")
+    @OneToOne
+    @JoinColumn(name = "id_ubicacion")
     private Coordenadas ubicacion;
     public Coordenadas getUbicacion() {
         return ubicacion;
@@ -174,11 +233,13 @@ public class Hecho {
         this.ubicacion = ubicacion;
     }
 
+    @Column(name = "codigo_fuente")
     private String codigoDeFuente;
     public String getCodigoDeFuente() {
         return codigoDeFuente;
     }
 
+    @Column(name = "hash")
     public String hash;
     public String getHash() {
         return hash;
@@ -187,14 +248,13 @@ public class Hecho {
         this.hash = hash;
     }
 
+    @Column(name = "id_fuente")
     public Integer idFuente;
     public Integer getIdFuente() {
         return Objects.requireNonNullElse(idFuente, -1);
     }
 
     public void setIdFuente(Integer idFuente) {this.idFuente = idFuente;}
-
-    public Hecho(){}
 
     @Override
     public String toString() {
@@ -219,11 +279,12 @@ public class Hecho {
     public void desactivarse(){
         this.setEstado(Estado.INACTIVO);
     }
-
+    public void activarse(){
+        this.setEstado(Estado.ACEPTADO);
+    }
 
     public boolean perteneceAFuente(List<String> listaFuentes){ //Recibe los IDs de las fuentes
         return listaFuentes.contains(this.codigoDeFuente);
     }
-
 
 }

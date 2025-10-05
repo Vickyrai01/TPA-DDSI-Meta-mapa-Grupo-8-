@@ -1,23 +1,23 @@
 package core.models.repository;
 
+import core.models.entities.colecciones.Coleccion;
 import core.models.entities.solicitud.SolicitudDeEliminacion;
+import utils.DBUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SolicitudEliminacionRepository {
+public class SolicitudEliminacionRepository extends JpaRepositoryBase<SolicitudDeEliminacion, Integer> {
     private static volatile SolicitudEliminacionRepository instance;
 
     private SolicitudEliminacionRepository() {
-        if (instance != null) {
-            throw new RuntimeException("¡Usa getInstance() para obtener el Singleton!");
-        }
+        super(SolicitudDeEliminacion.class, DBUtils::getEntityManager, SolicitudDeEliminacion::getId);
     }
 
     public static SolicitudEliminacionRepository getInstance() {
-        if (instance == null) { // Primera verificación (sin bloqueo, mejora el rendimiento)
-            synchronized (SolicitudEliminacionRepository.class) { // Bloqueo para evitar race conditions
-                if (instance == null) { // Segunda verificación (dentro del bloqueo)
+        if (instance == null) {
+            synchronized (SolicitudEliminacionRepository.class) {
+                if (instance == null) {
                     instance = new SolicitudEliminacionRepository();
                 }
             }
@@ -25,17 +25,4 @@ public class SolicitudEliminacionRepository {
         return instance;
     }
 
-    private static final List<SolicitudDeEliminacion> solicitudes = new ArrayList<>();
-
-    public void add(SolicitudDeEliminacion s){
-        solicitudes.add(s);
-    }
-
-    public static List<SolicitudDeEliminacion> obtenerTodas(){
-        return solicitudes;
-    }
-
-    public void deleteSolicitudes(SolicitudDeEliminacion s){
-        solicitudes.remove(s);
-    }
 }

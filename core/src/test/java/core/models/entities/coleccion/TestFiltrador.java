@@ -33,12 +33,14 @@ public class TestFiltrador {
     Categoria categoriaChoque = new Categoria("Choque");
     Categoria categoriaRobo = new Categoria("Robo");
 
+    List<Hecho> hechosVisibles1= new ArrayList<>();
+
     List<Hecho> hechos1 = new ArrayList<>();
 
     @Mock
     private Fuente fuente;
 
-    Coleccion coleccion1 = new Coleccion(1, "Todos", "Todos los hechos que existen", null, Collections.singletonList(fuente), hechos1, null);
+    Coleccion coleccion1 = new Coleccion(1, "Todos", "Todos los hechos que existen", null, Collections.singletonList(fuente), hechos1,hechosVisibles1, null);
 
 
     Hecho hecho1 = new Hecho(1, coordenadas1, categoriaIncendio, null,

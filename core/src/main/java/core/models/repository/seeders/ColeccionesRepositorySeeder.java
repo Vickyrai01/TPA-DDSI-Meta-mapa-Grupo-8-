@@ -7,6 +7,7 @@ import core.models.entities.colecciones.criterios.CriterioDescripcion;
 import core.models.entities.fuentes.Fuente;
 import core.models.entities.hecho.Hecho;
 import core.models.repository.ColeccionesRepository;
+import core.models.repository.CriteriosRepository;
 import core.models.repository.FuentesRepository;
 import core.models.repository.HechosRepository;
 
@@ -37,20 +38,20 @@ public class ColeccionesRepositorySeeder {
 
     public void cargarColeccionesRepositorySeeder() {
         // Obtener hechos (validar que existan)
-        Hecho hecho1 = hechosRepository.getHecho(1);
-        Hecho hecho2 = hechosRepository.getHecho(2);
-        Hecho hecho3 = hechosRepository.getHecho(3);
-        Hecho hecho4 = hechosRepository.getHecho(4);
-        Hecho hecho5 = hechosRepository.getHecho(5);
+        Hecho hecho1 = hechosRepository.findById(1);
+        Hecho hecho2 = hechosRepository.findById(2);
+        Hecho hecho3 = hechosRepository.findById(3);
+        Hecho hecho4 = hechosRepository.findById(4);
+        Hecho hecho5 = hechosRepository.findById(5);
 
         if (hecho1 == null || hecho2 == null || hecho3 == null || hecho4 == null || hecho5 == null) {
             throw new IllegalStateException("No se encontraron todos los hechos necesarios");
         }
 
         // Obtener fuentes (validar que existan)
-        Fuente fuente1 = fuentesRepository.getFuente(1);
-        Fuente fuente2 = fuentesRepository.getFuente(2);
-        Fuente fuente3 = fuentesRepository.getFuente(3);
+        Fuente fuente1 = fuentesRepository.findById(1);
+        Fuente fuente2 = fuentesRepository.findById(2);
+        Fuente fuente3 = fuentesRepository.findById(3);
 
         if (fuente1 == null || fuente2 == null || fuente3 == null) {
             throw new IllegalStateException("No se encontraron todas las fuentes necesarias");
@@ -61,18 +62,26 @@ public class ColeccionesRepositorySeeder {
         List<Hecho> coleccionHechos2 = List.of(hecho4, hecho2);
         List<Hecho> coleccionHechos3 = List.of(hecho1, hecho3, hecho4, hecho2, hecho5);
 
+        List<Hecho> hechosVisibles1 = List.of(hecho1, hecho3);
+        List<Hecho> hechosVisibles2 = List.of();
+        List<Hecho> hechosVisibles3 = List.of(hecho1, hecho4, hecho5);
+
         List<Fuente> fuentes1 = List.of(fuente1);
         List<Fuente> fuentes2 = List.of(fuente2);
         List<Fuente> fuentes3 = List.of(fuente1, fuente2, fuente3);
 
         // Crear colecciones
+        CriteriosRepository criteriosRepository = CriteriosRepository.getInstance();
         List<Criterio> criterios = new ArrayList<>();
         CriterioDescripcion criterioDescripcion =  new CriterioDescripcion("perro");
+        criteriosRepository.add(criterioDescripcion);
         criterios.add(criterioDescripcion);
-        Coleccion coleccion1 = new Coleccion(1, "Incendios", "Incendios de cualquier objeto", criterios, fuentes1, coleccionHechos1, null);
+
+        Coleccion coleccion1 = new Coleccion(1, "Incendios", "Incendios de cualquier objeto", criterios, fuentes1, coleccionHechos1,hechosVisibles1, null);
         coleccion1.cambiarAlgoritmoConsenso(TipoConsenso.ABSOLUTO);
-        Coleccion coleccion2 = new Coleccion(2, "Choques", "Todos los choques", criterios, fuentes2, coleccionHechos2, null);
-        Coleccion coleccion3 = new Coleccion(3, "Sin victimas fatales", "Accidentes de cualquier tipo sin accidentes", criterios, fuentes3, coleccionHechos3, null);
+        Coleccion coleccion2 = new Coleccion(2, "Choques", "Todos los choques", criterios, fuentes2, coleccionHechos2,hechosVisibles2, null);
+        Coleccion coleccion3 = new Coleccion(3, "Sin victimas fatales", "Accidentes de cualquier tipo sin accidentes", criterios, fuentes3, coleccionHechos3,hechosVisibles3, null);
+
 
         // Guardar colecciones
         coleccionesRepository.add(coleccion1);

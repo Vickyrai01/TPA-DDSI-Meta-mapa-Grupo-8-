@@ -66,4 +66,9 @@ public class StrategyMultiplesMenciones extends AlgoritmoConsenso {
         }
         return false;
     }
+
+    @Override
+    public String devolverTipoDeConsenso(){
+        return "MULTIPLES_MENCIONES";
+    }
 }

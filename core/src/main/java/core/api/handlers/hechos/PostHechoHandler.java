@@ -4,11 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import core.api.handlers.colecciones.PatchAgregarFuentesColeccionHandler;
 import core.models.agregador.ConfigLoader;
-import core.models.entities.fuentes.Fuente;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import core.models.agregador.HechoAIntegrarDTO;
-import core.models.repository.DinamicaRepository;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PostHechoHandler implements Handler {
-    private final DinamicaRepository repoDinamicos = DinamicaRepository.getInstance();
     private static final Logger log = LoggerFactory.getLogger(PatchAgregarFuentesColeccionHandler.class);
 
     @Override
@@ -41,8 +38,6 @@ public class PostHechoHandler implements Handler {
         );
 
         validarNuevoHecho(hechoDTO);
-
-        repoDinamicos.add(hechoDTO);
         enviarHechoAlCargador(hechoDTO);
         context.status(201);
     }
@@ -101,21 +96,6 @@ public class PostHechoHandler implements Handler {
         jsonMap.put("latitud", hechoAIntegrarDTO.getLatitud());
         jsonMap.put("longitud", hechoAIntegrarDTO.getLongitud());
         jsonMap.put("fechaSuceso", hechoAIntegrarDTO.getFechaSuceso());
-        try {
-            return mapper.writeValueAsString(jsonMap);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return "{}";
-        }
-    }
-
-
-    public String fuenteAJson(Fuente fuente) {
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> jsonMap = new HashMap<>();
-        jsonMap.put("nombre", fuente.getNombre());
-        jsonMap.put("link", fuente.getLink());
-        jsonMap.put("tipoFuente", fuente.getStrategyTipoConexion().devolverTipoDeConexion()); // si quieres el string: this.tipoFuente.toString()
         try {
             return mapper.writeValueAsString(jsonMap);
         } catch (JsonProcessingException e) {

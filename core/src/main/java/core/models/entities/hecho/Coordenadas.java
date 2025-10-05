@@ -4,7 +4,23 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.*;
+
+@Entity(name = "coordenadas")
 public class Coordenadas {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_ubicacion")
+    private Integer id;
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    @Column(name = "latitud")
     private Double latitud;
     public Double getLatitud() {
         return latitud;
@@ -13,6 +29,8 @@ public class Coordenadas {
         this.latitud = latitud;
     }
 
+
+    @Column(name = "longitud")
     private Double longitud;
     public Double getLongitud() {
         return longitud;

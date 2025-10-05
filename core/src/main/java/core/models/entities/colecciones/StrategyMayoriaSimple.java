@@ -46,4 +46,9 @@ public class StrategyMayoriaSimple extends AlgoritmoConsenso {
         }
         return hechosVisibles;
     }
+
+    @Override
+    public String devolverTipoDeConsenso(){
+        return "MAYORIA_SIMPLE";
+    }
 }
