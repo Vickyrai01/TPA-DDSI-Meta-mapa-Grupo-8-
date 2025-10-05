@@ -7,6 +7,7 @@ import core.models.repository.FuentesRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class StrategyAbsoluta extends AlgoritmoConsenso {
 
     @Override
@@ -46,5 +47,10 @@ public class StrategyAbsoluta extends AlgoritmoConsenso {
             }
         }
     return hechosVisibles;
+    }
+
+    @Override
+    public String devolverTipoDeConsenso(){
+        return "ABSOLUTO";
     }
 }

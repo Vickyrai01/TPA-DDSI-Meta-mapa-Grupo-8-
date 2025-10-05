@@ -4,14 +4,19 @@ import core.models.entities.colecciones.criterios.Criterio;
 import core.models.entities.fuentes.Fuente;
 import core.models.entities.hecho.Hecho;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+
+@Entity(name="coleccion")
 public class Coleccion {
+
 
     public Coleccion(Integer id, String titulo, String descripcionColeccion,
                      List<Criterio> criterioDePertenencia,
                      List<Fuente> fuentes,
                      List<Hecho> hechos,
+                     List<Hecho> hechosVisibles,
                      String identificadorHandle) {
         this.id = id;
         this.titulo = titulo;
@@ -19,20 +24,31 @@ public class Coleccion {
         this.criterioDePertenencia = criterioDePertenencia != null ? new ArrayList<>(criterioDePertenencia) : new ArrayList<>();
         this.fuentes = fuentes != null ? new ArrayList<>(fuentes) : new ArrayList<>();
         this.hechos = hechos != null ? new ArrayList<>(hechos) : new ArrayList<>();
-        this.hechosVisibles = new ArrayList<>();
+        this.hechosVisibles = hechosVisibles != null ? new ArrayList<>(hechosVisibles) : new ArrayList<>();
         this.identificadorHandle = identificadorHandle;
         this.modoDeNavegacion = ModoDeNavegacion.IRRESTRICTO;
         this.algoritmoConsenso = null;
     }
 
+    public Coleccion(){}
+
+    @Id
+    @Column(name = "id_coleccion")
     private Integer id;
     public Integer getId() {return id;}
     public void setId(Integer id) {this.id = id;}
 
+    @Column(name = "titulo")
     private String titulo;
     public String getTitulo() {return titulo;}
     public void setTitulo(String titulo) {this.titulo = titulo;}
 
+    @ManyToMany
+    @JoinTable(
+            name = "coleccion_fuente", // nombre de la tabla intermedia
+            joinColumns = @JoinColumn(name = "id_coleccion"), // FK hacia tu entidad actual
+            inverseJoinColumns = @JoinColumn(name = "id_fuente") // FK hacia Hecho
+    )
     private List<Fuente> fuentes;
     public List<Fuente> getFuentes() {return this.fuentes;}
     public void setFuentes(List<Fuente> fuentes){this.fuentes = fuentes;}
@@ -43,11 +59,30 @@ public class Coleccion {
 
     public List<String> extraerCodigosDeFuentes(List<Fuente> fuentes){return fuentes.stream().map(Fuente::getCodigoDeFuente).toList();}
 
+    @ManyToMany
+    @JoinTable(
+            name = "hechos_visibles", // nombre de la tabla intermedia
+            joinColumns = @JoinColumn(name = "id_coleccion"), // FK hacia tu entidad actual
+            inverseJoinColumns = @JoinColumn(name = "id_hecho") // FK hacia Hecho
+    )
+    public List<Hecho> hechosVisibles;
+    public List<Hecho> getHechosVisibles() {return hechosVisibles;}
+
+
+    @Column(name = "descripcionColeccion")
     private String descripcionColeccion;
     public String getDescripcionColeccion() {return descripcionColeccion;}
     public void setDescripcionColeccion(String descripcionColeccion) {this.descripcionColeccion = descripcionColeccion;}
 
-    private List<Criterio> criterioDePertenencia;
+    /*@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "coleccion_id") // FK en la tabla de Criterio*/
+    @ManyToMany
+    @JoinTable(
+            name = "coleccion_criterio",
+            joinColumns = @JoinColumn(name = "coleccion_id"),
+            inverseJoinColumns = @JoinColumn(name = "criterio_id")
+    )
+    private List<Criterio> criterioDePertenencia = new ArrayList<>();;
     public List<Criterio> getCriterioDePertenencia() {
         return criterioDePertenencia;
     }
@@ -55,8 +90,11 @@ public class Coleccion {
     public void agregarCriterio(Criterio criterio) {criterioDePertenencia.add(criterio);};
     public void eliminarCriterio(Criterio criterio) {criterioDePertenencia.remove(criterio);};
 
+    @Column(name = "modoDeNavegacion")
     public ModoDeNavegacion modoDeNavegacion;
 
+    @Convert(converter = AlgoritmoConsensoConverter.class)
+    @Column(name = "strategy_tipo_conexion")
     public AlgoritmoConsenso algoritmoConsenso = null;
     public void cambiarAlgoritmoConsenso(TipoConsenso algoritmoConsenso){
       switch (algoritmoConsenso){
@@ -68,32 +106,33 @@ public class Coleccion {
     public AlgoritmoConsenso getAlgoritmoConsenso() {return algoritmoConsenso;}
     public void setAlgoritmoConsenso(AlgoritmoConsenso algoritmoConsenso) {this.algoritmoConsenso = algoritmoConsenso;}
 
-    public List<Hecho> hechosVisibles;
 
+
+    @Column(name = "tipoConsenso")
     public TipoConsenso tipoConsenso;
 
-    public List<Hecho> getHechosVisibles(){return hechosVisibles;}
 
-    public void actualizarColeccionVisible(List<Fuente> fuentes, List<Hecho> hechos){
-        if(modoDeNavegacion == modoDeNavegacion.CURADA){
-            if(algoritmoConsenso==null){
-                hechosVisibles= hechos;
-            }else{
-                hechosVisibles= algoritmoConsenso.ejecutarAlgoritmo();
-            }
-        }
-        else{
-            hechosVisibles=hechos;
-        }
-    }
+   public void actualizarColeccionVisible(){
+
+       if(modoDeNavegacion==modoDeNavegacion.IRRESTRICTO || algoritmoConsenso == null){
+           hechosVisibles=hechos;
+
+       }else{
+           hechosVisibles = algoritmoConsenso.ejecutarAlgoritmo();
+       }
+
+   }
 
     public void modificarModoNavegacion(ModoDeNavegacion modoDeNavegacion){
         this.modoDeNavegacion=modoDeNavegacion;
-        actualizarColeccionVisible(fuentes, hechos);
     }
 
-
-
+    @ManyToMany
+    @JoinTable(
+            name = "coleccion_hecho", // nombre de la tabla intermedia
+            joinColumns = @JoinColumn(name = "id_coleccion"), // FK hacia tu entidad actual
+            inverseJoinColumns = @JoinColumn(name = "id_hecho") // FK hacia Hecho
+    )
     private List<Hecho> hechos;
     public List<Hecho> getHechos() {return hechos;}
     public void setHechos(List<Hecho> hechos) {this.hechos = hechos;}

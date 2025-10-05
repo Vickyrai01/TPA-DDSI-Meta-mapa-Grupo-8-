@@ -3,9 +3,23 @@ package core.models.entities.hecho;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 
+@Entity(name = "sugerencia_de_cambio")
 public class SugerenciaDeCambio {
+    @Id
+    @Column(name = "id_sugerencia_de_cambio")
+    private Integer id;
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    @Column(name = "detalle")
     private String detalle;
     public String getDetalle() {
         return detalle;
@@ -14,6 +28,7 @@ public class SugerenciaDeCambio {
         this.detalle = detalle;
     }
 
+    @Column(name = "fecha")
     private LocalDateTime fecha;
     public LocalDateTime getFecha() {
         return fecha;
@@ -27,4 +42,5 @@ public class SugerenciaDeCambio {
         this.fecha = LocalDateTime.now();
     }
 
+    public SugerenciaDeCambio(){}
 }

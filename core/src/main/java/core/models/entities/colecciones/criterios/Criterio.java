@@ -4,6 +4,8 @@ import core.models.entities.hecho.Hecho;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import javax.persistence.*;
+
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
@@ -19,7 +21,22 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = CriterioFechaModificacion.class, name = "fechaModificacion"),
 })
 
-public interface Criterio {
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE) // o JOINED
+@DiscriminatorColumn(name = "tipo_criterio", length = 30)
+public abstract class Criterio {
+    @Id
+    @GeneratedValue
+    private Integer id;
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-    boolean cumpleCriterio(Hecho hecho);
+    protected Criterio() {}
+
+    public abstract boolean cumpleCriterio(Hecho hecho);
+
 }

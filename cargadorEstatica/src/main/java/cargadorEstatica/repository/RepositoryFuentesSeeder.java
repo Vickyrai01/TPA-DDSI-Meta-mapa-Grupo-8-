@@ -30,7 +30,7 @@ public class RepositoryFuentesSeeder {
     );
 
     public void cargarRepos() {
-        repositoryFuentes.agregarFuente(fuenteEjemplo);
+        repositoryFuentes.save(fuenteEjemplo);
     }
 
 }

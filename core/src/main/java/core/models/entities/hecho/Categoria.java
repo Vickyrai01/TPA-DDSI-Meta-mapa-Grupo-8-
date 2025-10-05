@@ -1,8 +1,17 @@
 package core.models.entities.hecho;
 
+
+import javax.persistence.*;
+
+@Entity(name = "categoria")
 public class Categoria {
 
-    int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_categoria")
+    Integer id;
+
+    @Column(name = "nombre")
     String nombre;
 
     public String getNombre() {
@@ -12,10 +21,11 @@ public class Categoria {
         this.nombre = nombre;
     }
 
-    public int getId() {
-        return id;
+    public Integer getId() {
+            return id;
     }
-    public void setId(int id) {
+
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -23,4 +33,6 @@ public class Categoria {
         this.nombre = categoria;
     }
     public Categoria(){}
+
 }
+

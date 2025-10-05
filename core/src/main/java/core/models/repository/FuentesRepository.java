@@ -3,18 +3,19 @@ package core.models.repository;
 import core.models.entities.colecciones.Coleccion;
 import core.models.entities.fuentes.Fuente;
 import core.models.entities.fuentes.TipoFuente;
+import core.models.entities.hecho.Categoria;
+import utils.DBUtils;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FuentesRepository {
+public class FuentesRepository extends JpaRepositoryBase<Fuente, Integer> {
     private static volatile FuentesRepository instance;
 
     private FuentesRepository() {
-        if (instance != null) {
-            throw new RuntimeException("Usa getInstance() para obtener el Singleton");
-        }
+        super(Fuente.class, DBUtils::getEntityManager, Fuente::getId);
     }
 
     public static FuentesRepository getInstance() {
@@ -28,30 +29,25 @@ public class FuentesRepository {
         return instance;
     }
 
-    private static final List<Fuente> fuentes = new ArrayList<>();
 
-    public List<Fuente> obtenerTodas(){
-        return fuentes;
-    }
-
-    public void delete(Fuente c){
-        fuentes.remove(c);
-    }
-
-    public Fuente getFuente(int id) {
-        return fuentes.stream()
-                .filter(h -> h.getId() == id)
-                .findFirst()
-                .orElse(null);
-    }
-    public  void add(Fuente h){
-        fuentes.add(h);
-    }
-
+    //HACER
     public static List<Fuente> filtrarFuente(String tipoFuente) {
         TipoFuente tipoFuenteClase = TipoFuente.valueOf(tipoFuente.trim().toUpperCase());
-        return fuentes.stream()
-                .filter(f -> tipoFuenteClase.equals(f.getTipoFuente()))
-                .collect(Collectors.toList());
+
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            List<Fuente> resultados = em.createQuery(
+                            "SELECT f FROM fuente f WHERE LOWER(TRIM(f.tipoFuente)) = LOWER(:tipoFuente)",
+                            Fuente.class)
+                    .setParameter(tipoFuente, tipoFuente.trim())
+                    .getResultList();
+            return resultados.isEmpty() ? null : resultados;
+
+        } finally {
+            em.close();
+        }
     }
+
+    public Fuente getFuente(int id)
+    {return findById(id);}
 }

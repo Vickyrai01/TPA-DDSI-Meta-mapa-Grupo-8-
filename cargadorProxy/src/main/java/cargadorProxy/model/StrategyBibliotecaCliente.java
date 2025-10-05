@@ -18,5 +18,8 @@ public class StrategyBibliotecaCliente implements StrategyTipoConexion {
     @Override
     public List<HechoAIntegrarDTO> extraerHechosRecientes(String fuente, String codigoFuente){return null;}; //toma los hechos!!
 
-
+    @Override
+    public String devolverTipoDeConexion() {
+        return "BIBLIOTECA";
+    }
 }

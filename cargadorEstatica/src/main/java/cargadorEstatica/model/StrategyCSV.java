@@ -60,5 +60,10 @@ public class StrategyCSV implements StrategyTipoConexion {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public String devolverTipoDeConexion() {
+        return "CSV";
+    }
 }
 

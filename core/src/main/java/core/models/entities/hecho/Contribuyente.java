@@ -4,11 +4,25 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 
+@Entity(name = "contribuyente")
 @AllArgsConstructor
 public class Contribuyente {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_contribuyente")
+    private Integer id;
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    @Column(name = "nombre")
     private String nombre;
     public String getNombre() {
         return nombre;
@@ -17,6 +31,7 @@ public class Contribuyente {
         this.nombre = nombre;
     }
 
+    @Column(name = "apellido")
     private String apellido;
     public String getApellido() {
         return apellido;
@@ -25,6 +40,7 @@ public class Contribuyente {
         this.apellido = apellido;
     }
 
+    @Column(name = "fecha_nacimiento")
     private LocalDate fechaNacimiento;
     public LocalDate getFechaNacimiento() {
         return fechaNacimiento;
@@ -32,4 +48,6 @@ public class Contribuyente {
     public void setFechaNacimiento(LocalDate fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
+
+    public Contribuyente(){}
 }

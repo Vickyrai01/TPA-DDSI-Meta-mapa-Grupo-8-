@@ -1,21 +1,21 @@
 package cargadorDinamica.repository;
 
 import cargadorDinamica.model.HechoAIntegrarDTO;
+import utils.DBUtils;
 
+import javax.persistence.EntityManager;
 import java.util.*;
 
-public class DinamicaRepository {
+public class DinamicaRepository extends JpaRepositoryBase<HechoAIntegrarDTO, String> {
     private static volatile DinamicaRepository instance;
+
+    private DinamicaRepository() {
+        super(HechoAIntegrarDTO.class, DBUtils::getEntityManager, HechoAIntegrarDTO::getHash);
+    }
 
     private List<Map<HechoAIntegrarDTO, Boolean>> tablaHechos =
             new ArrayList<>(Arrays.asList(new HashMap<>(), new HashMap<>()));
 
-
-    private DinamicaRepository() {
-        if (instance != null) {
-            throw new RuntimeException("Usa getInstance() para obtener el Singleton");
-        }
-    }
 
     public static DinamicaRepository getInstance() {
         if (instance == null) {
@@ -28,34 +28,17 @@ public class DinamicaRepository {
         return instance;
     }
 
-    private static final List<HechoAIntegrarDTO> hechosDinamicos = new ArrayList<>();
-
-    public List<HechoAIntegrarDTO> obtenerTodas() {
-        return hechosDinamicos;
-    }
-
-    public void add(HechoAIntegrarDTO h) {
-        Map<HechoAIntegrarDTO, Boolean> elemento = new HashMap<>();
-        elemento.put(h, false);
-        tablaHechos.add(elemento);
-    }
-
-    public void delete(HechoAIntegrarDTO h) {
-        hechosDinamicos.remove(h);
-    }
-
     public List<HechoAIntegrarDTO> getHechosNoProcesados() {
         List<HechoAIntegrarDTO> noProcesados = new ArrayList<>();
 
-        for (Map<HechoAIntegrarDTO, Boolean> elemento : tablaHechos) {
-            for (Map.Entry<HechoAIntegrarDTO, Boolean> entry : elemento.entrySet()) {
-                if (!entry.getValue()) {
-                    noProcesados.add(entry.getKey());
-                    entry.setValue(true);
-                }
-            }
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            return em.createQuery(
+                            "SELECT h FROM HechoAIntegrarDTO h WHERE h.fueExtraido = false"
+                            ,HechoAIntegrarDTO.class)
+                    .getResultList();
+        } finally {
+            em.close();
         }
-
-        return noProcesados;
     }
 }
