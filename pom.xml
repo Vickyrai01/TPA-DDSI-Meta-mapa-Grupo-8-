@@ -15,6 +15,7 @@
         <module>cargadorDinamica</module>
         <module>cargadorEstatica</module>
         <module>cargadorProxy</module>
+        <module>servicioDeEstadistica</module>
     </modules>
 
     <properties>
