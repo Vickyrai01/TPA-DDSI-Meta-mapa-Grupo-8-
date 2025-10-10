@@ -1,12 +1,9 @@
 package servicioEstadisticas.model;
-
 import servicioEstadisticas.repository.RepositoryServicioEstadisticas;
-
-
 public class ServicioEstadisticas {
 
-    private String provinciaConMasHechos = "Buenos Aires";
-    private String categoriaMasReportada = "ASESINARON A VRAI";
+    private String provinciaConMasHechos;
+    private String categoriaMasReportada;
     private Integer cantSolicitudesEliminacion = 200;
 
     private static volatile ServicioEstadisticas instance;
@@ -29,31 +26,30 @@ public class ServicioEstadisticas {
     }
 
     public String getCategoriaMasReportada() {
+        this.categoriaMasReportada = RepositoryServicioEstadisticas.categoriaMasReportada(); // borrar despues
         return categoriaMasReportada;
     }
 
     public String getProvinciaConMasHechos() {
+        this.provinciaConMasHechos = RepositoryServicioEstadisticas.provinciaConMasHechos(); // borrar despues
         return provinciaConMasHechos;
     }
 
     public Integer getCantSolicitudesEliminacion() {
+        this.cantSolicitudesEliminacion = RepositoryServicioEstadisticas.cantidadSolicitudesEliminacion();
         return cantSolicitudesEliminacion;
     }
 
-
-
     public String horarioxCategoria(String categoria){
 
-        return "jiji jija";
+        return RepositoryServicioEstadisticas.horarioxCategoria(categoria);
 
     }
 
     public String provicniaConMasHechosEnCategoria(String categoria ){
 
-        return "jiji jija";
+        return RepositoryServicioEstadisticas.provicniaConMasHechosEnCategoria(categoria);
 
     }
-
-    //String categoriaProvincia, String categoriaDia
 
 }

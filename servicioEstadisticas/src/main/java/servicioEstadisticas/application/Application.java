@@ -1,5 +1,4 @@
 package servicioEstadisticas.application;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
@@ -10,9 +9,7 @@ import servicioEstadisticas.model.ServicioEstadisticas;
 import servicioEstadisticas.model.SolicitudSpam;
 import servicioEstadisticas.repository.RepositoryServicioEstadisticas;
 import utils.DBUtils;
-
 import javax.persistence.EntityManager;
-
 
 @SpringBootApplication
 @EnableScheduling
