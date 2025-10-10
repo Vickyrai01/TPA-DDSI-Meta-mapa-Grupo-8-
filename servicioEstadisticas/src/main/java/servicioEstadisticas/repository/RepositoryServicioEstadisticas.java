@@ -1,6 +1,7 @@
 package servicioEstadisticas.repository;
 
 import servicioEstadisticas.model.Hecho;
+import servicioEstadisticas.model.SolicitudSpam;
 import utils.DBUtils;
 
 import javax.persistence.EntityManager;
@@ -28,6 +29,22 @@ public class RepositoryServicioEstadisticas {
         try {
             em.getTransaction().begin();
             em.persist(hecho);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw e;
+        } finally {
+            em.close();
+        }
+    }
+
+    public static void addSolicitud(SolicitudSpam solicitudSpam) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.persist(solicitudSpam);
             em.getTransaction().commit();
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {
