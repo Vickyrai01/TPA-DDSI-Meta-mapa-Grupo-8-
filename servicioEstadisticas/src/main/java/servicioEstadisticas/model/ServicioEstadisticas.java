@@ -5,9 +5,9 @@ import servicioEstadisticas.repository.RepositoryServicioEstadisticas;
 
 public class ServicioEstadisticas {
 
-    private String provinciaConMasHechos;
-    private String categoriaMasReportada;
-    private Integer cantSolicitudesEliminacion;
+    private String provinciaConMasHechos = "Buenos Aires";
+    private String categoriaMasReportada = "ASESINARON A VRAI";
+    private Integer cantSolicitudesEliminacion = 200;
 
     private static volatile ServicioEstadisticas instance;
 
@@ -28,10 +28,31 @@ public class ServicioEstadisticas {
         this.cantSolicitudesEliminacion = RepositoryServicioEstadisticas.cantidadSolicitudesEliminacion();
     }
 
+    public String getCategoriaMasReportada() {
+        return categoriaMasReportada;
+    }
+
+    public String getProvinciaConMasHechos() {
+        return provinciaConMasHechos;
+    }
+
+    public Integer getCantSolicitudesEliminacion() {
+        return cantSolicitudesEliminacion;
+    }
 
 
 
+    public String horarioxCategoria(String categoria){
 
+        return "jiji jija";
+
+    }
+
+    public String provicniaConMasHechosEnCategoria(String categoria ){
+
+        return "jiji jija";
+
+    }
 
     //String categoriaProvincia, String categoriaDia
 

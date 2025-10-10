@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.*;
 import servicioEstadisticas.model.Hecho;
+import servicioEstadisticas.model.ServicioEstadisticas;
 import servicioEstadisticas.model.SolicitudSpam;
 import servicioEstadisticas.repository.RepositoryServicioEstadisticas;
 import utils.DBUtils;
@@ -18,8 +19,10 @@ import javax.persistence.EntityManager;
 @RestController
 @RequestMapping("/servicioEstadisticas")
 public class Application {
-    public Application() {
+    private ServicioEstadisticas servicioEstadisticas = ServicioEstadisticas.getInstance();
 
+    public Application() {
+        this.servicioEstadisticas = ServicioEstadisticas.getInstance();
     }
 
     public static void main(String[] args) {
@@ -66,4 +69,33 @@ public class Application {
         return ResponseEntity.status(201).body("Solicitud agregado correctamente");
     }
 
+    @GetMapping("/provincia-con-mas-hechos")
+    public ResponseEntity <String> ProvinciaMayorHechos(){
+        String provincia = servicioEstadisticas.getProvinciaConMasHechos();
+        return ResponseEntity.ok(provincia);
+    }
+
+    @GetMapping("/categoria-mayor-cantidad")
+    public ResponseEntity <String> CategoriaMayorCantidad(){
+        String categoria = servicioEstadisticas.getCategoriaMasReportada();
+        return ResponseEntity.ok(categoria);
+    }
+
+    @GetMapping("/cantidad-spam")
+    public ResponseEntity <Integer> CantidadSpam(){
+        Integer cantidad = servicioEstadisticas.getCantSolicitudesEliminacion();
+        return ResponseEntity.ok(cantidad);
+    }
+
+    @GetMapping("/provincia-con-mas-hechos-por-categoria")
+    public ResponseEntity <String> MayorCantHechosCategoria(@RequestParam(value = "categoria", required = false) String categoria){
+        String prov = servicioEstadisticas.provicniaConMasHechosEnCategoria(categoria);
+        return ResponseEntity.ok(prov);
+    }
+
+    @GetMapping("/horario-categoria")
+    public ResponseEntity <String> HorarioCategoria(@RequestParam(value = "categoria", required = false) String categoria){
+        String horario = servicioEstadisticas.horarioxCategoria(categoria);
+        return ResponseEntity.ok(horario);
+    }
 }
