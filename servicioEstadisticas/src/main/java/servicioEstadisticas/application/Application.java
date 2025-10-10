@@ -55,4 +55,15 @@ public class Application {
         return ResponseEntity.status(201).body("Hecho agregado correctamente");
     }
 
+    @PostMapping("/solicitudSpam")
+    public ResponseEntity<String> agregarSolicitudSpam(@RequestBody SolicitudSpam solicitudSpam) {
+
+        SolicitudSpam solicitudABD = new SolicitudSpam(
+                solicitudSpam.getFueSpam()
+        );
+
+        RepositoryServicioEstadisticas.addSolicitud(solicitudABD);
+        return ResponseEntity.status(201).body("Solicitud agregado correctamente");
+    }
+
 }
