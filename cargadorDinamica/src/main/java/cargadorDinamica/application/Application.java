@@ -69,7 +69,7 @@ public class Application {
                 hecho.getFechaSuceso()
         );
 
-        dinamicaRepository.add(hechoDTO);
+        //dinamicaRepository.add(hechoDTO);
         return ResponseEntity.status(201).body("Hecho agregado correctamente");
     }
 
