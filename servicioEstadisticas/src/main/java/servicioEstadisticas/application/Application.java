@@ -5,6 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import servicioEstadisticas.model.Hecho;
+import servicioEstadisticas.model.SolicitudSpam;
 import utils.DBUtils;
 
 import javax.persistence.EntityManager;
@@ -22,6 +24,13 @@ public class Application {
         SpringApplication.run(Application.class, args);
         EntityManager em = DBUtils.getEntityManager();
         DBUtils.comenzarTransaccion(em);
+
+        Hecho hechoNuevo = new Hecho("ffffjjjjjj","Incendio en lomas de zamora", "2025-10-10", "Buenos Aires");
+        SolicitudSpam soliSpam = new SolicitudSpam(false);
+
+        em.persist(hechoNuevo);
+        em.persist(soliSpam);
+
         DBUtils.commit(em);
     }
 
