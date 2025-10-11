@@ -2,8 +2,8 @@ package servicioEstadisticas.model;
 import servicioEstadisticas.repository.RepositoryServicioEstadisticas;
 public class ServicioEstadisticas {
 
-    private String provinciaConMasHechos;
-    private String categoriaMasReportada;
+    private String provinciaConMasHechos = "CABA";
+    private String categoriaMasReportada = "Robo a mano armada";
     private Integer cantSolicitudesEliminacion = 200;
 
     private static volatile ServicioEstadisticas instance;

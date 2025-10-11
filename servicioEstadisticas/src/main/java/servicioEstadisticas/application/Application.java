@@ -4,6 +4,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.*;
+import seeders.RepositoryServicioEstadisticasSeeder;
 import servicioEstadisticas.model.Hecho;
 import servicioEstadisticas.model.ServicioEstadisticas;
 import servicioEstadisticas.model.SolicitudSpam;
@@ -27,6 +28,8 @@ public class Application {
         EntityManager em = DBUtils.getEntityManager();
         DBUtils.comenzarTransaccion(em);
 
+        RepositoryServicioEstadisticasSeeder repoSeeder = RepositoryServicioEstadisticasSeeder.getInstance();
+        repoSeeder.cargarHechos();
         //Hecho hechoNuevo = new Hecho("ffffjjjjjj","Incendio en lomas de zamora", "2025-10-10", "Buenos Aires");
         //SolicitudSpam soliSpam = new SolicitudSpam(false);
 
