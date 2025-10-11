@@ -17,7 +17,7 @@ import javax.persistence.EntityManager;
 @RestController
 @RequestMapping("/servicioEstadisticas")
 public class Application {
-    private ServicioEstadisticas servicioEstadisticas = ServicioEstadisticas.getInstance();
+    private static ServicioEstadisticas servicioEstadisticas = ServicioEstadisticas.getInstance();
 
     public Application() {
         this.servicioEstadisticas = ServicioEstadisticas.getInstance();
@@ -28,8 +28,11 @@ public class Application {
         EntityManager em = DBUtils.getEntityManager();
         DBUtils.comenzarTransaccion(em);
 
-        RepositoryServicioEstadisticasSeeder repoSeeder = RepositoryServicioEstadisticasSeeder.getInstance();
-        repoSeeder.cargarHechos();
+        //RepositoryServicioEstadisticasSeeder repoSeeder = RepositoryServicioEstadisticasSeeder.getInstance();
+        //repoSeeder.cargarHechos();
+
+        servicioEstadisticas.actualizarEstadisticas();
+
         //Hecho hechoNuevo = new Hecho("ffffjjjjjj","Incendio en lomas de zamora", "2025-10-10", "Buenos Aires");
         //SolicitudSpam soliSpam = new SolicitudSpam(false);
 
