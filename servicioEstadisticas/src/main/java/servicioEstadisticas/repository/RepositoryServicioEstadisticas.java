@@ -6,6 +6,19 @@ import utils.DBUtils;
 import javax.persistence.EntityManager;
 
 public class RepositoryServicioEstadisticas {
+
+    private static volatile RepositoryServicioEstadisticas instance;
+    public static RepositoryServicioEstadisticas getInstance() {
+        if (instance == null) {
+            synchronized (RepositoryServicioEstadisticas.class) {
+                if (instance == null) {
+                    instance = new RepositoryServicioEstadisticas();
+                }
+            }
+        }
+        return instance;
+    }
+
     public static String provinciaConMasHechos(){
 
         EntityManager em = DBUtils.getEntityManager();
