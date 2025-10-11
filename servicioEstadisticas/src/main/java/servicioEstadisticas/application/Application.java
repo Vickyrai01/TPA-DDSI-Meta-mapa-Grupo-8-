@@ -25,21 +25,9 @@ public class Application {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
-        EntityManager em = DBUtils.getEntityManager();
-        DBUtils.comenzarTransaccion(em);
-
         //RepositoryServicioEstadisticasSeeder repoSeeder = RepositoryServicioEstadisticasSeeder.getInstance();
         //repoSeeder.cargarHechos();
-
         servicioEstadisticas.actualizarEstadisticas();
-
-        //Hecho hechoNuevo = new Hecho("ffffjjjjjj","Incendio en lomas de zamora", "2025-10-10", "Buenos Aires");
-        //SolicitudSpam soliSpam = new SolicitudSpam(false);
-
-        //em.persist(hechoNuevo);
-        //em.persist(soliSpam);
-
-        DBUtils.commit(em);
     }
 
     @GetMapping("/health")
