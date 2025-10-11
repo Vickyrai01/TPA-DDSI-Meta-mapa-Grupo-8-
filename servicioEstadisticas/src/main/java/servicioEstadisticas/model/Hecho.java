@@ -1,5 +1,8 @@
 package servicioEstadisticas.model;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "hecho")
@@ -12,13 +15,14 @@ public class Hecho {
     private String categoria;
 
     @Column(name= "fecha_suceso")
-    private String fechaSuceso;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime fechaSuceso;
 
     @Column(name= "provincia")
     private String provincia;
 
 
-    public Hecho(String id,String categoria, String fechaSuceso, String provincia) {
+    public Hecho(String id,String categoria, LocalDateTime fechaSuceso, String provincia) {
         this.id_hecho = id;
         this.categoria = categoria;
         this.fechaSuceso = fechaSuceso;
@@ -43,11 +47,11 @@ public class Hecho {
         this.categoria = categoria;
     }
 
-    public String getFechaSuceso() {
+    public LocalDateTime getFechaSuceso() {
         return fechaSuceso;
     }
 
-    public void setFechaSuceso(String fechaSuceso) {
+    public void setFechaSuceso(LocalDateTime fechaSuceso) {
         this.fechaSuceso = fechaSuceso;
     }
 

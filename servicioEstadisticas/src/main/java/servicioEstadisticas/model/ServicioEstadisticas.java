@@ -26,17 +26,14 @@ public class ServicioEstadisticas {
     }
 
     public String getCategoriaMasReportada() {
-        this.categoriaMasReportada = RepositoryServicioEstadisticas.categoriaMasReportada(); // borrar despues
         return categoriaMasReportada;
     }
 
     public String getProvinciaConMasHechos() {
-        this.provinciaConMasHechos = RepositoryServicioEstadisticas.provinciaConMasHechos(); // borrar despues
         return provinciaConMasHechos;
     }
 
     public Integer getCantSolicitudesEliminacion() {
-        this.cantSolicitudesEliminacion = RepositoryServicioEstadisticas.cantidadSolicitudesEliminacion();
         return cantSolicitudesEliminacion;
     }
 

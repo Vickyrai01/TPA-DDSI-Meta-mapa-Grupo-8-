@@ -49,21 +49,45 @@ public class RepositoryServicioEstadisticas {
             em.close();
         }
     }
-
-
-
-
-    public static String horarioxCategoria(String categoria){
-        return "b";
+    
+    public static String horarioxCategoria(String categoria) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            String jpql = "SELECT FUNCTION('HOUR', h.fechaSuceso) as hora, COUNT(h) as cantidad " +
+                    "FROM Hecho h " +
+                    "WHERE h.categoria = :categoria " +
+                    "GROUP BY FUNCTION('HOUR', h.fechaSuceso) " +
+                    "ORDER BY COUNT(h) DESC";
+            Object[] resultado = (Object[]) em.createQuery(jpql)
+                    .setParameter("categoria", categoria)
+                    .setMaxResults(1)
+                    .getSingleResult();
+            return "Hora con más hechos: " + resultado[0] + ":00 (Cantidad: " + resultado[1] + ")";
+        } catch (Exception e) {
+            return "No se encontraron hechos para esta categoría";
+        } finally {
+            em.close();
+        }
     }
 
 
-    public static String provicniaConMasHechosEnCategoria(String categoria){
-        return "a";
+    public static String provicniaConMasHechosEnCategoria(String categoria) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            String jpql = "SELECT h.provincia FROM Hecho h " +
+                    "WHERE h.categoria = :categoria " +
+                    "GROUP BY h.provincia " +
+                    "ORDER BY COUNT(h) DESC";
+            return em.createQuery(jpql, String.class)
+                    .setParameter("categoria", categoria)
+                    .setMaxResults(1)
+                    .getSingleResult();
+        } catch (Exception e) {
+            return "No se encontraron hechos para esta categoría";
+        } finally {
+            em.close();
+        }
     }
-
-
-
 
     public static void addHecho(Hecho hecho) {
         EntityManager em = DBUtils.getEntityManager();
