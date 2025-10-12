@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class ServicioEstadisticas {
 
-    private List<String> provinciaConMasHechos;
+    private List<Map<String, Object>> provinciaConMasHechos;
     private List<Map<String, Object>> categoriaMasReportada;
     private Integer cantSolicitudesEliminacion;
 
@@ -34,9 +34,10 @@ public class ServicioEstadisticas {
     }
 
 
-    public List<String> getProvinciaConMasHechos() {
+    public List<Map<String, Object>> getProvinciaConMasHechos() {
         return provinciaConMasHechos;
     }
+
 
     public Integer getCantSolicitudesEliminacion() {
         return cantSolicitudesEliminacion;

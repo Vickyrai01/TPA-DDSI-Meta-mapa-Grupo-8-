@@ -24,12 +24,25 @@ public class RepositoryServicioEstadisticas {
         return instance;
     }
 
-    public static List<String> provinciaConMasHechos(){
+    public static List<Map<String, Object>> provinciaConMasHechos() {
         EntityManager em = DBUtils.getEntityManager();
         try {
-            String jpql = "SELECT h.provincia FROM Hecho h GROUP BY h.provincia ORDER BY COUNT(h) DESC";
-            return em.createQuery(jpql, String.class)
+            String jpql = "SELECT h.provincia, COUNT(h) as cantidad " +
+                    "FROM Hecho h " +
+                    "GROUP BY h.provincia " +
+                    "ORDER BY COUNT(h) DESC";
+
+            List<Object[]> results = em.createQuery(jpql, Object[].class)
                     .getResultList();
+
+            return results.stream()
+                    .map(result -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("provincia", result[0]);
+                        map.put("cantidad", result[1]);
+                        return map;
+                    })
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             return Collections.emptyList();
         } finally {
