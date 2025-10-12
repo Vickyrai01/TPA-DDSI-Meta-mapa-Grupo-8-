@@ -1,9 +1,13 @@
 package servicioEstadisticas.model;
 import servicioEstadisticas.repository.RepositoryServicioEstadisticas;
+
+import java.util.List;
+import java.util.Map;
+
 public class ServicioEstadisticas {
 
-    private String provinciaConMasHechos;
-    private String categoriaMasReportada;
+    private List<String> provinciaConMasHechos;
+    private List<Map<String, Object>> categoriaMasReportada;
     private Integer cantSolicitudesEliminacion;
 
     private static volatile ServicioEstadisticas instance;
@@ -25,11 +29,12 @@ public class ServicioEstadisticas {
         this.cantSolicitudesEliminacion = RepositoryServicioEstadisticas.cantidadSolicitudesEliminacion();
     }
 
-    public String getCategoriaMasReportada() {
+    public List<Map<String, Object>> getCategoriaMasReportada() {
         return categoriaMasReportada;
     }
 
-    public String getProvinciaConMasHechos() {
+
+    public List<String> getProvinciaConMasHechos() {
         return provinciaConMasHechos;
     }
 
