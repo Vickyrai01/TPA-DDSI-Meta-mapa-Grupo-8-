@@ -63,6 +63,12 @@ public class Application {
         return ResponseEntity.status(201).body("Solicitud agregado correctamente");
     }
 
+    @GetMapping("/provincia-con-mas-hechos")
+    public ResponseEntity<List<Map<String, Object>>> provinciaConMasHechos() {
+        List<Map<String, Object>> provincias = servicioEstadisticas.getProvinciaConMasHechos();
+        return ResponseEntity.ok(provincias);
+    }
+
     @GetMapping("/categoria-mayor-cantidad")
     public ResponseEntity<List<Map<String, Object>>> CategoriaMayorCantidad() {
         List<Map<String, Object>> categorias = servicioEstadisticas.getCategoriaMasReportada();
