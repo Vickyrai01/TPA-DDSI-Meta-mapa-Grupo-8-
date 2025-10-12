@@ -1,7 +1,5 @@
 package seeders;
 
-
-
 import servicioEstadisticas.model.Hecho;
 import servicioEstadisticas.repository.RepositoryServicioEstadisticas;
 
@@ -61,19 +59,5 @@ public class RepositoryServicioEstadisticasSeeder {
         repositoryServicioEstadisticas.addHecho(new Hecho("COR002", "Corte de energía", LocalDateTime.now().minusDays(3).withHour(19), "Santa Fe"));
         repositoryServicioEstadisticas.addHecho(new Hecho("COR003", "Corte de energía", LocalDateTime.now().minusDays(2).withHour(20), "Misiones"));
 
-        /*
-         1. **Provincia con más hechos**: Buenos Aires tiene la mayor cantidad (8 hechos)
-         2. **Categoría más reportada**: "Incendio forestal" y "Accidente vial" tienen 4 hechos cada uno
-         3. **Provincia con más hechos de una categoría**:
-            - Buenos Aires tiene 3 "Accidente vial"
-            - Misiones tiene 2 "Incendio forestal"
-            - Córdoba tiene 2 "Incendio forestal"
-
-         4. **Horarios más frecuentes por categoría**:
-            - Incendios forestales: mayoría a las 14:00
-            - Accidentes viales: mayoría a las 8:00
-            - Robos: mayoría entre 2:00 y 3:00
-            - Manifestaciones: todos a las 12:00
-        */
     }
 }

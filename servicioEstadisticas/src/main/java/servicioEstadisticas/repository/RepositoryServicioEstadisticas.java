@@ -4,6 +4,11 @@ import servicioEstadisticas.model.Hecho;
 import servicioEstadisticas.model.SolicitudSpam;
 import utils.DBUtils;
 import javax.persistence.EntityManager;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class RepositoryServicioEstadisticas {
 
@@ -19,31 +24,41 @@ public class RepositoryServicioEstadisticas {
         return instance;
     }
 
-    public static String provinciaConMasHechos(){
-
+    public static List<String> provinciaConMasHechos(){
         EntityManager em = DBUtils.getEntityManager();
         try {
             String jpql = "SELECT h.provincia FROM Hecho h GROUP BY h.provincia ORDER BY COUNT(h) DESC";
             return em.createQuery(jpql, String.class)
-                    .setMaxResults(1)
-                    .getSingleResult();
+                    .getResultList();
         } catch (Exception e) {
-            return "No se encontraron hechos";
+            return Collections.emptyList();
         } finally {
             em.close();
         }
     }
 
-    public static String categoriaMasReportada(){
 
+    public static List<Map<String, Object>> categoriaMasReportada() {
         EntityManager em = DBUtils.getEntityManager();
         try {
-            String jpql = "SELECT h.categoria FROM Hecho h GROUP BY h.categoria ORDER BY COUNT(h) DESC";
-            return em.createQuery(jpql, String.class)
-                    .setMaxResults(1)
-                    .getSingleResult();
+            String jpql = "SELECT h.categoria, COUNT(h) as cantidad " +
+                    "FROM Hecho h " +
+                    "GROUP BY h.categoria " +
+                    "ORDER BY COUNT(h) DESC";
+
+            List<Object[]> results = em.createQuery(jpql, Object[].class)
+                    .getResultList();
+
+            return results.stream()
+                    .map(result -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("categoria", result[0]);
+                        map.put("cantidad", result[1]);
+                        return map;
+                    })
+                    .collect(Collectors.toList());
         } catch (Exception e) {
-            return "No se encontraron hechos";
+            return Collections.emptyList();
         } finally {
             em.close();
         }

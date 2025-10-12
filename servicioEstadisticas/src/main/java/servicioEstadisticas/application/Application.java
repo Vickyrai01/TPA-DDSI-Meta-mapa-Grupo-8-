@@ -11,6 +11,9 @@ import servicioEstadisticas.model.SolicitudSpam;
 import servicioEstadisticas.repository.RepositoryServicioEstadisticas;
 import utils.DBUtils;
 import javax.persistence.EntityManager;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @SpringBootApplication
 @EnableScheduling
@@ -60,17 +63,12 @@ public class Application {
         return ResponseEntity.status(201).body("Solicitud agregado correctamente");
     }
 
-    @GetMapping("/provincia-con-mas-hechos")
-    public ResponseEntity <String> ProvinciaMayorHechos(){
-        String provincia = servicioEstadisticas.getProvinciaConMasHechos();
-        return ResponseEntity.ok(provincia);
+    @GetMapping("/categoria-mayor-cantidad")
+    public ResponseEntity<List<Map<String, Object>>> CategoriaMayorCantidad() {
+        List<Map<String, Object>> categorias = servicioEstadisticas.getCategoriaMasReportada();
+        return ResponseEntity.ok(categorias);
     }
 
-    @GetMapping("/categoria-mayor-cantidad")
-    public ResponseEntity <String> CategoriaMayorCantidad(){
-        String categoria = servicioEstadisticas.getCategoriaMasReportada();
-        return ResponseEntity.ok(categoria);
-    }
 
     @GetMapping("/cantidad-spam")
     public ResponseEntity <Integer> CantidadSpam(){
