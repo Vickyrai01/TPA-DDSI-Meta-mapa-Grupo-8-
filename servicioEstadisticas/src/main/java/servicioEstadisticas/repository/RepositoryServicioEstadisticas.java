@@ -90,8 +90,8 @@ public class RepositoryServicioEstadisticas {
             em.close();
         }
     }
-    
-    public static String horarioxCategoria(String categoria) {
+
+    public static List<Map<String, Object>> horarioxCategoria(String categoria) {
         EntityManager em = DBUtils.getEntityManager();
         try {
             String jpql = "SELECT FUNCTION('HOUR', h.fechaSuceso) as hora, COUNT(h) as cantidad " +
@@ -99,13 +99,21 @@ public class RepositoryServicioEstadisticas {
                     "WHERE h.categoria = :categoria " +
                     "GROUP BY FUNCTION('HOUR', h.fechaSuceso) " +
                     "ORDER BY COUNT(h) DESC";
-            Object[] resultado = (Object[]) em.createQuery(jpql)
+
+            List<Object[]> resultados = em.createQuery(jpql, Object[].class)
                     .setParameter("categoria", categoria)
-                    .setMaxResults(1)
-                    .getSingleResult();
-            return "Hora con más hechos: " + resultado[0] + ":00 (Cantidad: " + resultado[1] + ")";
+                    .getResultList();
+
+            return resultados.stream()
+                    .map(resultado -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("hora", resultado[0] + ":00");
+                        map.put("cantidad", resultado[1]);
+                        return map;
+                    })
+                    .collect(Collectors.toList());
         } catch (Exception e) {
-            return "No se encontraron hechos para esta categoría";
+            return Collections.emptyList();
         } finally {
             em.close();
         }

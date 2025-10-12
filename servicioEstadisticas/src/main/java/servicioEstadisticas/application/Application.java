@@ -89,8 +89,9 @@ public class Application {
     }
 
     @GetMapping("/horario-categoria")
-    public ResponseEntity <String> HorarioCategoria(@RequestParam(value = "categoria", required = false) String categoria){
-        String horario = servicioEstadisticas.horarioxCategoria(categoria);
-        return ResponseEntity.ok(horario);
+    public ResponseEntity<List<Map<String, Object>>> horarioPorCategoria(@RequestParam(value = "categoria", required = false) String categoria) {
+        List<Map<String, Object>> horarios = servicioEstadisticas.horarioxCategoria(categoria);
+        return ResponseEntity.ok(horarios);
     }
+
 }
