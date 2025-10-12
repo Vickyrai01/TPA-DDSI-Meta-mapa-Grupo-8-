@@ -8,7 +8,7 @@ public class ServicioEstadisticas {
 
     private List<Map<String, Object>> provinciaConMasHechos;
     private List<Map<String, Object>> categoriaMasReportada;
-    private Integer cantSolicitudesEliminacion;
+    private Map<String, Object> cantSolicitudesEliminacion;
 
     private static volatile ServicioEstadisticas instance;
 
@@ -39,7 +39,7 @@ public class ServicioEstadisticas {
     }
 
 
-    public Integer getCantSolicitudesEliminacion() {
+    public Map<String, Object> getCantSolicitudesEliminacion() {
         return cantSolicitudesEliminacion;
     }
 
@@ -47,10 +47,9 @@ public class ServicioEstadisticas {
         return RepositoryServicioEstadisticas.horarioxCategoria(categoria);
     }
 
-    public String provicniaConMasHechosEnCategoria(String categoria ){
-
-        return RepositoryServicioEstadisticas.provicniaConMasHechosEnCategoria(categoria);
-
+    public List<Map<String, Object>> provinciaConMasHechosEnCategoria(String categoria) {
+        return RepositoryServicioEstadisticas.provinciaConMasHechosEnCategoria(categoria);
     }
+
 
 }

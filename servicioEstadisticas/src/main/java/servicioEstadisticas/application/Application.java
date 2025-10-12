@@ -77,16 +77,18 @@ public class Application {
 
 
     @GetMapping("/cantidad-spam")
-    public ResponseEntity <Integer> CantidadSpam(){
-        Integer cantidad = servicioEstadisticas.getCantSolicitudesEliminacion();
-        return ResponseEntity.ok(cantidad);
+    public ResponseEntity<Map<String, Object>> cantidadSpam() {
+        Map<String, Object> estadisticas = servicioEstadisticas.getCantSolicitudesEliminacion();
+        return ResponseEntity.ok(estadisticas);
     }
 
     @GetMapping("/provincia-con-mas-hechos-por-categoria")
-    public ResponseEntity <String> MayorCantHechosCategoria(@RequestParam(value = "categoria", required = false) String categoria){
-        String prov = servicioEstadisticas.provicniaConMasHechosEnCategoria(categoria);
-        return ResponseEntity.ok(prov);
+    public ResponseEntity<List<Map<String, Object>>> provinciaConMasHechosPorCategoria(
+            @RequestParam(value = "categoria", required = false) String categoria) {
+        List<Map<String, Object>> provincias = servicioEstadisticas.provinciaConMasHechosEnCategoria(categoria);
+        return ResponseEntity.ok(provincias);
     }
+
 
     @GetMapping("/horario-categoria")
     public ResponseEntity<List<Map<String, Object>>> horarioPorCategoria(@RequestParam(value = "categoria", required = false) String categoria) {
