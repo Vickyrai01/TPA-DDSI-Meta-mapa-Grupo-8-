@@ -4,6 +4,11 @@ import servicioEstadisticas.model.Hecho;
 import servicioEstadisticas.model.SolicitudSpam;
 import utils.DBUtils;
 import javax.persistence.EntityManager;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class RepositoryServicioEstadisticas {
 
@@ -19,51 +24,89 @@ public class RepositoryServicioEstadisticas {
         return instance;
     }
 
-    public static String provinciaConMasHechos(){
-
+    public static List<Map<String, Object>> provinciaConMasHechos() {
         EntityManager em = DBUtils.getEntityManager();
         try {
-            String jpql = "SELECT h.provincia FROM Hecho h GROUP BY h.provincia ORDER BY COUNT(h) DESC";
-            return em.createQuery(jpql, String.class)
-                    .setMaxResults(1)
-                    .getSingleResult();
+            String jpql = "SELECT h.provincia, COUNT(h) as cantidad " +
+                    "FROM Hecho h " +
+                    "GROUP BY h.provincia " +
+                    "ORDER BY COUNT(h) DESC";
+
+            List<Object[]> results = em.createQuery(jpql, Object[].class)
+                    .getResultList();
+
+            return results.stream()
+                    .map(result -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("provincia", result[0]);
+                        map.put("cantidad", result[1]);
+                        return map;
+                    })
+                    .collect(Collectors.toList());
         } catch (Exception e) {
-            return "No se encontraron hechos";
+            return Collections.emptyList();
         } finally {
             em.close();
         }
     }
 
-    public static String categoriaMasReportada(){
 
+    public static List<Map<String, Object>> categoriaMasReportada() {
         EntityManager em = DBUtils.getEntityManager();
         try {
-            String jpql = "SELECT h.categoria FROM Hecho h GROUP BY h.categoria ORDER BY COUNT(h) DESC";
-            return em.createQuery(jpql, String.class)
-                    .setMaxResults(1)
-                    .getSingleResult();
+            String jpql = "SELECT h.categoria, COUNT(h) as cantidad " +
+                    "FROM Hecho h " +
+                    "GROUP BY h.categoria " +
+                    "ORDER BY COUNT(h) DESC";
+
+            List<Object[]> results = em.createQuery(jpql, Object[].class)
+                    .getResultList();
+
+            return results.stream()
+                    .map(result -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("categoria", result[0]);
+                        map.put("cantidad", result[1]);
+                        return map;
+                    })
+                    .collect(Collectors.toList());
         } catch (Exception e) {
-            return "No se encontraron hechos";
+            return Collections.emptyList();
         } finally {
             em.close();
         }
     }
 
-    public static Integer cantidadSolicitudesEliminacion() {
+    public static Map<String, Object> cantidadSolicitudesEliminacion() {
         EntityManager em = DBUtils.getEntityManager();
         try {
-            String jpql = "SELECT COUNT(s) FROM SolicitudSpam s WHERE s.fueSpam = true";
-            Long cantidad = em.createQuery(jpql, Long.class)
+            // Consulta para obtener la cantidad de spam
+            String jpqlSpam = "SELECT COUNT(s) FROM SolicitudSpam s WHERE s.fueSpam = true";
+            Long cantidadSpam = em.createQuery(jpqlSpam, Long.class)
                     .getSingleResult();
-            return cantidad.intValue();
+
+            // Consulta para obtener el total de solicitudes
+            String jpqlTotal = "SELECT COUNT(s) FROM SolicitudSpam s";
+            Long cantidadTotal = em.createQuery(jpqlTotal, Long.class)
+                    .getSingleResult();
+
+            Map<String, Object> resultado = new HashMap<>();
+            resultado.put("solicitudes spam", cantidadSpam);
+            resultado.put("total de solicitudes", cantidadTotal);
+
+            return resultado;
         } catch (Exception e) {
-            return -1;
+            Map<String, Object> errorResultado = new HashMap<>();
+            errorResultado.put("solicitudes spam", 0);
+            errorResultado.put("total de solicitudes", 0);
+            return errorResultado;
         } finally {
             em.close();
         }
     }
-    
-    public static String horarioxCategoria(String categoria) {
+
+
+    public static List<Map<String, Object>> horarioxCategoria(String categoria) {
         EntityManager em = DBUtils.getEntityManager();
         try {
             String jpql = "SELECT FUNCTION('HOUR', h.fechaSuceso) as hora, COUNT(h) as cantidad " +
@@ -71,36 +114,55 @@ public class RepositoryServicioEstadisticas {
                     "WHERE h.categoria = :categoria " +
                     "GROUP BY FUNCTION('HOUR', h.fechaSuceso) " +
                     "ORDER BY COUNT(h) DESC";
-            Object[] resultado = (Object[]) em.createQuery(jpql)
+
+            List<Object[]> resultados = em.createQuery(jpql, Object[].class)
                     .setParameter("categoria", categoria)
-                    .setMaxResults(1)
-                    .getSingleResult();
-            return "Hora con más hechos: " + resultado[0] + ":00 (Cantidad: " + resultado[1] + ")";
+                    .getResultList();
+
+            return resultados.stream()
+                    .map(resultado -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("hora", resultado[0] + ":00");
+                        map.put("cantidad", resultado[1]);
+                        return map;
+                    })
+                    .collect(Collectors.toList());
         } catch (Exception e) {
-            return "No se encontraron hechos para esta categoría";
+            return Collections.emptyList();
         } finally {
             em.close();
         }
     }
 
 
-    public static String provicniaConMasHechosEnCategoria(String categoria) {
+    public static List<Map<String, Object>> provinciaConMasHechosEnCategoria(String categoria) {
         EntityManager em = DBUtils.getEntityManager();
         try {
-            String jpql = "SELECT h.provincia FROM Hecho h " +
+            String jpql = "SELECT h.provincia, COUNT(h) as cantidad " +
+                    "FROM Hecho h " +
                     "WHERE h.categoria = :categoria " +
                     "GROUP BY h.provincia " +
                     "ORDER BY COUNT(h) DESC";
-            return em.createQuery(jpql, String.class)
+
+            List<Object[]> resultados = em.createQuery(jpql, Object[].class)
                     .setParameter("categoria", categoria)
-                    .setMaxResults(1)
-                    .getSingleResult();
+                    .getResultList();
+
+            return resultados.stream()
+                    .map(resultado -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("provincia", resultado[0]);
+                        map.put("cantidad", resultado[1]);
+                        return map;
+                    })
+                    .collect(Collectors.toList());
         } catch (Exception e) {
-            return "No se encontraron hechos para esta categoría";
+            return Collections.emptyList();
         } finally {
             em.close();
         }
     }
+
 
     public static void addHecho(Hecho hecho) {
         EntityManager em = DBUtils.getEntityManager();

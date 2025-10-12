@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import seeders.RepositoryServicioEstadisticasSeeder;
 import servicioEstadisticas.model.ServicioEstadisticas;
 
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ServicioEstadisticasTest {
@@ -24,38 +27,45 @@ public class ServicioEstadisticasTest {
 
     @Test
     void testCategoriaMasReportada() {
-        String categoria = servicioEstadisticas.getCategoriaMasReportada();
-        assertNotNull(categoria);
-        assertEquals("Accidente vial", categoria);
+        List<Map<String, Object>> categorias = servicioEstadisticas.getCategoriaMasReportada();
+        assertNotNull(categorias);
+        assertFalse(categorias.isEmpty());
+        assertEquals("Accidente vial", categorias.get(0).get("categoria"));
     }
 
     @Test
     void testProvinciaConMasHechos() {
-        String provincia = servicioEstadisticas.getProvinciaConMasHechos();
-        assertNotNull(provincia);
-        assertEquals("Buenos Aires", provincia);
+        List<Map<String, Object>> provincias = servicioEstadisticas.getProvinciaConMasHechos();
+        assertNotNull(provincias);
+        assertFalse(provincias.isEmpty());
+        assertEquals("Buenos Aires", provincias.get(0).get("provincia"));
     }
 
     @Test
     void testHorarioMasFrencuentePorCategoria() {
-        String resultado = servicioEstadisticas.horarioxCategoria("Accidente vial");
-        assertNotNull(resultado);
-        assertTrue(resultado.contains("8:00"));
+        List<Map<String, Object>> horarios = servicioEstadisticas.horarioxCategoria("Accidente vial");
+        assertNotNull(horarios);
+        assertFalse(horarios.isEmpty());
+        assertTrue(horarios.get(0).get("hora").toString().contains("8:00"));
     }
 
     @Test
     void testProvinciaMasHechosPorCategoria() {
-        String resultado = servicioEstadisticas.provicniaConMasHechosEnCategoria("Incendio forestal");
-        assertNotNull(resultado);
-        // Según tus datos, deberías saber qué provincia tiene más incendios forestales
-        assertEquals("Misiones", resultado);
+        List<Map<String, Object>> provincias = servicioEstadisticas.provinciaConMasHechosEnCategoria("Incendio forestal");
+        assertNotNull(provincias);
+        assertFalse(provincias.isEmpty());
+        assertEquals("Misiones", provincias.get(0).get("provincia"));
     }
 
     @Test
     void testCantidadSolicitudesEliminacion() {
-        Integer cantidad = servicioEstadisticas.getCantSolicitudesEliminacion();
-        assertNotNull(cantidad);
-        assertTrue(cantidad >= 0);
+        Map<String, Object> estadisticas = servicioEstadisticas.getCantSolicitudesEliminacion();
+        assertNotNull(estadisticas);
+        assertTrue(estadisticas.containsKey("solicitudes spam"));
+        assertTrue(estadisticas.containsKey("total de solicitudes"));
+        assertTrue((Long)estadisticas.get("solicitudes spam") >= 0);
+        assertTrue((Long)estadisticas.get("total de solicitudes") >= 0);
     }
+
 
 }

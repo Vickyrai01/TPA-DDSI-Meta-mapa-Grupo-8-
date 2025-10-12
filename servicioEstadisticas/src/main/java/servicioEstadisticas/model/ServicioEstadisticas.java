@@ -1,10 +1,14 @@
 package servicioEstadisticas.model;
 import servicioEstadisticas.repository.RepositoryServicioEstadisticas;
+
+import java.util.List;
+import java.util.Map;
+
 public class ServicioEstadisticas {
 
-    private String provinciaConMasHechos;
-    private String categoriaMasReportada;
-    private Integer cantSolicitudesEliminacion;
+    private List<Map<String, Object>> provinciaConMasHechos;
+    private List<Map<String, Object>> categoriaMasReportada;
+    private Map<String, Object> cantSolicitudesEliminacion;
 
     private static volatile ServicioEstadisticas instance;
 
@@ -25,28 +29,27 @@ public class ServicioEstadisticas {
         this.cantSolicitudesEliminacion = RepositoryServicioEstadisticas.cantidadSolicitudesEliminacion();
     }
 
-    public String getCategoriaMasReportada() {
+    public List<Map<String, Object>> getCategoriaMasReportada() {
         return categoriaMasReportada;
     }
 
-    public String getProvinciaConMasHechos() {
+
+    public List<Map<String, Object>> getProvinciaConMasHechos() {
         return provinciaConMasHechos;
     }
 
-    public Integer getCantSolicitudesEliminacion() {
+
+    public Map<String, Object> getCantSolicitudesEliminacion() {
         return cantSolicitudesEliminacion;
     }
 
-    public String horarioxCategoria(String categoria){
-
+    public List<Map<String, Object>> horarioxCategoria(String categoria) {
         return RepositoryServicioEstadisticas.horarioxCategoria(categoria);
-
     }
 
-    public String provicniaConMasHechosEnCategoria(String categoria ){
-
-        return RepositoryServicioEstadisticas.provicniaConMasHechosEnCategoria(categoria);
-
+    public List<Map<String, Object>> provinciaConMasHechosEnCategoria(String categoria) {
+        return RepositoryServicioEstadisticas.provinciaConMasHechosEnCategoria(categoria);
     }
+
 
 }
