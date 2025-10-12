@@ -11,6 +11,9 @@ import servicioEstadisticas.model.SolicitudSpam;
 import servicioEstadisticas.repository.RepositoryServicioEstadisticas;
 import utils.DBUtils;
 import javax.persistence.EntityManager;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @SpringBootApplication
 @EnableScheduling
@@ -61,32 +64,36 @@ public class Application {
     }
 
     @GetMapping("/provincia-con-mas-hechos")
-    public ResponseEntity <String> ProvinciaMayorHechos(){
-        String provincia = servicioEstadisticas.getProvinciaConMasHechos();
-        return ResponseEntity.ok(provincia);
+    public ResponseEntity<List<Map<String, Object>>> provinciaConMasHechos() {
+        List<Map<String, Object>> provincias = servicioEstadisticas.getProvinciaConMasHechos();
+        return ResponseEntity.ok(provincias);
     }
 
     @GetMapping("/categoria-mayor-cantidad")
-    public ResponseEntity <String> CategoriaMayorCantidad(){
-        String categoria = servicioEstadisticas.getCategoriaMasReportada();
-        return ResponseEntity.ok(categoria);
+    public ResponseEntity<List<Map<String, Object>>> CategoriaMayorCantidad() {
+        List<Map<String, Object>> categorias = servicioEstadisticas.getCategoriaMasReportada();
+        return ResponseEntity.ok(categorias);
     }
 
+
     @GetMapping("/cantidad-spam")
-    public ResponseEntity <Integer> CantidadSpam(){
-        Integer cantidad = servicioEstadisticas.getCantSolicitudesEliminacion();
-        return ResponseEntity.ok(cantidad);
+    public ResponseEntity<Map<String, Object>> cantidadSpam() {
+        Map<String, Object> estadisticas = servicioEstadisticas.getCantSolicitudesEliminacion();
+        return ResponseEntity.ok(estadisticas);
     }
 
     @GetMapping("/provincia-con-mas-hechos-por-categoria")
-    public ResponseEntity <String> MayorCantHechosCategoria(@RequestParam(value = "categoria", required = false) String categoria){
-        String prov = servicioEstadisticas.provicniaConMasHechosEnCategoria(categoria);
-        return ResponseEntity.ok(prov);
+    public ResponseEntity<List<Map<String, Object>>> provinciaConMasHechosPorCategoria(
+            @RequestParam(value = "categoria", required = false) String categoria) {
+        List<Map<String, Object>> provincias = servicioEstadisticas.provinciaConMasHechosEnCategoria(categoria);
+        return ResponseEntity.ok(provincias);
     }
 
+
     @GetMapping("/horario-categoria")
-    public ResponseEntity <String> HorarioCategoria(@RequestParam(value = "categoria", required = false) String categoria){
-        String horario = servicioEstadisticas.horarioxCategoria(categoria);
-        return ResponseEntity.ok(horario);
+    public ResponseEntity<List<Map<String, Object>>> horarioPorCategoria(@RequestParam(value = "categoria", required = false) String categoria) {
+        List<Map<String, Object>> horarios = servicioEstadisticas.horarioxCategoria(categoria);
+        return ResponseEntity.ok(horarios);
     }
+
 }
