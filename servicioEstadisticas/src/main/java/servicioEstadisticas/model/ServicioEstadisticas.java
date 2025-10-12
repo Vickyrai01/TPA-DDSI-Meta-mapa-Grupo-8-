@@ -43,10 +43,8 @@ public class ServicioEstadisticas {
         return cantSolicitudesEliminacion;
     }
 
-    public String horarioxCategoria(String categoria){
-
+    public List<Map<String, Object>> horarioxCategoria(String categoria) {
         return RepositoryServicioEstadisticas.horarioxCategoria(categoria);
-
     }
 
     public String provicniaConMasHechosEnCategoria(String categoria ){
