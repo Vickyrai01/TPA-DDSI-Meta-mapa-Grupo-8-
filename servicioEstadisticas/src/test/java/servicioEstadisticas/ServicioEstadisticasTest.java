@@ -20,8 +20,8 @@ public class ServicioEstadisticasTest {
 
         servicioEstadisticas = ServicioEstadisticas.getInstance();
         //Si usas el update en el persistence.xml entonces tenes que dejar comentado el seeder, pero si esta en create entonces hay que descomentarlo
-        //seeder = RepositoryServicioEstadisticasSeeder.getInstance();
-        //seeder.cargarHechos();
+        seeder = RepositoryServicioEstadisticasSeeder.getInstance();
+        seeder.cargarHechos();
         servicioEstadisticas.actualizarEstadisticas();
     }
 
