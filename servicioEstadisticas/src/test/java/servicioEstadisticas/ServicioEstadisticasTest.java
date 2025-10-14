@@ -1,0 +1,71 @@
+package servicioEstadisticas;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import seeders.RepositoryServicioEstadisticasSeeder;
+import servicioEstadisticas.model.ServicioEstadisticas;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ServicioEstadisticasTest {
+
+    private ServicioEstadisticas servicioEstadisticas;
+    private RepositoryServicioEstadisticasSeeder seeder;
+
+    @BeforeEach
+    void setUp() {
+
+        servicioEstadisticas = ServicioEstadisticas.getInstance();
+        //Si usas el update en el persistence.xml entonces tenes que dejar comentado el seeder, pero si esta en create entonces hay que descomentarlo
+        //seeder = RepositoryServicioEstadisticasSeeder.getInstance();
+        //seeder.cargarHechos();
+        servicioEstadisticas.actualizarEstadisticas();
+    }
+
+    @Test
+    void testCategoriaMasReportada() {
+        List<Map<String, Object>> categorias = servicioEstadisticas.getCategoriaMasReportada();
+        assertNotNull(categorias);
+        assertFalse(categorias.isEmpty());
+        assertEquals("Accidente vial", categorias.get(0).get("categoria"));
+    }
+
+    @Test
+    void testProvinciaConMasHechos() {
+        List<Map<String, Object>> provincias = servicioEstadisticas.getProvinciaConMasHechos();
+        assertNotNull(provincias);
+        assertFalse(provincias.isEmpty());
+        assertEquals("Buenos Aires", provincias.get(0).get("provincia"));
+    }
+
+    @Test
+    void testHorarioMasFrencuentePorCategoria() {
+        List<Map<String, Object>> horarios = servicioEstadisticas.horarioxCategoria("Accidente vial");
+        assertNotNull(horarios);
+        assertFalse(horarios.isEmpty());
+        assertTrue(horarios.get(0).get("hora").toString().contains("8:00"));
+    }
+
+    @Test
+    void testProvinciaMasHechosPorCategoria() {
+        List<Map<String, Object>> provincias = servicioEstadisticas.provinciaConMasHechosEnCategoria("Incendio forestal");
+        assertNotNull(provincias);
+        assertFalse(provincias.isEmpty());
+        assertEquals("Misiones", provincias.get(0).get("provincia"));
+    }
+
+    @Test
+    void testCantidadSolicitudesEliminacion() {
+        Map<String, Object> estadisticas = servicioEstadisticas.getCantSolicitudesEliminacion();
+        assertNotNull(estadisticas);
+        assertTrue(estadisticas.containsKey("solicitudes spam"));
+        assertTrue(estadisticas.containsKey("total de solicitudes"));
+        assertTrue((Long)estadisticas.get("solicitudes spam") >= 0);
+        assertTrue((Long)estadisticas.get("total de solicitudes") >= 0);
+    }
+
+
+}
