@@ -12,6 +12,7 @@ import core.models.entities.hecho.Hecho;
 import core.models.repository.ColeccionesRepository;
 import core.models.repository.HechosRepository;
 import core.models.repository.RevisionManualRepository;
+import core.models.servicioEstadistica.DTOHechoAgregado;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class ServicioDeAgregacion {
     private NormalizadorFecha normalizadorFecha = NormalizadorFecha.getInstance();
     private NormalizadorCategoria normalizadorCategoria = NormalizadorCategoria.getInstance();
     private FactoryHecho factoryHecho = FactoryHecho.getInstance();
+
 
     private static volatile ServicioDeAgregacion instance;
 
@@ -118,6 +120,7 @@ public class ServicioDeAgregacion {
                if(!coleccion.hechoYaExistenteEnColeccion(hecho.getHash())){
                     hechoRepository.add(hecho);
                     coleccion.agregarHecho(hecho);
+                   // DTOHechoAgregado hechoAgregado = new DTOHechoAgregado(hecho.getHash(), hecho.getUbicacion().toString(), hecho.getCategoria().toString(), hecho.getHoraSuceso().toString(), hecho.getFechaSuceso().toString());
                 }
             }
     }

@@ -152,6 +152,7 @@
             <artifactId>hibernate-entitymanager</artifactId>
             <version>5.4.18.Final</version>
         </dependency>
+
     </dependencies>
 
     <build>
