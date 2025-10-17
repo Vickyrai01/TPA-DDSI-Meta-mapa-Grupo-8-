@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -55,6 +57,7 @@ public class TestHechosRepository {
             TipoFuente.ESTATICA, null, "No hubo heridos, fue por una sartén", "en casa", null, "59", LocalTime.now());
 
 
+
     @BeforeEach
     void SetUp(){
 
@@ -81,5 +84,13 @@ public class TestHechosRepository {
         hechosRepositorySeeder.cargarHechosSeeder();
 
         assertFalse(hechosRepository.esHechoDuplicado(hecho2));
+    }
+
+    @Test
+    void AgregarListaHechos(){
+        List<Hecho> hechos = new ArrayList<>();
+        hechos.add(hecho1);
+        hechos.add(hecho2);
+        hechosRepository.addAllEnUnaTransaccion(hechos);
     }
 }

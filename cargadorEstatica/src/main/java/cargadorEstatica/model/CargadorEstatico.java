@@ -1,6 +1,7 @@
 package cargadorEstatica.model;
 import cargadorEstatica.repository.RepositoryFuentes;
 
+import java.io.FileNotFoundException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -26,8 +27,10 @@ public class CargadorEstatico {
         }
         return instance;
     }
+
     public List<HechoAIntegrarDTO> extraerHechosAIntegrar() {
         List<Fuente> fuentes = fuentesAProcesar();
+
         if (fuentes.isEmpty()) return List.of();
 
         List<HechoAIntegrarDTO> hechos = new ArrayList<>();
@@ -35,21 +38,21 @@ public class CargadorEstatico {
             try {
                 List<HechoAIntegrarDTO> lote = f.extraerHechos();
                 if (lote != null) hechos.addAll(lote);
-                // marcar como procesada solo si salió bien
                 f.setUltimoProcesamiento(Instant.now());
             } catch (Exception e) {
-                // no marcamos como procesada si falló
-                System.err.println("Error procesando fuente " + f.getId() + ": " + e.getMessage());
+                System.err.println("Error procesando fuente: " + f.getId() + ":" + e.getMessage());}
             }
-        }
         hechos.forEach(h -> h.setTipoFuente("ESTATICA"));
         return hechos;
-    }
+        }
+
+
+
 
     //Devuelve las fuentes que debo procesar: nunca procesadas o más viejas que umbral
     public List<Fuente> fuentesAProcesar() {
         Instant corte = Instant.now().minus(umbralProcesamiento);
-        return repositoryFuentes.getAll().stream()
+        return repositoryFuentes.findAll().stream()
                 .filter(f -> f.getUltimoProcesamiento() == null || f.getUltimoProcesamiento().isBefore(corte))
                 .toList();
     }

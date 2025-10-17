@@ -21,8 +21,8 @@ public class NormalizadorCategoria {
 
 
     public Categoria obtenerCategoria(String categoria) {
+        /*
         String categoriaBase = categoria.trim().toLowerCase();
-
         if (categoriaRepository.existe(categoria)) {
             return categoriaRepository.buscarPorNombre(categoria);
         }
@@ -37,10 +37,9 @@ public class NormalizadorCategoria {
             if (categoriaRepository.existe(plural)) {
                 return categoriaRepository.buscarPorNombre(plural);
             }
-        }
-
+        }*/
         Categoria categoriaNueva = new Categoria(categoria);
-        categoriaRepository.add(categoriaNueva);
+        //categoriaRepository.add(categoriaNueva);
         return categoriaNueva;
     }
 
