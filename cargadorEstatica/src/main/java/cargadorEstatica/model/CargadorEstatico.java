@@ -37,7 +37,10 @@ public class CargadorEstatico {
         for (Fuente f : fuentes) {
             try {
                 List<HechoAIntegrarDTO> lote = f.extraerHechos();
-                if (lote != null) hechos.addAll(lote);
+                if (lote != null) {
+                    //lote.forEach(h -> h.setIdFuente(f.getLink()));
+                    hechos.addAll(lote);
+                }
                 f.setUltimoProcesamiento(Instant.now());
             } catch (Exception e) {
                 System.err.println("Error procesando fuente: " + f.getId() + ":" + e.getMessage());}
