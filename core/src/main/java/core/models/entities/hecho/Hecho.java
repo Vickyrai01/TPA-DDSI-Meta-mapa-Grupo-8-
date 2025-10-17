@@ -4,6 +4,7 @@ import core.models.entities.fuentes.TipoFuente;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,7 +45,7 @@ public class Hecho {
                  Estado estado, Contribuyente contribuyente,
                  LocalDate fechaCarga, LocalDate fechaSuceso,
                  TipoFuente fuenteDeOrigen,
-                 List<Etiqueta> etiquetas, String descripcion, String titulo,String codigoDeFuente, String hash) {
+                 List<Etiqueta> etiquetas, String descripcion, String titulo,String codigoDeFuente, String hash, LocalTime horarioSuceso) {
 
         this.id = id;
         this.ubicacion = ubicacion;
@@ -62,6 +63,7 @@ public class Hecho {
         this.titulo = titulo;
         this.codigoDeFuente = codigoDeFuente;
         this.hash = hash;
+        this.horaSuceso = horarioSuceso;
     }
     public Hecho(){}
     public Hecho(Coordenadas ubicacion, Categoria categoria,
@@ -154,6 +156,15 @@ public class Hecho {
     }
     public void setFechaSuceso(LocalDate fechaSuceso) {
         this.fechaSuceso = fechaSuceso;
+    }
+
+    @Column(name = "hora_suceso")
+    public LocalTime horaSuceso;
+    public LocalTime getHoraSuceso() {
+        return horaSuceso;
+    }
+    public void setHoraSuceso(LocalTime horaSuceso) {
+        this.horaSuceso = horaSuceso;
     }
 
     //@Column(name = "contribuyente")
