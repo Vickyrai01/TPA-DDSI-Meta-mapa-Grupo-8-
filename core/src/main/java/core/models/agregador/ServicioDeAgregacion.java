@@ -111,22 +111,30 @@ public class ServicioDeAgregacion {
 
     private void agregarHechosAColecciones(Coleccion coleccion)
     {
-            /*
+            System.out.println("Si esto es lo ultimo, se traba el get");
             List<Criterio> criterios = coleccion.getCriterioDePertenencia();
+            System.out.println("Criterios de pertenencia: " + criterios.size());
+            /*
             List<Integer> linkFuentesDeColeccion = coleccion.getFuentes().stream()
                 .map(f -> f.getId())
                 .toList();
             List<Hecho> hechosFiltradosFuentes = hechosLimpios.stream().filter(h -> linkFuentesDeColeccion.contains(h.getIdFuente())).toList();
+            */
+            System.out.println("Antes del filtrado");
             List<Hecho> hechosFiltradosCriterio = filtradorCriterios.filtrarHechos(hechosLimpios, criterios);
+            System.out.println("PASE EL FILTRADO");
+            /*
             for (Hecho hecho : hechosFiltradosCriterio) {
                if(!coleccion.hechoYaExistenteEnColeccion(hecho.getHash())){
-                    hechoRepository.add(hecho);
+                    hechosRepository.add(hecho);
                     coleccion.agregarHecho(hecho);
                    // DTOHechoAgregado hechoAgregado = new DTOHechoAgregado(hecho.getHash(), hecho.getUbicacion().toString(), hecho.getCategoria().toString(), hecho.getHoraSuceso().toString(), hecho.getFechaSuceso().toString());
                 }
             }
-            */
-            hechosRepository.addAllEnUnaTransaccion(hechosLimpios);
+             */
+            hechosRepository.addAllEnUnaTransaccion(hechosFiltradosCriterio);
+            List<Integer> idHechos = hechosLimpios.stream().map(Hecho::getId).toList();
+            coleccionesRepository.agregarHechosAColeccion(coleccion.getId(), idHechos);
     }
 
     public void limpiarHechos() {
