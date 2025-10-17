@@ -1,10 +1,14 @@
 package core.models.repository;
 
 import core.models.entities.fuentes.Fuente;
+import core.models.entities.hecho.Categoria;
+import core.models.entities.hecho.Coordenadas;
 import core.models.entities.hecho.Hecho;
+import core.models.entities.hecho.Contribuyente;
 import utils.DBUtils;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,4 +70,94 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
     public Hecho getHecho(int idHecho){
         return findById(idHecho);
     }
+
+    public void addAllEnUnaTransaccion(List<Hecho> hechos) {
+        if (hechos == null || hechos.isEmpty()) return;
+        EntityManager em = DBUtils.getEntityManager();
+        final int batch = 50;
+        int i = 0;
+        try {
+            // (Opcional, para MySQL) bajar lock timeout en esta sesión:
+            try { em.createNativeQuery("SET innodb_lock_wait_timeout = 5").executeUpdate(); } catch (Exception ignore) {}
+
+            DBUtils.comenzarTransaccion(em);
+
+            for (Hecho h : hechos) {
+                // ---- BYPASS de colecciones que pueden disparar escrituras/joins ----
+                // Si tus mapeos de etiquetas/sugerencias no están bien, pueden causar problemas.
+                // Para aislar el issue: no persistamos esas colecciones en esta pasada.
+                h.setSugerenciaDeCambio(null); // si es @OneToMany mal mapeado, evitá que Hibernate intente tocar esa tabla
+                h.setEtiquetas(null);
+
+                // ---- Resolver padres en la MISMA TX (sin hilos) ----
+                // Caso 1: ya existen por ID
+                if (h.getCategoria() == null || h.getUbicacion() == null)
+                    throw new IllegalArgumentException("Hecho sin categoría o coordenadas");
+
+                if (h.getCategoria().getId() != null) {
+                    h.setCategoria(em.getReference(Categoria.class, h.getCategoria().getId()));
+                } else {
+                    // find-or-create por clave natural (ajustá campo 'nombre')
+                    Categoria cat;
+                    try {
+                        cat = em.createQuery("from categoria c where lower(c.nombre)=:n", Categoria.class)
+                                .setParameter("n", h.getCategoria().getNombre().toLowerCase())
+                                .setMaxResults(1).getSingleResult();
+                    } catch (NoResultException e) {
+                        em.persist(h.getCategoria());
+                        em.flush();
+                        cat = h.getCategoria();
+                    }
+                    h.setCategoria(cat);
+                }
+
+                if (h.getUbicacion().getId() != null) {
+                    h.setUbicacion(em.getReference(Coordenadas.class, h.getUbicacion().getId()));
+                } else {
+                    Coordenadas coord;
+                    try {
+                        coord = em.createQuery(
+                                        "from coordenadas c where c.latitud=:lat and c.longitud=:lon", Coordenadas.class)
+                                .setParameter("lat", h.getUbicacion().getLatitud())
+                                .setParameter("lon", h.getUbicacion().getLongitud())
+                                .setMaxResults(1).getSingleResult();
+                    } catch (NoResultException e) {
+                        em.persist(h.getUbicacion());
+                        em.flush();
+                        coord = h.getUbicacion();
+                    }
+                    h.setUbicacion(coord);
+                }
+
+                // Contribuyente opcional: sólo por ID; si viene nuevo, por ahora nuléalo
+                if (h.getContribuyente() != null && h.getContribuyente().getId() != null) {
+                    h.setContribuyente(em.getReference(core.models.entities.hecho.Contribuyente.class, (Object) h.getContribuyente().getId()));
+                } else {
+                    h.setContribuyente(null);
+                }
+
+                // Evitar duplicados por hash/título dentro de la misma TX
+                if (h.getHash() != null && !h.getHash().isBlank()) {
+                    Long dup = em.createQuery("select count(x) from hecho x where lower(x.hash)=:hs", Long.class)
+                            .setParameter("hs", h.getHash().toLowerCase()).getSingleResult();
+                    if (dup > 0) continue; // saltar duplicado
+                }
+
+                em.persist(h);
+
+                if (++i % batch == 0) { em.flush(); em.clear(); }
+            }
+
+            DBUtils.commit(em);
+        } catch (RuntimeException ex) {
+            DBUtils.rollback(em);
+            throw ex;
+        } finally {
+            try { em.close(); } catch (Exception ignore) {}
+        }
+    }
+
+    private class Contribuyente {
+    }
 }
+

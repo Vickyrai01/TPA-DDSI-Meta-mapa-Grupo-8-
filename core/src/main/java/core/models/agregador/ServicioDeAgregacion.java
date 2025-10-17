@@ -1,18 +1,15 @@
 package core.models.agregador;
 
-import core.models.agregador.normalizador.ComparadorHechos;
-import core.models.agregador.normalizador.FactoryHecho;
-import core.models.agregador.normalizador.NormalizadorCategoria;
-import core.models.agregador.normalizador.NormalizadorFecha;
+import core.models.agregador.normalizador.*;
 import core.models.entities.colecciones.Coleccion;
 import core.models.entities.colecciones.criterios.Criterio;
 import core.models.entities.colecciones.criterios.FiltradorCriterios;
 import core.models.entities.hecho.Categoria;
+import core.models.entities.hecho.Coordenadas;
 import core.models.entities.hecho.Hecho;
 import core.models.repository.ColeccionesRepository;
 import core.models.repository.HechosRepository;
 import core.models.repository.RevisionManualRepository;
-import core.models.servicioEstadistica.DTOHechoAgregado;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,13 +23,14 @@ public class ServicioDeAgregacion {
     private List<Hecho> hechosLimpios = new ArrayList<>();
 
     private ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();
-    private HechosRepository hechoRepository = HechosRepository.getInstance();
+    private HechosRepository hechosRepository = HechosRepository.getInstance();
 
     private FiltradorCriterios filtradorCriterios = FiltradorCriterios.getInstance();
 
     private ComparadorHechos comparadorHechos = ComparadorHechos.getInstance();
     private NormalizadorFecha normalizadorFecha = NormalizadorFecha.getInstance();
     private NormalizadorCategoria normalizadorCategoria = NormalizadorCategoria.getInstance();
+    private NormalizadorCoordenada normalizadorCoordenada = NormalizadorCoordenada.getInstance();
     private FactoryHecho factoryHecho = FactoryHecho.getInstance();
 
 
@@ -94,15 +92,18 @@ public class ServicioDeAgregacion {
     //     Si crea una categoria nueva y es solo, se deja o se manda a revisión??
 
     public void normalizarYCrearHechos() {
+
+        System.out.println("antes de normalizar hechos: " + hechosAIntegrar.size());
         for (HechoAIntegrarDTO dto : hechosAIntegrar) {
             try{
                 Categoria categoria = normalizadorCategoria.obtenerCategoria(dto.getCategoria());
                 LocalDate fecha = normalizadorFecha.normalizarFecha(dto.getFechaSuceso());
-                Hecho hecho = factoryHecho.convertirHecho(dto, fecha, categoria);
+                Coordenadas ubicacion = normalizadorCoordenada.obtenerCoordenadas(dto.getLatitud(), dto.getLongitud());
+                Hecho hecho = factoryHecho.convertirHecho(dto, fecha, categoria, ubicacion);
                 hechosLimpios.add(hecho);
             } catch (NormalizadorFecha.ExcepcionRevisionManualFecha e) {
                 //Enviar a revisión manual
-                revisionManualRepository.add(dto);
+                //revisionManualRepository.add(dto); <- sera este gil?
                 System.out.println("A revisión manual");
              }
         }
@@ -110,11 +111,12 @@ public class ServicioDeAgregacion {
 
     private void agregarHechosAColecciones(Coleccion coleccion)
     {
+            /*
             List<Criterio> criterios = coleccion.getCriterioDePertenencia();
             List<Integer> linkFuentesDeColeccion = coleccion.getFuentes().stream()
                 .map(f -> f.getId())
                 .toList();
-            //List<Hecho> hechosFiltradosFuentes = hechosLimpios.stream().filter(h -> linkFuentesDeColeccion.contains(h.getIdFuente())).toList();
+            List<Hecho> hechosFiltradosFuentes = hechosLimpios.stream().filter(h -> linkFuentesDeColeccion.contains(h.getIdFuente())).toList();
             List<Hecho> hechosFiltradosCriterio = filtradorCriterios.filtrarHechos(hechosLimpios, criterios);
             for (Hecho hecho : hechosFiltradosCriterio) {
                if(!coleccion.hechoYaExistenteEnColeccion(hecho.getHash())){
@@ -123,6 +125,8 @@ public class ServicioDeAgregacion {
                    // DTOHechoAgregado hechoAgregado = new DTOHechoAgregado(hecho.getHash(), hecho.getUbicacion().toString(), hecho.getCategoria().toString(), hecho.getHoraSuceso().toString(), hecho.getFechaSuceso().toString());
                 }
             }
+            */
+            hechosRepository.addAllEnUnaTransaccion(hechosLimpios);
     }
 
     public void limpiarHechos() {
@@ -140,10 +144,14 @@ public class ServicioDeAgregacion {
 
         System.out.println("Cantidad de hechos a limpiar: " + lista.size());
         hechosAIntegrar.addAll(lista);
+        System.out.println("Cantidad de hechos a agregados a integrar: " + hechosAIntegrar.size());
         limpiarHechos();
+        System.out.println("Cantidad de hechos limpiados: " + hechosAIntegrar.size());
         normalizarYCrearHechos();
         System.out.println("Cantidad de hechos a agregar a coleccion: " + hechosLimpios.size());
-        for (Coleccion coleccion : coleccionesRepository.obtenerTodas()) {
+        List<Coleccion> colecciones = coleccionesRepository.obtenerTodas();
+        System.out.println("Obtuve todas las colecciones.." + " son " + colecciones.size() + " colecciones.");
+        for (Coleccion coleccion : colecciones) {
             agregarHechosAColecciones(coleccion);
             System.out.println("Agregar a colección " + " '" + coleccion.getTitulo() + "' " + " fue exitoso, tiene " + coleccion.getHechos().size() + " hechos.");
 
@@ -151,6 +159,7 @@ public class ServicioDeAgregacion {
 
         hechosAIntegrar.clear();
         hechosLimpios.clear();
+        colecciones.clear();
     }
 }
 
