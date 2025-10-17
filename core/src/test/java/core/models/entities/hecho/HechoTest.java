@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,14 +28,14 @@ public class HechoTest {
                 null, null,
                 LocalDate.now().minusDays(5), LocalDate.now().minusDays(6),
                 null,
-                etiquetas, null,null, null,"12");
+                etiquetas, null,null, null,"12", LocalTime.now());
         this.hecho2 = new Hecho(5, null, null,
                 null,
                 null, null,
                 null, null,
                 LocalDate.now().minusDays(9), LocalDate.now().minusDays(6),
                 null,
-                etiquetas, null,null, null,"12");
+                etiquetas, null,null, null,"12", LocalTime.now());
     }
 
     @Test
