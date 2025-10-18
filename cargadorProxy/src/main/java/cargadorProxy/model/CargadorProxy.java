@@ -33,7 +33,10 @@ public class CargadorProxy {
         for (Fuente f : fuentes) {
             try{
                 List<HechoAIntegrarDTO> lote = f.extraerHechos();
-                if (lote != null) hechos.addAll(lote);
+                if (lote != null) {
+                    lote.forEach(h -> h.setLinkFuente(f.getLink()));
+                    hechos.addAll(lote);
+                }
                 f.setUltimoProcesamiento(Instant.now());
             } catch (Exception e) { System.err.println("Error procesando fuente " + f.getId() + ": " + e.getMessage());}
 
@@ -44,7 +47,7 @@ public class CargadorProxy {
 
     public List<Fuente> fuentesAProcesar() {
         Instant corte = Instant.now().minus(umbralProcesamiento);
-        return repositoryFuentes.getAll().stream()
+        return repositoryFuentes.findAll().stream()
                 .filter(f -> f.getUltimoProcesamiento() == null || f.getUltimoProcesamiento().isBefore(corte))
                 .toList();
     }

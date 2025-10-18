@@ -14,6 +14,7 @@ public class HechoAIntegrarDTO {
     public String tipoFuente;
     public Boolean fueExtraido;
     public Integer idFuente;
+    private String linkFuente;
 
     public String getTitulo() {
         return titulo;
@@ -110,4 +111,23 @@ public class HechoAIntegrarDTO {
     public void setIdFuente(Integer idFuente) {
         this.idFuente = idFuente;
     }
+
+    public String getLinkFuente() {
+        return linkFuente;
+    }
+
+    public void setLinkFuente(String linkFuente) {
+        this.linkFuente = linkFuente;
+    }
+
+    public HechoAIntegrarDTO(String titulo, String descripcion, String categoria, String latitud, String longitud, String fechaSuceso) {
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.categoria = categoria;
+        this.latitud = latitud;
+        this.longitud = longitud;
+        this.fechaSuceso = fechaSuceso;
+        this.linkFuente = null;
+    }
+
 }

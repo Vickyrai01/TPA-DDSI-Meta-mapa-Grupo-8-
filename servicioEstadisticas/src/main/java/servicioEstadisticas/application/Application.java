@@ -5,9 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.*;
 import seeders.RepositoryServicioEstadisticasSeeder;
-import servicioEstadisticas.model.Hecho;
-import servicioEstadisticas.model.ServicioEstadisticas;
-import servicioEstadisticas.model.SolicitudSpam;
+import servicioEstadisticas.model.*;
 import servicioEstadisticas.repository.RepositoryServicioEstadisticas;
 import utils.DBUtils;
 import javax.persistence.EntityManager;
@@ -39,15 +37,17 @@ public class Application {
     }
 
     @PostMapping("/hecho")
-    public ResponseEntity<String> agregarHecho(@RequestBody Hecho hecho) {
-
-        Hecho hechoABD = new Hecho(
-                hecho.getId_hecho(),
-                hecho.getCategoria(),
-                hecho.getFechaSuceso(),
-                hecho.getProvincia()
-        );
-
+    public ResponseEntity<String> agregarHecho(@RequestBody HechoDTO req) {
+        System.out.println("Hecho: " + req.toString());
+        if (req.getHash() == null || req.getCategoria() == null || req.getProvincia() == null || req.getFecha_suceso() == null) {
+            return ResponseEntity.badRequest().body("Faltan campos obligatorios: hash, categoria, provincia o fecha_suceso");
+        }
+        final Hecho hechoABD;
+        try {
+            hechoABD = HechoMapper.toEntity(req);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
         RepositoryServicioEstadisticas.addHecho(hechoABD);
         return ResponseEntity.status(201).body("Hecho agregado correctamente");
     }
@@ -58,7 +58,6 @@ public class Application {
         SolicitudSpam solicitudABD = new SolicitudSpam(
                 solicitudSpam.getFueSpam()
         );
-
         RepositoryServicioEstadisticas.addSolicitud(solicitudABD);
         return ResponseEntity.status(201).body("Solicitud agregado correctamente");
     }
@@ -74,7 +73,6 @@ public class Application {
         List<Map<String, Object>> categorias = servicioEstadisticas.getCategoriaMasReportada();
         return ResponseEntity.ok(categorias);
     }
-
 
     @GetMapping("/cantidad-spam")
     public ResponseEntity<Map<String, Object>> cantidadSpam() {
@@ -94,5 +92,4 @@ public class Application {
         List<Map<String, Object>> horarios = servicioEstadisticas.horarioxCategoria(categoria);
         return ResponseEntity.ok(horarios);
     }
-
 }

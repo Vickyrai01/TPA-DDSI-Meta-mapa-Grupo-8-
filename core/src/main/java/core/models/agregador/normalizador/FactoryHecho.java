@@ -50,7 +50,8 @@ public class FactoryHecho {
                 hecho.getTitulo(),
                 null,
                 hecho.getHash(),
-                hecho.getIdFuente()
+                hecho.getIdFuente(),
+                hecho.getLinkFuente()
         );
     }
 
