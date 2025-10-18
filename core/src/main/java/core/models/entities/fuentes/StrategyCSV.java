@@ -44,7 +44,7 @@ public class StrategyCSV implements StrategyTipoConexion {
                 String fecha = fila[5].trim();
 
                 HechoAIntegrarDTO hechoAIntegrarDTO = new HechoAIntegrarDTO(
-                        titulo, descripcion, categoria, latitud, longitud, fecha
+                        titulo, descripcion, categoria, latitud, longitud, fecha, fuenteBase
                 );
                 hechos.add(hechoAIntegrarDTO);
 

@@ -22,6 +22,7 @@ public class HechoAIntegrarDTO {
     public String latitud;
     public String longitud;
     public String fechaSuceso;
+    public String linkFuente;
 
     public List<String> etiquetas;
     public String contribuyente;
@@ -42,7 +43,8 @@ public class HechoAIntegrarDTO {
             @JsonProperty(value = "categoria",    required = true) String categoria,
             @JsonProperty(value = "latitud",      required = true) String latitud,
             @JsonProperty(value = "longitud",     required = true) String longitud,
-            @JsonProperty(value = "fechaSuceso",  required = true) String fechaSuceso
+            @JsonProperty(value = "fechaSuceso",  required = true) String fechaSuceso,
+            @JsonProperty(value = "linkFuente",  required = true) String linkFuente
     ) {
         this.hash = HandlerRecientes.generarHash(titulo+descripcion+categoria+latitud+longitud);
         this.titulo = titulo;
@@ -51,6 +53,7 @@ public class HechoAIntegrarDTO {
         this.latitud = latitud;
         this.longitud = longitud;
         this.fechaSuceso = fechaSuceso;
+        this.linkFuente = linkFuente;
 
         // opcionales: quedan null si no vienen
         this.etiquetas = null;
@@ -62,7 +65,7 @@ public class HechoAIntegrarDTO {
     }
 
     public HechoAIntegrarDTO(String titulo, String descripcion, String categoria, String latitud, String longitud, String fechaSuceso,
-                             List<String> etiquetas, String contribuyente, List<String> multimedia)
+                             List<String> etiquetas, String contribuyente, List<String> multimedia, String linkFuente)
     {
         this.hash = HandlerRecientes.generarHash(titulo+descripcion+categoria+latitud+longitud);
         this.titulo = titulo;
@@ -75,7 +78,22 @@ public class HechoAIntegrarDTO {
         this.contribuyente = contribuyente;
         this.multimedia = multimedia;
         this.tipoFuente = null;
+        this.linkFuente = linkFuente;
     }
+
+    public HechoAIntegrarDTO(String titulo, String descripcion, String categoria, String latitud, String longitud, String fecha) {
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.categoria = categoria;
+        this.latitud = latitud;
+        this.longitud = longitud;
+        this.fechaSuceso = fecha;
+        this.etiquetas = null;
+        this.contribuyente = null;
+        this.multimedia = null;
+        this.linkFuente = null;
+    }
+
 
     public String getTitulo() { return titulo; }
     public void setTitulo(String titulo) { this.titulo = titulo; }
@@ -94,6 +112,8 @@ public class HechoAIntegrarDTO {
     public void setTipoFuente(String fuente) {this.tipoFuente = fuente;};
     public Integer getIdFuente() {return idFuente;}
     public void setIdFuente(Integer idFuente) {this.idFuente = idFuente;};
+    public String getLinkFuente() {return linkFuente;}
+    public void setLinkFuente(String linkFuente){this.linkFuente = linkFuente;}
 
 
     public Boolean tieneMismoTitulo(String tituloExterno){
@@ -135,6 +155,7 @@ public class HechoAIntegrarDTO {
         this.tipoFuente = tipoFuente;
         this.fueExtraido = fueExtraido;
         this.idFuente = idFuente;
+        this.linkFuente = null;
     }
 
 }

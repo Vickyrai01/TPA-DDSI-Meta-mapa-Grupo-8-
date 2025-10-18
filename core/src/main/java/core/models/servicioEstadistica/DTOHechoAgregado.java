@@ -3,7 +3,7 @@ package core.models.servicioEstadistica;
 import java.time.LocalDateTime;
 
 public class DTOHechoAgregado {
-    String id_hecho;
+    String hash;
     String provincia;
     String categoria;
     String fecha_suceso;
@@ -11,19 +11,19 @@ public class DTOHechoAgregado {
     public DTOHechoAgregado()
     {}
 
-    public DTOHechoAgregado(String id_hecho, String provincia, String categoria, String dia) {
-        this.id_hecho = id_hecho;
+    public DTOHechoAgregado(String hash, String provincia, String categoria, String dia) {
+        this.hash = hash;
         this.provincia = provincia;
         this.categoria = categoria;
         this.fecha_suceso = dia;
     }
 
-    public String getId_hecho() {
-        return id_hecho;
+    public String getHash() {
+        return hash;
     }
 
-    public void setId_hecho(String id_hecho) {
-        this.id_hecho = id_hecho;
+    public void setHash(String hash) {
+        this.hash = hash;
     }
 
     public String getProvincia() {
@@ -48,5 +48,14 @@ public class DTOHechoAgregado {
 
     public void setDia(String dia) {
         this.fecha_suceso = dia;
+    }
+
+    public String toString() {
+        return "HechoAgregado{" +
+                "id_hecho='" + hash + '\'' +
+                ", provincia='" + provincia + '\'' +
+                ", categoria='" + categoria + '\'' +
+                ", fecha_suceso='" + fecha_suceso + '\'' +
+                '}';
     }
 }

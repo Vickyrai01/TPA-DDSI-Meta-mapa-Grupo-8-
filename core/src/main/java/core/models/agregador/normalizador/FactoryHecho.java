@@ -30,12 +30,8 @@ public class FactoryHecho {
             return instance;
         }
 
-    public Hecho convertirHecho(HechoAIntegrarDTO hecho, LocalDate fecha, Categoria categoria){
-        // Convertir Coordenadas
-        double latitud = Double.parseDouble(hecho.getLatitud());
-        double longitud = Double.parseDouble(hecho.getLongitud());
+    public Hecho convertirHecho(HechoAIntegrarDTO hecho, LocalDate fecha, Categoria categoria, Coordenadas ubicacion){
         TipoFuente tipoFuente = TipoFuente.valueOf(hecho.getTipoFuente());
-        Coordenadas ubicacion = new Coordenadas(latitud, longitud);
 
         return new Hecho(
                 null, //Analizar como asignar el ID
@@ -54,7 +50,8 @@ public class FactoryHecho {
                 hecho.getTitulo(),
                 null,
                 hecho.getHash(),
-                hecho.getIdFuente()
+                hecho.getIdFuente(),
+                hecho.getLinkFuente()
         );
     }
 

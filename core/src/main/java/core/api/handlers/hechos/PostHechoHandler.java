@@ -34,7 +34,8 @@ public class PostHechoHandler implements Handler {
                 dto.getCategoria(),
                 dto.getLatitud(),
                 dto.getLongitud(),
-                dto.getFechaSuceso()
+                dto.getFechaSuceso(),
+                dto.getLinkFuente()
         );
 
         validarNuevoHecho(hechoDTO);

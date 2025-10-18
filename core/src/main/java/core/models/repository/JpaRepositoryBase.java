@@ -4,6 +4,9 @@ import utils.DBUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -32,13 +35,17 @@ public abstract class JpaRepositoryBase<T, ID> {
     }
 
         public List<T> obtenerTodas() {
-        EntityManager em = emSupplier.get();
-        try {
-            String ql = "SELECT e FROM " + entityClass.getSimpleName() + " e";
-            TypedQuery<T> q = em.createQuery(ql, entityClass);
-            return q.getResultList();
-        } finally {
-            em.close();
+            EntityManager em = emSupplier.get();
+            try {
+               CriteriaBuilder cb = em.getCriteriaBuilder();
+               CriteriaQuery<T> cq = cb.createQuery(entityClass);
+               Root<T> root = cq.from(entityClass);
+                cq.select(root);
+                TypedQuery<T> q = em.createQuery(cq);
+             return q.getResultList();
+
+            } finally {
+                em.close();
         }
     }
 

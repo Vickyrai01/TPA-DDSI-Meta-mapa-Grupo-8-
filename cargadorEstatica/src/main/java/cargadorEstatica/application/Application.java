@@ -58,7 +58,7 @@ public class Application {
         StrategyTipoConexion strategyFuente = obtenerStrategyFuente(fuenteDTO.getTipoFuente());
         if (strategyFuente == null) return ResponseEntity.status(400).body("Tipo de fuente no reconocido");
         Fuente fuente = new Fuente(null, fuenteDTO.getNombre(), fuenteDTO.getLink(), strategyFuente, fuenteDTO.getTipoFuente());
-        repoFuentes.agregarFuente(fuente);
+        repoFuentes.save(fuente);
         return ResponseEntity.status(201).body("Fuente guardada correctamente");
     }
 
@@ -69,7 +69,7 @@ public class Application {
 
     @GetMapping("/obtenerFuentes")
     public ResponseEntity<List<Fuente>> obtenerFuentes(){
-        List<Fuente> fuentes = repoFuentes.getAll();
+        List<Fuente> fuentes = repoFuentes.findAll();
         if(fuentes.isEmpty()) return ResponseEntity.status(204).build();
         return ResponseEntity.ok(fuentes);
     }
