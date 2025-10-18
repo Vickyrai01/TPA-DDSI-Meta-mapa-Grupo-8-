@@ -6,6 +6,7 @@ import core.models.servicioEstadistica.HandlerServicioEstadistica;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class PruebaConexion {
@@ -18,7 +19,7 @@ public class PruebaConexion {
         dtoPrueba.setDia(LocalDateTime.now().toString());
         dtoPrueba.setProvincia("Buenos Aires");
         dtoPrueba.setCategoria("incendio");
-        dtoPrueba.setId_hecho("1234579");
+        dtoPrueba.setHash("14s5d4efw56d1a685wd1");
         System.out.println("Enviando.... " + dtoPrueba.toString());
         handlerServicioEstadistica.enviarHechoAgregado(dtoPrueba);
     }

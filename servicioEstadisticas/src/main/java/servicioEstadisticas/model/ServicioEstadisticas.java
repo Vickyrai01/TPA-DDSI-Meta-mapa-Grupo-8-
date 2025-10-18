@@ -33,11 +33,9 @@ public class ServicioEstadisticas {
         return categoriaMasReportada;
     }
 
-
     public List<Map<String, Object>> getProvinciaConMasHechos() {
         return provinciaConMasHechos;
     }
-
 
     public Map<String, Object> getCantSolicitudesEliminacion() {
         return cantSolicitudesEliminacion;
@@ -50,6 +48,4 @@ public class ServicioEstadisticas {
     public List<Map<String, Object>> provinciaConMasHechosEnCategoria(String categoria) {
         return RepositoryServicioEstadisticas.provinciaConMasHechosEnCategoria(categoria);
     }
-
-
 }

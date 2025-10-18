@@ -1,7 +1,10 @@
 package core.models.repository;
 
+import core.models.entities.hecho.Categoria;
 import core.models.entities.hecho.Coordenadas;
 import utils.DBUtils;
+
+import javax.persistence.EntityManager;
 
 public class CoordenadasRepository extends JpaRepositoryBase<Coordenadas, Integer> {
 
@@ -24,5 +27,28 @@ public class CoordenadasRepository extends JpaRepositoryBase<Coordenadas, Intege
         return findById(idCoordenadas);
     }
 
-}
+    public Boolean existe(Coordenadas coordenadas){
+        return buscarPorCoordenadas(coordenadas) != null;
+    }
 
+    public Coordenadas buscarPorCoordenadas(Coordenadas coordenadas){
+        if (coordenadas == null
+                || coordenadas.getLatitud() == null
+                || coordenadas.getLongitud() == null) return null;
+
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            return em.createQuery(
+                            "SELECT c FROM coordenadas c WHERE c.latitud = :latitud AND c.longitud = :longitud",
+                            Coordenadas.class)
+                    .setParameter("latitud", coordenadas.getLatitud())
+                    .setParameter("longitud", coordenadas.getLongitud())
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
+        } finally {
+            em.close();
+        }
+    }
+
+}
