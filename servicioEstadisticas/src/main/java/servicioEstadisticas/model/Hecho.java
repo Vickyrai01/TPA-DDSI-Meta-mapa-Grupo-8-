@@ -9,34 +9,34 @@ import java.time.LocalDateTime;
 public class Hecho {
 
     @Id
-    private String id_hecho;
+    private String hash;
 
     @Column(name = "categoria")
     private String categoria;
 
     @Column(name= "fecha_suceso")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime fechaSuceso;
+    private LocalDateTime fecha_suceso;
 
     @Column(name= "provincia")
     private String provincia;
 
 
-    public Hecho(String id,String categoria, LocalDateTime fechaSuceso, String provincia) {
-        this.id_hecho = id;
+    public Hecho(String id, String categoria, LocalDateTime fecha_suceso, String provincia) {
+        this.hash = id;
         this.categoria = categoria;
-        this.fechaSuceso = fechaSuceso;
+        this.fecha_suceso = fecha_suceso;
         this.provincia = provincia;
     }
 
     public Hecho() {}
 
-    public String getId_hecho() {
-        return id_hecho;
+    public String getHash() {
+        return hash;
     }
 
-    public void setId_hecho(String id_hecho) {
-        this.id_hecho = id_hecho;
+    public void setHash(String id_hecho) {
+        this.hash = hash;
     }
 
     public String getCategoria() {
@@ -47,12 +47,12 @@ public class Hecho {
         this.categoria = categoria;
     }
 
-    public LocalDateTime getFechaSuceso() {
-        return fechaSuceso;
+    public LocalDateTime getFecha_suceso() {
+        return fecha_suceso;
     }
 
-    public void setFechaSuceso(LocalDateTime fechaSuceso) {
-        this.fechaSuceso = fechaSuceso;
+    public void setFecha_suceso(LocalDateTime fechaSuceso) {
+        this.fecha_suceso = fechaSuceso;
     }
 
     public String getProvincia() {

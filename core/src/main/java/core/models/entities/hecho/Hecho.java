@@ -45,6 +45,34 @@ public class Hecho {
                  Estado estado, Contribuyente contribuyente,
                  LocalDate fechaCarga, LocalDate fechaSuceso,
                  TipoFuente fuenteDeOrigen,
+                 List<Etiqueta> etiquetas, String descripcion, String titulo,String codigoDeFuente, String hash, Integer idFuente, String linkFuente) {
+
+        this.id = id;
+        this.ubicacion = ubicacion;
+        this.categoria = categoria;
+        this.sugerenciaDeCambio = sugerenciaDeCambio;
+        this.ultimaFechaModificacion = ultimaFechaModificacion;
+        this.multimedia = multimedia;
+        this.estado = estado;
+        this.contribuyente = contribuyente;
+        this.fechaCarga = fechaCarga;
+        this.fechaSuceso = fechaSuceso;
+        this.fuenteDeOrigen = fuenteDeOrigen;
+        this.etiquetas = etiquetas;
+        this.descripcion = descripcion;
+        this.titulo = titulo;
+        this.codigoDeFuente = codigoDeFuente;
+        this.hash = hash;
+        this.idFuente =idFuente;
+        this.linkFuente = linkFuente;
+    }
+
+    public Hecho(Integer id, Coordenadas ubicacion, Categoria categoria,
+                 List<SugerenciaDeCambio> sugerenciaDeCambio,
+                 LocalDate ultimaFechaModificacion, List<String> multimedia,
+                 Estado estado, Contribuyente contribuyente,
+                 LocalDate fechaCarga, LocalDate fechaSuceso,
+                 TipoFuente fuenteDeOrigen,
                  List<Etiqueta> etiquetas, String descripcion, String titulo,String codigoDeFuente, String hash, LocalTime horarioSuceso) {
 
         this.id = id;
@@ -264,8 +292,17 @@ public class Hecho {
     public Integer getIdFuente() {
         return Objects.requireNonNullElse(idFuente, -1);
     }
-
     public void setIdFuente(Integer idFuente) {this.idFuente = idFuente;}
+
+    @Column(name = "link_fuente")
+    public String linkFuente;
+    public String getLinkFuente() {
+        return linkFuente;
+    }
+    public void setLinkFuente(String linkFuente) {
+        this.linkFuente = linkFuente;
+    }
+
 
     @Override
     public String toString() {
