@@ -16,6 +16,7 @@
         <module>cargadorEstatica</module>
         <module>cargadorProxy</module>
         <module>servicioEstadisticas</module>
+        <module>metamapaWeb</module>
     </modules>
 
     <properties>
