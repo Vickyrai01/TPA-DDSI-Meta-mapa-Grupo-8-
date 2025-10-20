@@ -16,7 +16,7 @@
 
 *{box-sizing:border-box}
 html{ scroll-behavior: smooth; }
-html,body{height:100%}
+html,body{}
 
 body{
     margin:0;
@@ -26,6 +26,9 @@ body{
 
     /* Fondo de mapa con puntos (para la página de Reportar) */
     /* Lo movemos a una clase específica para que no aplique a todas las págs */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* El body mide AL MENOS el alto de la ventana */
 }
 
 /* Fondo de mapa para la página de Reportar */
@@ -51,8 +54,6 @@ body.report-page-bg {
 main {
     display: flex;
     flex-direction: column;
-    /* Asegura que el main ocupe al menos el espacio hasta el footer */
-    min-height: calc(100vh - 120px); /* Ajustar valor (header + footer) */
 }
 
 

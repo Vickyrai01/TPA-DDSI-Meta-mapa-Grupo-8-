@@ -22,6 +22,9 @@ body {
     background-size: cover;
     background-position: center;
     background-attachment: fixed; /* Fija el fondo */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .container {
@@ -33,7 +36,6 @@ body {
 main {
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 120px); /* Asume 120px para header+footer */
     /* justify-content: center; */ /* <-- BORRÁ O COMENTÁ ESTA LÍNEA */
     padding: 60px 0;
     align-items: center; /* Centra la tarjeta horizontalmente */
