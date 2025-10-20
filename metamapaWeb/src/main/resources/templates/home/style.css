@@ -26,7 +26,6 @@ body{
     margin-inline:auto;
 }
 
-
 /* Burger (mobile) */
 .burger{ display:none; background:none; border:0; padding:8px; }
 .burger span{ display:block; width:24px; height:2px; background:#333; margin:5px 0; }
@@ -40,7 +39,6 @@ body{
        padding: 60px 0;            /* espacio interno para que no se tape el contenido */
        color: white;
 }
-
 
 .hero-inner{ padding:80px 0 120px; text-align:center; }
 
@@ -82,7 +80,6 @@ body{
 .about-card .card-body{
   color:#1f2937; /* gris/azul oscuro legible */
 }
-
 
 /* ====== Colaborá / Form ====== */
 .collab{
@@ -184,7 +181,6 @@ input[type="file"] {
   font-size: .9rem;
   color: var(--muted);
 }
-
 
 /* Botón visual con el ícono de clip */
 .file-btn {

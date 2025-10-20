@@ -17,3 +17,31 @@
     .menu{ display:none; }
     .burger{ display:block; }
 }
+
+/* ====== Footer (AÑADIDO) ====== */
+.site-footer {
+    background: var(--dark);
+    color: #fff;
+    padding: 30px 0;
+    margin-top: auto; /* Empuja el footer al fondo */
+}
+
+.footer-grid {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.footer-grid a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.footer-grid a:hover {
+    color: var(--orange-2);
+}

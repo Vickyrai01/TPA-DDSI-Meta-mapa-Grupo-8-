@@ -38,92 +38,6 @@ main {
     margin-inline: auto;
 }
 
-/* ====== NAVBAR ====== */
-.site-header {
-    background: #fff;
-    border-bottom: 1px solid #e9e1dc;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 0;
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    font-weight: 800;
-    color: var(--text);
-}
-
-.brand-logo {
-    width: 40px;
-    height: 40px;
-}
-
-.brand-text {
-    font-size: 18px;
-    color: var(--text);
-}
-
-.menu {
-    display: flex;
-    align-items: center;
-    gap: 32px;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.menu a {
-    text-decoration: none;
-    color: var(--text);
-    font-weight: 600;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    transition: color 0.2s;
-}
-
-.menu a:not(.avatar):hover {
-    color: var(--orange);
-}
-
-.avatar {
-    width: 40px;
-    height: 40px;
-    border: 2px solid var(--orange);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-}
-
-.burger {
-    display: none;
-    background: none;
-    border: 0;
-    padding: 8px;
-    cursor: pointer;
-}
-
-.burger span {
-    display: block;
-    width: 24px;
-    height: 2px;
-    background: #333;
-    margin: 5px 0;
-}
-
 /* ====== HERO / MAIN CONTENT ====== */
 .hero {
     position: relative;
@@ -260,32 +174,6 @@ main {
 
 .btn-solicitar:active {
     transform: translateY(0);
-}
-
-/* ====== FOOTER ====== */
-.site-footer {
-    background: var(--dark);
-    color: #fff;
-    padding: 24px 0;
-    margin-top: auto;
-}
-
-.footer-grid {
-    display: flex;
-    justify-content: center;
-    gap: 32px;
-    flex-wrap: wrap;
-}
-
-.footer-grid a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 14px;
-    transition: color 0.2s;
-}
-
-.footer-grid a:hover {
-    color: var(--orange);
 }
 
 /* ====== RESPONSIVE ====== */
