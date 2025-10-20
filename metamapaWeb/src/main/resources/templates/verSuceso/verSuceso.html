@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="../css/footer.css">
     <link rel="stylesheet" href="../css/navbar.css">
     <link rel="stylesheet" href="../css/style.css">
+    <!-- <CHANGE> Agregado archivo CSS separado para la página de detalles -->
+    <link rel="stylesheet" href="styles.css">
 
     <!-- (Opcional) Iconos para footer -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -21,7 +23,7 @@
 <header class="site-header" id="top">
     <div class="container nav">
         <a class="brand" href="#top">
-            <span class="pin">📍</span>
+            <img src="/Images/logo.png" alt="Logo MetaMapa" class="brand-logo">
             <span class="brand-text">MetaMapa</span>
         </a>
 
@@ -41,8 +43,44 @@
     </div>
 </header>
 
-<main>
+<!-- <CHANGE> Contenido principal con layout de dos columnas -->
+<main class="robbery-details-container">
+    <!-- Mapa a la izquierda -->
+    <div class="map-section">
+        <div class="map-placeholder"></div>
+    </div>
 
+    <!-- Barra lateral a la derecha -->
+    <aside class="details-sidebar">
+        <div class="sidebar-header">
+            <h1>Intento de robo de mochila</h1>
+        </div>
+
+        <div class="sidebar-content">
+            <!-- Descripción -->
+            <div class="form-group">
+                <label>Descripción</label>
+                <div class="description-box">
+                    <p>Le robaron la mochila a una persona, la policía agarro al ladrón y la mochila fue rescatada.</p>
+                </div>
+            </div>
+
+            <!-- Categoría -->
+            <div class="form-group">
+                <label>Categoría</label>
+                <input type="text" value="Intento de robo" readonly>
+            </div>
+
+            <!-- Fecha suceso -->
+            <div class="form-group">
+                <label>Fecha suceso</label>
+                <input type="text" value="28/07/2025" readonly>
+            </div>
+
+            <!-- Link de eliminación -->
+            <a href="#" class="delete-link">Solicitar eliminación</a>
+        </div>
+    </aside>
 </main>
 
 <!-- FOOTER -->
