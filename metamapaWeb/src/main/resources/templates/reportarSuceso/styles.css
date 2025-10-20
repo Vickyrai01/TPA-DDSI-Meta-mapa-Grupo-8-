@@ -16,14 +16,16 @@
 
 *{box-sizing:border-box}
 html{ scroll-behavior: smooth; }
-html,body{height:100%}
+html,body{}
 
 body{
     margin:0;
     font-family:Montserrat,system-ui,Segoe UI,Roboto,Arial,sans-serif;
     color:var(--text);
     background:#fff;
-
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     /* MODIFICADO: Fondo de mapa con puntos como en la imagen */
     background-image: url("../../static/img/fondoHOME1.png"); /* ruta de la imagen */
           background-size: cover;     /* que cubra todo el ancho y alto */
@@ -40,7 +42,7 @@ body{
 main {
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 120px); /* Ajusta para header/footer */
+    flex-grow: 1;
 }
 
 /* ====== Form Section (MODIFICADO) ====== */
@@ -300,7 +302,6 @@ body{
 main {
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 120px); /* Ajusta para header/footer */
 }
 
 /* ====== Form Section (MODIFICADO) ====== */

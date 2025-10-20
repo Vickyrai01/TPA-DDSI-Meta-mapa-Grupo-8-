@@ -27,6 +27,7 @@ body {
     background: #fff;
     display: flex;
     flex-direction: column;
+
 }
 
 main {
@@ -44,10 +45,7 @@ main {
     min-height: 80vh;
     display: grid;
     place-items: center;
-    background: radial-gradient(circle at 10% 20%, rgba(255, 145, 77, 0.25) 0 8px, transparent 9px) 0 0 / 120px 120px,
-    radial-gradient(circle at 60% 40%, rgba(84, 186, 185, 0.25) 0 7px, transparent 8px) 0 0 / 160px 160px,
-    radial-gradient(circle at 85% 70%, rgba(142, 200, 75, 0.25) 0 6px, transparent 7px) 0 0 / 140px 140px,
-    linear-gradient(180deg, #f7fafc 0%, #eef3f7 60%, #e7edf3 100%);
+    background-image: url("../../static/img/fondoHOME1.png");
     overflow: hidden;
     height: 100%;
 }
