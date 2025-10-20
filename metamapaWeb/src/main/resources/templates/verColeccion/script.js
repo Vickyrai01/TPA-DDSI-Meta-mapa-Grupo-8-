@@ -23,7 +23,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 });
 
 // Micro-animación al enviar (demo)
-// Esto funciona porque el botón sigue teniendo la clase .btn-primary
+// Esto solo se activará en la página que tenga un .report-card
 document.querySelector('.report-card')?.addEventListener('submit', e => {
     e.preventDefault();
     const btn = e.currentTarget.querySelector('.btn-primary');
