@@ -1,0 +1,37 @@
+/* ====== Header / Nav ====== */
+.site-header{
+    position:sticky; top:0; z-index:50;
+    background:#ffffffc9;
+    backdrop-filter:saturate(140%) blur(6px);
+    border-bottom:1px solid #eee;
+    transition:box-shadow .2s ease;
+}
+.site-header.is-scrolled{ box-shadow:var(--shadow); }
+
+.nav{
+    display:flex; align-items:center; justify-content:space-between;
+    min-height:56px; gap:12px;
+}
+
+.brand{
+    display:flex; align-items:center; gap:.5rem; text-decoration:none;
+}
+.brand .pin{ font-size:1.35rem }
+.brand-text{
+    font-weight:800; font-size:1.25rem; color:var(--dark);
+}
+
+.menu{ display:flex; gap:1rem; align-items:center; }
+.menu a{
+    color:var(--muted);
+    text-decoration:none;
+    font-weight:600;
+    padding:.4rem .6rem;
+    border-radius:999px;
+    transition:all .15s ease;
+}
+.menu a:hover{ color:var(--dark); background:#f4f6f8; }
+.menu .avatar{
+    display:grid; place-items:center; width:36px; height:36px;
+    border:1px solid #e9ecef; border-radius:50%;
+}
