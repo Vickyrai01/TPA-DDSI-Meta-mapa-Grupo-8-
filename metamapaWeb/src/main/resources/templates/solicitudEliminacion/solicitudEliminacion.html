@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Solicitud Eliminación - MetaMapa</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/footer.css">
+    <link rel="stylesheet" href="../css/navbar.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -12,11 +14,7 @@
 <header class="site-header" id="top">
     <div class="container nav">
         <a class="brand" href="#top">
-            <svg class="brand-logo" viewBox="0 0 40 40" width="40" height="40">
-                <circle cx="20" cy="12" r="8" fill="#F47C2C"/>
-                <path d="M 20 20 L 12 32 L 28 32 Z" fill="#22A39E"/>
-            </svg>
-            <span class="brand-text">MetaMapa</span>
+            <img src="../../static/img/logoNAVBAR.png" alt="Logo MetaMapa" class="brand-logo">
         </a>
 
         <nav class="menu">
@@ -24,13 +22,16 @@
             <a href="#reportar">Reportar suceso</a>
             <a href="#mapa">Ver mapa</a>
             <a href="#navegar">Navegar sucesos</a>
-            <a href="#perfil" class="avatar" aria-label="Perfil">👤</a>
+            <a href="#perfil" class="avatar" aria-label="Perfil">
+                <i class="fa-regular fa-user"></i>
+            </a>
         </nav>
 
         <button class="burger" aria-label="Abrir menú">
             <span></span><span></span><span></span>
         </button>
     </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </header>
 
 <main>
@@ -69,9 +70,9 @@
 <!-- FOOTER -->
 <footer class="site-footer">
     <div class="container footer-grid">
-        <a href="mailto:metamapa@gmail.com">✉️ metamapa@gmail.com</a>
-        <a href="#mapa">📍 /ver-mapa</a>
-        <a href="https://instagram.com" target="_blank" rel="noreferrer">📷 @metamapa</a>
+        <a href="mailto:metamapa@gmail.com"><i class="fa-solid fa-envelope"></i> metamapa@gmail.com</a>
+        <a href="#mapa"><i class="fa-solid fa-map-location-dot"></i> /ver-mapa</a>
+        <a href="https://instagram.com" target="_blank" rel="noreferrer"><i class="fa-brands fa-instagram"></i> @metamapa</a>
     </div>
 </footer>
 
