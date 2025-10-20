@@ -31,3 +31,11 @@ document.querySelector('.report-card')?.addEventListener('submit', e => {
     setTimeout(() => { btn.textContent = '¡Gracias por reportar!'; }, 800);
     setTimeout(() => { btn.disabled = false; btn.textContent = original; e.target.reset(); }, 2200);
 });
+
+// ATTACHMENT
+const ev = document.getElementById('evidencias');
+const evName = document.getElementById('evidencias-name');
+ev?.addEventListener('change', () => {
+  evName.textContent = ev.files?.[0]?.name || '';
+});
+

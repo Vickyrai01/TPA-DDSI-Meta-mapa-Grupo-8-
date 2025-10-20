@@ -32,3 +32,16 @@ document.querySelector('.report-card')?.addEventListener('submit', e => {
     setTimeout(() => { btn.textContent = '¡Gracias por reportar!'; }, 800);
     setTimeout(() => { btn.disabled = false; btn.textContent = original; e.target.reset(); }, 2200);
 });
+
+// Sticky sombra al scrollear
+const header = document.querySelector('.site-header');
+const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 2);
+document.addEventListener('scroll', onScroll);
+onScroll();
+
+// Burger simple (abre/cierra menú en mobile)
+const burger = document.querySelector('.burger');
+const menu = document.querySelector('.menu');
+burger?.addEventListener('click', () => {
+  menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+});
