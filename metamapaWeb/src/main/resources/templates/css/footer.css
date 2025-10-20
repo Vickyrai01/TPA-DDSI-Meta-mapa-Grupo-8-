@@ -1,0 +1,19 @@
+/* ====== Footer ====== */
+.site-footer{
+    background:#0e1114; color:#cfd5dc; padding:18px 0;
+}
+.footer-grid{
+    display:flex; gap:18px; flex-wrap:wrap; justify-content:center; align-items:center;
+    font-size:.95rem;
+}
+.site-footer a{ color:#cfd5dc; text-decoration:none; }
+.site-footer a:hover{ text-decoration:underline; }
+
+/* ====== Responsive ====== */
+@media (max-width: 900px){
+    .collab-grid{ grid-template-columns: 1fr; }
+}
+@media (max-width: 760px){
+    .menu{ display:none; }
+    .burger{ display:block; }
+}
