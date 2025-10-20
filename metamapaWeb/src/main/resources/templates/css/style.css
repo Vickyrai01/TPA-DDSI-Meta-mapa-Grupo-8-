@@ -27,37 +27,26 @@ body{
 }
 
 
-
 /* Burger (mobile) */
 .burger{ display:none; background:none; border:0; padding:8px; }
 .burger span{ display:block; width:24px; height:2px; background:#333; margin:5px 0; }
 
 /* ====== Hero ====== */
 .hero{
-    position:relative;
-    min-height:78vh;
-    display:grid; place-items:center;
-    /* Mapa “dibujado” con gradientes + puntitos */
-    background:
-        radial-gradient(circle at 10% 20%, rgba(255,145,77,.25) 0 8px, transparent 9px) 0 0/120px 120px,
-        radial-gradient(circle at 60% 40%, rgba(84,186,185,.25) 0 7px, transparent 8px) 0 0/160px 160px,
-        radial-gradient(circle at 85% 70%, rgba(142,200,75,.25) 0 6px, transparent 7px) 0 0/140px 140px,
-        linear-gradient(180deg,#f7fafc 0%, #eef3f7 60%, #e7edf3 100%);
-overflow:hidden;
+     background-image: url("../../static/img/fondoHOME1.png"); /* ruta de la imagen */
+       background-size: cover;     /* que cubra todo el ancho y alto */
+       background-position: center; /* centrada */
+       background-repeat: no-repeat;
+       padding: 60px 0;            /* espacio interno para que no se tape el contenido */
+       color: white;
 }
-.hero::before{
-/* líneas suaves tipo mapa */
-    content:"";
-    position:absolute; inset:0;
-    background:
-            repeating-linear-gradient(120deg, #ffffff10 0 50px, #b9c7d220 50px 51px);
-    pointer-events:none;
-}
+
+
 .hero-inner{ padding:80px 0 120px; text-align:center; }
 
 .hero-title{
     font-size: clamp(36px, 6vw, 64px);
-    line-height:1.05; margin:0; font-weight:800; color:#1c2430;
+    line-height:1.05; margin:0; font-weight:800; color: #173F63;
 }
 .hero-title .pin{ filter:grayscale(.1) }
 .hero-subtitle{
@@ -74,25 +63,37 @@ overflow:hidden;
     box-shadow: var(--shadow);
     text-align:left;
 }
+
 .card-title{
     margin:0; padding:14px 18px;
+      text-align: center;
     font-size: .9rem; letter-spacing:.03em;
     text-transform:uppercase; font-weight:800;
     color:#7b3d1f; background:var(--orange-2); /* tira a naranja suave */
     border-radius: var(--radius) var(--radius) 0 0;
 }
+
 .card-body{
     margin:0; padding:18px;
     background:#fff; border-radius:0 0 var(--radius) var(--radius);
 }
 
+.about-card,
+.about-card .card-body{
+  color:#1f2937; /* gris/azul oscuro legible */
+}
+
+
 /* ====== Colaborá / Form ====== */
 .collab{
-    position:relative; color:#fff;
-    background:
-            linear-gradient(#1116, #1116),
-            url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat;
+    background-image: url("../../static/img/fondoHOME2.png"); /* ruta de la imagen */
+   background-size: cover;     /* que cubra todo el ancho y alto */
+   background-position: center; /* centrada */
+   background-repeat: no-repeat;
+   padding: 60px 0;            /* espacio interno para que no se tape el contenido */
+   color: white;
 }
+
 .collab-grid{
     display:grid; grid-template-columns: 1.1fr .9fr; gap:28px;
     padding:56px 0 80px;
@@ -115,7 +116,7 @@ overflow:hidden;
     background: var(--orange);
     color:#fff; font-weight:800; text-transform:uppercase;
     padding:10px 14px; border-radius:12px;
-    text-align:left; letter-spacing:.03em;
+    text-align:center; letter-spacing:.03em;
 }
 .field{ display:grid; gap:6px; }
 .field.half{ display:grid; }
@@ -150,3 +151,64 @@ input:focus, select:focus, textarea:focus{
     margin:4px 2px 0; font-size:.8rem; color:#6b6f76;
 }
 
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* separación entre logo y texto */
+  text-decoration: none;
+}
+
+.brand-logo {
+  width: 100px;     /* ajustá el tamaño según lo que necesites */
+  height: auto;
+}
+
+.brand-text {
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: #ff6600; /* o el color de tu marca */
+}
+/* ==== Botón personalizado de adjuntar ==== */
+
+/* Ocultamos el input nativo */
+input[type="file"] {
+  display: none;
+}
+
+/* Botón visual con el ícono de clip */
+.file-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  background: #f4f4f4;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 600;
+  color: #333;
+  transition: all 0.25s ease;
+}
+
+/* Ícono del clip */
+.file-btn i {
+  font-size: 1rem;
+  color: var(--orange);
+  transition: color 0.25s ease;
+}
+
+/* Hover con efecto oscuro */
+.file-btn:hover {
+  background: #eaeaea;
+  border-color: var(--orange);
+}
+
+.file-btn:hover i {
+  color: #c85e10; /* clip más oscuro en hover */
+}
+
+/* Para mantener consistencia con tus inputs */
+.field.half .file-btn {
+  width: 100%;
+  justify-content: center;
+}
