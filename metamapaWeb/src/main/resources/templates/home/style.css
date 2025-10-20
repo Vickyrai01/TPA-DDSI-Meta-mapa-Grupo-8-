@@ -175,6 +175,17 @@ input[type="file"] {
   display: none;
 }
 
+.attach-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.file-name {
+  font-size: .9rem;
+  color: var(--muted);
+}
+
+
 /* Botón visual con el ícono de clip */
 .file-btn {
   display: inline-flex;

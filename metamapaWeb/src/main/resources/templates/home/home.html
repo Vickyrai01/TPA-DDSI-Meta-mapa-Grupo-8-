@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="../css/button.css">
     <link rel="stylesheet" href="../css/footer.css">
     <link rel="stylesheet" href="../css/navbar.css">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="style.css">
 
     <!-- (Opcional) Iconos para footer -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -105,14 +105,17 @@
                     <input type="text" placeholder="CAMBIAR DESPUES!!">
                 </label>
 
-                <label class="field half">
+                <div class="field half">
                     <span>Adjuntar evidencias</span>
-                    <label for="evidencias" class="file-btn">
-                        <i class="fa-solid fa-paperclip"></i> Adjuntar
-                    </label>
+                    <div class="attach-row">
+                        <label for="evidencias" class="file-btn">
+                            <i class="fa-solid fa-paperclip" aria-hidden="true"></i> Adjuntar
+                        </label>
+                        <span id="evidencias-name" class="file-name"></span>
+                    </div>
                     <input id="evidencias" type="file" accept="image/*,video/*">
-                </label>
-
+                </div>
+                
                 <button class="btn-primary" type="submit">Reportar</button>
                 <p class="hint"><i class="fa-regular fa-circle-question"></i> Al enviar aceptás los términos de uso.</p>
             </form>

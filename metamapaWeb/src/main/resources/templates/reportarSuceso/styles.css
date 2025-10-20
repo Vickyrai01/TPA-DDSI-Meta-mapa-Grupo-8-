@@ -25,20 +25,11 @@ body{
     background:#fff;
 
     /* MODIFICADO: Fondo de mapa con puntos como en la imagen */
-    background-image:
-        /* Puntos de colores */
-            radial-gradient(circle at 10% 20%, #87CEEB 3px, transparent 0),
-            radial-gradient(circle at 30% 60%, #90EE90 3px, transparent 0),
-            radial-gradient(circle at 70% 40%, #FFD700 3px, transparent 0),
-            radial-gradient(circle at 50% 80%, #FFA07A 3px, transparent 0),
-            radial-gradient(circle at 20% 40%, #DDA0DD 3px, transparent 0),
-            radial-gradient(circle at 80% 10%, #ADD8E6 3px, transparent 0),
-                /* Líneas de mapa (opcional, muy sutil) */
-            repeating-linear-gradient(45deg, #00000009 0 1px, transparent 1px 40px),
-            repeating-linear-gradient(135deg, #00000009 0 1px, transparent 1px 40px),
-                /* Color base */
-            linear-gradient(180deg, #f7fafc 0%, #eef3f7 100%);
-    background-attachment: fixed; /* Fija el fondo */
+    background-image: url("../../static/img/fondoHOME1.png"); /* ruta de la imagen */
+          background-size: cover;     /* que cubra todo el ancho y alto */
+          background-position: center; /* centrada */
+          background-repeat: no-repeat;
+          color: white;
 }
 
 .container{
@@ -51,63 +42,6 @@ main {
     flex-direction: column;
     min-height: calc(100vh - 120px); /* Ajusta para header/footer */
 }
-
-/* ====== Navbar (AÑADIDO) ====== */
-.site-header{
-    background: var(--card);
-    padding: 10px 0;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 10px rgba(0,0,0,.08);
-}
-.nav{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.brand{
-    text-decoration: none;
-    color: var(--dark);
-    font-weight: 800;
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-}
-.brand .pin{ margin-right: 8px; font-size: 1.5rem; color: var(--orange); }
-.menu{
-    display: flex;
-    gap: 25px;
-    align-items: center;
-}
-.menu a{
-    text-decoration: none;
-    color: var(--muted);
-    font-weight: 600;
-    font-size: 0.9rem;
-    padding: 5px 0;
-    position: relative;
-    text-transform: uppercase;
-}
-.menu a.active{
-    color: var(--orange);
-}
-.menu a.active::after { /* Subrayado naranja para "active" */
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background-color: var(--orange);
-}
-.avatar {
-    font-size: 1.5rem;
-    color: var(--muted);
-}
-.burger{ display:none; background:none; border:0; padding:8px; cursor: pointer; }
-.burger span{ display:block; width:24px; height:2px; background:#333; margin:5px 0; }
-
 
 /* ====== Form Section (MODIFICADO) ====== */
 .report-section {
@@ -227,6 +161,7 @@ input:focus, select:focus, textarea:focus{
     padding: 30px 0;
     margin-top: auto; /* Empuja el footer al fondo */
 }
+
 .footer-grid {
     display: flex;
     justify-content: space-around;
@@ -238,6 +173,7 @@ input:focus, select:focus, textarea:focus{
     color: #fff;
     text-decoration: none;
     font-weight: 600;
+
     display: flex;
     align-items: center;
     gap: 8px;
@@ -269,4 +205,84 @@ input:focus, select:focus, textarea:focus{
     .report-header, .field, .attach-link, .btn-primary {
         grid-column: 1 / 1;
     }
+}
+
+.btn-primary{
+        margin-top:6px;
+        appearance:none; border:0; border-radius:12px;
+        padding:12px 16px; font-weight:800; cursor:pointer;
+        background: linear-gradient(180deg, var(--orange), #e66b18);
+        color:#fff; box-shadow: 0 8px 18px rgba(244,124,44,.35);
+        transition: transform .06s ease, filter .2s ease;
+    }
+    .btn-primary:hover{ filter:saturate(110%) brightness(1.02); }
+    .btn-primary:active{ transform: translateY(1px); }
+
+
+/* Ícono del clip */
+.file-btn i {
+  font-size: 1rem;
+  color: var(--orange);
+  transition: color 0.25s ease;
+}
+
+/* Hover con efecto oscuro */
+.file-btn:hover {
+  background: #eaeaea;
+  border-color: var(--orange);
+}
+
+.file-btn:hover i {
+  color: #c85e10; /* clip más oscuro en hover */
+}
+
+/* Para mantener consistencia con tus inputs */
+.field.half .file-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Ocultamos el input nativo */
+input[type="file"] {
+  display: none;
+}
+
+/* Botón visual del adjunto */
+.file-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  background: #f4f4f4;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 600;
+  color: #333;
+  transition: all 0.25s ease;
+  line-height: 1;            /* ayuda a centrar verticalmente */
+}
+
+/* Ícono del clip (ya lo tenías, lo dejo completo por si acaso) */
+.file-btn i {
+  font-size: 1rem;
+  color: var(--orange);
+  transition: color 0.25s ease;
+  display: inline-block;      /* asegura alineación limpia */
+  vertical-align: middle;
+}
+
+/* Hover */
+.file-btn:hover {
+  background: #eaeaea;
+  border-color: var(--orange);
+}
+.file-btn:hover i {
+  color: #c85e10;
+}
+
+/* Que el botón ocupe todo el ancho si lo querés full-width en ese layout */
+.field.half .file-btn {
+  width: 100%;
+  justify-content: center;
 }
