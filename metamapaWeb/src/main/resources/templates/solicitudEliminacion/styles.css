@@ -49,6 +49,7 @@ main {
     radial-gradient(circle at 85% 70%, rgba(142, 200, 75, 0.25) 0 6px, transparent 7px) 0 0 / 140px 140px,
     linear-gradient(180deg, #f7fafc 0%, #eef3f7 60%, #e7edf3 100%);
     overflow: hidden;
+    height: 100%;
 }
 
 .hero::before {
