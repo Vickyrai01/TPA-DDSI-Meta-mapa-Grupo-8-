@@ -73,7 +73,6 @@ main {
 .modal-card {
     width: min(750px, 92%);
     background: var(--card);
-    border: 2px solid #d4a574;
     border-radius: 20px;
     box-shadow: var(--shadow);
     overflow: hidden;
@@ -129,7 +128,6 @@ main {
 .form-group textarea {
     width: 100%;
     padding: 12px 14px;
-    border: 2px solid #d4a574;
     border-radius: 12px;
     font-family: inherit;
     font-size: 14px;
