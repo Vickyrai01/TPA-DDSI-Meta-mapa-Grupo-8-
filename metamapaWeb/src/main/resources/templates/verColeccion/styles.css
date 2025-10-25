@@ -23,7 +23,7 @@ body{
     font-family:Montserrat,system-ui,Segoe UI,Roboto,Arial,sans-serif;
     color:var(--text);
     background:#fff;
-
+    background-color: #ffffff;
     /* Fondo de mapa con puntos (para la página de Reportar) */
     /* Lo movemos a una clase específica para que no aplique a todas las págs */
     display: flex;
@@ -283,5 +283,11 @@ main.map-layout-container {
     .sidebar-panel {
         flex: none; /* Resetea flex */
         width: 100%;
+    }
+
+    #mapa {
+        height: 600px; /* ¡Dale la altura que necesites! */
+        width: 100%;
+        background-color: #ffffff;
     }
 }

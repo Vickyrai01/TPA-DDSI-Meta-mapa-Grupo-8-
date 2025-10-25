@@ -1,5 +1,6 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,13 +8,18 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
     <link rel="stylesheet" href="../css/footer.css">
     <link rel="stylesheet" href="../css/navbar.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
+
 <header class="site-header" id="top">
+    </header>
     <div class="container nav">
         <a class="brand" href="#top">
             <img src="../../static/img/logoNAVBAR.png" alt="Logo MetaMapa" class="brand-logo">
@@ -35,11 +41,37 @@
     </div>
 </header>
 
+
+
+
 <main class="map-layout-container">
+<div class="map-panel" id="mapa"></div>
 
-    <div class="map-panel" id="mapa">
-    </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+
+<script>
+
+
+    let map = L.map('mapa', {
+        maxZoom: 19 // Le decís al MAPA que no deje zoomear más de 19
+    }).setView([-34.722222,-58.363611], 15);
+
+    // 2. En las opciones de la capa
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19 // Le decís a la CAPA que su máximo es 19
+    }).addTo(map);
+
+    window.addEventListener('resize', function() {
+        // Le dice al mapa que revise su tamaño y se ajuste
+        map.invalidateSize();
+    });
+
+</script>
+    <script src="script.js" defer></script>
     <aside class="sidebar-panel">
         <header class="sidebar-header">
             COLECCIÓN
@@ -60,6 +92,9 @@
 
 </main>
 
+
+
+
 <footer class="site-footer">
     <div class="container footer-grid">
         <a href="mailto:metamapa@gmail.com"><i class="fa-solid fa-envelope"></i> metamapa@gmail.com</a>
@@ -69,5 +104,6 @@
 </footer>
 
 <script src="script.js" defer></script>
+
 </body>
 </html>
