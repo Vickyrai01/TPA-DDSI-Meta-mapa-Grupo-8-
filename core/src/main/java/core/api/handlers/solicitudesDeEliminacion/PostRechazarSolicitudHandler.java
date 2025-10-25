@@ -30,5 +30,5 @@ public class PostRechazarSolicitudHandler implements Handler {
         context.status(200).result("Solicitud rechazada");
     }
 
-    //abria que ver si elimina o que a la solicitud!!!
+    //habria que ver si elimina o que a la solicitud!!!
 }
