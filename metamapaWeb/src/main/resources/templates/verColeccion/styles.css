@@ -175,12 +175,9 @@ main.map-layout-container {
 }
 
 .map-panel {
-    flex: 2; /* Ocupa 2/3 del ancho */
+    flex: 2;
     background-color: #eee;
     min-height: 100%;
-
-    /* Simulación del mapa de la imagen */
-    background-image: url('https://i.imgur.com/g0i4L9a.png');
     background-size: cover;
     background-position: center;
     position: relative;
@@ -286,7 +283,7 @@ main.map-layout-container {
     }
 
     #mapa {
-        height: 600px; /* ¡Dale la altura que necesites! */
+        height: 600px;
         width: 100%;
         background-color: #ffffff;
     }

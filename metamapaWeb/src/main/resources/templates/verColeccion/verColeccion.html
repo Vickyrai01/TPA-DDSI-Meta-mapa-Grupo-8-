@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -41,9 +40,6 @@
     </div>
 </header>
 
-
-
-
 <main class="map-layout-container">
 <div class="map-panel" id="mapa"></div>
 
@@ -65,8 +61,10 @@
         maxZoom: 19 // Le decís a la CAPA que su máximo es 19
     }).addTo(map);
 
+    L.marker([-34.722222,-58.363611]).addTo(map)
+        .bindPopup('Hola');
+
     window.addEventListener('resize', function() {
-        // Le dice al mapa que revise su tamaño y se ajuste
         map.invalidateSize();
     });
 
@@ -91,9 +89,6 @@
     </aside>
 
 </main>
-
-
-
 
 <footer class="site-footer">
     <div class="container footer-grid">
