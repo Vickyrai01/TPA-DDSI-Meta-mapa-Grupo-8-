@@ -2,11 +2,14 @@ package core.api.DTO;
 
 import core.models.entities.hecho.Hecho;
 
+import java.util.List;
+
 public class HechoResumenDTO {
     public String hash;
     public String nombre;
     public String descripcion;
     public String contribuyente;
+
 
     public HechoResumenDTO(String hash, String titulo, String descripcion, String nombreContribuyente) {
     this.hash = hash;

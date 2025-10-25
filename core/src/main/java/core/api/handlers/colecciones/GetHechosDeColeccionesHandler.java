@@ -1,5 +1,6 @@
 package core.api.handlers.colecciones;
 
+import core.api.DTO.HechoResumenDTO;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import core.models.entities.colecciones.Coleccion;
@@ -50,16 +51,21 @@ public class GetHechosDeColeccionesHandler implements Handler {
         if (latitud != null && longitud != null) {criterios.add(utilsFormatos.transformarUbicacionEnCriterio(latitud, longitud));}
 
         Integer idBuscado = context.pathParamAsClass("id", Integer.class).get();
-        Optional<Coleccion> resultadoBusqueda = repoColecciones.obtenerTodas().stream()
-                .filter(c -> c.getId() == idBuscado)
-                .findFirst();
-
-        if (resultadoBusqueda.isPresent()) {
-            List<Hecho> hechosFiltrados = FiltradorColecciones.getInstance().filtrarColeccion(resultadoBusqueda.get(), criterios);
-            context.status(200).json(hechosFiltrados);  //solo hechos :)
-        } else {
+        var opt = repoColecciones.findByIdFetchHechosYContribuyente(idBuscado); // <<-- NUEVO
+        if (opt.isEmpty()) {
             context.status(404).result("Colección no encontrada con ID: " + idBuscado);
+            return;
         }
+
+        Coleccion coleccion = opt.get();
+        List<Hecho> hechosFiltrados = FiltradorColecciones.getInstance().filtrarColeccion(coleccion, criterios);
+
+        // devolvé DTOs para no tocar relaciones LAZY de Hecho:
+        var respuesta = hechosFiltrados.stream()
+                .map(HechoResumenDTO::from) // tu DTO liviano (hash/id, nombre/titulo, descripcion, contribuyente)
+                .toList();
+
+        context.status(200).json(respuesta);
 
 
     }
