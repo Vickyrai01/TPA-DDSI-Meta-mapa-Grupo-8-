@@ -36,14 +36,17 @@ public class PatchColeccionHandler implements Handler {
 
         if (dto.titulo != null) {
             coleccion.setTitulo(dto.titulo);
+            coleccionesRepository.update(coleccion);
         }
 
         if (dto.descripcionColeccion != null) {
             coleccion.setDescripcionColeccion(dto.descripcionColeccion);
+            coleccionesRepository.update(coleccion);
         }
 
         if (dto .criterioDePertenencia != null) {
             coleccion.setCriterioDePertenencia((List<Criterio>) dto.criterioDePertenencia);
+            coleccionesRepository.update(coleccion);
         }
 
 
@@ -59,6 +62,7 @@ public class PatchColeccionHandler implements Handler {
                 hechos.add(hecho);
             }
             coleccion.setHechos(hechos);
+            coleccionesRepository.update(coleccion);
         }
 
         context.status(200).result("Colección actualizada correctamente");

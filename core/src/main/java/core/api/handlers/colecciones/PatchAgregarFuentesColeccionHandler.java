@@ -48,6 +48,7 @@ public class PatchAgregarFuentesColeccionHandler implements Handler
             if (fuente != null) {
                 if (!fuentesActuales.contains(fuente)) {
                     coleccion.agregarFuente(fuente);
+                    coleccionesRepository.update(coleccion);
                     enviarFuenteAlCargador(fuente);
                 }
             } else {

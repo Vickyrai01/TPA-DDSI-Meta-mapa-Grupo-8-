@@ -60,9 +60,9 @@ public class GetHechosDeColeccionesHandler implements Handler {
         Coleccion coleccion = opt.get();
         List<Hecho> hechosFiltrados = FiltradorColecciones.getInstance().filtrarColeccion(coleccion, criterios);
 
-        // devolvé DTOs para no tocar relaciones LAZY de Hecho:
+        // devuelve DTOs para no tocar relaciones LAZY de Hecho!!
         var respuesta = hechosFiltrados.stream()
-                .map(HechoResumenDTO::from) // tu DTO liviano (hash/id, nombre/titulo, descripcion, contribuyente)
+                .map(HechoResumenDTO::from)
                 .toList();
 
         context.status(200).json(respuesta);

@@ -34,6 +34,7 @@ public class PatchEliminarFuentesColeccionHandler implements Handler {
             Fuente fuente = fuentesRepository.getFuente(idFuente);
             if (fuente != null) {
                 coleccion.eliminarFuente(fuente);
+                coleccionesRepository.update(coleccion);
             } else {
                 context.status(404).result("Fuente con ID " + idFuente + " no encontrada");
                 return;
