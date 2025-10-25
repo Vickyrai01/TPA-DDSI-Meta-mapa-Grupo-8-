@@ -14,8 +14,13 @@ body {
 .map-section {
     flex: 1;
     overflow: hidden;
+    display: flex;
 }
-
+#mapa {
+    height: 100%;  /* Ocupa el 100% de .map-section */
+    width: 100%;
+    background-color: #ffffff;
+}
 .map-placeholder {
     width: 100%;
     height: 100%;
