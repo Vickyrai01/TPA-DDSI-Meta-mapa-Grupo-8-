@@ -432,3 +432,45 @@ body {
     box-sizing: border-box; /* Asegura que el padding no rompa el ancho */
 }
 
+/* --- Estilos para la lista de Fuentes (Nueva) --- */
+.source-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 16px 0; /* Espacio antes del buscador */
+    max-width: 100%; /* Asegura que no se desborde */
+}
+
+.source-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    margin-bottom: 6px;
+    font-size: 14px;
+}
+.source-list li span {
+    word-break: break-all; /* Evita que texto largo rompa el diseño */
+}
+
+.delete-source-btn {
+    background: none;
+    border: none;
+    color: #d9534f; /* Rojo peligro */
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 4px;
+    margin-left: 8px;
+}
+.delete-source-btn:hover {
+    color: #333;
+}
+
+/* Aseguramos que el buscador de AÑADIR se muestre como flex */
+.is-editing .search-bar.edit-mode#add-source-bar {
+    display: flex;
+}

@@ -75,18 +75,40 @@
                 </div>
 
                 <div class="card-body">
-                    <p class="card-info view-mode">INFO COLECCIÓN (NOMBRE, cantidad hechos, etc)</p>
-                    <input type="text" class="card-input edit-mode" value="INFO COLECCIÓN (NOMBRE, cantidad hechos, etc)">
-
+                    <div class="card-field">
+                        <strong>Nombre</strong>
+                        <p class="view-mode">*NOMBRE*</p>
+                        <input type="text" class="card-input edit-mode" value="*NOMBRE*">
+                    </div>
+                    <div class="card-field">
+                        <strong>Descripción</strong>
+                        <p class="view-mode">*DESCRIPCIÓN*</p>
+                        <input type="text" class="card-input edit-mode" value="*DESCRIPCIÓN*">
+                    </div>
 
                     <div class="card-field">
                         <strong>Fuente</strong>
-                        <p class="view-mode">*FUENTE SELECCIONADA*</p>
+                        <p class="view-mode">Fuente 1, Fuente 2, Fuente 3</p>
 
-                        <div class="search-bar edit-mode">
-                            <input type="text" placeholder="Buscar fuente...">
-                            <button class="search-btn" aria-label="Buscar">
-                                <i class="fa-solid fa-magnifying-glass"></i>
+                        <ul class="source-list edit-mode">
+                            <li>
+                                <span>Fuente 1</span>
+                                <button class="delete-source-btn" aria-label="Eliminar fuente">&times;</button>
+                            </li>
+                            <li>
+                                <span>Fuente 2</span>
+                                <button class="delete-source-btn" aria-label="Eliminar fuente">&times;</button>
+                            </li>
+                            <li>
+                                <span>Fuente 3</span>
+                                <button class="delete-source-btn" aria-label="Eliminar fuente">&times;</button>
+                            </li>
+                        </ul>
+
+                        <div class="search-bar edit-mode" id="add-source-bar">
+                            <input type="text" placeholder="Buscar y añadir fuente...">
+                            <button class="search-btn" id="add-source-btn" type="button" aria-label="Añadir">
+                                <i class="fa-solid fa-plus"></i>
                             </button>
                         </div>
                     </div>
@@ -155,7 +177,7 @@
 
         <form class="modal-form">
             <div class="form-group">
-                <label for="new-nombre">Nombre colección*</label>
+                <label for="new-nombre">Nombre:</label>
                 <input type="text" id="new-nombre" class="card-input" placeholder="Ej: Robos en Palermo">
             </div>
 
