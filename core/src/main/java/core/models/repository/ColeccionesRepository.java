@@ -117,6 +117,24 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             } catch (Exception ignore) {
             }
         }
+    }
 
+    public Optional<Coleccion> findByIdFetchFuentes(Integer idColeccion) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            var q = em.createQuery("""
+                        SELECT DISTINCT c
+                        FROM coleccion c
+                        LEFT JOIN FETCH c.fuentes f
+                        WHERE c.id = :id
+                    """, Coleccion.class);
+            q.setParameter("id", idColeccion);
+            return q.getResultStream().findFirst();
+        } finally {
+            try {
+                em.close();
+            } catch (Exception ignore) {
+            }
+        }
     }
 }
