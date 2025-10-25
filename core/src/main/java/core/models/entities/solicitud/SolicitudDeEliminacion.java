@@ -82,13 +82,30 @@ public class SolicitudDeEliminacion {
 
 
     public void aceptarSolicitud() {
-        if(aceptada != true) {
-            this.aceptada();
+        // ya aceptada
+        if (Boolean.TRUE.equals(this.aceptada)) {
+            throw new IllegalStateException("La solicitud ya fue aceptada.");
         }
+        // ya rechazada
+        if (Boolean.FALSE.equals(this.aceptada)) {
+            throw new IllegalStateException("La solicitud ya fue rechazada.");
+        }
+        // estaba pendiente (null), se acepta
+        this.setAceptada(true);
+        this.fechaDeRevision = LocalDateTime.now();
+        hecho.desactivarse();
     }
 
     public void rechazarSolicitud() {
-        this.rechazada();
+        if (Boolean.FALSE.equals(this.aceptada)) {
+            throw new IllegalStateException("La solicitud ya fue rechazada.");
+        }
+        if (Boolean.TRUE.equals(this.aceptada)) {
+            throw new IllegalStateException("La solicitud ya fue aceptada.");
+        }
+        hecho.activarse();
+        this.setAceptada(false);
+        this.setFechaDeRevision(LocalDateTime.now());
     }
 
     public String toString() {
@@ -100,16 +117,5 @@ public class SolicitudDeEliminacion {
                 '}';
     }
 
-    public void aceptada(){
-        this.setAceptada(true);
-        this.setFechaDeRevision(LocalDateTime.now());
-        hecho.desactivarse();
-    }
-
-    public void rechazada(){
-        hecho.activarse();
-        this.setAceptada(false);
-        this.setFechaDeRevision(LocalDateTime.now());
-    }
 
 }
