@@ -23,9 +23,18 @@ public class SolicitudDeEliminacion {
         this.fechaDeRevision = null;
     }
 
+    public SolicitudDeEliminacion(Hecho hecho, String descripcion) {
+        this.hecho = hecho;
+        this.descripcion = descripcion;
+        this.aceptada = null;
+        this.fechaDeRevision = null;
+    }
+
+
     public SolicitudDeEliminacion() {}
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
     public Integer getId() {
