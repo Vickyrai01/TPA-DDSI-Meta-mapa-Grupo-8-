@@ -20,7 +20,7 @@ public class FuenteDTO {
 
 
     public static FuenteDTO from(Fuente f) {
-        return new FuenteDTO(f.getNombre(), f.getTipoFuente().toString(), f.getLink(),  f.getStrategyTipoConexion().toString());
+        return new FuenteDTO(f.getNombre(), f.getTipoFuente().toString(), f.getLink(),  f.getStrategyTipoConexion().devolverTipoDeConexion());
     }
 
     public String getNombre() {
