@@ -3,6 +3,7 @@ package core.api.handlers.colecciones;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import core.api.DTO.ActualizarFuentesColeccionDTO;
+import core.api.DTO.FuenteDTO;
 import core.models.agregador.ConfigLoader;
 import core.models.entities.fuentes.TipoFuente;
 import io.javalin.http.Context;
@@ -20,45 +21,67 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PatchAgregarFuentesColeccionHandler implements Handler
 {
    private final ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();
     private final FuentesRepository fuentesRepository = FuentesRepository.getInstance();
     private static final Logger log = LoggerFactory.getLogger(PatchAgregarFuentesColeccionHandler.class);
-    @Override
-    public void handle(@NotNull Context context) throws Exception {
-        int idColeccion = Integer.parseInt(context.pathParam("id"));
-        ActualizarFuentesColeccionDTO dto = context.bodyAsClass(ActualizarFuentesColeccionDTO.class);
 
-        Coleccion coleccion = coleccionesRepository.getColeccion(idColeccion);
-        if (coleccion == null) {
-            context.status(404).result("Colección no encontrada");
+    @Override
+    public void handle(@NotNull Context ctx) throws JsonProcessingException {
+        int idColeccion = Integer.parseInt(ctx.pathParam("id"));
+        ActualizarFuentesColeccionDTO dto = ctx.bodyAsClass(ActualizarFuentesColeccionDTO.class);
+
+        // 1) Traer la colección con FUENTES fetch-eadas (evita LAZY)
+        var opt = coleccionesRepository.findByIdFetchFuentes(idColeccion);
+        if (opt.isEmpty()) {
+            ctx.status(404).result("Colección no encontrada");
+            return;
+        }
+        Coleccion coleccion = opt.get();
+        if (coleccion.getFuentes() == null) {
+            coleccion.setFuentes(new ArrayList<>());
+        }
+
+        // 2) Evitar duplicados por ID (no uses contains() entre entidades)
+        Set<Integer> idsExistentes = coleccion.getFuentes().stream()
+                .map(Fuente::getId)
+                .collect(java.util.stream.Collectors.toSet());
+
+        if (dto == null || dto.fuentes == null || dto.fuentes.isEmpty()) {
+            ctx.status(400).result("Lista de fuentes vacía o inválida");
             return;
         }
 
-        List<Fuente> fuentesActuales = new ArrayList<>(coleccion.getFuentes());
-
+        // 3) Resolver y agregar las nuevas fuentes
         for (Integer idFuente : dto.fuentes) {
+            if (idFuente == null) continue;
+
             Fuente fuente = fuentesRepository.getFuente(idFuente);
-            if (fuente != null) {
-                if (!fuentesActuales.contains(fuente)) {
-                    coleccion.agregarFuente(fuente);
-                    coleccionesRepository.update(coleccion);
-                    enviarFuenteAlCargador(fuente);
-                }
-            } else {
-                context.status(404).result("Fuente con ID " + idFuente + " no encontrada");
+            if (fuente == null) {
+                ctx.status(404).result("Fuente con ID " + idFuente + " no encontrada");
                 return;
+            }
+            if (idsExistentes.add(idFuente)) { // true si no estaba
+                coleccion.agregarFuente(fuente);
+                // si necesitás disparar algo externo por cada fuente nueva:
+                enviarFuenteAlCargador(fuente);
             }
         }
 
-        context.status(200).result("Fuentes agregadas correctamente");
+        // 4) Persistir cambios (una sola vez)
+        coleccionesRepository.update(coleccion);
+
+        // 5) Responder estado actual (usamos la lista ya inicializada / modificada en memoria)
+        var respuesta = coleccion.getFuentes().stream()
+                .map(FuenteDTO::from)
+                .toList();
+
+        ctx.status(200).json(respuesta);
     }
+
 
     private void enviarFuenteAlCargador(Fuente fuente) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
