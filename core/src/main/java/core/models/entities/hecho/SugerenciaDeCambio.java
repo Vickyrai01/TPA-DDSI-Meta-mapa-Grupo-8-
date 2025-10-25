@@ -3,14 +3,13 @@ package core.models.entities.hecho;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity(name = "sugerencia_de_cambio")
 public class SugerenciaDeCambio {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_sugerencia_de_cambio")
     private Integer id;
     public Integer getId() {

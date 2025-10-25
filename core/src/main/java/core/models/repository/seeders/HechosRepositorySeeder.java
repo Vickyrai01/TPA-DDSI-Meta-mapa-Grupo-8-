@@ -34,7 +34,7 @@ public class HechosRepositorySeeder {
 
     HechosRepository hechosRepository = HechosRepository.getInstance();
     CategoriaRepository categoriaRepository = CategoriaRepository.getInstance();
-    NormalizadorCategoria normalizadorCategoria = NormalizadorCategoria.getInstance();
+
 
     public void cargarHechosSeeder() {
 

@@ -28,6 +28,4 @@ public class ApiAdminMetaMapa {
 
         ApiAdminMetaMapaConfig.configurarEndpoints(app);
     }
-
-
 }

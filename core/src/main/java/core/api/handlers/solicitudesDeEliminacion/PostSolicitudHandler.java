@@ -25,12 +25,11 @@ public class PostSolicitudHandler implements Handler {
         }
 
         SolicitudDeEliminacion solicitud = new SolicitudDeEliminacion(
-                dto.id,
                 hecho,
                 dto.descripcion
         );
 
-        System.out.println(solicitud);
+        System.out.println("Solicitud creada para el hecho " + hecho.getTitulo() + " con la descripción " + solicitud.getDescripcion());
         validarNuevaSolicitud(solicitud);
         repoSolicitudes.add(solicitud);
         context.status(201);
