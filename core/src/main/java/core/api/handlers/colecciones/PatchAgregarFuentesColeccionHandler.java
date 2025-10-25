@@ -3,6 +3,7 @@ package core.api.handlers.colecciones;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import core.api.DTO.ActualizarFuentesColeccionDTO;
+import core.api.DTO.ColeccionConFuentesDTO;
 import core.api.DTO.FuenteDTO;
 import core.models.agregador.ConfigLoader;
 import core.models.entities.fuentes.TipoFuente;
@@ -28,7 +29,6 @@ public class PatchAgregarFuentesColeccionHandler implements Handler
    private final ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();
     private final FuentesRepository fuentesRepository = FuentesRepository.getInstance();
     private static final Logger log = LoggerFactory.getLogger(PatchAgregarFuentesColeccionHandler.class);
-
     @Override
     public void handle(@NotNull Context ctx) throws JsonProcessingException {
         int idColeccion = Integer.parseInt(ctx.pathParam("id"));
@@ -45,17 +45,17 @@ public class PatchAgregarFuentesColeccionHandler implements Handler
             coleccion.setFuentes(new ArrayList<>());
         }
 
-        // 2) Evitar duplicados por ID (no uses contains() entre entidades)
-        Set<Integer> idsExistentes = coleccion.getFuentes().stream()
-                .map(Fuente::getId)
-                .collect(java.util.stream.Collectors.toSet());
-
         if (dto == null || dto.fuentes == null || dto.fuentes.isEmpty()) {
             ctx.status(400).result("Lista de fuentes vacía o inválida");
             return;
         }
 
-        // 3) Resolver y agregar las nuevas fuentes
+        // 2) Evitar duplicados por ID
+        Set<Integer> idsExistentes = coleccion.getFuentes().stream()
+                .map(Fuente::getId)
+                .collect(java.util.stream.Collectors.toSet());
+
+        // 3) Resolver y agregar nuevas fuentes
         for (Integer idFuente : dto.fuentes) {
             if (idFuente == null) continue;
 
@@ -66,7 +66,6 @@ public class PatchAgregarFuentesColeccionHandler implements Handler
             }
             if (idsExistentes.add(idFuente)) { // true si no estaba
                 coleccion.agregarFuente(fuente);
-                // si necesitás disparar algo externo por cada fuente nueva:
                 enviarFuenteAlCargador(fuente);
             }
         }
@@ -74,11 +73,8 @@ public class PatchAgregarFuentesColeccionHandler implements Handler
         // 4) Persistir cambios (una sola vez)
         coleccionesRepository.update(coleccion);
 
-        // 5) Responder estado actual (usamos la lista ya inicializada / modificada en memoria)
-        var respuesta = coleccion.getFuentes().stream()
-                .map(FuenteDTO::from)
-                .toList();
-
+        // 5) Devolver datos básicos de la colección + fuentes (DTO compuesto)
+        var respuesta = ColeccionConFuentesDTO.from(coleccion);
         ctx.status(200).json(respuesta);
     }
 
