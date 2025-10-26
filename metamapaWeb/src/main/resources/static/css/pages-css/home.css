@@ -32,7 +32,7 @@ body{
 
 /* ====== Hero ====== */
 .hero{
-    background-image: url("../../static/img/fondoHOME1.png");
+    background-image: url("../../img/fondoHOME1.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -87,7 +87,7 @@ body{
 
 /* ====== Colaborá / Form ====== */
 .collab{
-    background-image: url("../../static/img/fondoHOME2.png"); /* ruta de la imagen */
+    background-image: url("../../img/fondoHOME2.png"); /* ruta de la imagen */
    background-size: cover;     /* que cubra todo el ancho y alto */
    background-position: center; /* centrada */
    background-repeat: no-repeat;

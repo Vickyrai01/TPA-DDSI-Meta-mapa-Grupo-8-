@@ -18,7 +18,7 @@ body {
     font-family: Montserrat, system-ui, Segoe UI, Roboto, Arial, sans-serif;
     color: var(--text);
     /* Fondo de mapa */
-    background-image: url("../../static/img/fondoHOME1.png");
+    background-image: url("../../img/fondoHOME1.png");
     background-size: cover;
     background-position: center;
     background-attachment: fixed; /* Fija el fondo */
