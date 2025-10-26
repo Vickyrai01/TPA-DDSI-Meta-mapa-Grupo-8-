@@ -4,6 +4,8 @@ import core.models.entities.colecciones.criterios.Criterio;
 import core.models.entities.fuentes.Fuente;
 import core.models.entities.hecho.Hecho;
 import core.models.repository.ColeccionesRepository;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -44,12 +46,13 @@ public class Coleccion {
     public String getTitulo() {return titulo;}
     public void setTitulo(String titulo) {this.titulo = titulo;}
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "coleccion_fuente", // nombre de la tabla intermedia
             joinColumns = @JoinColumn(name = "id_coleccion"), // FK hacia tu entidad actual
             inverseJoinColumns = @JoinColumn(name = "id_fuente") // FK hacia Hecho
     )
+    @Fetch(FetchMode.SUBSELECT)
     private List<Fuente> fuentes;
     public List<Fuente> getFuentes() {return this.fuentes;}
     public void setFuentes(List<Fuente> fuentes){this.fuentes = fuentes;}
@@ -77,12 +80,13 @@ public class Coleccion {
 
     /*@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "coleccion_id") // FK en la tabla de Criterio*/
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "coleccion_criterio",
             joinColumns = @JoinColumn(name = "coleccion_id"),
             inverseJoinColumns = @JoinColumn(name = "criterio_id")
     )
+    @Fetch(FetchMode.SUBSELECT)
     private List<Criterio> criterioDePertenencia = new ArrayList<>();
     public List<Criterio> getCriterioDePertenencia() {
        return criterioDePertenencia;

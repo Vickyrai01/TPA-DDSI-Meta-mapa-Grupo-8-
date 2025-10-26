@@ -1,18 +1,17 @@
-package core.models.agregador;
+package core.api.DTO;
 
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import core.api.DTO.ArrayToStringDateTimeDeserializer;
-import kotlin.jvm.Transient;
+import core.models.agregador.HandlerRecientes;
+import core.models.entities.fuentes.TipoFuente;
 
 import java.util.Collections;
 import java.util.List;
-@JsonIgnoreProperties(ignoreUnknown = true) // ignora campos extra en el JSON
-@JsonInclude(JsonInclude.Include.NON_NULL)               // no serializa campos null en las respuestas
-public class HechoAIntegrarDTO {
 
-    @JsonProperty(access = Access.READ_ONLY)             // no se espera en el JSON de entrada
+public class HechoAIntegrarDINAMICO {
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)             // no se espera en el JSON de entrada
     public String hash;
 
     public String titulo;
@@ -22,29 +21,26 @@ public class HechoAIntegrarDTO {
     public String longitud;
     @JsonDeserialize(using = ArrayToStringDateTimeDeserializer.class)
     public String fechaSuceso;
-    public String linkFuente;
 
     public List<String> etiquetas;
     public String contribuyente;
     public List<String> multimedia; //A CHEQUEAR !!!!
     public String tipoFuente;
 
-    @JsonProperty(access = Access.READ_ONLY)             // flag interno; no lo pidas en el request
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)             // flag interno; no lo pidas en el request
     public Boolean fueExtraido;
-
     public Integer idFuente;
 
-    public HechoAIntegrarDTO() {}
+    public HechoAIntegrarDINAMICO() {}
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public HechoAIntegrarDTO(
+    public HechoAIntegrarDINAMICO(
             @JsonProperty(value = "titulo",       required = true) String titulo,
             @JsonProperty(value = "descripcion",  required = true) String descripcion,
             @JsonProperty(value = "categoria",    required = true) String categoria,
             @JsonProperty(value = "latitud",      required = true) String latitud,
             @JsonProperty(value = "longitud",     required = true) String longitud,
-            @JsonProperty(value = "fechaSuceso",  required = true) String fechaSuceso,
-            @JsonProperty(value = "linkFuente",  required = true) String linkFuente
+            @JsonProperty(value = "fechaSuceso",  required = true) String fechaSuceso
     ) {
         this.hash = HandlerRecientes.generarHash(titulo+descripcion+categoria+latitud+longitud);
         this.titulo = titulo;
@@ -53,18 +49,16 @@ public class HechoAIntegrarDTO {
         this.latitud = latitud;
         this.longitud = longitud;
         this.fechaSuceso = fechaSuceso;
-        this.linkFuente = linkFuente;
-
+        this.tipoFuente = String.valueOf(TipoFuente.DINAMICA);
         // opcionales: quedan null si no vienen
         this.etiquetas = null;
         this.contribuyente = null;
         this.multimedia = null;
-        this.tipoFuente = null;
 
         this.fueExtraido = Boolean.FALSE; // default interno
     }
 
-    public HechoAIntegrarDTO(String titulo, String descripcion, String categoria, String latitud, String longitud, String fechaSuceso,
+    public HechoAIntegrarDINAMICO(String titulo, String descripcion, String categoria, String latitud, String longitud, String fechaSuceso,
                              List<String> etiquetas, String contribuyente, List<String> multimedia, String linkFuente)
     {
         this.hash = HandlerRecientes.generarHash(titulo+descripcion+categoria+latitud+longitud);
@@ -77,21 +71,7 @@ public class HechoAIntegrarDTO {
         this.etiquetas = etiquetas;
         this.contribuyente = contribuyente;
         this.multimedia = multimedia;
-        this.tipoFuente = null;
-        this.linkFuente = linkFuente;
-    }
-
-    public HechoAIntegrarDTO(String titulo, String descripcion, String categoria, String latitud, String longitud, String fecha) {
-        this.titulo = titulo;
-        this.descripcion = descripcion;
-        this.categoria = categoria;
-        this.latitud = latitud;
-        this.longitud = longitud;
-        this.fechaSuceso = fecha;
-        this.etiquetas = null;
-        this.contribuyente = null;
-        this.multimedia = null;
-        this.linkFuente = null;
+        this.tipoFuente = String.valueOf(TipoFuente.DINAMICA);
     }
 
 
@@ -112,8 +92,6 @@ public class HechoAIntegrarDTO {
     public void setTipoFuente(String fuente) {this.tipoFuente = fuente;};
     public Integer getIdFuente() {return idFuente;}
     public void setIdFuente(Integer idFuente) {this.idFuente = idFuente;};
-    public String getLinkFuente() {return linkFuente;}
-    public void setLinkFuente(String linkFuente){this.linkFuente = linkFuente;}
 
 
     public Boolean tieneMismoTitulo(String tituloExterno){
@@ -138,7 +116,7 @@ public class HechoAIntegrarDTO {
                 '}';
     }
 
-    public HechoAIntegrarDTO(String titulo, String descripcion, String categoria,
+    public HechoAIntegrarDINAMICO(String titulo, String descripcion, String categoria,
                              String latitud, String longitud, String fechaSuceso,
                              List<String> etiquetas, String contribuyente,
                              String multimedia, String tipoFuente,
@@ -155,7 +133,5 @@ public class HechoAIntegrarDTO {
         this.tipoFuente = tipoFuente;
         this.fueExtraido = fueExtraido;
         this.idFuente = idFuente;
-        this.linkFuente = null;
     }
-
 }

@@ -20,5 +20,13 @@ public class CriterioUbicacion extends Criterio{
     public boolean cumpleCriterio(Hecho hecho) {
         return hecho.getUbicacion().getLatitud().equals(coordenadas.getLatitud())  && hecho.getUbicacion().getLongitud().equals(coordenadas.getLongitud())  ;
     }
+
+    public Double getLatitud(){
+        return coordenadas.getLatitud();
+    }
+
+    public Double getLongitud(){
+        return coordenadas.getLongitud();
+    }
     //TO DO gigante
 }
