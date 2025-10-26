@@ -1,55 +1,27 @@
-<!doctype html>
-<html lang="es">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MetaMapa</title>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(
+          titulo='Inicio',
+          linksAdicionales=~{:: #links-de-home},
+          scriptsAdicionales=~{:: #scripts-de-home},
+          contenido=~{:: #contenido-de-home}
+      )}">
 
-    <!-- Fuente -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
-    <!-- Estilos (misma carpeta) -->
-    <link rel="stylesheet" href="../css/pages-css/button.css">
-    <link rel="stylesheet" href="../css/pages-css/footer.css">
-    <link rel="stylesheet" href="../css/pages-css/navbar.css">
-    <link rel="stylesheet" href="../css/pages-css/home.css">
+<th:block id="links-de-home">
+    <link rel="stylesheet" th:href="@{/css/pages-css/button.css}">
+    <link rel="stylesheet" th:href="@{/css/pages-css/home.css}">
+</th:block>
 
-    <!-- (Opcional) Iconos para footer -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
-<!-- NAV -->
-<header class="site-header" id="top">
-    <div class="container nav">
-        <a class="brand" href="#top">
-            <img src="../img/logoNAVBAR.png" alt="Logo MetaMapa" class="brand-logo">
-        </a>
 
-        <nav class="menu">
-            <a href="#inicio"  style="color: #ff8c42">Inicio</a>
-            <a href="#reportar">Reportar suceso</a>
-            <a href="#mapa">Ver mapa</a>
-            <a href="#navegar">Navegar sucesos</a>
-            <a href="#perfil" class="avatar" aria-label="Perfil">
-                <i class="fa-regular fa-user"></i>
-            </a>
-        </nav>
+<div id="contenido-de-home">
 
-        <button class="burger" aria-label="Abrir menú">
-            <span></span><span></span><span></span>
-        </button>
-    </div>
-</header>
-
-<main>
-    <!-- HERO / INICIO -->
     <section id="inicio" class="hero">
         <div class="hero-inner container">
             <h1 class="hero-title">
-              MetaMapa
+                MetaMapa
             </h1>
             <p class="hero-subtitle">La ciudad te habla, nosotros te avisamos.</p>
 
-            <!-- Tarjeta "Quiénes somos" -->
             <div class="about-card">
                 <h2 class="card-title">Quiénes somos</h2>
                 <p class="card-body">
@@ -58,12 +30,10 @@
                 <p class="card-body">
                     En MetaMapa, la ciudad te habla y nosotros te ayudamos a escucharla y actuar sobre ella.
                 </p>
-
             </div>
         </div>
     </section>
 
-    <!-- COLABORÁ / FORM -->
     <section id="reportar" class="collab">
         <div class="container collab-grid">
             <div class="collab-copy">
@@ -72,17 +42,14 @@
 
             <form class="report-card" autocomplete="off">
                 <div class="report-header">Reportar suceso</div>
-
                 <label class="field">
                     <span>Título suceso</span>
                     <input type="text" placeholder="Ej: Incendio en Lugano">
                 </label>
-
                 <label class="field">
                     <span>Descripción</span>
                     <textarea rows="3" placeholder="Contanos qué pasó..."></textarea>
                 </label>
-
                 <label class="field">
                     <span>Categoría</span>
                     <select>
@@ -94,17 +61,14 @@
                         <option>Otro</option>
                     </select>
                 </label>
-
                 <label class="field half">
                     <span>Fecha suceso</span>
                     <input type="date">
                 </label>
-
                 <label class="field half">
                     <span>Ubicación</span>
                     <input type="text" placeholder="CAMBIAR DESPUES!!">
                 </label>
-
                 <div class="field half">
                     <span>Adjuntar evidencias</span>
                     <div class="attach-row">
@@ -115,24 +79,16 @@
                     </div>
                     <input id="evidencias" type="file" accept="image/*,video/*">
                 </div>
-                
                 <button class="btn-primary" type="submit">Reportar</button>
                 <p class="hint"><i class="fa-regular fa-circle-question"></i> Al enviar aceptás los términos de uso.</p>
             </form>
         </div>
     </section>
-</main>
+</div>
 
-<!-- FOOTER -->
-<footer class="site-footer">
-    <div class="container footer-grid">
-        <a href="mailto:metamapa@gmail.com"><i class="fa-solid fa-envelope"></i> metamapa@gmail.com</a>
-        <a href="#mapa"><i class="fa-solid fa-map-location-dot"></i> /ver-mapa</a>
-        <a href="https://instagram.com" target="_blank" rel="noreferrer"><i class="fa-brands fa-instagram"></i> @metamapa</a>
-    </div>
-</footer>
 
-<!-- Script (misma carpeta) -->
-<script src="script.js" defer></script>
-</body>
+<th:block id="scripts-de-home">
+    <script th:src="@{/script.js}" defer></script>
+</th:block>
+
 </html>
