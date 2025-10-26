@@ -27,7 +27,7 @@ public class ApiMetaMapa {
 
         Javalin app = Javalin.create()
                 .get("/", ctx -> ctx.result("API MetaMapa ACTIVA"))
-                .start(8082);
+                .start(8081);
 
         ApiMetaMapaConfig.configurarEndpoints(app);
 
