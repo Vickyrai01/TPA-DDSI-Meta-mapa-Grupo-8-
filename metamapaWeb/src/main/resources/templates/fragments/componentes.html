@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<header class="site-header" id="top" th:fragment="navbar">
+    <div class="container nav">
+        <a class="brand" th:href="@{/}">
+            <img class="brand-logo" th:src="@{/img/logoNAVBAR.png}" alt="Logo MetaMapa">
+        </a>
+
+        <nav class="menu">
+            <a th:href="@{/}">Inicio</a>
+            <a th:href="@{/reportar}">Reportar suceso</a>
+            <a th:href="@{/#mapa}">Ver mapa</a>
+            <a th:href="@{/colecciones}">Navegar sucesos</a>
+            <a th:href="@{/perfil}" class="avatar" aria-label="Perfil"><i class="fa-regular fa-user"></i></a>
+        </nav>
+
+        <button class="burger" aria-label="Abrir menú"><span></span><span></span><span></span></button>
+    </div>
+</header>
+
+<footer class="site-footer" th:fragment="footer">
+    <div class="container footer-grid">
+        <a href="mailto:metamapa@gmail.com"><i class="fa-solid fa-envelope"></i> metamapa@gmail.com</a>
+        <a th:href="@{/#mapa}"><i class="fa-solid fa-map-location-dot"></i> /ver-mapa</a>
+        <a href="https://instagram.com" target="_blank" rel="noreferrer"><i class="fa-brands fa-instagram"></i> @metamapa</a>
+    </div>
+</footer>
+
+</body>
+</html>
