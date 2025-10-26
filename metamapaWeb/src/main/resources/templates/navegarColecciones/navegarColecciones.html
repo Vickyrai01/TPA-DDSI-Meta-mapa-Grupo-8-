@@ -11,99 +11,29 @@
     <link rel="stylesheet" th:href="@{/css/pages-css/navegarColecciones.css}">
 </th:block>
 
-    <div id="contenido-de-navegar">
+<div id="contenido-de-navegar">
+    <div class="collection-card">
+        <div class="collection-header">SUCESOS</div>
 
-        <div class="collection-card">
-
-            <div class="collection-header">SUCESOS</div>
-
-            <div class="collections-list">
-
-                <a href="#" class="collection-item">
-                    <div class="collection-text">
-                        <h3>Incendios Forestales</h3>
-                        <p>Cantidad de hechos: 20</p>
-                        <p>Última de actualización: Hoy</p>
-                        <p>Criterios: Incendios, Argentina</p>
-                    </div>
-                    <div class="collection-image">
-                        <img src="../../static/img/incendio1.jpg" alt="Incendio Forestal" class="brand-logo">
-                    </div>
-                </a>
-                <a href="#" class="collection-item">
-                    <div class="collection-text">
-                        <h3>Robos Armados</h3>
-                        <p>Cantidad de hechos: 10</p>
-                        <p>Última de actualización: 31.09</p>
-                        <p>Criterios: Robo, AMBA, Armas</p>
-                    </div>
-                    <div class="collection-image">
-                        <img src="../../static/img/robo1.png" alt="Robo armado" class="brand-logo">
-                    </div>
-                </a>
-
-                <a href="#" class="collection-item">
-                    <div class="collection-text">
-                        <h3>Incendios Vehículos</h3>
-                        <p>Cantidad de hechos: 35</p>
-                        <p>Última de actualización: 29.08</p>
-                        <p>Criterios: Incendios, Argentina, Autos</p>
-                    </div>
-                    <div class="collection-image">
-                        <img src="../../static/img/incendio2.png" alt="Incendio Vehiculo" class="brand-logo">
-                    </div>
-                </a>
-
-                <a href="#" class="collection-item">
-                    <div class="collection-text">
-                        <h3>Robos a Locales</h3>
-                        <p>Cantidad de hechos: 30</p>
-                        <p>Última de actualización: Hoy</p>
-                        <p>Criterios: Robos, CABA, Comercios</p>
-                    </div>
-                    <div class="collection-image">
-                        <img src="../../static/img/robo2.png" alt="robo local" class="brand-logo">
-                    </div>
-                </a>
-                <a href="#" class="collection-item">
-                    <div class="collection-text">
-                        <h3>Robos a Locales</h3>
-                        <p>Cantidad de hechos: 30</p>
-                        <p>Última de actualización: Hoy</p>
-                        <p>Criterios: Robos, CABA, Comercios</p>
-                    </div>
-                    <div class="collection-image">
-                        <img src="../../static/img/incendio1.jpg" alt="Incendio Forestal" class="brand-logo">
-                    </div>
-                </a>
-                <a href="#" class="collection-item">
-                    <div class="collection-text">
-                        <h3>Robos a Locales</h3>
-                        <p>Cantidad de hechos: 30</p>
-                        <p>Última de actualización: Hoy</p>
-                        <p>Criterios: Robos, CABA, Comercios</p>
-                    </div>
-                    <div class="collection-image">
-                        <img src="../../static/img/incendio1.jpg" alt="Incendio Forestal" class="brand-logo">
-                    </div>
-                </a>
-                <a href="#" class="collection-item">
-                    <div class="collection-text">
-                        <h3>Robos a Locales</h3>
-                        <p>Cantidad de hechos: 30</p>
-                        <p>Última de actualización: Hoy</p>
-                        <p>Criterios: Robos, CABA, Comercios</p>
-                    </div>
-                    <div class="collection-image">
-                        <img src="../../static/img/incendio1.jpg" alt="Incendio Forestal" class="brand-logo">
-                    </div>
-                </a>
-
-
-            </div> </div> </div>
+        <div class="collections-list">
+            <a th:each="c : ${listaDeColecciones}" href="#" class="collection-item">
+                <div class="collection-text">
+                    <h3 th:text="${c.titulo()}">Título</h3>
+                    <p>Cantidad de hechos:
+                        <span th:text="${c.cantidadHechos()}">0</span>
+                    </p>
+                    <p th:text="${c.descripcionColeccion()}">Descripción</p>
+                </div>
+                <div class="collection-image">
+                    <img th:src="@{/img/incendio1.jpg}" alt="Imagen colección" class="brand-logo">
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
 
 <th:block id="scripts-de-navegar">
-    <script th:src="@{/home.js}" defer></script>
+    <script th:src="@{/js/navegarColecciones.js}" defer></script>
 </th:block>
 
 </html>
