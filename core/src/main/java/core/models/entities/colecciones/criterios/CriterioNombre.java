@@ -18,4 +18,7 @@ public class CriterioNombre extends Criterio{
         return hecho.getTitulo().toLowerCase().contains(palabraClave.toLowerCase());
     }
 
+    public String getPalabraClave() {
+        return palabraClave;
+    }
 }
