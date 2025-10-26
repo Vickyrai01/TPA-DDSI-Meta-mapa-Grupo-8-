@@ -32,3 +32,26 @@ document.querySelector('.report-card')?.addEventListener('submit', e => {
     setTimeout(() => { btn.textContent = '¡Gracias por reportar!'; }, 800);
     setTimeout(() => { btn.disabled = false; btn.textContent = original; e.target.reset(); }, 2200);
 });
+
+// Utilidad para fetch con manejo simple de errores
+async function fetchJSON(url) {
+    const res = await fetch(url);
+    if (!res.ok) {
+        const text = await res.text().catch(() => '');
+        throw new Error(`Error ${res.status} en ${url} - ${text}`);
+    }
+    return res.json();
+}
+
+// Cargar todas las colecciones y pintarlas en la sidebar
+async function loadColecciones() {
+    try {
+        const colecciones = await fetchJSON(`${API_BASE}/colecciones`);
+        console.log('Colecciones:', colecciones); // Mirá el shape y ajustá campos si hace falta
+        renderColecciones(colecciones);
+    } catch (err) {
+        console.error(err);
+        const list = document.querySelector('.collection-list');
+        if (list) list.innerHTML = '<p style="color:#c00">No se pudieron cargar las colecciones.</p>';
+    }
+}

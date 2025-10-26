@@ -1,46 +1,17 @@
-<!doctype html>
-<html lang="es">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MetaMapa - Colecciones</title>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(
+          titulo='Inicio',
+          linksAdicionales=~{:: #links-de-navegar},
+          scriptsAdicionales=~{:: #scripts-de-navegar},
+          contenido=~{:: #contenido-de-navegar}
+      )}">
+<th:block id="links-de-navegar">
+    <link rel="stylesheet" th:href="@{/css/pages-css/button.css}">
+    <link rel="stylesheet" th:href="@{/css/pages-css/navegarColecciones.css}">
+</th:block>
 
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="../css/pages-css/navegarColecciones.css">
-    <link rel="stylesheet" href="../css/pages-css/navbar.css">
-    <link rel="stylesheet" href="../css/pages-css/footer.css">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
-<!-- NAVBAR -->
-<header class="site-header" id="top">
-    <div class="container nav">
-        <a class="brand" href="#top">
-            <img src="../img/logoNAVBAR.png" alt="Logo MetaMapa" class="brand-logo">
-        </a>
-
-        <nav class="menu">
-            <a th:href="@{/}">Inicio</a>
-            <a href="#reportar">Reportar suceso</a>
-            <a href="#mapa">Ver mapa</a>
-            <a href="#navegar"  style="color: #ff8c42">Navegar sucesos</a>
-            <a href="#perfil" class="avatar" aria-label="Perfil">
-                <i class="fa-regular fa-user"></i>
-            </a>
-        </nav>
-
-        <button class="burger" aria-label="Abrir menú">
-            <span></span><span></span><span></span>
-        </button>
-    </div>
-</header>
-
-
-<main>
-
-    <div class="container report-container">
+    <div id="contenido-de-navegar">
 
         <div class="collection-card">
 
@@ -130,16 +101,9 @@
 
 
             </div> </div> </div>
-</main>
 
-<footer class="site-footer">
-    <div class="container footer-grid">
-        <a href="mailto:metamapa@gmail.com"><i class="fa-solid fa-envelope"></i> metamapa@gmail.com</a>
-        <a href="#mapa"><i class="fa-solid fa-map-location-dot"></i> /ver-mapa</a>
-        <a href="https://instagram.com" target="_blank" rel="noreferrer"><i class="fa-brands fa-instagram"></i> @metamapa</a>
-    </div>
-</footer>
+<th:block id="scripts-de-navegar">
+    <script th:src="@{/home.js}" defer></script>
+</th:block>
 
-<script src="script.js" defer></script>
-</body>
 </html>
