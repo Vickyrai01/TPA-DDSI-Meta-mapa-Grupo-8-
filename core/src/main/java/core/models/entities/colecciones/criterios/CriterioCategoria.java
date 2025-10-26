@@ -33,4 +33,8 @@ public class CriterioCategoria extends Criterio {
         return hecho.getCategoria().getNombre().toLowerCase().contains(categoria.getNombre().toLowerCase());
 
     }
+
+    public String getCategoriaString() {
+        return categoria.toString();
+    }
 }

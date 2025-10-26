@@ -35,4 +35,8 @@ public class CriterioDescripcion extends Criterio {
         return hecho.getDescripcion().toLowerCase().contains(palabraClave.toLowerCase());
     }
 
+
+    public String getPalabraClave() {
+        return palabraClave;
+    }
 }

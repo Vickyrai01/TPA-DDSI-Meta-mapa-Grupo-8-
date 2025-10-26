@@ -17,6 +17,15 @@ public class CriterioFechaCarga extends Criterio {
 
     public CriterioFechaCarga() {
     }
+
+    public LocalDate getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public LocalDate getFechaFin(){
+        return fechaFin;
+    }
+
     @Override
     public boolean cumpleCriterio(Hecho hecho) {
         return hecho.getFechaCarga().isBefore(fechaFin) && hecho.getFechaCarga().isAfter(fechaInicio);

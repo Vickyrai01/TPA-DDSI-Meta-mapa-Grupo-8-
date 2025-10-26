@@ -26,4 +26,5 @@ public interface StrategyTipoConexion {
     public List<HechoAIntegrarDTO> extraerHecho(String fuente, String codigoFuente);
     public String devolverTipoDeConexion();
 
+
 }

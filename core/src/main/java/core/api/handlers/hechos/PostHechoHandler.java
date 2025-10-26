@@ -2,6 +2,7 @@ package core.api.handlers.hechos;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import core.api.DTO.HechoAIntegrarDINAMICO;
 import core.api.handlers.colecciones.PatchAgregarFuentesColeccionHandler;
 import core.models.agregador.ConfigLoader;
 import io.javalin.http.Context;
@@ -24,18 +25,17 @@ public class PostHechoHandler implements Handler {
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
-        HechoAIntegrarDTO dto = context.bodyAsClass(HechoAIntegrarDTO.class);
+        HechoAIntegrarDINAMICO dto = context.bodyAsClass(HechoAIntegrarDINAMICO.class);
         System.out.println("Creando hecho: " + context.body());
 
 
-        HechoAIntegrarDTO hechoDTO = new HechoAIntegrarDTO(
+        HechoAIntegrarDINAMICO hechoDTO = new HechoAIntegrarDINAMICO(
                 dto.getTitulo(),
                 dto.getDescripcion(),
                 dto.getCategoria(),
                 dto.getLatitud(),
                 dto.getLongitud(),
-                dto.getFechaSuceso(),
-                dto.getLinkFuente()
+                dto.getFechaSuceso()
         );
 
         validarNuevoHecho(hechoDTO);
@@ -43,13 +43,13 @@ public class PostHechoHandler implements Handler {
         context.status(201);
     }
 
-    private void validarNuevoHecho(HechoAIntegrarDTO hecho) {
+    private void validarNuevoHecho(HechoAIntegrarDINAMICO hecho) {
         if (hecho.getTitulo() == null) {
             throw new IllegalArgumentException("El nombre es obligatorio, elegí otro");
         }
     }
 
-    private void enviarHechoAlCargador(HechoAIntegrarDTO hecho) throws JsonProcessingException {
+    private void enviarHechoAlCargador(HechoAIntegrarDINAMICO hecho) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         String jsonHecho = this.hechoAJson(hecho);
@@ -81,13 +81,13 @@ public class PostHechoHandler implements Handler {
             if (status != 201) {
                 throw new RuntimeException("Error en la llamada HTTP (" + status + "): " + responseBody);
             }
-            log.info("Fuente enviada al cargador: " + hecho.getTitulo());
+            log.info("Hecho enviada al cargador: " + hecho.getTitulo());
         } catch (Exception e) {
-            log.info("Error al enviar fuente " + hecho + ": " + e.getMessage());
+            log.info("Error al enviar Hecho " + hecho + ": " + e.getMessage());
         }
     }
 
-    private String hechoAJson(HechoAIntegrarDTO hechoAIntegrarDTO){
+    private String hechoAJson(HechoAIntegrarDINAMICO hechoAIntegrarDTO){
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> jsonMap = new HashMap<>();
         jsonMap.put("hash", hechoAIntegrarDTO.getHash());
