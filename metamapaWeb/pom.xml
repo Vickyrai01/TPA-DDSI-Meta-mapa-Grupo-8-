@@ -32,6 +32,7 @@
     </dependency>
 
     <!-- Seguridad + OAuth2 (Google SSO para /admin/**) -->
+    <!--
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-oauth2-client</artifactId>
@@ -40,6 +41,7 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
+    -->
 
     <!-- WebClient para consumir tus APIs -->
     <dependency>
