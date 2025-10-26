@@ -81,9 +81,9 @@ public class PostHechoHandler implements Handler {
             if (status != 201) {
                 throw new RuntimeException("Error en la llamada HTTP (" + status + "): " + responseBody);
             }
-            log.info("Fuente enviada al cargador: " + hecho.getTitulo());
+            log.info("Hecho enviada al cargador: " + hecho.getTitulo());
         } catch (Exception e) {
-            log.info("Error al enviar fuente " + hecho + ": " + e.getMessage());
+            log.info("Error al enviar Hecho " + hecho + ": " + e.getMessage());
         }
     }
 
