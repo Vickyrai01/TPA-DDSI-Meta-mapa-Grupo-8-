@@ -7,7 +7,11 @@ import application.service.ColeccionService;
 
 @Controller
 public class ColeccionesController {
-    ColeccionService coleccionService = ColeccionService.getInstance();
+    private final ColeccionService coleccionService;
+
+    public ColeccionesController(ColeccionService coleccionService) {
+        this.coleccionService = coleccionService;
+    }
 
     @GetMapping("/colecciones") // Esta es la URL que usará el botón
     public String navegarColecciones(Model model) {
