@@ -13,17 +13,18 @@ public class GetColeccionIdHandler implements Handler {
     private final ColeccionesRepository repoColecciones = ColeccionesRepository.getInstance();
 
     @Override
-    public void handle(@NotNull Context context) throws Exception {
+    public void handle(@NotNull Context ctx) throws Exception {
 
-        Integer idBuscado = context.pathParamAsClass("id", Integer.class).get();
-        final Optional<Coleccion> resultadoBusqueda = repoColecciones.obtenerTodas().stream()
-                .filter(m -> m.getId() == idBuscado)
-                .findFirst();
-        if (resultadoBusqueda.isPresent()) {
-            context.status(200).json(resultadoBusqueda.get());
-        } else {
-            context.status(404);
+        Integer idBuscado = ctx.pathParamAsClass("id", Integer.class).get();
+
+        var optDto = repoColecciones.findColeccionCompletaDTO(idBuscado);
+
+        if (optDto.isEmpty()) {
+            ctx.status(404).result("Colección no encontrada con ID: " + idBuscado);
+            return;
         }
 
+        // Devuelve el DTO completo ya armado
+        ctx.status(200).json(optDto.get());
     }
 }

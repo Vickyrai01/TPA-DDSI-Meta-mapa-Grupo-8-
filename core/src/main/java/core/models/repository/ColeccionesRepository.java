@@ -1,7 +1,13 @@
 package core.models.repository;
 
+import core.api.DTO.ColeccionConTodoDTO;
+import core.api.DTO.ColeccionDTO;
+import core.api.DTO.FuenteDTO;
+import core.api.DTO.HechoResumenDTO;
+import core.api.DTO.criterio.CriterioDTO;
 import core.models.entities.colecciones.Coleccion;
 import core.models.entities.colecciones.criterios.Criterio;
+import core.models.entities.fuentes.Fuente;
 import core.models.entities.hecho.Hecho;
 import utils.DBUtils;
 
@@ -99,6 +105,7 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
 
     //VER SI SE TRAE LOS VISIBLES O QUE CARAJEANOS!!! (CONSULTAR EQUIPO DINAMITA)
     //EN QUE QUEDO LO DE LA TABLA ESA DE VISIBLES O NO. PORQUE SI NO HAY QUE CAMBIAR.
+
     public Optional<Coleccion> findByIdFetchHechosYContribuyente(Integer idColeccion) {
         EntityManager em = DBUtils.getEntityManager();
         try {
@@ -135,6 +142,173 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                 em.close();
             } catch (Exception ignore) {
             }
+        }
+    }
+
+
+    public Optional<ColeccionConTodoDTO> findColeccionCompletaDTO(Integer idColeccion) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            //Traer colección base
+            Coleccion c = em.createQuery("""
+            SELECT c
+            FROM coleccion c
+            WHERE c.id = :id
+        """, Coleccion.class)
+                    .setParameter("id", idColeccion)
+                    .getResultStream().findFirst().orElse(null);
+
+            if (c == null) return Optional.empty();
+
+            //Traer fuentes
+            List<Fuente> fuentes = em.createQuery("""
+            SELECT f
+            FROM coleccion c
+            JOIN c.fuentes f
+            WHERE c.id = :id
+        """, Fuente.class)
+                    .setParameter("id", idColeccion)
+                    .getResultList();
+
+            //Traer hechos
+            List<Hecho> hechos = em.createQuery("""
+            SELECT DISTINCT h
+            FROM coleccion c
+            JOIN c.hechos h
+            LEFT JOIN FETCH h.contribuyente
+            LEFT JOIN FETCH h.ubicacion
+            WHERE c.id = :id
+        """, Hecho.class)
+                    .setParameter("id", idColeccion)
+                    .getResultList();
+
+            //TRAER HECHOS VISIBLES???
+            List<Hecho> hechosVisibles = em.createQuery("""
+            SELECT h
+            FROM coleccion c
+            JOIN c.hechosVisibles h
+            WHERE c.id = :id
+        """, Hecho.class)
+                    .setParameter("id", idColeccion)
+                    .getResultList();
+
+            //traer criterios
+            List<Criterio> criterios = em.createQuery("""
+            SELECT cr
+            FROM coleccion c
+            JOIN c.criterioDePertenencia cr
+            WHERE c.id = :id
+        """, Criterio.class)
+                    .setParameter("id", idColeccion)
+                    .getResultList();
+
+            // traer etiquetas
+            java.util.Map<String, List<String>> etiquetasPorHash = java.util.Collections.emptyMap();
+            if (!hechos.isEmpty()) {
+                List<String> hashes = hechos.stream().map(Hecho::getHash).toList();
+                List<Object[]> filas = em.createQuery("""
+                SELECT h.hash, e.nombre
+                FROM hecho h
+                JOIN h.etiquetas e
+                WHERE h.hash IN :hashes
+            """, Object[].class)
+                        .setParameter("hashes", hashes)
+                        .getResultList();
+
+                etiquetasPorHash = new java.util.HashMap<>();
+                for (Object[] row : filas) {
+                    String hash = (String) row[0];
+                    String tipo  = (String) row[1];
+                    etiquetasPorHash.computeIfAbsent(hash, k -> new java.util.ArrayList<>()).add(tipo);
+                }
+            }
+
+            // Mapear a DTOs
+            List<FuenteDTO> fuenteDTOs = fuentes.stream().map(FuenteDTO::from).toList();
+
+            List<HechoResumenDTO> hechoDTOs = new java.util.ArrayList<>(hechos.size());
+            for (Hecho h : hechos) {
+                List<String> etiquetas = etiquetasPorHash.getOrDefault(h.getHash(), java.util.Collections.emptyList());
+                hechoDTOs.add(
+                        new HechoResumenDTO(
+                                h.getHash(),
+                                h.getTitulo(),
+                                h.getDescripcion(),
+                                (h.getContribuyente()!=null ? h.getContribuyente().getNombreCompleto() : null)
+                        )
+                );
+            }
+
+            List<HechoResumenDTO> hechoVisiblesDTOs = hechosVisibles.stream()
+                    .map(HechoResumenDTO::from) // o fromCompleto si querés enriquecerlos también
+                    .toList();
+
+            List<CriterioDTO> criterioDTOs = criterios.stream()
+                    .map(CriterioDTO::from)
+                    .toList();
+
+            ColeccionConTodoDTO dto = new ColeccionConTodoDTO(
+                    c.getId(),
+                    c.getTitulo(),
+                    c.getDescripcionColeccion(),
+                    fuenteDTOs,
+                    hechoDTOs,
+                    hechoVisiblesDTOs,
+                    criterioDTOs
+            );
+
+            return Optional.of(dto);
+
+        } finally {
+            try { em.close(); } catch (Exception ignore) {}
+        }
+    }
+
+
+    public List<ColeccionDTO> listarColeccionesDTOConCantidadHechos() {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            //Traer datos de TODAS las colecciones
+            List<Object[]> bases = em.createQuery("""
+            SELECT c.id, c.titulo, c.descripcionColeccion, c.identificadorHandle
+            FROM coleccion c
+            ORDER BY c.id DESC
+        """, Object[].class).getResultList();
+
+            //Traer conteo de hechos por colección
+            List<Object[]> rows = em.createQuery("""
+            SELECT c.id, COUNT(h)
+            FROM coleccion c
+            LEFT JOIN c.hechos h
+            GROUP BY c.id
+        """, Object[].class).getResultList();
+
+            Map<Integer, Long> conteos = new HashMap<>();
+            for (Object[] r : rows) {
+                conteos.put((Integer) r[0], (Long) r[1]);
+            }
+
+            //Armar DTO
+            List<ColeccionDTO> dtos = new ArrayList<>(bases.size());
+            for (Object[] b : bases) {
+                Integer id = (Integer) b[0];
+                String  titulo = (String) b[1];
+                String  descripcion = (String) b[2];
+                String  handle = (String) b[3];
+
+                ColeccionDTO dto = new ColeccionDTO();
+                dto.setId(id);
+                dto.setTitulo(titulo);
+                dto.setDescripcionColeccion(descripcion);
+                dto.setIdentificadorHandle(handle);
+                dto.setCantidadHechos(Math.toIntExact(conteos.getOrDefault(id, 0L)));
+
+                dtos.add(dto);
+            }
+            return dtos;
+
+        } finally {
+            try { em.close(); } catch (Exception ignore) {}
         }
     }
 }

@@ -22,4 +22,12 @@ public class CriterioFechaSuceso extends Criterio {
     public boolean cumpleCriterio(Hecho hecho){
         return hecho.getFechaSuceso().isBefore(fechaFin) && hecho.getFechaSuceso().isAfter(fechaInicio);
     }
+
+    public LocalDate getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public LocalDate getFechaFin() {
+        return fechaFin;
+    }
 }
