@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import application.service.ColeccionService;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class ColeccionesController {
@@ -22,5 +23,12 @@ public class ColeccionesController {
         // Esto le dice a Thymeleaf que busque el archivo:
         // "src/main/resources/templates/navegarColecciones/navegarColecciones.html"
         return "navegarColecciones/navegarColecciones";
+    }
+
+    @GetMapping("/colecciones/{id}")
+    public String detalle(@PathVariable("id") Integer id, Model model) {
+        model.addAttribute("coleccion", coleccionService.getById(id));
+        model.addAttribute("hechos", coleccionService.getHechosDeColeccion(id));
+        return "verColeccion/verColeccion"; // templates/colecciones/detalle.html
     }
 }

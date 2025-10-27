@@ -1,6 +1,7 @@
 package application.service;
 
 import application.dto.ColeccionDTO;
+import application.dto.HechoDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -18,6 +19,25 @@ public class ColeccionService {
                 .retrieve()
                 .bodyToFlux(ColeccionDTO.class)
                 .collectList()
+                .block();
+    }
+
+    public List<HechoDTO> getHechosDeColeccion(Integer id) {
+        return metamapaApi.get()
+                .uri(uri -> uri.path("/colecciones/{id}/hechos")
+                        .build(id))
+                .retrieve()
+                .bodyToFlux(HechoDTO.class)
+                .collectList()
+                .block();
+    }
+
+    public ColeccionDTO getById(Integer id){
+        return metamapaApi.get()
+                .uri(uri -> uri.path("/colecciones/{id}")
+                        .build(id))
+                .retrieve()
+                .bodyToMono(ColeccionDTO.class)
                 .block();
     }
 }

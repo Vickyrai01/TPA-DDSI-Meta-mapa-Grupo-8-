@@ -265,6 +265,8 @@ public class Hecho {
     @OneToOne
     @JoinColumn(name = "id_ubicacion")
     private Coordenadas ubicacion;
+
+
     public Coordenadas getUbicacion() {
         return ubicacion;
     }

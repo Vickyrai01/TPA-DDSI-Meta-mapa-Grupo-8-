@@ -16,7 +16,9 @@
         <div class="collection-header">SUCESOS</div>
 
         <div class="collections-list">
-            <a th:each="c : ${listaDeColecciones}" href="#" class="collection-item">
+            <a th:each="c : ${listaDeColecciones}"
+               th:href="@{/colecciones/{id}(id=${c.id()})}"
+               class="collection-item">
                 <div class="collection-text">
                     <h3 th:text="${c.titulo()}">Título</h3>
                     <p>Cantidad de hechos:
