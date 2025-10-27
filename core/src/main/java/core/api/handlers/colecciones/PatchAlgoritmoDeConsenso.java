@@ -26,6 +26,7 @@ public class PatchAlgoritmoDeConsenso implements Handler {
         }
 
         coleccion.cambiarAlgoritmoConsenso(dto.tipoConsenso);
+        coleccionesRepository.update(coleccion);
 
         context.status(200).result("Algoritmo de consenso actualizado correctamente");
     }

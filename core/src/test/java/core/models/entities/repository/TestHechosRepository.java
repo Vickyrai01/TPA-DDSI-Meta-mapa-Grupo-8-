@@ -27,7 +27,8 @@ public class TestHechosRepository {
     CoordenadasRepository coordenadasRepository = CoordenadasRepository.getInstance();
     HechosRepositorySeeder hechosRepositorySeeder = HechosRepositorySeeder.getInstance();
 
-    Coordenadas coordenadas1 = new Coordenadas(123.0, 456.0);
+    Coordenadas coordenadas1 = new Coordenadas(-34.59864326986724, -58.42015420354632);
+    Coordenadas coordenadas2 = new Coordenadas(-34.567764578495826, -58.41914572689126);
 
     Categoria categoriaIncendio = new Categoria("Incendio");
 
@@ -51,7 +52,7 @@ public class TestHechosRepository {
             "34",
             LocalTime.now());
 
-    Hecho hecho2 = new Hecho(2, coordenadas1, categoriaIncendio,
+    Hecho hecho2 = new Hecho(2, coordenadas2, categoriaIncendio,
             null, null, null, Estado.ACEPTADO, null,
             LocalDate.now().minusDays(2), LocalDate.now().minusDays(3),
             TipoFuente.ESTATICA, null, "No hubo heridos, fue por una sartén", "en casa", null, "59", LocalTime.now());
