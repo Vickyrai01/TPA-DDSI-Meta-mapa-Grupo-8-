@@ -17,21 +17,16 @@ public class PostAceptarSolicitudHandler implements Handler {
     public void handle(@NotNull Context context) throws Exception {
         int id = context.pathParamAsClass("id", Integer.class).get();
 
-        Optional<SolicitudDeEliminacion> solicitudOpt = repo.obtenerTodas().stream()
-                .filter(s -> s.getId() == id)
-                .findFirst();
-
-
-        if (solicitudOpt.isEmpty()) {
+        SolicitudDeEliminacion solicitud = repo.findById(id);
+        if (solicitud == null) {
             context.status(404).result("Solicitud no encontrada");
             return;
         }
 
-        SolicitudDeEliminacion solicitud = solicitudOpt.get();
         solicitud.aceptarSolicitud();
+        repo.update(solicitud);
 
-        repoHechos.delete(solicitud.getHecho());
-
+        repoHechos.update(solicitud.getHecho());
         context.status(200).result("Solicitud aprobada");
     }
 }

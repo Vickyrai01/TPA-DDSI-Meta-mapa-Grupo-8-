@@ -1,15 +1,14 @@
 package core.models.agregador;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import core.api.DTO.ArrayToStringDateTimeDeserializer;
+import kotlin.jvm.Transient;
 
 import java.util.Collections;
 import java.util.List;
-
-@JsonIgnoreProperties(ignoreUnknown = true)              // ignora campos extra en el JSON
+@JsonIgnoreProperties(ignoreUnknown = true) // ignora campos extra en el JSON
 @JsonInclude(JsonInclude.Include.NON_NULL)               // no serializa campos null en las respuestas
 public class HechoAIntegrarDTO {
 
@@ -21,6 +20,7 @@ public class HechoAIntegrarDTO {
     public String categoria;
     public String latitud;
     public String longitud;
+    @JsonDeserialize(using = ArrayToStringDateTimeDeserializer.class)
     public String fechaSuceso;
     public String linkFuente;
 

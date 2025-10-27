@@ -21,4 +21,12 @@ public class CriterioFechaModificacion extends Criterio{
         return hecho.getUltimaFechaModificacion().isBefore(fechaFin) && hecho.getUltimaFechaModificacion().isAfter(fechaInicio);
 
     }
+
+    public LocalDate getFechaFin() {
+        return fechaFin;
+    }
+
+    public LocalDate getFechaInicio() {
+        return fechaInicio;
+    }
 }

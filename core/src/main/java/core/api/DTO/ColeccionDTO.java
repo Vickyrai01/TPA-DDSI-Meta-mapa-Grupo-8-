@@ -18,6 +18,17 @@ public class ColeccionDTO {
         this.identificadorHandle = identificadorHandle;
     }
 
+    public ColeccionDTO(int id, String titulo, String descripcionColeccion, List<Criterio> listaCriterio, List<Integer> fuentes, List<Integer> hechos, String identificadorHandle, Integer cantidadHechos) {
+        this.id = id;
+        this.titulo = titulo;
+        this.descripcionColeccion = descripcionColeccion;
+        this.criterioDePertenencia = listaCriterio;
+        this.fuente = fuentes;
+        this.hechos = hechos;
+        this.identificadorHandle = identificadorHandle;
+        this.cantidadHechos = cantidadHechos;
+    }
+
     private int id;
     public int getId() {
         return id;
@@ -73,5 +84,15 @@ public class ColeccionDTO {
     public void setFuente(List<Integer> fuente) {
         this.fuente = fuente;
     }
+
+    public Integer getCantidadHechos() {
+        return cantidadHechos;
+    }
+
+    public void setCantidadHechos(Integer cantidadHechos) {
+        this.cantidadHechos = cantidadHechos;
+    }
+
+    private Integer cantidadHechos;
 
 }

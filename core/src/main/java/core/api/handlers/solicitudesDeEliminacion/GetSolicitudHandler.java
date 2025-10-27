@@ -8,11 +8,12 @@ import org.jetbrains.annotations.NotNull;
 public class GetSolicitudHandler implements Handler {
     private final SolicitudEliminacionRepository repoSolicitudes = SolicitudEliminacionRepository.getInstance();
 
-
     @Override
-    public  void handle(@NotNull Context context) throws Exception {
-        context.json(repoSolicitudes.obtenerTodas());
+    public void handle(@NotNull Context ctx) {
+        var dtos = repoSolicitudes.obtenerTodasConHechoYContribuyente()
+                .stream()
+                .map(core.api.DTO.SolicitudResumenDTO::from)
+                .toList();
+        ctx.json(dtos);
     }
-
-
 }
