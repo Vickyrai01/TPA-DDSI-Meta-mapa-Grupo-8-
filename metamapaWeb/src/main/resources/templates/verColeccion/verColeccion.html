@@ -1,104 +1,112 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MetaMapa - Colección</title>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(
+          titulo=${coleccion.titulo()},
+          linksAdicionales=~{:: #links-de-coleccion},
+          scriptsAdicionales=~{:: #scripts-de-coleccion},
+          contenido=~{:: #contenido-de-coleccion}
+      )}">
 
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
-
+<th:block id="links-de-coleccion">
+    <link rel="stylesheet" th:href="@{/css/pages-css/button.css}">
+    <link rel="stylesheet" th:href="@{/css/pages-css/verColeccion.css}">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossorigin=""/>
-    <link rel="stylesheet" href="../css/pages-css/footer.css">
-    <link rel="stylesheet" href="../css/pages-css/navbar.css">
-    <link rel="stylesheet" href="../css/pages-css/verColeccion.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
+</th:block>
 <body>
 
-<header class="site-header" id="top">
-    </header>
-    <div class="container nav">
-        <a class="brand" href="#top">
-            <img src="../img/logoNAVBAR.png" alt="Logo MetaMapa" class="brand-logo">
-        </a>
+<!-- CONTENIDO -->
+<div id="contenido-de-coleccion">
+    <main class="map-layout-container">
+        <div class="map-panel" id="mapa"></div>
 
-        <nav class="menu">
-            <a href="#inicio">Inicio</a>
-            <a href="#reportar">Reportar suceso</a>
-            <a href="#mapa">Ver mapa</a>
-            <a href="#navegar">Navegar sucesos</a>
-            <a href="#perfil" class="avatar" aria-label="Perfil">
-                <i class="fa-regular fa-user"></i>
-            </a>
-        </nav>
+        <aside class="sidebar-panel">
+            <header class="sidebar-header">COLECCIÓN</header>
+            <section class="sidebar-content">
+                <h2 th:text="${coleccion.titulo()}">Título colección</h2>
+                <p th:text="${coleccion.descripcionColeccion()}">Descripción</p>
 
-        <button class="burger" aria-label="Abrir menú">
-            <span></span><span></span><span></span>
-        </button>
-    </div>
-</header>
+                <h3>Hechos</h3>
+                <div class="collection-list">
+                    <a th:each="h : ${hechos}"
+                       th:href="@{/hechos/{hash}(hash=${h.hash()})}"
+                       class="collection-item">
+                        <b th:text="${h.nombre()}">Nombre</b>
+                        <small>
+                            · <span th:text="${h.fechaSuceso()}">fecha</span>
+                            <span th:if="${h.horaSuceso()!=null}"> — <span th:text="${h.horaSuceso()}"></span></span>
+                        </small>
+                    </a>
+                </div>
+            </section>
+        </aside>
+    </main>
+</div>
 
-<main class="map-layout-container">
-<div class="map-panel" id="mapa"></div>
+<!-- JS (Leaflet + script inline con datos inyectados) -->
+<th:block id="scripts-de-coleccion">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
 
+    <!-- Inyectamos los hechos como JSON seguro -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const hechos = /*[[${hechos}]]*/ [];
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-        crossorigin=""></script>
+        // Utilidad: parsea lat/lon que vienen como String (posible coma decimal)
+        const toNum = v => {
+            if (v == null) return null;
+            const n = parseFloat(String(v).replace(',', '.'));
+            return Number.isFinite(n) ? n : null;
+        };
 
-<script>
+        const puntos = hechos
+            .map(h => ({
+                nombre: h.nombre,
+                hash: h.hash,
+                lat: toNum(h.latitud),
+                lon: toNum(h.longitud),
+                fecha: h.fechaSuceso,
+                hora: h.horaSuceso
+            }))
+            .filter(p => p.lat != null && p.lon != null);
 
+        // Iniciar mapa: default CABA si no hay puntos
+        const defaultCenter = [-34.6037, -58.3816], defaultZoom = 11;
+        const map = L.map('mapa', { maxZoom: 19 })
+            .setView(puntos.length ? [puntos[0].lat, puntos[0].lon] : defaultCenter,
+                puntos.length ? 13 : defaultZoom);
 
-    let map = L.map('mapa', {
-        maxZoom: 19 // Le decís al MAPA que no deje zoomear más de 19
-    }).setView([-34.722222,-58.363611], 15);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors', maxZoom: 19
+        }).addTo(map);
 
-    // 2. En las opciones de la capa
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 19 // Le decís a la CAPA que su máximo es 19
-    }).addTo(map);
+        const markers = [];
+        for (const p of puntos) {
+            const html = `
+        <b>${p.nombre ?? '(sin título)'}</b><br/>
+        ${p.fecha ?? ''} ${p.hora ?? ''}<br/>
+        <a href="/hechos/${p.hash}">Ver detalle</a>
+      `;
+            markers.push(
+                L.marker([p.lat, p.lon]).addTo(map).bindPopup(html)
+            );
+        }
 
-    L.marker([-34.722222,-58.363611]).addTo(map)
-        .bindPopup('Hola');
+        if (markers.length > 1) {
+            const group = L.featureGroup(markers);
+            map.fitBounds(group.getBounds().pad(0.15));
+        }
+        window.addEventListener('load', () => map.invalidateSize());
+        window.addEventListener('resize', () => map.invalidateSize());
+        /*]]>*/
+    </script>
 
-    window.addEventListener('resize', function() {
-        map.invalidateSize();
-    });
+    <!-- Si además tenés lógica propia -->
+    <script th:src="@{/js/verColeccion.js}" defer></script>
+</th:block>
 
-</script>
-    <script src="script.js" defer></script>
-    <aside class="sidebar-panel">
-        <header class="sidebar-header">
-            COLECCIÓN
-        </header>
-        <section class="sidebar-content">
-            <h2>HECHOS EN CABA</h2>
-            <p>...</p>
-            <p>...</p>
-
-            <div class="collection-list">
-                <a href="#" class="collection-item">Hecho1</a>
-                <a href="#" class="collection-item">Hecho1</a>
-                <a href="#" class="collection-item">Hecho1</a>
-                <a href="#" class="collection-item">Hecho1</a>
-            </div>
-        </section>
-    </aside>
-
-</main>
-
-<footer class="site-footer">
-    <div class="container footer-grid">
-        <a href="mailto:metamapa@gmail.com"><i class="fa-solid fa-envelope"></i> metamapa@gmail.com</a>
-        <a href="#mapa"><i class="fa-solid fa-map-location-dot"></i> /ver-mapa</a>
-        <a href="https://instagram.com" target="_blank" rel="noreferrer"><i class="fa-brands fa-instagram"></i> @metamapa</a>
-    </div>
-</footer>
-
-<script src="script.js" defer></script>
-
-</body>
 </html>

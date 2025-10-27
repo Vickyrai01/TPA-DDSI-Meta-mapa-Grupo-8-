@@ -59,11 +59,11 @@ public class HechosRepositorySeeder {
         categoriaRepository.add(categoriaChoque);
         categoriaRepository.add(categoriaRobo);
 
-        Coordenadas coordenadas1 = new Coordenadas(-34.5985, -58.4200);
-        Coordenadas coordenadas2 = new Coordenadas(-34.5992, -58.4181);
-        Coordenadas coordenadas3 = new Coordenadas(-34.5976, -58.4225);
-        Coordenadas coordenadas4 = new Coordenadas(-34.6001, -58.4197);
-        Coordenadas coordenadas5 = new Coordenadas(-34.6009, -58.4193);
+        Coordenadas coordenadas1 = new Coordenadas(-34.61969316128249, -58.4494697301956);
+        Coordenadas coordenadas2 = new Coordenadas(-34.55289162117985, -58.697023577203126);
+        Coordenadas coordenadas3 = new Coordenadas(-34.63254438302316, -58.36621806522921);
+        Coordenadas coordenadas4 = new Coordenadas(-34.60651289899796, -58.43499919363226);
+        Coordenadas coordenadas5 = new Coordenadas(-34.71314181885889, -58.40695807398643);
 
         coordenadasRepository.add(coordenadas1);
         coordenadasRepository.add(coordenadas2);

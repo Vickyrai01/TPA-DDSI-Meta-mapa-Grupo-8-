@@ -6,10 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class VerMapaController {
-
-    @GetMapping("/VerMapa")
-    public String home(Model model) {
-        // Si más adelante querés pasar datos a la vista, usá el 'model'
-        return "home/home";
+    @GetMapping("/mapa")
+    public String verMapa(Model model) {return "verSuceso/verSuceso";
     }
 }
