@@ -18,17 +18,19 @@ public class HechoResumenDTO {
     public List<String> multimedia;
     public List<Etiqueta> etiquetas;
     public String latitud;
-    public  String longitud;
+    public String longitud;
 
 
-    public HechoResumenDTO(String hash, String titulo, String descripcion, String nombreContribuyente) {
+    public HechoResumenDTO(String hash, String titulo, String descripcion, String nombreContribuyente, String latitud, String longitud){
     this.hash = hash;
     this.nombre = titulo;
     this.descripcion = descripcion;
     this.contribuyente = nombreContribuyente;
+    this.latitud = latitud;
+    this.longitud = longitud;
     }
 
-    public HechoResumenDTO(String hash, String nombre, String descripcion, String contribuyente, LocalDate fechaSuceso, LocalTime horaSuceso, List<String> multimedia, List<Etiqueta> etiquetas) {
+    public HechoResumenDTO(String hash, String nombre, String descripcion, String contribuyente, LocalDate fechaSuceso, LocalTime horaSuceso, List<String> multimedia, List<Etiqueta> etiquetas, String latitud, String longitud) {
         this.hash = hash;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -37,10 +39,11 @@ public class HechoResumenDTO {
         this.horaSuceso = horaSuceso;
         this.multimedia = multimedia;
         this.etiquetas = etiquetas;
+        this.latitud = latitud;
+        this.longitud = longitud;
     }
 
     public static HechoResumenDTO from(Hecho h) {
-
 
         String nombreContribuyente = (h.getContribuyente() != null)
                 ? h.getContribuyente().getNombreCompleto()
@@ -50,7 +53,9 @@ public class HechoResumenDTO {
                 h.getHash(),
                 h.getTitulo(),
                 h.getDescripcion(),
-                nombreContribuyente
+                nombreContribuyente,
+                h.getUbicacion().getLatitud().toString(),
+                h.getUbicacion().getLongitud().toString()
         );
     }
 
@@ -95,4 +100,10 @@ public class HechoResumenDTO {
     public void setEtiquetas(List<Etiqueta> etiquetas) {
         this.etiquetas = etiquetas;
     }
+
+    public String getLongitud() {return longitud; }
+
+    public String getLatitud() { return latitud;}
+
+
 }

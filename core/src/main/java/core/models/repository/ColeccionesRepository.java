@@ -229,12 +229,15 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             List<HechoResumenDTO> hechoDTOs = new java.util.ArrayList<>(hechos.size());
             for (Hecho h : hechos) {
                 List<String> etiquetas = etiquetasPorHash.getOrDefault(h.getHash(), java.util.Collections.emptyList());
+
                 hechoDTOs.add(
                         new HechoResumenDTO(
                                 h.getHash(),
                                 h.getTitulo(),
                                 h.getDescripcion(),
-                                (h.getContribuyente()!=null ? h.getContribuyente().getNombreCompleto() : null)
+                                (h.getContribuyente()!=null ? h.getContribuyente().getNombreCompleto() : null),
+                                h.getUbicacion().getLatitud().toString(),
+                                h.getUbicacion().getLongitud().toString()
                         )
                 );
             }
@@ -311,4 +314,23 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             try { em.close(); } catch (Exception ignore) {}
         }
     }
+
+    public List<Hecho> getHechosConUbicacion(Integer idColeccion) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            return em.createQuery(
+                            "select h " +
+                                    "from coleccion c " +
+                                    " join c.hechos h " +
+                                    " left join fetch h.ubicacion " +
+                                    "where c.id = :id", Hecho.class)
+                    .setParameter("id", idColeccion)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+
+
 }
