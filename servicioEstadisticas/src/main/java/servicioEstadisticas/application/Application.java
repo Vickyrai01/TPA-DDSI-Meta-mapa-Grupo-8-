@@ -4,6 +4,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.*;
+import seeders.RepositoryServicioEstadisticasSeeder;
 import servicioEstadisticas.model.Hecho;
 import servicioEstadisticas.model.GeneradorTodasEstadisticas;
 import servicioEstadisticas.model.SolicitudSpam;
@@ -25,8 +26,8 @@ public class Application {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
-        //RepositoryServicioEstadisticasSeeder repoSeeder = RepositoryServicioEstadisticasSeeder.getInstance();
-        //repoSeeder.cargarHechos();
+        RepositoryServicioEstadisticasSeeder repoSeeder = RepositoryServicioEstadisticasSeeder.getInstance();
+        repoSeeder.cargarHechos();
         generadorTodasEstadisticas.actualizarEstadisticas();
     }
 
