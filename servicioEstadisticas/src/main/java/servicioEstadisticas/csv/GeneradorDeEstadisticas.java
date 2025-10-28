@@ -1,4 +1,4 @@
-package csv;
+package servicioEstadisticas.csv;
 
 import servicioEstadisticas.model.GeneradorTodasEstadisticas;
 

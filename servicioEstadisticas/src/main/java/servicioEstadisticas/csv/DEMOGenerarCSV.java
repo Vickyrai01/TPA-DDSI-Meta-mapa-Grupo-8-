@@ -1,4 +1,4 @@
-package csv;
+package servicioEstadisticas.csv;
 
 import seeders.RepositoryServicioEstadisticasSeeder;
 
