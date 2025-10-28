@@ -16,11 +16,10 @@ public class SolicitudSpam {
     private Boolean fueSpam;
 
 
-    public SolicitudSpam() {}
-
     public SolicitudSpam(Boolean fueSpam) {
         this.fueSpam = fueSpam;
     }
+
 
     public Integer getId_spam() {
         return id_spam;

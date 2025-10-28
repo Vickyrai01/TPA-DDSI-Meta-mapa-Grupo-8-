@@ -39,19 +39,19 @@ public class GeneradorDeEstadisticas {
             csv.writeCsv(
                     "provincia_mas_hechos",
                     csv.toStringRows(generadorTodasEstadisticas.getProvinciaConMasHechos()),
-                    List.of("provincia", "cantidadHechos")
+                    List.of("provincia", "cantidad")
             );
 
             csv.writeCsv(
                     "categoria_mas_reportada",
                     csv.toStringRows(generadorTodasEstadisticas.getCategoriaMasReportada()),
-                    List.of("categoria", "cantidadHechos")
+                    List.of("categoria", "cantidad")
             );
 
             csv.writeCsv(
                     "solicitudes_eliminacion",
                     List.of(csv.toStringRow(generadorTodasEstadisticas.getCantSolicitudesEliminacion())),
-                    List.of( "tipo", "cantidad")
+                    List.of( "solicitudes spam", "total de solicitudes")
             );
 
 /*
