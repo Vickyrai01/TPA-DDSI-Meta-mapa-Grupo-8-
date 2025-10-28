@@ -5,9 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.*;
 import seeders.RepositoryServicioEstadisticasSeeder;
-import servicioEstadisticas.model.Hecho;
-import servicioEstadisticas.model.GeneradorTodasEstadisticas;
-import servicioEstadisticas.model.SolicitudSpam;
+import servicioEstadisticas.model.*;
 import servicioEstadisticas.repository.RepositoryServicioEstadisticas;
 
 import java.nio.charset.StandardCharsets;
