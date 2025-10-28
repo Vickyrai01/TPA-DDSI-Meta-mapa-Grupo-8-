@@ -32,7 +32,56 @@ public class GeneradorDeEstadisticas {
 
     GeneradorTodasEstadisticas generadorTodasEstadisticas = new GeneradorTodasEstadisticas();
 
-    public void generarTodasEstadisticas()
+    public void generarCSVProvinciaConMasHechos() {
+        try {
+            csv.writeCsv(
+                    "provincia_mas_hechos",
+                    csv.toStringRows(generadorTodasEstadisticas.getProvinciaConMasHechos()),
+                    List.of("provincia", "cantidad")
+            );
+        } catch (IOException e) {
+            throw new RuntimeException("Error generando CSVs de estadísticas", e);
+        }
+    }
+
+    public void generarCSVCategoriaMasReportada() {
+        try {
+            csv.writeCsv(
+                    "categoria_mas_reportada",
+                    csv.toStringRows(generadorTodasEstadisticas.getCategoriaMasReportada()),
+                    List.of("categoria", "cantidad")
+            );
+        } catch (IOException e) {
+            throw new RuntimeException("Error generando CSVs de estadísticas", e);
+        }
+    }
+
+    public void generarCSVHorarioPorCategoria(String categoria) {
+        try {
+            csv.writeCsv(
+                    "horario_por_categoria_" + categoria,
+                    csv.toStringRows(generadorTodasEstadisticas.horarioxCategoria(categoria)),
+                    List.of("hora", "cantidad")
+            );
+        } catch (IOException e) {
+            throw new RuntimeException("Error generando CSVs de estadísticas", e);
+        }
+    }
+
+    public void generarCSVProvinciaConMasHechosPorCategoria(String categoria) {
+        try {
+            csv.writeCsv(
+                    "provincia_mas_hechos_categoria_" + categoria,
+                    csv.toStringRows(generadorTodasEstadisticas.provinciaConMasHechosEnCategoria(categoria)),
+                    List.of("provincia", "cantidad")
+            );
+        } catch (IOException e) {
+            throw new RuntimeException("Error generando CSVs de estadísticas", e);
+        }
+    }
+
+
+    public void generarTodasEstadisticas(String categoria)
     {
         generadorTodasEstadisticas.actualizarEstadisticas();
         try {
@@ -54,12 +103,19 @@ public class GeneradorDeEstadisticas {
                     List.of( "solicitudes spam", "total de solicitudes")
             );
 
-/*
+
             csv.writeCsv(
-                    "horario_por_categoria_" + ,
-                    csv.toStringRows(generadorTodasEstadisticas.horarioxCategoria("Incendio")),
+                    "horario_por_categoria_" + categoria,
+                    csv.toStringRows(generadorTodasEstadisticas.horarioxCategoria(categoria)),
                     List.of("hora", "cantidad")
-            );*/
+            );
+
+            csv.writeCsv(
+                    "provincia_mas_hechos_categoria_" + categoria,
+                    csv.toStringRows(generadorTodasEstadisticas.provinciaConMasHechosEnCategoria(categoria)),
+                    List.of("provincia", "cantidad")
+            );
+
 
 
         } catch (IOException e) {

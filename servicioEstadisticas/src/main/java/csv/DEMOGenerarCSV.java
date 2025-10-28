@@ -10,7 +10,7 @@ public class DEMOGenerarCSV {
         GeneradorDeEstadisticas generadorDeEstadisticas = new GeneradorDeEstadisticas();
         RepositoryServicioEstadisticasSeeder repoSeeder = RepositoryServicioEstadisticasSeeder.getInstance();
         repoSeeder.cargarHechos();
-        generadorDeEstadisticas.generarTodasEstadisticas();
+        generadorDeEstadisticas.generarTodasEstadisticas("Inundación" );
 
     }
 }
