@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(
+          titulo=${coleccion.titulo()},
+          linksAdicionales=~{:: #links-de-coleccion},
+          scriptsAdicionales=~{:: #scripts-de-coleccion},
+          contenido=~{:: #contenido-de-coleccion}
+      )}">
+
+<th:block id="links-de-coleccion">
+    <link rel="stylesheet" th:href="@{/css/pages-css/button.css}">
+    <link rel="stylesheet" th:href="@{/css/pages-css/verColeccion.css}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</th:block>
+<body>
+
+<!-- CONTENIDO -->
+<div id="contenido-de-coleccion">
+    <main class="map-layout-container">
+        <div class="map-panel" id="mapa"></div>
+
+        <aside class="sidebar-panel">
+            <header class="sidebar-header">COLECCIÓN</header>
+            <section class="sidebar-content">
+                <h2 th:text="${coleccion.titulo()}">Título colección</h2>
+                <p th:text="${coleccion.descripcionColeccion()}">Descripción</p>
+
+                <h3>Hechos</h3>
+                <div class="collection-list">
+                    <a th:each="h : ${hechos}"
+                       th:href="@{/hechos/{hash}(hash=${h.hash()})}"
+                       class="collection-item">
+                        <b th:text="${h.nombre()}">Nombre</b>
+                        <small>
+                            · <span th:text="${h.fechaSuceso()}">fecha</span>
+                            <span th:if="${h.horaSuceso()!=null}"> — <span th:text="${h.horaSuceso()}"></span></span>
+                        </small>
+                    </a>
+                </div>
+            </section>
+        </aside>
+    </main>
+</div>
+
+<!-- JS (Leaflet + script inline con datos inyectados) -->
+<th:block id="scripts-de-coleccion">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+
+    <!-- Inyectamos los hechos como JSON seguro -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const hechos = /*[[${hechos}]]*/ [];
+
+        // Utilidad: parsea lat/lon que vienen como String (posible coma decimal)
+        const toNum = v => {
+            if (v == null) return null;
+            const n = parseFloat(String(v).replace(',', '.'));
+            return Number.isFinite(n) ? n : null;
+        };
+
+        const puntos = hechos
+            .map(h => ({
+                nombre: h.nombre,
+                hash: h.hash,
+                lat: toNum(h.latitud),
+                lon: toNum(h.longitud),
+                fecha: h.fechaSuceso,
+                hora: h.horaSuceso
+            }))
+            .filter(p => p.lat != null && p.lon != null);
+
+        // Iniciar mapa: default CABA si no hay puntos
+        const defaultCenter = [-34.6037, -58.3816], defaultZoom = 11;
+        const map = L.map('mapa', { maxZoom: 19 })
+            .setView(puntos.length ? [puntos[0].lat, puntos[0].lon] : defaultCenter,
+                puntos.length ? 13 : defaultZoom);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors', maxZoom: 19
+        }).addTo(map);
+
+        const markers = [];
+        for (const p of puntos) {
+            const html = `
+        <b>${p.nombre ?? '(sin título)'}</b><br/>
+        ${p.fecha ?? ''} ${p.hora ?? ''}<br/>
+        <a href="/hechos/${p.hash}">Ver detalle</a>
+      `;
+            markers.push(
+                L.marker([p.lat, p.lon]).addTo(map).bindPopup(html)
+            );
+        }
+
+        if (markers.length > 1) {
+            const group = L.featureGroup(markers);
+            map.fitBounds(group.getBounds().pad(0.15));
+        }
+        window.addEventListener('load', () => map.invalidateSize());
+        window.addEventListener('resize', () => map.invalidateSize());
+        /*]]>*/
+    </script>
+
+    <!-- Si además tenés lógica propia -->
+    <script th:src="@{/js/verColeccion.js}" defer></script>
+</th:block>
+
+</html>

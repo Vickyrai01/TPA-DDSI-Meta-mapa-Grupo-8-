@@ -15,6 +15,13 @@ public class Contribuyente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_contribuyente")
     private Integer id;
+
+    public Contribuyente(String nombre, String apellido, LocalDate fechaNacimiento) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -49,5 +56,9 @@ public class Contribuyente {
         this.fechaNacimiento = fechaNacimiento;
     }
 
+    public String getNombreCompleto() {
+        return nombre+ " " + apellido;
+    }
     public Contribuyente(){}
+
 }

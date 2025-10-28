@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(
+          titulo='Inicio',
+          linksAdicionales=~{:: #links-de-reportar},
+          scriptsAdicionales=~{:: #scripts-de-reportar},
+          contenido=~{:: #contenido-de-reportar}
+      )}">
+<th:block id="links-de-reportar">
+  <link rel="stylesheet" th:href="@{/css/pages-css/button.css}">
+  <link rel="stylesheet" th:href="@{/css/pages-css/reportarSuceso.css}">
+</th:block>
+
+<div id="contenido-de-reportar">
+    <div class="container report-container">
+
+      <form class="report-card" autocomplete="off">
+        <div class="report-header">REPORTAR SUCESO</div>
+
+        <label class="field half">
+          <span>Título suceso</span>
+          <input type="text" placeholder="">
+        </label>
+
+        <label class="field half">
+          <span>Categoría</span>
+          <select>
+            <option value="" selected>Elegí una categoría</option>
+            <option>Incendio</option>
+            <option>Corte de calle</option>
+            <option>Inundación</option>
+            <option>Seguridad</option>
+            <option>Otro</option>
+          </select>
+        </label>
+
+        <label class="field half">
+          <span>Descripción</span>
+          <input type="text" placeholder=""> </label>
+
+        <label class="field half">
+          <span>Fecha de suceso</span>
+          <input type="date">
+        </label>
+
+        <div class="field half">
+          <span>Adjuntar evidencias</span>
+          <div class="attach-row">
+            <label for="evidencias" class="file-btn">
+              <i class="fa-solid fa-paperclip" aria-hidden="true"></i> Adjuntar
+            </label>
+            <span id="evidencias-name" class="file-name"></span>
+          </div>
+          <input id="evidencias" type="file" accept="image/*,video/*">
+        </div>
+
+        <button class="btn-primary" type="submit">Reportar</button>
+      </form>
+    </div>
+</div>
+
+<th:block id="scripts-de-reportar">
+  <script th:src="@{/js/reportarSuceso.js}" defer></script>
+</th:block>
+</html>

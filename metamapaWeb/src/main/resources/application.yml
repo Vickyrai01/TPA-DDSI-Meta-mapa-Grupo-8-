@@ -1,0 +1,4 @@
+metamapa:
+  api:
+    admin-base-url: http://localhost:8080/core/api
+    base-url: http://localhost:8081/core/api
