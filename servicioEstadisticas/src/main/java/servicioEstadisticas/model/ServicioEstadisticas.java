@@ -10,7 +10,7 @@ public class ServicioEstadisticas {
     private List<Map<String, Object>> categoriaMasReportada;
     private Map<String, Object> cantSolicitudesEliminacion;
 
-    private static volatile ServicioEstadisticas instance;
+    public static volatile ServicioEstadisticas instance;
 
     public static ServicioEstadisticas getInstance() {
         if (instance == null) {

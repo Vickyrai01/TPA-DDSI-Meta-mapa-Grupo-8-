@@ -1,31 +1,41 @@
 package csv;
 
+import servicioEstadisticas.model.ServicioEstadisticas;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GeneradorDeEstadisticas {
-    GeneradorCSV csvGenerator = new GeneradorCSV();
-
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
-    String timestamp = LocalDateTime.now().format(formatter);
-
-    String path = "servicioEstadisticas/estadisticasGeneradas/estadisticas" + timestamp + ".csv";
+    GeneradorCSV csvGenerator = GeneradorCSV.getInstance();
+    private static ServicioEstadisticas servicioEstadisticas = ServicioEstadisticas.getInstance();
 
     public void generarEstadisticas(){
-        String[] headers = { "id", "provincia", "cantidadHechos" };
+        List<String> headers = new ArrayList<>();
+        headers.add("provincia");
+        headers.add("cantidadHechos");
 
-        List<String[]> rows = List.of(
-                new String[]{ "1", "CABA", "30798" },
-                new String[]{ "2", "Córdoba", "23324" },
-                new String[]{ "3", "San Juan", "28123" }
+        List<Map<String, String>> datos = List.of(
+                Map.of("provincia", "Corrientes",  "cantidadHechos", "3"),
+                Map.of("provincia", "Entre Rios",  "cantidadHechos", "2"),
+                Map.of("provincia", "Misiones",    "cantidadHechos", "1")
         );
 
         try {
-            csvGenerator.writeCsv(path, rows, headers);
+            csvGenerator.writeCsv("PRUEBA", datos, headers);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
+
+
 }
+//(String dir,
+//                                String fileName,
+//                                List<Map<String, String>> rows,
+//                                List<String> columns)
