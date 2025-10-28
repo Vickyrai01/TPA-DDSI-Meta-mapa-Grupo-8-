@@ -1,4 +1,4 @@
-package csv;
+package servicioEstadisticas.csv;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -6,7 +6,6 @@ import org.apache.commons.csv.QuoteMode;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -94,31 +93,5 @@ public class GeneradorCSV {
         return instance;
     }
 
-
-    public String toCsvString(List<Map<String,String>> rows, List<String> columns, char delimiter) throws IOException {
-        if (rows == null) rows = List.of();
-
-        if (columns == null || columns.isEmpty()) {
-            LinkedHashSet<String> inferred = new LinkedHashSet<>();
-            for (Map<String, String> r : rows) if (r != null) inferred.addAll(r.keySet());
-            columns = new ArrayList<>(inferred);
-        }
-
-        StringWriter sw = new StringWriter();
-        CSVFormat format = CSVFormat.DEFAULT.builder()
-                .setDelimiter(delimiter)
-                .setHeader(columns.toArray(String[]::new))
-                .setQuoteMode(QuoteMode.MINIMAL)
-                .build();
-
-        try (CSVPrinter printer = new CSVPrinter(sw, format)) {
-            for (Map<String, String> row : rows) {
-                List<String> ordered = new ArrayList<>();
-                for (String c : columns) ordered.add(row.getOrDefault(c, ""));
-                printer.printRecord(ordered);
-            }
-        }
-        return sw.toString();
-    }
 
 }

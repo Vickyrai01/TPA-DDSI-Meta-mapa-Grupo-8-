@@ -10,6 +10,7 @@ import servicioEstadisticas.model.GeneradorTodasEstadisticas;
 import servicioEstadisticas.model.SolicitudSpam;
 import servicioEstadisticas.repository.RepositoryServicioEstadisticas;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -94,5 +95,86 @@ public class Application {
         return ResponseEntity.ok(horarios);
     }
 
+    @GetMapping(value = "/export/csv/provincia-mas-hechos")
+    public ResponseEntity<byte[]> exportProvinciaMasHechosCsv() {
+        generadorTodasEstadisticas.actualizarEstadisticas();
+        List<Map<String, Object>> data = generadorTodasEstadisticas.getProvinciaConMasHechos();
+
+        String csv = toCsv(data, List.of("provincia", "cantidad"));
+        return asAttachment(csv, "provincia_mas_hechos.csv");
+    }
+
+    @GetMapping(value = "/export/csv/categoria-mas-reportada")
+    public ResponseEntity<byte[]> exportCategoriaMasReportadaCsv() {
+        generadorTodasEstadisticas.actualizarEstadisticas();
+        List<Map<String, Object>> data = generadorTodasEstadisticas.getCategoriaMasReportada();
+
+        String csv = toCsv(data, List.of("categoria", "cantidad"));
+        return asAttachment(csv, "categoria_mas_reportada.csv");
+    }
+
+    @GetMapping(value = "/export/csv/solicitudes-spam")
+    public ResponseEntity<byte[]> exportSolicitudesSpamCsv() {
+        generadorTodasEstadisticas.actualizarEstadisticas();
+        Map<String, Object> unico = generadorTodasEstadisticas.getCantSolicitudesEliminacion();
+
+        List<Map<String, Object>> data = List.of(unico);
+        String csv = toCsv(data, List.of("solicitudes spam", "total de solicitudes"));
+        return asAttachment(csv, "solicitudes_spam.csv");
+    }
+
+    @GetMapping("/export/csv/horario-por-categoria/{categoria}")
+    public ResponseEntity<byte[]> exportHorarioPorCategoriaCsv(@PathVariable String categoria) {
+        generadorTodasEstadisticas.actualizarEstadisticas();
+
+        // Normaliza por las dudas
+        categoria = java.net.URLDecoder.decode(categoria, StandardCharsets.UTF_8);
+        categoria = categoria.replace("+", " ").replace("\"", "");
+
+        List<Map<String, Object>> data = generadorTodasEstadisticas.horarioxCategoria(categoria);
+        String csv = toCsv(data, List.of("hora", "cantidad"));
+
+        return asAttachment(csv, "horario_por_categoria_" + categoria + ".csv");
+    }
+
+    @GetMapping("/export/csv/provincia-por-categoria/{categoria}")
+    public ResponseEntity<byte[]> exportProvinciaPorCategoriaCsv(@PathVariable String categoria) {
+        generadorTodasEstadisticas.actualizarEstadisticas();
+        List<Map<String, Object>> data = generadorTodasEstadisticas.provinciaConMasHechosEnCategoria(categoria);
+
+        // Normaliza por las dudas
+        categoria = java.net.URLDecoder.decode(categoria, StandardCharsets.UTF_8);
+        categoria = categoria.replace("+", " ").replace("\"", "");
+
+        String csv = toCsv(data, List.of("provincia", "cantidad"));
+        return asAttachment(csv, "provincia_mas_hechos_categoria_" + categoria + ".csv");
+    }
+
+
+    private String toCsv(List<Map<String, Object>> rows, List<String> headers) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(String.join(",", headers)).append("\n");
+
+        for (Map<String, Object> row : rows) {
+            for (int i = 0; i < headers.size(); i++) {
+                Object val = row.get(headers.get(i));
+                String cell = (val == null) ? "" : String.valueOf(val);
+                cell = "\"" + cell.replace("\"", "\"\"") + "\"";
+                sb.append(cell);
+                if (i < headers.size() - 1) sb.append(",");
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    private ResponseEntity<byte[]> asAttachment(String csv, String filename) {
+        byte[] bytes = csv.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        return ResponseEntity.ok()
+                .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+                .contentType(org.springframework.http.MediaType.valueOf("text/csv"))
+                .body(bytes);
+    }
 
 }
