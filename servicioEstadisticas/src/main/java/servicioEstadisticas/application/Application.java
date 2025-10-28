@@ -4,14 +4,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.*;
-import seeders.RepositoryServicioEstadisticasSeeder;
 import servicioEstadisticas.model.Hecho;
-import servicioEstadisticas.model.ServicioEstadisticas;
+import servicioEstadisticas.model.GeneradorTodasEstadisticas;
 import servicioEstadisticas.model.SolicitudSpam;
 import servicioEstadisticas.repository.RepositoryServicioEstadisticas;
-import utils.DBUtils;
-import javax.persistence.EntityManager;
-import java.util.Collections;
+
 import java.util.List;
 import java.util.Map;
 
@@ -20,17 +17,17 @@ import java.util.Map;
 @RestController
 @RequestMapping("/servicioEstadisticas")
 public class Application {
-    private static ServicioEstadisticas servicioEstadisticas = ServicioEstadisticas.getInstance();
+    private static GeneradorTodasEstadisticas generadorTodasEstadisticas = GeneradorTodasEstadisticas.getInstance();
 
     public Application() {
-        this.servicioEstadisticas = ServicioEstadisticas.getInstance();
+        this.generadorTodasEstadisticas = GeneradorTodasEstadisticas.getInstance();
     }
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
         //RepositoryServicioEstadisticasSeeder repoSeeder = RepositoryServicioEstadisticasSeeder.getInstance();
         //repoSeeder.cargarHechos();
-        servicioEstadisticas.actualizarEstadisticas();
+        generadorTodasEstadisticas.actualizarEstadisticas();
     }
 
     @GetMapping("/health")
@@ -65,34 +62,34 @@ public class Application {
 
     @GetMapping("/provincia-con-mas-hechos")
     public ResponseEntity<List<Map<String, Object>>> provinciaConMasHechos() {
-        List<Map<String, Object>> provincias = servicioEstadisticas.getProvinciaConMasHechos();
+        List<Map<String, Object>> provincias = generadorTodasEstadisticas.getProvinciaConMasHechos();
         return ResponseEntity.ok(provincias);
     }
 
     @GetMapping("/categoria-mayor-cantidad")
     public ResponseEntity<List<Map<String, Object>>> CategoriaMayorCantidad() {
-        List<Map<String, Object>> categorias = servicioEstadisticas.getCategoriaMasReportada();
+        List<Map<String, Object>> categorias = generadorTodasEstadisticas.getCategoriaMasReportada();
         return ResponseEntity.ok(categorias);
     }
 
 
     @GetMapping("/cantidad-spam")
     public ResponseEntity<Map<String, Object>> cantidadSpam() {
-        Map<String, Object> estadisticas = servicioEstadisticas.getCantSolicitudesEliminacion();
+        Map<String, Object> estadisticas = generadorTodasEstadisticas.getCantSolicitudesEliminacion();
         return ResponseEntity.ok(estadisticas);
     }
 
     @GetMapping("/provincia-con-mas-hechos-por-categoria")
     public ResponseEntity<List<Map<String, Object>>> provinciaConMasHechosPorCategoria(
             @RequestParam(value = "categoria", required = false) String categoria) {
-        List<Map<String, Object>> provincias = servicioEstadisticas.provinciaConMasHechosEnCategoria(categoria);
+        List<Map<String, Object>> provincias = generadorTodasEstadisticas.provinciaConMasHechosEnCategoria(categoria);
         return ResponseEntity.ok(provincias);
     }
 
 
     @GetMapping("/horario-categoria")
     public ResponseEntity<List<Map<String, Object>>> horarioPorCategoria(@RequestParam(value = "categoria", required = false) String categoria) {
-        List<Map<String, Object>> horarios = servicioEstadisticas.horarioxCategoria(categoria);
+        List<Map<String, Object>> horarios = generadorTodasEstadisticas.horarioxCategoria(categoria);
         return ResponseEntity.ok(horarios);
     }
 

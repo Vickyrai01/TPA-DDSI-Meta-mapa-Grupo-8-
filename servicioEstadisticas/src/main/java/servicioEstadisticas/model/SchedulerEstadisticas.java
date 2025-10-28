@@ -7,17 +7,17 @@ import org.springframework.stereotype.Component;
 @EnableScheduling
 public class SchedulerEstadisticas {
 
-    private final ServicioEstadisticas servicioEstadisticas;
+    private final GeneradorTodasEstadisticas generadorTodasEstadisticas;
 
     public SchedulerEstadisticas() {
-        this.servicioEstadisticas = ServicioEstadisticas.getInstance();
+        this.generadorTodasEstadisticas = GeneradorTodasEstadisticas.getInstance();
     }
 
     // Ejecutar cada 24 horas
     @Scheduled(fixedRate = 24 * 60 * 60 * 1000) // milliseconds
     public void ejecutarActualizacionEstadisticas() {
         System.out.println("Iniciando actualización de estadísticas...");
-        servicioEstadisticas.actualizarEstadisticas();
+        generadorTodasEstadisticas.actualizarEstadisticas();
         System.out.println("Actualización de estadísticas completada");
     }
 

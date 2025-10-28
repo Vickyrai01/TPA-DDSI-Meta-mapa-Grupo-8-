@@ -3,31 +3,31 @@ package servicioEstadisticas;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import seeders.RepositoryServicioEstadisticasSeeder;
-import servicioEstadisticas.model.ServicioEstadisticas;
+import servicioEstadisticas.model.GeneradorTodasEstadisticas;
 
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ServicioEstadisticasTest {
+public class GeneradorTodasEstadisticasTest {
 
-    private ServicioEstadisticas servicioEstadisticas;
+    private GeneradorTodasEstadisticas generadorTodasEstadisticas;
     private RepositoryServicioEstadisticasSeeder seeder;
 
     @BeforeEach
     void setUp() {
 
-        servicioEstadisticas = ServicioEstadisticas.getInstance();
+        generadorTodasEstadisticas = GeneradorTodasEstadisticas.getInstance();
         //Si usas el update en el persistence.xml entonces tenes que dejar comentado el seeder, pero si esta en create entonces hay que descomentarlo
         //seeder = RepositoryServicioEstadisticasSeeder.getInstance();
         //seeder.cargarHechos();
-        servicioEstadisticas.actualizarEstadisticas();
+        generadorTodasEstadisticas.actualizarEstadisticas();
     }
 
     @Test
     void testCategoriaMasReportada() {
-        List<Map<String, Object>> categorias = servicioEstadisticas.getCategoriaMasReportada();
+        List<Map<String, Object>> categorias = generadorTodasEstadisticas.getCategoriaMasReportada();
         assertNotNull(categorias);
         assertFalse(categorias.isEmpty());
         assertEquals("Accidente vial", categorias.get(0).get("categoria"));
@@ -35,7 +35,7 @@ public class ServicioEstadisticasTest {
 
     @Test
     void testProvinciaConMasHechos() {
-        List<Map<String, Object>> provincias = servicioEstadisticas.getProvinciaConMasHechos();
+        List<Map<String, Object>> provincias = generadorTodasEstadisticas.getProvinciaConMasHechos();
         assertNotNull(provincias);
         assertFalse(provincias.isEmpty());
         assertEquals("Buenos Aires", provincias.get(0).get("provincia"));
@@ -43,7 +43,7 @@ public class ServicioEstadisticasTest {
 
     @Test
     void testHorarioMasFrencuentePorCategoria() {
-        List<Map<String, Object>> horarios = servicioEstadisticas.horarioxCategoria("Accidente vial");
+        List<Map<String, Object>> horarios = generadorTodasEstadisticas.horarioxCategoria("Accidente vial");
         assertNotNull(horarios);
         assertFalse(horarios.isEmpty());
         assertTrue(horarios.get(0).get("hora").toString().contains("8:00"));
@@ -51,7 +51,7 @@ public class ServicioEstadisticasTest {
 
     @Test
     void testProvinciaMasHechosPorCategoria() {
-        List<Map<String, Object>> provincias = servicioEstadisticas.provinciaConMasHechosEnCategoria("Incendio forestal");
+        List<Map<String, Object>> provincias = generadorTodasEstadisticas.provinciaConMasHechosEnCategoria("Incendio forestal");
         assertNotNull(provincias);
         assertFalse(provincias.isEmpty());
         assertEquals("Misiones", provincias.get(0).get("provincia"));
@@ -59,7 +59,7 @@ public class ServicioEstadisticasTest {
 
     @Test
     void testCantidadSolicitudesEliminacion() {
-        Map<String, Object> estadisticas = servicioEstadisticas.getCantSolicitudesEliminacion();
+        Map<String, Object> estadisticas = generadorTodasEstadisticas.getCantSolicitudesEliminacion();
         assertNotNull(estadisticas);
         assertTrue(estadisticas.containsKey("solicitudes spam"));
         assertTrue(estadisticas.containsKey("total de solicitudes"));

@@ -1,18 +1,16 @@
 package csv;
 
-import servicioEstadisticas.model.ServicioEstadisticas;
+import servicioEstadisticas.model.GeneradorTodasEstadisticas;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
 import java.util.ArrayList;
-import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
 
 public class GeneradorDeEstadisticas {
-    GeneradorCSV csvGenerator = GeneradorCSV.getInstance();
-    private static ServicioEstadisticas servicioEstadisticas = ServicioEstadisticas.getInstance();
+    GeneradorCSV csv = GeneradorCSV.getInstance();
 
     public void generarEstadisticas(){
         List<String> headers = new ArrayList<>();
@@ -26,16 +24,49 @@ public class GeneradorDeEstadisticas {
         );
 
         try {
-            csvGenerator.writeCsv("PRUEBA", datos, headers);
+            csv.writeCsv("PRUEBA", datos, headers);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    GeneradorTodasEstadisticas generadorTodasEstadisticas = new GeneradorTodasEstadisticas();
 
+    public void generarTodasEstadisticas()
+    {
+        generadorTodasEstadisticas.actualizarEstadisticas();
+        try {
+            csv.writeCsv(
+                    "provincia_mas_hechos",
+                    csv.toStringRows(generadorTodasEstadisticas.getProvinciaConMasHechos()),
+                    List.of("provincia", "cantidadHechos")
+            );
+
+            csv.writeCsv(
+                    "categoria_mas_reportada",
+                    csv.toStringRows(generadorTodasEstadisticas.getCategoriaMasReportada()),
+                    List.of("categoria", "cantidadHechos")
+            );
+
+            csv.writeCsv(
+                    "solicitudes_eliminacion",
+                    List.of(csv.toStringRow(generadorTodasEstadisticas.getCantSolicitudesEliminacion())),
+                    List.of( "tipo", "cantidad")
+            );
+
+/*
+            csv.writeCsv(
+                    "horario_por_categoria_" + ,
+                    csv.toStringRows(generadorTodasEstadisticas.horarioxCategoria("Incendio")),
+                    List.of("hora", "cantidad")
+            );*/
+
+
+        } catch (IOException e) {
+            throw new RuntimeException("Error generando CSVs de estadísticas", e);
+        }
+
+    }
 
 }
-//(String dir,
-//                                String fileName,
-//                                List<Map<String, String>> rows,
-//                                List<String> columns)
+
