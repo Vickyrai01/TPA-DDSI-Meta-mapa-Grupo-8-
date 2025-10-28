@@ -38,15 +38,17 @@ public class Application {
     }
 
     @PostMapping("/hecho")
-    public ResponseEntity<String> agregarHecho(@RequestBody Hecho hecho) {
-
-        Hecho hechoABD = new Hecho(
-                hecho.getId_hecho(),
-                hecho.getCategoria(),
-                hecho.getFechaSuceso(),
-                hecho.getProvincia()
-        );
-
+    public ResponseEntity<String> agregarHecho(@RequestBody HechoDTO req) {
+        System.out.println("Hecho: " + req.toString());
+        if (req.getHash() == null || req.getCategoria() == null || req.getProvincia() == null || req.getFecha_suceso() == null) {
+            return ResponseEntity.badRequest().body("Faltan campos obligatorios: hash, categoria, provincia o fecha_suceso");
+        }
+        final Hecho hechoABD;
+        try {
+            hechoABD = HechoMapper.toEntity(req);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
         RepositoryServicioEstadisticas.addHecho(hechoABD);
         return ResponseEntity.status(201).body("Hecho agregado correctamente");
     }

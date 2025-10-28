@@ -32,6 +32,7 @@ public class Fuente {
 
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_fuente")
     private Integer id;
     public Integer getId() {

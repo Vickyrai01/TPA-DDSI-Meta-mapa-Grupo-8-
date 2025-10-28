@@ -50,7 +50,6 @@ public class RepositoryServicioEstadisticas {
         }
     }
 
-
     public static List<Map<String, Object>> categoriaMasReportada() {
         EntityManager em = DBUtils.getEntityManager();
         try {
@@ -105,14 +104,13 @@ public class RepositoryServicioEstadisticas {
         }
     }
 
-
     public static List<Map<String, Object>> horarioxCategoria(String categoria) {
         EntityManager em = DBUtils.getEntityManager();
         try {
-            String jpql = "SELECT FUNCTION('HOUR', h.fechaSuceso) as hora, COUNT(h) as cantidad " +
+            String jpql = "SELECT FUNCTION('HOUR', h.fecha_suceso) as hora, COUNT(h) as cantidad " +
                     "FROM Hecho h " +
                     "WHERE h.categoria = :categoria " +
-                    "GROUP BY FUNCTION('HOUR', h.fechaSuceso) " +
+                    "GROUP BY FUNCTION('HOUR', h.fecha_suceso) " +
                     "ORDER BY COUNT(h) DESC";
 
             List<Object[]> resultados = em.createQuery(jpql, Object[].class)
@@ -133,7 +131,6 @@ public class RepositoryServicioEstadisticas {
             em.close();
         }
     }
-
 
     public static List<Map<String, Object>> provinciaConMasHechosEnCategoria(String categoria) {
         EntityManager em = DBUtils.getEntityManager();
@@ -162,7 +159,6 @@ public class RepositoryServicioEstadisticas {
             em.close();
         }
     }
-
 
     public static void addHecho(Hecho hecho) {
         EntityManager em = DBUtils.getEntityManager();
@@ -195,6 +191,4 @@ public class RepositoryServicioEstadisticas {
             em.close();
         }
     }
-
-
 }
