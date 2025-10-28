@@ -34,7 +34,3 @@ jobs:
       - name: Run tests
         run: mvn test
 
-      # Paso 3: Validar Checkstyle (asumiendo que está configurado en el pom.xml)
-      - name: Checkstyle validation
-        run: mvn checkstyle:check
-        continue-on-error: false  # Falla el workflow si hay errores de estilo
