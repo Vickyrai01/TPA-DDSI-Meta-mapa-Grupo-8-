@@ -187,7 +187,8 @@ body{
   color:var(--text-strong);
 }
 
-.card-actions{ display:flex; gap:8px; align-items:center; }
+.card-actions{ display:flex; gap:12px; align-items:center;
+}
 
 /* Icon buttons */
 .icon-btn{
@@ -425,6 +426,40 @@ body{
   background:#d9534f;
   color:#fff;
 }
+/* =========================
+   BOTONES DE EDICIÓN (Guardar / Cancelar)
+   ========================= */
+.card-actions .modal-btn {
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 13px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+  border: none;
+  transition: filter 0.2s ease, transform 0.04s ease;
+}
+
+.card-actions .modal-btn-primary {
+  background: var(--brand-blue);
+  color: #fff;
+}
+
+.card-actions .modal-btn-primary:hover {
+  filter: brightness(1.05);
+}
+
+.card-actions .modal-btn-secondary {
+  background: #e5e7eb;   /* gris suave */
+  color: #111827;
+}
+
+.card-actions .modal-btn-secondary:hover {
+  filter: brightness(0.97);
+}
+
+.card-actions .modal-btn:active {
+  transform: translateY(1px);
+}
 
 /* ======= MODAL*/
 #delete-modal .modal{
@@ -446,16 +481,6 @@ body{
 #delete-modal .modal p{ padding:14px 18px 0; }
 #delete-modal .modal .modal-actions{ padding:14px 18px 18px; gap:10px; }
 
-#add-modal .modal { position:relative; }
-#add-modal .modal .modal-close{
-  position:absolute; top:10px; right:10px;
-  width:36px; height:36px; border-radius:10px;
-  background:#fff; color:#111827;
-  border:1px solid var(--border, #e5e7eb);
-  font-size:22px; line-height:1; cursor:pointer;
-  box-shadow:0 4px 14px rgba(0,0,0,.10);
-}
-#add-modal .modal .modal-close:hover{ filter:brightness(1.03); }
 /* =========================
    LISTA DE FUENTES
    ========================= */
@@ -500,6 +525,44 @@ body{
 }
 
 /* =========================
+   BOTONES DEL MODAL DE ELIMINACIÓN
+   ========================= */
+#delete-modal .modal .modal-btn {
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.10);
+  border: none;
+  transition: filter 0.2s ease, transform 0.04s ease;
+}
+
+/* Botón CANCELAR (gris claro, sin borde negro) */
+#delete-modal .modal .modal-btn-secondary {
+  background: #e5e7eb;      /* gris suave */
+  color: #111827;           /* gris oscuro para el texto */
+}
+
+#delete-modal .modal .modal-btn-secondary:hover {
+  filter: brightness(0.97);
+}
+
+/* Botón ELIMINAR (rojo vivo con mismo estilo que los otros) */
+#delete-modal .modal .modal-btn-danger {
+  background: #d9534f;       /* rojo base */
+  color: #fff;
+}
+
+#delete-modal .modal .modal-btn-danger:hover {
+  filter: brightness(1.05);
+}
+
+/* efecto presionado */
+#delete-modal .modal .modal-btn:active {
+  transform: translateY(1px);
+}
+
+/* =========================
    RESPONSIVE
    ========================= */
 @media (max-width:1024px){
@@ -517,6 +580,7 @@ body{
   .surface-title{ font-size:18px; }
   .card-header{
     flex-direction:column; align-items:flex-start; gap:12px;
+
   }
 }
 
