@@ -4,19 +4,19 @@ import servicioEstadisticas.repository.RepositoryServicioEstadisticas;
 import java.util.List;
 import java.util.Map;
 
-public class ServicioEstadisticas {
+public class GeneradorTodasEstadisticas {
 
     private List<Map<String, Object>> provinciaConMasHechos;
     private List<Map<String, Object>> categoriaMasReportada;
     private Map<String, Object> cantSolicitudesEliminacion;
 
-    private static volatile ServicioEstadisticas instance;
+    public static volatile GeneradorTodasEstadisticas instance;
 
-    public static ServicioEstadisticas getInstance() {
+    public static GeneradorTodasEstadisticas getInstance() {
         if (instance == null) {
-            synchronized (ServicioEstadisticas.class) {
+            synchronized (GeneradorTodasEstadisticas.class) {
                 if (instance == null) {
-                    instance = new ServicioEstadisticas();
+                    instance = new GeneradorTodasEstadisticas();
                 }
             }
         }
