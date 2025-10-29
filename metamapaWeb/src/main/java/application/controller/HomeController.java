@@ -9,6 +9,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(Model model) {
+
         // Si más adelante querés pasar datos a la vista, usá el 'model'
         return "home/home";
     }
