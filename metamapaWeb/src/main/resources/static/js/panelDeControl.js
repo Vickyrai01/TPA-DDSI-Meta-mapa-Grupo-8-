@@ -1,274 +1,125 @@
+// panelDeControl.js — versión limpia con DELEGACIÓN (funciona para todas las cards)
+document.addEventListener('DOMContentLoaded', () => {
+  const adminMainContent = document.querySelector('.admin-main-content');
+  const list = document.querySelector('.collections-list');
 
-    document.addEventListener('DOMContentLoaded', function() {
+  // ===== Modal Eliminar =====
+  const modalDelete = document.getElementById('delete-modal');
+  const cancelBtnDelete = document.getElementById('cancel-delete');
+  const confirmBtnDelete = document.getElementById('confirm-delete');
+  let currentCardForDelete = null;
 
-    // --- Contenedor principal para habilitar/deshabilitar UI (PUNTO 2) ---
-    const adminMainContent = document.querySelector('.admin-main-content');
+  function openDeleteModal(card) {
+    currentCardForDelete = card;
+    modalDelete?.classList.add('active');
+  }
+  function closeDeleteModal() {
+    modalDelete?.classList.remove('active');
+    currentCardForDelete = null;
+  }
 
-    // --- 1. LÓGICA DEL MODAL DE ELIMINAR ---
-    const modalDelete = document.getElementById('delete-modal');
-    const openBtnDelete = document.getElementById('open-modal-btn');
-    const cancelBtnDelete = document.getElementById('cancel-delete');
-    const confirmBtnDelete = document.getElementById('confirm-delete');
-
-    if (modalDelete && openBtnDelete && cancelBtnDelete && confirmBtnDelete) {
-
-    openBtnDelete.addEventListener('click', function(e) {
+  cancelBtnDelete?.addEventListener('click', (e) => { e.preventDefault(); closeDeleteModal(); });
+  confirmBtnDelete?.addEventListener('click', (e) => {
     e.preventDefault();
-    modalDelete.classList.add('active');
-});
+    // TODO: acá hacé el fetch/POST real para eliminar en backend
+    if (currentCardForDelete) currentCardForDelete.remove();
+    closeDeleteModal();
+  });
+  modalDelete?.addEventListener('click', (e) => {
+    if (e.target.id === 'delete-modal') closeDeleteModal();
+  });
 
-    cancelBtnDelete.addEventListener('click', function() {
-    modalDelete.classList.remove('active');
-});
+  // ===== Modal Crear =====
+  const modalAdd = document.getElementById('add-modal');
+  const openBtnAdd = document.querySelector('.add-btn');
+  const cancelBtnAdd = document.getElementById('cancel-add');
+  const confirmBtnAdd = document.getElementById('confirm-add');
 
-    confirmBtnDelete.addEventListener('click', function() {
-    console.log('ACCIÓN: Eliminando la colección...');
-    modalDelete.classList.remove('active');
-});
-
-    modalDelete.addEventListener('click', function(e) {
-    if (e.target.id === 'delete-modal') {
-    modalDelete.classList.remove('active');
-}
-});
-
-} else {
-    console.warn("Advertencia: No se encontraron todos los elementos del MODAL DE ELIMINAR.");
-}
-
-    // --- 2. LÓGICA DE EDITAR "IN-PLACE" ---
-    const card = document.getElementById('card-1');
-
-    if (card && adminMainContent) { // Verificamos que existan
-    const editBtn = card.querySelector('.edit-btn');
-    const saveBtn = card.querySelector('.save-btn');
-    const cancelBtnEdit = card.querySelector('.cancel-btn');
-
-    if (editBtn && saveBtn && cancelBtnEdit) {
-
-    // Al hacer clic en el LÁPIZ
-    editBtn.addEventListener('click', function(e) {
+  openBtnAdd?.addEventListener('click', (e) => { e.preventDefault(); modalAdd?.classList.add('active'); });
+  cancelBtnAdd?.addEventListener('click', (e) => { e.preventDefault(); modalAdd?.classList.remove('active'); });
+  confirmBtnAdd?.addEventListener('click', (e) => {
     e.preventDefault();
+    // TODO: lógica real de creación
+    modalAdd?.classList.remove('active');
+  });
+  modalAdd?.addEventListener('click', (e) => {
+    if (e.target.id === 'add-modal') modalAdd?.classList.remove('active');
+  });
+
+  // ===== Edición in-place (delegación en la lista) =====
+  if (!list) return;
+
+  const getCard = (el) => el.closest('.collection-card');
+  const startEdit = (card) => {
     card.classList.add('is-editing');
-    adminMainContent.classList.add('child-is-editing'); // (PUNTO 2)
-});
-
-    // Al hacer clic en CANCELAR (edición)
-    cancelBtnEdit.addEventListener('click', function(e) {
-    e.preventDefault();
+    adminMainContent?.classList.add('child-is-editing');
+  };
+  const cancelEdit = (card) => {
     card.classList.remove('is-editing');
-    adminMainContent.classList.remove('child-is-editing'); // (PUNTO 2)
+    adminMainContent?.classList.remove('child-is-editing');
+  };
+  const saveEdit = (card) => {
+    // TODO: armar payload desde los inputs de la card y enviar al backend
+    cancelEdit(card);
+  };
+
+  list.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+
+    // Editar (lápiz)
+    if (btn.classList.contains('edit-btn')) {
+      e.preventDefault();
+      const card = getCard(btn);
+      if (card) startEdit(card);
+      return;
+    }
+
+    // Cancelar edición
+    if (btn.classList.contains('cancel-btn')) {
+      e.preventDefault();
+      const card = getCard(btn);
+      if (card) cancelEdit(card);
+      return;
+    }
+
+    // Guardar edición
+    if (btn.classList.contains('save-btn')) {
+      e.preventDefault();
+      const card = getCard(btn);
+      if (card) saveEdit(card);
+      return;
+    }
+
+    // Eliminar (tachito)
+    if (btn.classList.contains('delete-btn')) {
+      e.preventDefault();
+      const card = getCard(btn);
+      if (card) openDeleteModal(card);
+      return;
+    }
+  });
+
+  // ===== (Opcional) Lista de fuentes dentro de cada card — también con delegación =====
+  list.addEventListener('click', (e) => {
+    const del = e.target.closest('.delete-source-btn');
+    if (del) {
+      e.preventDefault();
+      del.closest('li')?.remove();
+      return;
+    }
+    const add = e.target.closest('#add-source-btn');
+    if (add) {
+      e.preventDefault();
+      const card = getCard(add);
+      const input = card?.querySelector('#add-source-bar input');
+      const ul = card?.querySelector('.source-list');
+      const val = (input?.value || '').trim();
+      if (!val || !ul) return;
+      const li = document.createElement('li');
+      li.innerHTML = `<span>${val}</span><button class="delete-source-btn" aria-label="Eliminar fuente">&times;</button>`;
+      ul.appendChild(li);
+      input.value = '';
+    }
+  });
 });
-
-    // Al hacer clic en GUARDAR
-    saveBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    console.log('ACCIÓN: Guardando los datos...');
-    card.classList.remove('is-editing');
-    adminMainContent.classList.remove('child-is-editing'); // (PUNTO 2)
-});
-
-} else {
-    console.warn("Advertencia: No se encontraron todos los botones de EDICIÓN.");
-}
-} else {
-    console.warn("Advertencia: No se encontró la tarjeta 'card-1' o '.admin-main-content'.");
-}
-
-    // --- 3. LÓGICA DEL MODAL DE AÑADIR (PUNTO 3) ---
-    const modalAdd = document.getElementById('add-modal');
-    const openBtnAdd = document.querySelector('.add-btn'); // El botón flotante '+'
-    const cancelBtnAdd = document.getElementById('cancel-add');
-    const confirmBtnAdd = document.getElementById('confirm-add');
-
-    if (modalAdd && openBtnAdd && cancelBtnAdd && confirmBtnAdd) {
-
-    // Función para ABRIR el modal de añadir
-    openBtnAdd.addEventListener('click', function(e) {
-    e.preventDefault();
-    modalAdd.classList.add('active');
-});
-
-    // Función para CERRAR con "Cancelar"
-    cancelBtnAdd.addEventListener('click', function(e) {
-    e.preventDefault();
-    modalAdd.classList.remove('active');
-});
-
-    // Función para CERRAR con "Crear"
-    confirmBtnAdd.addEventListener('click', function(e) {
-    e.preventDefault();
-    console.log('ACCIÓN: Creando nueva colección...');
-    // Aquí iría la lógica para leer los inputs y crear
-    modalAdd.classList.remove('active');
-});
-
-    // Función para CERRAR haciendo clic en el fondo
-    modalAdd.addEventListener('click', function(e) {
-    if (e.target.id === 'add-modal') {
-    modalAdd.classList.remove('active');
-}
-});
-
-} else {
-    console.warn("Advertencia: No se encontraron todos los elementos del MODAL DE AÑADIR.");
-}
-
-});
-
-
-        document.addEventListener('DOMContentLoaded', function() {
-
-        // --- Contenedor principal ---
-        const adminMainContent = document.querySelector('.admin-main-content');
-
-        // --- 1. LÓGICA DEL MODAL DE ELIMINAR ---
-        const modalDelete = document.getElementById('delete-modal');
-        const openBtnDelete = document.getElementById('open-modal-btn');
-        const cancelBtnDelete = document.getElementById('cancel-delete');
-        const confirmBtnDelete = document.getElementById('confirm-delete');
-
-        if (modalDelete && openBtnDelete && cancelBtnDelete && confirmBtnDelete) {
-
-        openBtnDelete.addEventListener('click', function(e) {
-        e.preventDefault();
-        modalDelete.classList.add('active');
-    });
-
-        cancelBtnDelete.addEventListener('click', function() {
-        modalDelete.classList.remove('active');
-    });
-
-        confirmBtnDelete.addEventListener('click', function() {
-        console.log('ACCIÓN: Eliminando la colección...');
-        modalDelete.classList.remove('active');
-    });
-
-        modalDelete.addEventListener('click', function(e) {
-        if (e.target.id === 'delete-modal') {
-        modalDelete.classList.remove('active');
-    }
-    });
-
-    } else {
-        console.warn("Advertencia: No se encontraron todos los elementos del MODAL DE ELIMINAR.");
-    }
-
-        // --- 2. LÓGICA DE EDITAR "IN-PLACE" ---
-        const card = document.getElementById('card-1');
-
-        if (card && adminMainContent) {
-        const editBtn = card.querySelector('.edit-btn');
-        const saveBtn = card.querySelector('.save-btn');
-        const cancelBtnEdit = card.querySelector('.cancel-btn');
-
-        if (editBtn && saveBtn && cancelBtnEdit) {
-
-        editBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        card.classList.add('is-editing');
-        adminMainContent.classList.add('child-is-editing');
-    });
-
-        cancelBtnEdit.addEventListener('click', function(e) {
-        e.preventDefault();
-        card.classList.remove('is-editing');
-        adminMainContent.classList.remove('child-is-editing');
-    });
-
-        saveBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        console.log('ACCIÓN: Guardando los datos...');
-        card.classList.remove('is-editing');
-        adminMainContent.classList.remove('child-is-editing');
-    });
-
-    } else {
-        console.warn("Advertencia: No se encontraron todos los botones de EDICIÓN.");
-    }
-
-        // --- (INICIO) NUEVA LÓGICA PARA LISTA DE FUENTES ---
-        const sourceList = card.querySelector('.source-list');
-        const addSourceBtn = card.querySelector('#add-source-btn');
-        const addSourceInput = card.querySelector('#add-source-bar input');
-
-        if (sourceList && addSourceBtn && addSourceInput) {
-
-        // A. Lógica para AÑADIR fuente
-        addSourceBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        const sourceName = addSourceInput.value.trim(); // Limpia espacios
-
-        if (sourceName) { // Solo si hay texto
-        // 1. Crear el nuevo <li>
-        const newLi = document.createElement('li');
-
-        // 2. Añadir el HTML interno (con el texto y el botón de borrar)
-        newLi.innerHTML = `
-                        <span>${sourceName}</span>
-                        <button class="delete-source-btn" aria-label="Eliminar fuente">&times;</button>
-                    `;
-
-        // 3. Añadirlo a la lista
-        sourceList.appendChild(newLi);
-
-        // 4. Limpiar el input
-        addSourceInput.value = '';
-    }
-    });
-
-        // B. Lógica para ELIMINAR fuente (Usando Event Delegation)
-        sourceList.addEventListener('click', function(e) {
-        // Comprobar si el clic fue en un botón de eliminar
-        if (e.target.classList.contains('delete-source-btn')) {
-        e.preventDefault();
-        // Encontrar el <li> padre y eliminarlo
-        e.target.closest('li').remove();
-    }
-    });
-
-    } else {
-        console.warn("Advertencia: No se encontraron los elementos de la lista de fuentes.");
-    }
-        // --- (FIN) NUEVA LÓGICA PARA LISTA DE FUENTES ---
-
-    } else {
-        console.warn("Advertencia: No se encontró la tarjeta 'card-1' o '.admin-main-content'.");
-    }
-
-        // --- 3. LÓGICA DEL MODAL DE AÑADIR ---
-        const modalAdd = document.getElementById('add-modal');
-        const openBtnAdd = document.querySelector('.add-btn');
-        const cancelBtnAdd = document.getElementById('cancel-add');
-        const confirmBtnAdd = document.getElementById('confirm-add');
-
-        if (modalAdd && openBtnAdd && cancelBtnAdd && confirmBtnAdd) {
-
-        openBtnAdd.addEventListener('click', function(e) {
-        e.preventDefault();
-        modalAdd.classList.add('active');
-    });
-
-        cancelBtnAdd.addEventListener('click', function(e) {
-        e.preventDefault();
-        modalAdd.classList.remove('active');
-    });
-
-        confirmBtnAdd.addEventListener('click', function(e) {
-        e.preventDefault();
-        console.log('ACCIÓN: Creando nueva colección...');
-        modalAdd.classList.remove('active');
-    });
-
-        modalAdd.addEventListener('click', function(e) {
-        if (e.target.id === 'add-modal') {
-        modalAdd.classList.remove('active');
-    }
-    });
-
-    } else {
-        console.warn("Advertencia: No se encontraron todos los elementos del MODAL DE AÑADIR.");
-    }
-
-    });
-
