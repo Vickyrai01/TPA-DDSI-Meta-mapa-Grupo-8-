@@ -9,136 +9,141 @@
 
 <!-- ========== CSS ESPECÍFICO DE LA VISTA ========== -->
 <th:block id="links-panel">
-    <!-- Estos ya están en el layout: Montserrat, FontAwesome, navbar.css, footer.css, home.css -->
-    <!-- Sumá los propios de esta pantalla: -->
     <link rel="stylesheet" th:href="@{/css/pages-css/button.css}">
     <link rel="stylesheet" th:href="@{/css/pages-css/panelDeControl.css}">
 </th:block>
 
 <!-- ========== CONTENIDO PRINCIPAL (se inyecta dentro de <main>) ========== -->
-<main id="contenido-panel" class="admin-container">
+<main id="contenido-panel" class="admin-page">
 
-    <div class="admin-main-content">
+    <!-- Fondo con blur y superposición -->
+    <div class="admin-bg"></div>
 
-        <h1 class="admin-title">PANEL DE CONTROL - COLECCIÓN</h1>
+    <!-- Contenedor principal redondeado -->
+    <section class="admin-surface">
 
-        <div class="search-bar">
-            <input type="text" placeholder="Buscar colección">
-            <button class="search-btn" aria-label="Buscar">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
-        </div>
+        <!-- Título estilo “Reportar hecho” (naranja) -->
+        <header class="surface-header">
+            <h1 class="surface-title">Panel de control — Colección</h1>
+        </header>
 
-        <div class="collections-list">
-            <article class="collection-card" id="card-1">
+        <div class="admin-container">
 
-                <div class="card-header">
-                    <h2 class="view-mode">*Nombre colección*</h2>
-                    <input type="text" class="card-input edit-mode" value="*Nombre colección*">
+            <div class="admin-main-content">
 
-                    <div class="card-actions">
-                        <button class="icon-btn view-mode" id="open-modal-btn" aria-label="Eliminar">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                        <button class="icon-btn view-mode edit-btn" aria-label="Editar">
-                            <i class="fa-solid fa-pencil"></i>
-                        </button>
-
-                        <button class="modal-btn modal-btn-secondary edit-mode cancel-btn">Cancelar</button>
-                        <button class="modal-btn edit-mode save-btn">Guardar</button>
-                    </div>
+                <div class="search-bar" aria-live="polite">
+                    <input type="text" placeholder="Buscar colección">
+                    <button class="search-btn" aria-label="Buscar">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
                 </div>
 
-                <div class="card-body">
-                    <div class="card-field">
-                        <strong>Nombre</strong>
-                        <p class="view-mode">*NOMBRE*</p>
-                        <input type="text" class="card-input edit-mode" value="*NOMBRE*">
-                    </div>
+                <div class="collections-list">
+                    <article class="collection-card" id="card-1">
 
-                    <div class="card-field">
-                        <strong>Descripción</strong>
-                        <p class="view-mode">*DESCRIPCIÓN*</p>
-                        <input type="text" class="card-input edit-mode" value="*DESCRIPCIÓN*">
-                    </div>
+                        <div class="card-header">
+                            <h2 class="view-mode">*Nombre colección*</h2>
+                            <input type="text" class="card-input edit-mode" value="*Nombre colección*">
 
-                    <div class="card-field">
-                        <strong>Fuente</strong>
-                        <p class="view-mode">Fuente 1, Fuente 2, Fuente 3</p>
+                            <div class="card-actions">
+                                <button class="icon-btn view-mode" id="open-modal-btn" aria-label="Eliminar">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                                <button class="icon-btn view-mode edit-btn" aria-label="Editar">
+                                    <i class="fa-solid fa-pencil"></i>
+                                </button>
 
-                        <ul class="source-list edit-mode">
-                            <li>
-                                <span>Fuente 1</span>
-                                <button class="delete-source-btn" aria-label="Eliminar fuente">&times;</button>
-                            </li>
-                            <li>
-                                <span>Fuente 2</span>
-                                <button class="delete-source-btn" aria-label="Eliminar fuente">&times;</button>
-                            </li>
-                            <li>
-                                <span>Fuente 3</span>
-                                <button class="delete-source-btn" aria-label="Eliminar fuente">&times;</button>
-                            </li>
-                        </ul>
-
-                        <div class="search-bar edit-mode" id="add-source-bar">
-                            <input type="text" placeholder="Buscar y añadir fuente...">
-                            <button class="search-btn" id="add-source-btn" type="button" aria-label="Añadir">
-                                <i class="fa-solid fa-plus"></i>
-                            </button>
+                                <button class="modal-btn modal-btn-secondary edit-mode cancel-btn">Cancelar</button>
+                                <button class="modal-btn modal-btn-primary edit-mode save-btn">Guardar</button>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="card-field">
-                        <strong>Algoritmo de consenso</strong>
-                        <p class="view-mode"> *ALGORITMO SELECCIONADO* </p>
-                        <select name="algoritmo" class="card-select edit-mode">
-                            <option value="multiples-menciones">Multiples menciones</option>
-                            <option value="mayoria-simple" selected>Mayoría simple</option>
-                            <option value="absoluta">Absoluta</option>
-                        </select>
-                    </div>
+                        <div class="card-body">
+                            <div class="card-field">
+                                <strong>Nombre</strong>
+                                <p class="view-mode">*NOMBRE*</p>
+                                <input type="text" class="card-input edit-mode" value="*NOMBRE*">
+                            </div>
+
+                            <div class="card-field">
+                                <strong>Descripción</strong>
+                                <p class="view-mode">*DESCRIPCIÓN*</p>
+                                <input type="text" class="card-input edit-mode" value="*DESCRIPCIÓN*">
+                            </div>
+
+                            <div class="card-field">
+                                <strong>Fuente</strong>
+                                <p class="view-mode">Fuente 1, Fuente 2, Fuente 3</p>
+
+                                <ul class="source-list edit-mode">
+                                    <li>
+                                        <span>Fuente 1</span>
+                                        <button class="delete-source-btn" aria-label="Eliminar fuente">&times;</button>
+                                    </li>
+                                    <li>
+                                        <span>Fuente 2</span>
+                                        <button class="delete-source-btn" aria-label="Eliminar fuente">&times;</button>
+                                    </li>
+                                    <li>
+                                        <span>Fuente 3</span>
+                                        <button class="delete-source-btn" aria-label="Eliminar fuente">&times;</button>
+                                    </li>
+                                </ul>
+
+                                <div class="search-bar edit-mode" id="add-source-bar">
+                                    <input type="text" placeholder="Buscar y añadir fuente...">
+                                    <button class="search-btn" id="add-source-btn" type="button" aria-label="Añadir">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="card-field">
+                                <strong>Algoritmo de consenso</strong>
+                                <p class="view-mode"> *ALGORITMO SELECCIONADO* </p>
+                                <select name="algoritmo" class="card-select edit-mode">
+                                    <option value="multiples-menciones">Multiples menciones</option>
+                                    <option value="mayoria-simple" selected>Mayoría simple</option>
+                                    <option value="absoluta">Absoluta</option>
+                                </select>
+                            </div>
+                        </div>
+                    </article>
                 </div>
-            </article>
+
+                <button class="add-btn" aria-label="Añadir colección">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+
+            </div>
+
+            <aside class="admin-sidebar">
+                <nav class="admin-menu">
+                    <a href="#" class="admin-menu-item active">ADMINISTRAR COLECCIONES</a>
+                    <a href="#" class="admin-menu-item">ADMINISTRAR HECHOS</a>
+                    <a href="#" class="admin-menu-item">ADMINISTRAR FUENTES</a>
+                    <a href="#" class="admin-menu-item">ADMINISTRAR SOLICITUDES DE ELIMINACIÓN</a>
+                </nav>
+            </aside>
 
         </div>
-
-        <button class="add-btn" aria-label="Añadir colección">
-            <i class="fa-solid fa-plus"></i>
-        </button>
-
-    </div>
-
-    <aside class="admin-sidebar">
-        <nav class="admin-menu">
-            <!-- Podés reemplazar # por rutas reales con th:href -->
-            <a href="#" class="admin-menu-item active">ADMINISTRAR COLECCIONES</a>
-            <a href="#" class="admin-menu-item">ADMINISTRAR HECHOS</a>
-            <a href="#" class="admin-menu-item">ADMINISTRAR FUENTES</a>
-            <a href="#" class="admin-menu-item">ADMINISTRAR SOLICITUDES DE ELIMINACIÓN</a>
-        </nav>
-    </aside>
+    </section>
 
     <!-- ========== MODALES ========== -->
     <div id="delete-modal" class="modal-backdrop">
         <div class="modal">
             <h2>¿Confirmar eliminación?</h2>
-            <p>
-                Estás a punto de eliminar esta colección. Esta acción no se puede deshacer.
-            </p>
+            <p>Estás a punto de eliminar esta colección. Esta acción no se puede deshacer.</p>
             <div class="modal-actions">
-                <button id="cancel-delete" class="modal-btn modal-btn-secondary">
-                    Cancelar
-                </button>
-                <button id="confirm-delete" class="modal-btn modal-btn-danger">
-                    Eliminar
-                </button>
+                <button id="cancel-delete" class="modal-btn modal-btn-secondary">Cancelar</button>
+                <button id="confirm-delete" class="modal-btn modal-btn-danger">Eliminar</button>
             </div>
         </div>
     </div>
 
     <div id="add-modal" class="modal-backdrop">
         <div class="modal">
+            <button class="modal-close" aria-label="Cerrar">&times;</button>
             <h2>Crear Nueva Colección</h2>
 
             <form class="modal-form">
@@ -173,12 +178,8 @@
             </form>
 
             <div class="modal-actions">
-                <button id="cancel-add" class="modal-btn modal-btn-secondary">
-                    Cancelar
-                </button>
-                <button id="confirm-add" class="modal-btn modal-btn-primary">
-                    Crear Colección
-                </button>
+                <button id="cancel-add" class="modal-btn modal-btn-secondary">Cancelar</button>
+                <button id="confirm-add" class="modal-btn modal-btn-primary">Crear Colección</button>
             </div>
         </div>
     </div>
@@ -187,7 +188,6 @@
 
 <!-- ========== SCRIPTS ESPECÍFICOS DE LA VISTA ========== -->
 <th:block id="scripts-panel">
-    <!-- Poné tu JS bajo src/main/resources/static/js/panelDeControl.js -->
     <script th:src="@{/js/panelDeControl.js}" defer></script>
 </th:block>
 
