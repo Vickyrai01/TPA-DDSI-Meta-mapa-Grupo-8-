@@ -50,14 +50,6 @@ main {
     height: 100%;
 }
 
-.hero::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(120deg, #ffffff10 0 50px, #b9c7d220 50px 51px);
-    pointer-events: none;
-}
-
 .hero-inner {
     padding: 40px 0;
     text-align: center;

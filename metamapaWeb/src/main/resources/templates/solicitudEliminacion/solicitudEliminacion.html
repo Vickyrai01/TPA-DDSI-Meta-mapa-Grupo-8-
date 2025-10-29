@@ -1,89 +1,55 @@
-<!doctype html>
-<html lang="es">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MetaMapa - Solicitud Eliminación</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/pages-css/footer.css">
-    <link rel="stylesheet" href="../css/pages-css/navbar.css">
-    <link rel="stylesheet" href="../css/pages-css/solicitudEliminacion.css">
-</head>
-<body>
-<!-- NAV -->
-<header class="site-header" id="top">
-    <div class="container nav">
-        <a class="brand" href="#top">
-            <img src="../img/logoNAVBAR.png" alt="Logo MetaMapa" class="brand-logo">
-        </a>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(
+          titulo='Solicitud eliminación',
+          linksAdicionales=~{:: #links-de-solicitud},
+          scriptsAdicionales=~{:: #scripts-de-solicitud},
+          contenido=~{:: #contenido-de-solicitud}
+      )}">
 
-        <nav class="menu">
-            <a href="#inicio">Inicio</a>
-            <a href="#reportar">Reportar suceso</a>
-            <a href="#mapa">Ver mapa</a>
-            <a href="#navegar">Navegar sucesos</a>
-            <a href="#perfil" class="avatar" aria-label="Perfil">
-                <i class="fa-regular fa-user"></i>
-            </a>
-        </nav>
+<!-- CSS específicos de esta vista -->
+<th:block id="links-de-solicitud">
+    <link rel="stylesheet" th:href="@{/css/pages-css/solicitudEliminacion.css}">
+    <link rel="stylesheet" th:href="@{/css/pages-css/button.css}">
+</th:block>
 
-        <button class="burger" aria-label="Abrir menú">
-            <span></span><span></span><span></span>
-        </button>
-    </div>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</header>
+<th:block id="scripts-de-solicitud">
+    <script th:src="@{/js/solicitudEliminacion.js}" defer></script>
+</th:block>
 
-<main>
-    <!-- SOLICITUD ELIMINACIÓN -->
-    <section class="hero">
-        <div class="hero-inner container">
-            <div class="modal-card">
-                <div class="modal-header">Solicitud eliminación</div>
-                <div class="modal-body">
-                    <div class="info-group">
-                        <label><strong>Título:</strong> Intento de robo de mochila</label>
-                    </div>
-                    <div class="info-group">
-                        <label><strong>Descripción:</strong> Le robaron la mochila a una persona, la policía agarró al ladrón y la mochila fue rescatada.</label>
-                    </div>
-                    <div class="info-group">
-                        <label><strong>Categoría:</strong> Intento de robo.</label>
-                    </div>
-                    <div class="info-group">
-                        <label><strong>Fecha suceso:</strong> 28/07/2025</label>
-                    </div>
 
+<!-- CONTENIDO principal que irá dentro de <main> del layout -->
+<div id="contenido-de-solicitud" class="hero">
+    <div class="hero-inner container">
+        <div class="modal-card">
+            <div class="modal-header">Solicitud eliminación</div>
+            <div class="modal-body">
+                <div class="info-group">
+                    <label><strong>Título:</strong> Intento de robo de mochila</label>
+                </div>
+                <div class="info-group">
+                    <label><strong>Descripción:</strong> Le robaron la mochila a una persona, la policía agarró al ladrón y la mochila fue rescatada.</label>
+                </div>
+                <div class="info-group">
+                    <label><strong>Categoría:</strong> Intento de robo.</label>
+                </div>
+                <div class="info-group">
+                    <label><strong>Fecha suceso:</strong> 28/07/2025</label>
+                </div>
+
+                <!-- Si luego querés postear, podés usar th:action y method="post" -->
+                <form th:action="@{/solicitudes/eliminacion}" method="post" autocomplete="off">
                     <div class="form-group">
                         <label for="motivo"><strong>Motivo solicitud</strong></label>
-                        <textarea id="motivo" placeholder="Escribe el motivo de tu solicitud..." maxlength="1000"></textarea>
+                        <textarea id="motivo" name="motivo" placeholder="Escribe el motivo de tu solicitud..." maxlength="1000"></textarea>
                         <div class="char-count">0/1000</div>
                     </div>
 
-                    <button class="btn-solicitar">Solicitar</button>
-                </div>
+                    <button class="btn-solicitar" type="submit">Solicitar</button>
+                </form>
             </div>
         </div>
-    </section>
-</main>
-
-<!-- FOOTER -->
-<footer class="site-footer">
-    <div class="container footer-grid">
-        <a href="mailto:metamapa@gmail.com"><i class="fa-solid fa-envelope"></i> metamapa@gmail.com</a>
-        <a href="#mapa"><i class="fa-solid fa-map-location-dot"></i> /ver-mapa</a>
-        <a href="https://instagram.com" target="_blank" rel="noreferrer"><i class="fa-brands fa-instagram"></i> @metamapa</a>
     </div>
-</footer>
+</div>
 
-<script>
-    // Contador de caracteres sin dependencias externas
-    const textarea = document.getElementById('motivo');
-    const charCount = document.querySelector('.char-count');
-
-    textarea.addEventListener('input', function() {
-        charCount.textContent = this.value.length + '/1000';
-    });
-</script>
-</body>
 </html>
