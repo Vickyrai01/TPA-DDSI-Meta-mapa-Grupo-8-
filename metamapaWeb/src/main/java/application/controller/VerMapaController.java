@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.Optional;
 
 @Controller
 public class VerMapaController {
@@ -24,39 +22,30 @@ public class VerMapaController {
 
     @GetMapping("/mapa")
     public String verMapaGlobal(Model model) {
-
-        Map<String, HechoDTO> hechosUnicos = new HashMap<>();
-
         try {
             List<ColeccionDTO> todasLasColecciones = coleccionService.getAll();
-            for (ColeccionDTO coleccion : todasLasColecciones) {
-                List<HechoDTO> hechosDeLaColeccion = coleccionService.getHechosDeColeccion(coleccion.id()); // Asume que ColeccionDTO tiene .id()
 
-                if (hechosDeLaColeccion != null) {
-                    for (HechoDTO hecho : hechosDeLaColeccion) {
-                        hechosUnicos.put(hecho.hash(), hecho);
-                    }
-                }
+            // Buscamos el ID de la coleccion global (todos los hechos, criterio null)
+            Optional<Integer> idGlobalOpt = todasLasColecciones.stream()
+                    .filter(coleccion -> coleccion.criterioDePertenencia() == null)
+                    .map(ColeccionDTO::id)
+                    .findFirst();
+
+            if (idGlobalOpt.isPresent()) {
+                Integer idGlobal = idGlobalOpt.get();
+                List<HechoDTO> hechosGlobales = coleccionService.getHechosDeColeccion(idGlobal);
+                model.addAttribute("hechos", Optional.ofNullable(hechosGlobales).orElse(List.of()));
+
+            } else {
+                System.err.println("No se encontró una colección global (criterio == null)");
+                model.addAttribute("hechos", List.of());
             }
 
-            model.addAttribute("hechos", new ArrayList<>(hechosUnicos.values()));
-
         } catch (Exception e) {
-            model.addAttribute("hechos", List.of());
+            System.err.println("Error en verMapaGlobal: " + e.getMessage());
+            model.addAttribute("hechos", List.of()); // Lista vacía si falla
         }
 
-        return "verSuceso/verSuceso";
-    }
-
-    @GetMapping("/colecciones/{id}/mapa")
-    public String verMapaPorColeccion(@PathVariable("id") Integer id, Model model) {
-        try {
-            model.addAttribute("hechos", coleccionService.getHechosDeColeccion(id));
-            model.addAttribute("tituloPagina", coleccionService.getById(id).titulo());
-
-        } catch (Exception e) {
-            model.addAttribute("hechos", List.of());
-        }
         return "verSuceso/verSuceso";
     }
 }
