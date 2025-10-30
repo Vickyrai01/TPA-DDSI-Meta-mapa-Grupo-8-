@@ -151,7 +151,8 @@ public class HechoResumenDTO {
 
     public void setLongitud(String longitud) {
         this.longitud = longitud;
-      
+    }
+
     public List<String> getCategorias() {
         return categorias;
     }
