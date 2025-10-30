@@ -14,7 +14,7 @@ import java.util.Map;
 @Service
 public class ColeccionService {
     private final WebClient metamapaApi = WebClient.create("http://localhost:8081/core/api");
-    private final WebClient metamapaApiADMIN = WebClient.create("http://localhost:8082/core/api");
+    private final WebClient metamapaApiADMIN = WebClient.create("http://localhost:8081/core/api");
 
     // Obtener todas las colecciones del core
     public List<ColeccionDTO> getAll() {
