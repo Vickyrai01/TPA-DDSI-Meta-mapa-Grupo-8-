@@ -12,15 +12,17 @@ public class SolicitudesEliminacionService {
     private final WebClient metamapaApi = WebClient.create("http://localhost:8081/core/api");
     private final WebClient metamapaApiADMIN = WebClient.create("http://localhost:8082/core/api");
 
-    // Obtener todas las colecciones del core
+
     public List<SolicitudDeEliminacionDTO> getAll() {
         return metamapaApiADMIN.get()
                 .uri("/solicitudes")
                 .retrieve()
                 .bodyToFlux(SolicitudDeEliminacionDTO.class)
+                .filter(dto -> dto.aceptada() == null)
                 .collectList()
                 .block();
     }
+
 
     public boolean rechazar(Integer id) {
         try {
