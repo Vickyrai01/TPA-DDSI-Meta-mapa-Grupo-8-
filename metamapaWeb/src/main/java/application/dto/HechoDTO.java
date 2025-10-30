@@ -9,6 +9,7 @@ public record HechoDTO(
     String nombre,
     String descripcion,
     String contribuyente,
+    LocalDate fechaCarga,
     LocalDate fechaSuceso,
     LocalTime horaSuceso,
     List<String> multimedia,
