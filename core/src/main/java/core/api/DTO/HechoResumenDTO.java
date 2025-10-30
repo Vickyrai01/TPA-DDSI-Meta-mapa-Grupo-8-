@@ -14,6 +14,7 @@ public class HechoResumenDTO {
     public String nombre;
     public String descripcion;
     public String contribuyente;
+    public LocalDate fechaCarga;
     public LocalDate fechaSuceso;
     public LocalTime horaSuceso;
     public List<String> multimedia;
@@ -136,6 +137,21 @@ public class HechoResumenDTO {
 
     public String getLatitud() { return latitud;}
 
+    public LocalDate getFechaCarga() {
+        return fechaCarga;
+    }
+
+    public void setFechaCarga(LocalDate fechaCarga) {
+        this.fechaCarga = fechaCarga;
+    }
+
+    public void setLatitud(String latitud) {
+        this.latitud = latitud;
+    }
+
+    public void setLongitud(String longitud) {
+        this.longitud = longitud;
+      
     public List<String> getCategorias() {
         return categorias;
     }
