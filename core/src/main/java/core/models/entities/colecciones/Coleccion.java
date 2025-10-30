@@ -36,6 +36,7 @@ public class Coleccion {
     public Coleccion(){}
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_coleccion")
     private Integer id;
     public Integer getId() {return id;}
