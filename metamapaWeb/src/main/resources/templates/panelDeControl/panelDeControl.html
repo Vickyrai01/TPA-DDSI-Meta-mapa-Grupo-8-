@@ -69,12 +69,6 @@
 
 
                         <div class="card-body">
-                            <div class="card-field">
-                                <strong>Nombre:</strong>
-                                <p class="view-mode" th:text="${c.titulo()}">*NOMBRE*</p>
-                                <input type="text" class="card-input edit-mode"
-                                       th:value="${c.titulo()}" aria-label="Editar nombre">
-                            </div>
 
                             <div class="card-field">
                                 <strong>Descripción:</strong>
@@ -94,7 +88,7 @@
                                 <strong>Cantidad de hechos:</strong>
                                 <p class="view-mode"><span th:text="${c.cantidadHechos()}">0</span></p>
                                 <input type="number" class="card-input edit-mode"
-                                       th:value="${c.cantidadHechos()}" min="0" aria-label="Editar cantidad">
+                                       th:value="${c.cantidadHechos()}" min="0" aria-label="Editar cantidad" disabled>
                             </div>
                         </div>
                     </article>
