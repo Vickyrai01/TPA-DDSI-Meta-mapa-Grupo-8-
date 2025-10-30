@@ -21,4 +21,30 @@ public class SolicitudesEliminacionService {
                 .collectList()
                 .block();
     }
+
+    public boolean rechazar(Integer id) {
+        try {
+            var resp = metamapaApiADMIN.post()
+                    .uri(uri -> uri.path("/solicitudes/{id}/rechazar").build(id)) // baseUrl: http://localhost:8082/core/api
+                    .retrieve()
+                    .toBodilessEntity()
+                    .block();
+            return resp != null && resp.getStatusCode().is2xxSuccessful();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean aceptar(Integer id) {
+        try {
+            var resp = metamapaApiADMIN.post()
+                    .uri(uri -> uri.path("/solicitudes/{id}/aceptar").build(id)) // baseUrl: http://localhost:8082/core/api
+                    .retrieve()
+                    .toBodilessEntity()
+                    .block();
+            return resp != null && resp.getStatusCode().is2xxSuccessful();
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

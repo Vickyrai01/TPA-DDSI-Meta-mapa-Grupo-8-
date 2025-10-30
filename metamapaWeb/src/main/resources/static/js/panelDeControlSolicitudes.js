@@ -1,8 +1,8 @@
-// panelDeControl.js — versión simple SOLO búsqueda
+// JS simple solo para búsqueda — los formularios hacen submit clásico
 document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('search-input');
-  const searchBtn   = document.getElementById('search-btn');
-  const list        = document.getElementById('solicitudes-list');
+  const searchBtn = document.getElementById('search-btn');
+  const list = document.getElementById('solicitudes-list');
 
   if (!searchInput || !list) return;
 
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   searchInput.addEventListener('input', filtrar);
-  searchBtn?.addEventListener('click', (e) => {
+  searchBtn?.addEventListener('click', e => {
     e.preventDefault();
     filtrar();
   });
