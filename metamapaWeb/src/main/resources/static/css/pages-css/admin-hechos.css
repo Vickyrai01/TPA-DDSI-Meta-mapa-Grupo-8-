@@ -1,0 +1,23 @@
+.hecho-meta{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:10px 16px;
+    margin: 8px 0 6px;
+}
+@media (max-width:640px){
+    .hecho-meta{ grid-template-columns: 1fr; }
+}
+.meta-row{ display:flex; gap:8px; font-size:14px; }
+.meta-label{ min-width:110px; color:#6b7280; font-weight:700; }
+.meta-value{ color:#374151; word-break:break-word; }
+
+.tags{ display:flex; flex-wrap:wrap; gap:8px; }
+.chip{
+    display:inline-block;
+    padding:6px 10px;
+    font-size:12px;
+    border:1px solid #e5e7eb;
+    border-radius:9999px;
+    background:#fafafa;
+    color:#374151;
+}
