@@ -11,9 +11,9 @@ import javax.persistence.NoResultException;
 public class DeleteHechoHandler implements Handler {
     @Override
     public void handle(Context ctx) {
-        String val = ctx.pathParam("val"); // puede ser hash o id
-        if (val == null || val.isBlank()) {
-            ctx.status(400).result("Identificador requerido");
+        String hash = ctx.pathParam("hash"); // coincide con {hash} en el config
+        if (hash == null || hash.isBlank()) {
+            ctx.status(400).result("Hash requerido");
             return;
         }
 
@@ -21,12 +21,28 @@ public class DeleteHechoHandler implements Handler {
         try {
             DBUtils.comenzarTransaccion(em);
 
-            Hecho hecho = buscarHechoPorHashOId(em, val);
+            Hecho hecho = buscarPorHash(em, hash);
             if (hecho == null) {
                 DBUtils.rollback(em);
                 ctx.status(404).result("Hecho no encontrado");
                 return;
             }
+
+            Integer id = hecho.getId();
+
+            // Limpiar relaciones para evitar violaciones de FK
+            // Ajustá nombres de tablas/columnas si difieren en tu schema
+            try { em.createNativeQuery("DELETE FROM coleccion_hecho WHERE id_hecho = :id")
+                    .setParameter("id", id).executeUpdate(); } catch (Exception ignore) {}
+            try { em.createNativeQuery("DELETE FROM hecho_etiqueta WHERE id_hecho = :id")
+                    .setParameter("id", id).executeUpdate(); } catch (Exception ignore) {}
+            try { em.createNativeQuery("DELETE FROM hecho_multimedia WHERE hecho_id = :id")
+                    .setParameter("id", id).executeUpdate(); } catch (Exception ignore) {}
+            try { em.createNativeQuery("DELETE FROM hechos_visibles WHERE id_hecho = :id")
+                    .setParameter("id", id).executeUpdate(); } catch (Exception ignore) {}
+            // NUEVO: limpiar solicitudes de eliminación que referencian al hecho
+            try { em.createNativeQuery("DELETE FROM solicitud_de_eliminacion WHERE hecho_id_hecho = :id")
+                    .setParameter("id", id).executeUpdate(); } catch (Exception ignore) {}
 
             Hecho managed = em.contains(hecho) ? hecho : em.merge(hecho);
             em.remove(managed);
@@ -35,25 +51,21 @@ public class DeleteHechoHandler implements Handler {
             ctx.status(204);
         } catch (Exception ex) {
             DBUtils.rollback(em);
-            ctx.status(500).result("Error eliminando hecho");
+            ex.printStackTrace();
+            ctx.status(500).result("Error eliminando hecho: " + ex.getMessage());
         } finally {
             try { em.close(); } catch (Exception ignore) {}
         }
     }
 
-    private Hecho buscarHechoPorHashOId(EntityManager em, String val) {
+    private Hecho buscarPorHash(EntityManager em, String hash) {
         try {
             return em.createQuery("from hecho h where lower(h.hash)=:hs", Hecho.class)
-                    .setParameter("hs", val.trim().toLowerCase())
+                    .setParameter("hs", hash.trim().toLowerCase())
                     .setMaxResults(1)
                     .getSingleResult();
         } catch (NoResultException nre) {
-            try {
-                int id = Integer.parseInt(val);
-                return em.find(Hecho.class, id);
-            } catch (Exception ignore) {
-                return null;
-            }
+            return null;
         }
     }
 }
