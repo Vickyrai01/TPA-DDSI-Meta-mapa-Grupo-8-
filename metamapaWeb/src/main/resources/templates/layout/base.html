@@ -13,6 +13,10 @@
     <link rel="stylesheet" th:href="@{/css/pages-css/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/pages-css/footer.css}">
 
+    <!-- CSRF para fetch -->
+    <meta name="_csrf" th:if="${_csrf}" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:if="${_csrf}" th:content="${_csrf.headerName}"/>
+
     <th:block th:replace="${linksAdicionales}"></th:block>
 
 </head>
