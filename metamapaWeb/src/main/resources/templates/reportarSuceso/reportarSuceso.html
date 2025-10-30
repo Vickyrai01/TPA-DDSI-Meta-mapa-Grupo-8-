@@ -174,6 +174,45 @@
     .btn-secondary:hover{
       background: #e5e7eb;
     }
+    .tag-input {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .4rem;
+      border: 1px solid #ddd;
+      border-radius: .75rem;
+      padding: .4rem .6rem;
+    }
+    .tag-input input {
+      border: none;
+      flex: 1;
+      outline: none;
+      padding: .4rem;
+      font-size: .95rem;
+    }
+    .tag {
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      border-radius: 999px;
+      padding: .2rem .6rem;
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+      font-size: .85rem;
+    }
+    .remove-tag {
+      background: none;
+      border: none;
+      color: #6b7280;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 0;
+      margin: 0;
+      line-height: 1;
+    }
+    .remove-tag:hover {
+      color: #1f2937;
+    }
   </style>
 </th:block>
 
@@ -240,6 +279,15 @@
               <label for="descripcion">Descripción</label>
               <textarea id="descripcion" name="descripcion"
                         placeholder="Contanos qué pasó..."></textarea>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="inputEtiqueta">Etiquetas</label>
+              <div class="tag-input" id="tagInput">
+                <input type="text" id="inputEtiqueta" placeholder="Escribí y presioná espacio...">
+              </div>
+              <!-- Campo oculto para enviar todas las etiquetas concatenadas -->
+              <input type="hidden" name="etiquetas" id="etiquetasHidden">
             </div>
 
             <!-- adjuntar -->
@@ -349,6 +397,43 @@
           map.invalidateSize();
         }, 200);
       }
+    });
+    document.addEventListener('DOMContentLoaded', () => {
+      const input = document.getElementById('inputEtiqueta');
+      const container = document.getElementById('tagInput');
+      const hidden = document.getElementById('etiquetasHidden');
+      const tags = [];
+
+      function renderTags() {
+        container.querySelectorAll('.tag').forEach(t => t.remove());
+        tags.forEach((tag, i) => {
+          const span = document.createElement('span');
+          span.className = 'tag';
+          span.textContent = tag;
+          const remove = document.createElement('button');
+          remove.innerHTML = '&times;';
+          remove.className = 'remove-tag';
+          remove.onclick = () => {
+            tags.splice(i, 1);
+            renderTags();
+          };
+          span.appendChild(remove);
+          container.insertBefore(span, input);
+        });
+        hidden.value = tags.join(' ');
+      }
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === ' ' || e.key === 'Enter') {
+          e.preventDefault();
+          const val = input.value.trim();
+          if (val && !tags.includes(val)) {
+            tags.push(val);
+            renderTags();
+          }
+          input.value = '';
+        }
+      });
     });
   </script>
 </th:block>

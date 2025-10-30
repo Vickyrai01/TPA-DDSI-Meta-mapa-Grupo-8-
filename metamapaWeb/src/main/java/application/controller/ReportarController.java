@@ -11,10 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class ReportarController {
@@ -52,7 +50,7 @@ public class ReportarController {
             @RequestParam("latitud") Double latitud,
             @RequestParam("longitud") Double longitud,
             @RequestParam("multimedia") String multimedia,
-            @RequestParam(value = "etiquetas", required = false) List<String> etiquetas
+            @RequestParam(value = "etiquetas", required = false) String etiquetas
     ) {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> jsonMap = new HashMap<>();
@@ -76,6 +74,13 @@ public class ReportarController {
             jsonMap.put("multimedia", new ArrayList<>());
         }
         //jsonMap.put("etiquetas", etiquetas);
+        List<String> etiquetasList = new ArrayList<>();
+        if (etiquetas != null && !etiquetas.isBlank()) {
+            etiquetasList = Arrays.stream(etiquetas.trim().split("\\s+"))
+                    .filter(s -> !s.isBlank())
+                    .toList();
+        }
+        jsonMap.put("etiquetas", etiquetasList);
         try {
             String json = mapper.writeValueAsString(jsonMap);
             reportarService.postearHecho(json);
