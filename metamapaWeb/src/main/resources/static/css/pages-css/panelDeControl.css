@@ -471,6 +471,8 @@ body{
   max-width:440px;
   transform:translateY(-12px);
   transition:transform .25s ease;
+    border-radius:16px;
+    overflow: hidden;
 }
 .modal-backdrop.active #delete-modal .modal{ transform:translateY(0); }
 #delete-modal .modal h2{
