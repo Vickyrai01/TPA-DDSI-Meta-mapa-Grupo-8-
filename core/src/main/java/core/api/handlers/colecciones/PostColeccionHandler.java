@@ -49,7 +49,7 @@ public class PostColeccionHandler implements Handler {
         }
 
         Coleccion coleccion = new Coleccion(
-                dto.getId(),
+                null,
                 dto.getTitulo(),
                 dto.getDescripcionColeccion(),
                 dto.getCriterioDePertenencia(),

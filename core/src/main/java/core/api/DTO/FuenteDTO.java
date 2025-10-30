@@ -6,11 +6,18 @@ import core.models.entities.fuentes.StrategyTipoConexion;
 import core.models.entities.fuentes.TipoFuente;
 
 public class FuenteDTO {
+    public Integer id;
     public String nombre;
     public String link;
     public String tipoFuente;
     public String strategyTipoConexion;
 
+    public FuenteDTO(Integer id,String nombre, String tipoFuente, String link, String strategyTipoConexion) {
+        this.nombre = nombre;
+        this.tipoFuente = tipoFuente;
+        this.link = link;
+        this.strategyTipoConexion = strategyTipoConexion;
+    }
     public FuenteDTO(String nombre, String tipoFuente, String link, String strategyTipoConexion) {
         this.nombre = nombre;
         this.tipoFuente = tipoFuente;
@@ -22,7 +29,7 @@ public class FuenteDTO {
     }
 
     public static FuenteDTO from(Fuente f) {
-        return new FuenteDTO(f.getNombre(), f.getTipoFuente().toString(), f.getLink(), f.getStrategyTipoConexion().devolverTipoDeConexion());
+        return new FuenteDTO(f.getId(), f.getNombre(), f.getTipoFuente().toString(), f.getLink(), f.getStrategyTipoConexion().devolverTipoDeConexion());
     }
 
     public String getNombre() {
@@ -57,4 +64,7 @@ public class FuenteDTO {
         this.strategyTipoConexion = strategyTipoConexion;
     }
 
+    public Integer getId() {return id;}
+
+    public void setId(Integer id) {this.id = id;}
 }

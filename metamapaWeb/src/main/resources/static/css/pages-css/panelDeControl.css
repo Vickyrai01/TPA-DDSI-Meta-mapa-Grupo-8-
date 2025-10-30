@@ -437,6 +437,7 @@ body{
   box-shadow: 0 4px 12px rgba(0,0,0,0.10);
   border: none;
   transition: filter 0.2s ease, transform 0.04s ease;
+  cursor: pointer;
 }
 
 .card-actions .modal-btn-primary {
@@ -537,6 +538,7 @@ body{
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.10);
   border: none;
   transition: filter 0.2s ease, transform 0.04s ease;
+  cursor: pointer;
 }
 
 /* Botón CANCELAR (gris claro, sin borde negro) */
