@@ -1,476 +1,633 @@
-/* --- Configuración General --- */
-body {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    /* Color de fondo de la imagen */
-    background-color: #f5f5f5;
-    font-family: 'Montserrat', sans-serif;
+/* =========================
+   TOKENS (con fallbacks)
+   ========================= */
+:root{
+  --brand-primary: var(--orange, #F47C2C);
+  --brand-primary-2: var(--orange-2, #FF9A57);
+  --brand-blue: var(--color-azul, #2980B9);
+  --bg-page: var(--bg-page, #f5f5f5);
+  --bg-card: var(--bg-card, #ffffff);
+  --text-strong: var(--text-strong, #1f2937);
+  --text-normal: var(--text-normal, #374151);
+  --text-muted: var(--text-muted, #6b7280);
+  --border: var(--border, #e5e7eb);
+  --radius: var(--radius, 18px);
+  --shadow-sm: 0 2px 6px rgba(0,0,0,.06);
+  --shadow-md: 0 10px 30px rgba(0,0,0,.12);
+
+  --home-bg-url: url("../../img/fondoHOME1.png");
 }
 
-/* Estilo para el link activo en la navbar principal (como en la imagen) */
-.site-header .menu a.active-nav {
-    color: #ff8c42; /* Asumo el color naranja de tu otro CSS */
-    font-weight: 800; /* Más destacado */
+/* =========================
+   BASE
+   ========================= */
+body{
+  margin:0;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+  font-family:'Montserrat', sans-serif;
+  color:var(--text-normal);
 }
 
-/* --- Contenedor Principal de Admin --- */
-.admin-container {
-    display: flex;
-    flex-grow: 1;
-    padding: 24px;
-    gap: 24px; /* Espacio entre las columnas */
-    max-width: 1600px;
-    margin: 0 auto;
-    width: 100%;
-    box-sizing: border-box;
+/* Activo navbar */
+.site-header .menu a.active-nav{
+  color:var(--brand-primary);
+  font-weight:800;
 }
 
-/* --- Columna Izquierda (Contenido) --- */
-.admin-main-content {
-    flex: 3; /* Ocupa más espacio */
-    display: flex;
-    flex-direction: column;
-    position: relative; /* Para posicionar el botón '+' */
+/* =========================
+   FONDO CON IMAGEN DEL HOME
+   ========================= */
+.admin-page{
+  position:relative;
+  min-height:calc(100vh - 120px);
+  display:flex;
+  align-items:stretch;
 }
 
-.admin-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: #555;
-    text-transform: uppercase;
-    margin: 0 0 16px 0;
+.admin-bg{
+  position:absolute;
+  inset:0;
+  background-image: var(--home-bg-url);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter:saturate(1.05) contrast(1.02);
+  z-index:0;
 }
 
-/* Barra de búsqueda */
+
+/* =========================
+   CONTENEDOR SUPERIOR (CARD)
+   ========================= */
+.admin-surface {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 40px auto;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+
+.surface-header {
+  background: linear-gradient(90deg, var(--brand-primary), var(--brand-primary-2));
+  padding: 20px 24px;
+  text-align: center;
+}
+
+.surface-title {
+  margin: 0;
+  font-weight: 800;
+  color: #fff;
+  font-size: 22px;
+  letter-spacing: .02em;
+  text-transform: none;
+}
+
+
+.admin-container{
+  display:flex;
+  gap:24px;
+  padding:24px;
+  box-sizing:border-box;
+}
+
+/* =========================
+   COLUMNA IZQUIERDA
+   ========================= */
+.admin-main-content{
+  flex:3;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+}
+
+.admin-title{
+  font-size:12px;
+  font-weight:700;
+  color:var(--text-muted);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin:0 0 16px 0;
+}
+
+/* =========================
+   SEARCH BAR (redondeada)
+   ========================= */
 .search-bar {
-    display: flex;
-    margin-bottom: 24px;
+  display: flex;
+  align-items: stretch;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+  border-radius: 9999px;
+}
+.search-bar input{
+  flex:1;
+  padding:12px 14px;
+  border:1px solid var(--border);
+  border-right:none;
+  border-radius: 9999px 0 0 9999px;
+  font-size:14px;
+  background:#fff;
+  outline:none;
 }
 
-.search-bar input {
-    flex-grow: 1;
-    padding: 12px 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px 0 0 4px;
-    font-size: 14px;
-    font-family: 'Montserrat', sans-serif;
-    background-color: #fff;
+.search-bar input:focus{
+  box-shadow:0 0 0 3px rgba(41,128,185,.15);
+  border-color:var(--brand-blue);
 }
 
-.search-bar .search-btn {
-    padding: 0 16px;
-    border: 1px solid #ccc;
-    border-left: none;
-    background-color: #f0f0f0;
-    border-radius: 0 4px 4px 0;
-    cursor: pointer;
-    font-size: 16px;
-    color: #333;
+.search-bar .search-btn{
+  padding:0 16px;
+  border:1px solid var(--border);
+  border-left:none;
+  background:var(--brand-blue);
+  color:#fff;
+  border-radius:0 9999px 9999px 0;
+  cursor:pointer;
+  font-size:16px;
+  transition:transform .04s ease, filter .2s ease;
 }
+.search-bar .search-btn:hover{ filter:brightness(1.05); }
+.search-bar .search-btn:active{ transform:translateY(1px); }
 
-/* Tarjeta de Colección */
+/* =========================
+   TARJETAS
+   ========================= */
 .collection-card {
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    padding: 24px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+  transition: box-shadow 0.2s ease;
+      margin-bottom: 10px;
+}
+.collection-card:hover {
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.16);
+}
+.card-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px dashed var(--border);
+
 }
 
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 16px;
-    margin-bottom: 16px;
+.card-header h2{
+  margin:0;
+  font-size:18px;
+  font-weight:800;
+  color:var(--text-strong);
 }
 
-.card-header h2 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
+.card-actions{ display:flex; gap:12px; align-items:center;
 }
 
-.card-actions {
-    display: flex;
-    gap: 8px;
+/* Icon buttons */
+.icon-btn{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:12px;
+  cursor:pointer;
+  font-size:16px;
+  color:var(--text-normal);
+  padding:8px 10px;
+  line-height:1;
+  box-shadow:var(--shadow-sm);
+  transition:transform .04s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease;
+}
+.icon-btn:hover{
+  color:var(--brand-primary);
+  border-color:var(--brand-primary);
+  box-shadow:var(--shadow-md);
+}
+.icon-btn:active{ transform:translateY(1px); }
+
+.card-field{ margin-bottom:16px; font-size:14px; max-width:640px; }
+.card-field strong{
+  display:block; margin-bottom:8px; font-weight:800; color:var(--text-strong);
 }
 
-.icon-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
-    color: #555;
-    padding: 4px;
+.card-input,
+.card-select{
+  font-family:'Montserrat', sans-serif;
+  font-size:14px;
+  padding:10px 12px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  width:100%;
+  background:#fff;
+  outline:none;
+  transition:box-shadow .2s ease, border-color .2s ease;
 }
-.icon-btn:hover {
-    color: #000;
-}
-
-.card-body .card-info {
-    font-size: 14px;
-    color: #666;
-    margin: 0 0 24px 0;
-}
-
-.card-field {
-    margin-bottom: 16px;
-    font-size: 14px;
+.card-input:focus,
+.card-select:focus{
+  box-shadow:0 0 0 3px rgba(41,128,185,.15);
+  border-color:var(--brand-blue);
 }
 
-.card-field strong {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #333;
+/* =========================
+   BOTÓN FLOTANTE +  (AZUL)
+   ========================= */
+.add-btn{
+  position:absolute;
+  bottom:0;
+  right:0;
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  background:var(--brand-blue);
+  border:1px solid var(--brand-blue);
+  color:#fff;
+  font-size:22px;
+  cursor:pointer;
+  box-shadow:var(--shadow-md);
+  transition:transform .04s ease, filter .2s ease;
 }
+.add-btn:hover{ filter:brightness(1.05); }
+.add-btn:active{ transform:translateY(1px); }
 
-/* Estilo para los placeholders grises */
-.placeholder-box {
-    display: block;
-    width: 200px; /* Ancho como en la imagen */
-    height: 30px;
-    background-color: #e9e9e9; /* Gris claro */
-    border-radius: 4px;
-}
-
-/* Botón flotante de Añadir */
-.add-btn {
-    /* Posicionado sobre .admin-main-content */
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background-color: #e0e0e0; /* Gris de la imagen */
-    border: none;
-    font-size: 24px;
-    color: #333;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    transition: background-color 0.3s;
-}
-.add-btn:hover {
-    background-color: #d0d0d0;
-}
-
-
-/* --- Columna Derecha (Sidebar Admin) --- */
+/* =========================
+   SIDEBAR
+   ========================= */
 .admin-sidebar {
-    flex: 1; /* Ocupa menos espacio */
-    min-width: 280px;
-    max-width: 350px;
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 16px;
-    height: fit-content; /* Se ajusta al contenido */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  flex: 1;
+  min-width: 280px;
+  max-width: 340px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  height: fit-content;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+  transition: box-shadow 0.2s ease;
+}
+.admin-sidebar:hover {
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.16);
 }
 
-.admin-menu {
-    display: flex;
-    flex-direction: column;
+.admin-menu{ display:flex; flex-direction:column; }
+.admin-menu-item{
+  padding:14px 12px;
+  text-decoration:none;
+  color:var(--text-normal);
+  font-size:14px;
+  font-weight:800;
+  border-bottom:1px solid #f3f4f6;
+  border-radius:12px;
+  transition:background .2s ease, color .2s ease;
 }
+.admin-menu-item + .admin-menu-item{ margin-top:4px; }
+.admin-menu-item:last-child{ border-bottom:none; }
+.admin-menu-item:hover{ background:#f9fafb; }
+.admin-menu-item.active{ color:var(--brand-primary); }
 
-.admin-menu-item {
-    padding: 16px;
-    text-decoration: none;
-    color: #333;
-    font-size: 14px;
-    font-weight: 600;
-    border-bottom: 1px solid #f0f0f0;
-    transition: background-color 0.3s, color 0.3s;
+/* ===== Backdrop general ===== */
+.modal-backdrop{
+  position:fixed; inset:0;
+  background:rgba(17,24,39,.55);
+  display:flex; justify-content:center; align-items:center;
+  z-index:1000;
+  opacity:0; visibility:hidden;
+  transition:opacity .25s ease, visibility .25s ease;
 }
+.modal-backdrop.active{ opacity:1; visibility:visible; }
 
-.admin-menu-item:last-child {
-    border-bottom: none;
+/* ======= MODAL: Nueva colección (más estilizada) ======= */
+#add-modal .modal{
+  background:#fff;
+  border:1px solid rgba(0,0,0,.05);
+  border-radius:20px;
+  box-shadow:0 18px 60px rgba(0,0,0,.22);
+  width:92%;
+  max-width:560px;
+  overflow:hidden;
+  transform:translateY(-14px) scale(.98);
+  transition:transform .25s ease;
 }
-
-.admin-menu-item:hover {
-    background-color: #f9f9f9;
-}
-
-.admin-menu-item.active {
-    color: #ff8c42; /* Naranja principal */
-    font-weight: 800; /* Más grueso */
-}
-
-
-/* --- Responsive (Similar al tuyo) --- */
-@media (max-width: 1024px) {
-    .admin-container {
-        /* Pone la sidebar arriba en móvil */
-        flex-direction: column-reverse;
-        padding: 16px;
-        gap: 16px;
-    }
-
-    .admin-sidebar {
-        width: 100%;
-        max-width: none;
-        box-sizing: border-box;
-        height: auto;
-    }
-
-    /* Fijamos el botón '+' en móvil */
-    .add-btn {
-        position: fixed;
-        bottom: 24px;
-        right: 24px;
-        z-index: 1000;
-    }
-}
-
-@media (max-width: 768px) {
-    .card-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-    }
-}
-
-/* --- Estilos del Modal --- */
-
-/* El fondo oscuro semi-transparente */
-.modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-
-    /* Centra el modal */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    z-index: 1000; /* Asegura que esté por encima de todo */
-
-    /* Oculto por defecto */
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-/* Clase que se añade con JS para mostrar el modal */
-.modal-backdrop.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-/* La ventana del modal */
-.modal {
-    background-color: white;
-    border-radius: 8px;
-    padding: 24px;
-    width: 90%;
-    max-width: 450px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-
-    /* Animación de entrada */
-    transform: translateY(-20px);
-    transition: transform 0.3s ease;
-}
-
-.modal-backdrop.active .modal {
-    transform: translateY(0);
-}
-
-.modal h2 {
-    margin-top: 0;
-    font-size: 22px;
-}
-
-.modal p {
-    font-size: 15px;
-    line-height: 1.5;
-    color: #333;
-}
-
-/* Contenedor de botones */
-.modal-actions {
-    margin-top: 24px;
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-}
-
-/* Estilo base de botones del modal */
-.modal-btn {
-    padding: 10px 18px;
-    border: none;
-    border-radius: 6px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-/* Botón secundario (Cancelar) */
-.modal-btn-secondary {
-    background-color: #e0e0e0;
-    color: #333;
-}
-.modal-btn-primary {
-    background-color: #2980B9;
-    color: #333;
-}
-.modal-btn-secondary:hover {
-    background-color: #c7c7c7;
-}
-
-/* Botón de peligro (Eliminar) */
-.modal-btn-danger {
-    background-color: #d9534f; /* Un rojo claro */
-    color: white;
-}
-.modal-btn-danger:hover {
-    background-color: #c9302c; /* Un rojo más oscuro */
-}
-
-.card-field{
-    width: 300px;
+#add-modal.active .modal,
+.modal-backdrop.active #add-modal .modal{
+  transform:translateY(0) scale(1);
 }
 
 
-/* --- Estilos para Edición "In-Place" --- */
-
-/* Por defecto, todos los campos de edición están ocultos */
-.edit-mode {
-    display: none;
+#add-modal .modal h2{
+  margin:0;
+  padding:16px 20px;
+  background:linear-gradient(90deg, var(--brand-primary, #F47C2C), var(--brand-primary-2, #FF9A57));
+  color:#fff;
+  font-weight:800;
+  font-size:20px;
+  letter-spacing:.01em;
+  border-bottom:1px solid rgba(255,255,255,.2);
 }
 
-/* Un input simple para la edición */
-.card-input {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 70%;
-}
-.card-header .card-input {
-    font-size: 18px; /* Más grande para el título */
+#add-modal .modal .modal-form{
+  padding:18px 20px 8px;
+  display:grid;
+  grid-template-columns: 1fr;
+  gap:14px;
 }
 
-/* --- La Magia: Clase .is-editing --- */
-
-/* Cuando la tarjeta está en modo edición, OCULTA los de vista */
-.is-editing .view-mode {
-    display: none;
+@media (min-width: 640px){
+  #add-modal .modal .modal-form{
+    grid-template-columns: 1fr 1fr;
+  }
+  #add-modal .modal .form-group:nth-child(1){ grid-column:1 / -1; }
 }
 
-/* Y MUESTRA los de edición */
-.is-editing .edit-mode {
-    display: block; /* O 'flex' si lo necesitas */
+#add-modal .modal .form-group label{
+  display:block;
+  font-weight:800;
+  font-size:14px;
+  margin:0 0 6px;
+  color:var(--text-strong, #1f2937);
+}
+#add-modal .modal .card-input,
+#add-modal .modal .card-select{
+  width:100%;
+  box-sizing:border-box;
+  font-family:'Montserrat', sans-serif;
+  font-size:14px;
+  padding:10px 12px;
+  border:1px solid var(--border, #e5e7eb);
+  border-radius:12px;
+  background:#fff;
+  outline:none;
+  transition:box-shadow .2s ease, border-color .2s ease;
+}
+#add-modal .modal .card-input:focus,
+#add-modal .modal .card-select:focus{
+  box-shadow:0 0 0 3px rgba(41,128,185,.15);
+  border-color:var(--brand-blue, #2980B9);
 }
 
-/* Ajustes para los botones de guardar/cancelar */
-.is-editing .card-actions {
-    display: flex;
-    gap: 8px;
+#add-modal .modal .search-bar{
+  display:flex;
+  align-items:stretch;
+  border-radius:9999px;
+  box-shadow:0 6px 22px rgba(0,0,0,.12);
 }
-.is-editing .edit-mode.save-btn {
-    /* (Opcional) Color verde para guardar */
-    background-color: #2980B9;
-    color: white;
+#add-modal .modal .search-bar input{
+  border:1px solid var(--border, #e5e7eb);
+  border-right:none;
+  border-radius:9999px 0 0 9999px;
+  padding:12px 14px;
+  font-size:14px;
 }
-.is-editing .edit-mode.save-btn:hover {
-    background-color: #2980B9;
+#add-modal .modal .search-btn{
+  border:1px solid var(--border, #e5e7eb);
+  border-left:none;
+  background:var(--brand-blue, #2980B9);
+  color:#fff;
+  border-radius:0 9999px 9999px 0;
+  padding:0 16px;
+  font-size:16px;
+  cursor:pointer;
+  transition:filter .2s ease, transform .04s ease;
+}
+#add-modal .modal .search-btn:hover{ filter:brightness(1.05); }
+#add-modal .modal .search-btn:active{ transform:translateY(1px); }
+
+#add-modal .modal .modal-actions{
+  padding:14px 20px 20px;
+  display:flex;
+  justify-content:flex-end;
+  gap:12px;
+  border-top:1px solid #f2f2f2;
+}
+#add-modal .modal .modal-btn{
+  padding:10px 16px;
+  border:1px solid transparent;
+  border-radius:12px;
+  font-weight:800;
+  font-size:14px;
+  cursor:pointer;
+  box-shadow:0 4px 14px rgba(0,0,0,.10);
+  transition:filter .2s ease, transform .04s ease;
+}
+#add-modal .modal .modal-btn:active{ transform:translateY(1px); }
+#add-modal .modal .modal-btn-primary{
+  background:var(--brand-blue, #2980B9);
+  color:#fff;
+}
+#add-modal .modal .modal-btn-secondary{
+  background:#f3f4f6;
+  color:#111827;
+  border-color:var(--border, #e5e7eb);
+}
+#add-modal .modal .modal-btn-danger{
+  background:#d9534f;
+  color:#fff;
+}
+/* =========================
+   BOTONES DE EDICIÓN (Guardar / Cancelar)
+   ========================= */
+.card-actions .modal-btn {
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 13px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+  border: none;
+  transition: filter 0.2s ease, transform 0.04s ease;
 }
 
-/* Ajustes para el <select> y otros */
-.is-editing .card-select {
-    display: inline-block; /* Para que no ocupe toda la línea */
-}
-.is-editing .placeholder-box {
-    display: block; /* Para que se muestre */
-}
-/* --- Ajuste para Search-bar en modo edición (PUNTO 1) --- */
-/* Esto corrige que la barra de búsqueda interna se vea
-  en una línea (flex) en vez de apilada (block).
-*/
-.is-editing .search-bar.edit-mode {
-    display: flex;
+.card-actions .modal-btn-primary {
+  background: var(--brand-blue);
+  color: #fff;
 }
 
-/* --- Estilos para deshabilitar UI (PUNTO 2) --- */
-/* Cuando el contenido principal está en modo edición,
-  deshabilita la búsqueda principal y el botón de añadir.
-*/
+.card-actions .modal-btn-primary:hover {
+  filter: brightness(1.05);
+}
+
+.card-actions .modal-btn-secondary {
+  background: #e5e7eb;   /* gris suave */
+  color: #111827;
+}
+
+.card-actions .modal-btn-secondary:hover {
+  filter: brightness(0.97);
+}
+
+.card-actions .modal-btn:active {
+  transform: translateY(1px);
+}
+
+/* ======= MODAL*/
+#delete-modal .modal{
+  background:#fff;
+  border:1px solid rgba(0,0,0,.06);
+  border-radius:16px;
+  box-shadow:0 16px 48px rgba(0,0,0,.20);
+  width:92%;
+  max-width:440px;
+  transform:translateY(-12px);
+  transition:transform .25s ease;
+    border-radius:16px;
+    overflow: hidden;
+}
+.modal-backdrop.active #delete-modal .modal{ transform:translateY(0); }
+#delete-modal .modal h2{
+  margin:0; padding:14px 18px;
+  background:linear-gradient(90deg, var(--brand-primary, #F47C2C), var(--brand-primary-2, #FF9A57));
+  color:#fff; font-weight:800; font-size:18px;
+}
+#delete-modal .modal p{ padding:14px 18px 0; }
+#delete-modal .modal .modal-actions{ padding:14px 18px 18px; gap:10px; }
+
+/* =========================
+   LISTA DE FUENTES
+   ========================= */
+.source-list{
+  list-style:none; padding:0; margin:0 0 12px 0; max-width:100%;
+}
+.source-list li{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:10px 12px;
+  background:#fafafa; border:1px solid var(--border);
+  border-radius:12px; margin-bottom:8px; font-size:14px;
+}
+.source-list li span{ word-break:break-word; }
+
+.delete-source-btn{
+  background:#fff; border:1px solid var(--border);
+  color:#d9534f; font-size:18px; font-weight:800;
+  cursor:pointer; line-height:1; padding:2px 10px; margin-left:8px;
+  border-radius:10px; box-shadow:var(--shadow-sm);
+  transition:transform .04s ease, color .2s ease, border-color .2s ease;
+}
+.delete-source-btn:hover{ color:#b02a27; border-color:#b02a27; }
+.delete-source-btn:active{ transform:translateY(1px); }
+
+/* =========================
+   EDICIÓN IN-PLACE
+   ========================= */
+.edit-mode{ display:none; }
+.is-editing .view-mode{ display:none; }
+.is-editing .edit-mode{ display:block; }
+.is-editing .card-actions{ gap:8px; }
+.is-editing .edit-mode.save-btn{ background:var(--brand-blue); color:#fff; }
+.is-editing .card-select{ display:inline-block; }
+
+/* search-bar interna en modo edición */
+.is-editing .search-bar.edit-mode{ display:flex; }
+
+/* Deshabilitar UI externa si hay edición abierta */
 .admin-main-content.child-is-editing > .search-bar,
-.admin-main-content.child-is-editing > .add-btn {
-    opacity: 0.5;
-    pointer-events: none;
-    user-select: none;
+.admin-main-content.child-is-editing > .add-btn{
+  opacity:.55; pointer-events:none; user-select:none;
 }
 
-/* --- Estilos para el formulario del nuevo Modal (PUNTO 3) --- */
-.modal-form .form-group {
-    margin-bottom: 16px;
+/* =========================
+   BOTONES DEL MODAL DE ELIMINACIÓN
+   ========================= */
+#delete-modal .modal .modal-btn {
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.10);
+  border: none;
+  transition: filter 0.2s ease, transform 0.04s ease;
 }
 
-.modal-form .form-group label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 8px;
-    font-size: 14px;
-}
-/* Reutilizamos los estilos que ya tienes */
-.modal-form .card-input,
-.modal-form .card-select {
-    width: 100%;
-    box-sizing: border-box; /* Asegura que el padding no rompa el ancho */
+/* Botón CANCELAR (gris claro, sin borde negro) */
+#delete-modal .modal .modal-btn-secondary {
+  background: #e5e7eb;      /* gris suave */
+  color: #111827;           /* gris oscuro para el texto */
 }
 
-/* --- Estilos para la lista de Fuentes (Nueva) --- */
-.source-list {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 16px 0; /* Espacio antes del buscador */
-    max-width: 100%; /* Asegura que no se desborde */
+#delete-modal .modal .modal-btn-secondary:hover {
+  filter: brightness(0.97);
 }
 
-.source-list li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px;
-    background-color: #f9f9f9;
-    border: 1px solid #eee;
-    border-radius: 4px;
-    margin-bottom: 6px;
-    font-size: 14px;
-}
-.source-list li span {
-    word-break: break-all; /* Evita que texto largo rompa el diseño */
+/* Botón ELIMINAR (rojo vivo con mismo estilo que los otros) */
+#delete-modal .modal .modal-btn-danger {
+  background: #d9534f;       /* rojo base */
+  color: #fff;
 }
 
-.delete-source-btn {
-    background: none;
-    border: none;
-    color: #d9534f; /* Rojo peligro */
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    line-height: 1;
-    padding: 0 4px;
-    margin-left: 8px;
-}
-.delete-source-btn:hover {
-    color: #333;
+#delete-modal .modal .modal-btn-danger:hover {
+  filter: brightness(1.05);
 }
 
-/* Aseguramos que el buscador de AÑADIR se muestre como flex */
-.is-editing .search-bar.edit-mode#add-source-bar {
-    display: flex;
+/* efecto presionado */
+#delete-modal .modal .modal-btn:active {
+  transform: translateY(1px);
 }
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+@media (max-width:1024px){
+  .admin-container{
+    flex-direction:column-reverse;
+    padding:20px; gap:16px;
+  }
+  .admin-sidebar{ width:100%; max-width:none; height:auto; }
+  .add-btn{
+    position:fixed; bottom:24px; right:24px; z-index:1000;
+  }
+}
+@media (max-width:768px){
+  .surface-header{ padding:14px 18px; }
+  .surface-title{ font-size:18px; }
+  .card-header{
+    flex-direction:column; align-items:flex-start; gap:12px;
+
+  }
+}
+/* ====== Solicitudes ====== */
+.solicitud-card .hecho-box {
+  margin-top: 14px;
+  background: #f9fafb;
+  border: 1px solid rgba(0,0,0,0.04);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+.solicitud-card .hecho-box h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-strong);
+}
+.hecho-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+.hecho-label {
+  font-weight: 700;
+  color: #6b7280;
+  min-width: 110px;
+}
+.hecho-value {
+  flex: 1;
+  word-break: break-word;
+}
+.hecho-empty {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+/* botones centrados */
+.solicitud-actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+.solicitud-actions form {
+  display: inline-block;
+}
+

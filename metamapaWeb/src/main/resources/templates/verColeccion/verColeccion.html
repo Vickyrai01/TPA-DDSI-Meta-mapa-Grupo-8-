@@ -40,6 +40,7 @@
                         </small>
                     </a>
                 </div>
+
             </section>
         </aside>
     </main>
@@ -54,7 +55,7 @@
     <!-- Inyectamos los hechos como JSON seguro -->
     <script th:inline="javascript">
         /*<![CDATA[*/
-        const hechos = /*[[${hechos}]]*/ [];
+        const hechosColeccion = /*[[${hechos}]]*/ [];
 
         // Utilidad: parsea lat/lon que vienen como String (posible coma decimal)
         const toNum = v => {
@@ -63,7 +64,7 @@
             return Number.isFinite(n) ? n : null;
         };
 
-        const puntos = hechos
+        const puntos = hechosColeccion
             .map(h => ({
                 nombre: h.nombre,
                 hash: h.hash,
