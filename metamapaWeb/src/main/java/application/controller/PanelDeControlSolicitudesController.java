@@ -20,7 +20,6 @@ public class PanelDeControlSolicitudesController {
     @GetMapping("/admin/solicitudesEliminacion")
     public String home(Model model) {
         model.addAttribute("listaDeSolicitudes", solicitudesEliminacionService.getAll());
-        // Si más adelante querés pasar datos a la vista, usá el 'model'
         return "panelDeControl/panelDeControlSolicitudes";
     }
 
