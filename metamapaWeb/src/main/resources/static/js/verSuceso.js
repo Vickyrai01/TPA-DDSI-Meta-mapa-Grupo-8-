@@ -63,6 +63,9 @@ for (const p of puntos) {
               <p class="description-box">${p.descripcion ?? 'No hay descripción disponible.'}</p>
               <p><strong>Fecha de suceso:</strong> ${p.fecha ?? 'No especificada'}</p>
               ${etiquetasHtml}
+             <a class="btn-solicitud" href="/solicitudEliminacion" style="color: white;"> 
+    Solicitar eliminación
+</a>
           </section>
       </div>
     `;
