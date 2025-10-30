@@ -50,8 +50,11 @@
                             <div class="card-actions">
                                 <!-- Eliminar -->
                                 <form th:action="@{/admin/hechos/{hash}/eliminar(hash=${h.hash()})}"
-                                      method="post" class="delete-form" th:if="${h.hash() != null}">
-                                    <input type="hidden" name="_csrf" th:if="${_csrf}" th:value="${_csrf.token}"/>
+                                      method="post" class="delete-form">
+                                    <input type="hidden"
+                                           th:if="${_csrf}"
+                                           th:name="${_csrf.parameterName}"
+                                           th:value="${_csrf.token}"/>
                                     <button type="button" class="icon-btn view-mode delete-btn" aria-label="Eliminar">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
