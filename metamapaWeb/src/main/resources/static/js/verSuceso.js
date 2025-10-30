@@ -1,6 +1,4 @@
 // Utilidad: parsea lat/lon que vienen como String (posible coma decimal)
-
-
 const toNum = v => {
     if (v == null) return null;
     const n = parseFloat(String(v).replace(',', '.'));
@@ -14,7 +12,10 @@ const puntos = hechos
         lat: toNum(h.latitud),
         lon: toNum(h.longitud),
         fecha: h.fechaSuceso,
-        hora: h.horaSuceso
+        hora: h.horaSuceso,
+        descripcion: h.descripcion,
+        etiquetas: h.etiquetas,       // ya estaba
+        categorias: h.categorias      // NUEVO: mapeamos categorías desde el DTO
     }))
     .filter(p => p.lat != null && p.lon != null);
 
@@ -28,17 +29,47 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors', maxZoom: 19
 }).addTo(map);
 
+// --- BUCLE MODIFICADO ---
 const markers = [];
 for (const p of puntos) {
+    // Categorías
+    let categoriasHtml = '';
+    if (p.categorias && p.categorias.length > 0) {
+        categoriasHtml = `
+            <p><strong>Categorías:</strong></p>
+            <div class="tags">
+                ${p.categorias.map(cat => `<span class="tag tag-category">${cat}</span>`).join('')}
+            </div>
+        `;
+    }
+
+    // Etiquetas
+    let etiquetasHtml = '';
+    if (p.etiquetas && p.etiquetas.length > 0) {
+        etiquetasHtml = `
+            <p><strong>Etiquetas:</strong></p>
+            <div class="tags">
+                ${p.etiquetas.map(tag => `<span class="tag tag-label">${tag}</span>`).join('')}
+            </div>
+        `;
+    }
+
+    // HTML del popup
     const html = `
-        <b>${p.nombre ?? '(sin título)'}</b><br/>
-        ${p.fecha ?? ''} ${p.hora ?? ''}<br/>
-        <a href="/hechos/${p.hash}">Ver detalle</a>
-      `;
-    markers.push(
-        L.marker([p.lat, p.lon]).addTo(map).bindPopup(html)
-    );
+      <div class="custom-popup-card">
+          <header class="popup-header">${p.nombre ?? '(Sin título)'}</header>
+          <section class="popup-body">
+              ${categoriasHtml || `<p><strong>Categoría:</strong> No especificada</p>`}
+              <p class="description-box">${p.descripcion ?? 'No hay descripción disponible.'}</p>
+              <p><strong>Fecha de suceso:</strong> ${p.fecha ?? 'No especificada'}</p>
+              ${etiquetasHtml}
+          </section>
+      </div>
+    `;
+
+    markers.push(L.marker([p.lat, p.lon]).addTo(map).bindPopup(html));
 }
+// --- FIN BUCLE MODIFICADO ---
 
 if (markers.length > 1) {
     const group = L.featureGroup(markers);
@@ -46,4 +77,3 @@ if (markers.length > 1) {
 }
 window.addEventListener('load', () => map.invalidateSize());
 window.addEventListener('resize', () => map.invalidateSize());
-/*]]>*/

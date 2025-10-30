@@ -8,7 +8,9 @@ import core.api.DTO.criterio.CriterioDTO;
 import core.models.entities.colecciones.Coleccion;
 import core.models.entities.colecciones.criterios.Criterio;
 import core.models.entities.fuentes.Fuente;
+import core.models.entities.hecho.Etiqueta;
 import core.models.entities.hecho.Hecho;
+import org.hibernate.Hibernate;
 import utils.DBUtils;
 
 import javax.persistence.EntityManager;
@@ -113,11 +115,19 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                         SELECT DISTINCT c
                         FROM coleccion c
                         LEFT JOIN FETCH c.hechos h
-                        LEFT JOIN FETCH h.contribuyente
+                        LEFT JOIN FETCH h.contribuyente                       
                         WHERE c.id = :id
-                    """, Coleccion.class);
-            q.setParameter("id", idColeccion);
-            return q.getResultStream().findFirst();
+                    """, Coleccion.class)
+            .setParameter("id", idColeccion)
+                    .getResultStream()
+                    .findFirst();
+
+            q.ifPresent(c -> {
+                for (Hecho h : c.getHechos()) {
+                    Hibernate.initialize(h.getEtiquetas());
+                }
+            });
+            return q;
         } finally {
             try {
                 em.close();
@@ -228,7 +238,11 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
 
             List<HechoResumenDTO> hechoDTOs = new java.util.ArrayList<>(hechos.size());
             for (Hecho h : hechos) {
-                List<String> etiquetas = etiquetasPorHash.getOrDefault(h.getHash(), java.util.Collections.emptyList());
+                List<String> etiquetas = (h.getEtiquetas() != null)
+                        ? h.getEtiquetas().stream()
+                        .map(Etiqueta::getNombre)
+                        .toList()
+                        : Collections.emptyList();
 
                 hechoDTOs.add(
                         new HechoResumenDTO(
@@ -236,8 +250,13 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                                 h.getTitulo(),
                                 h.getDescripcion(),
                                 (h.getContribuyente()!=null ? h.getContribuyente().getNombreCompleto() : null),
+                                h.getFechaSuceso(),
+                                h.getHoraSuceso(),
+                                null,
+                                etiquetas,
                                 h.getUbicacion().getLatitud().toString(),
-                                h.getUbicacion().getLongitud().toString()
+                                h.getUbicacion().getLongitud().toString(),
+                                Collections.singletonList(h.getCategoria().toString())
                         )
                 );
             }
