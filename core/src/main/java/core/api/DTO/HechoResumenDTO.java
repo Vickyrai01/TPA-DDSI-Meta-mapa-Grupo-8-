@@ -23,7 +23,7 @@ public class HechoResumenDTO {
     private List<String> categorias;
 
 
-    public HechoResumenDTO(String hash, String titulo, String descripcion, String nombreContribuyente, LocalDate fechaSuceso, LocalTime horaSuceso, List<String> multimedia, /*List<String> etiquetas,*/ String latitud, String longitud, List<String> categorias) {
+    public HechoResumenDTO(String hash, String titulo, String descripcion, String nombreContribuyente, LocalDate fechaSuceso, LocalTime horaSuceso, List<String> multimedia, List<String> etiquetas, String latitud, String longitud, List<String> categorias) {
     this.hash = hash;
     this.nombre = titulo;
     this.descripcion = descripcion;
@@ -31,7 +31,7 @@ public class HechoResumenDTO {
     this.fechaSuceso = fechaSuceso;
     this.horaSuceso = horaSuceso;
     this.multimedia = multimedia;
-    //this.etiquetas = etiquetas;
+    this.etiquetas = etiquetas;
     this.latitud = latitud;
     this.longitud = longitud;
     this.categorias = categorias;
@@ -55,13 +55,13 @@ public class HechoResumenDTO {
         String nombreContribuyente = (h.getContribuyente() != null)
                 ? h.getContribuyente().getNombreCompleto()
                 : null;
-/*
+
         List<String> etiquetas = (h.getEtiquetas() != null)
                 ? h.getEtiquetas().stream()
-                .map(Etiqueta::getNombre) // ajusta al getter real del nombre
+                .map(Etiqueta::getNombre)
                 .toList()
-                : List.of();
-*/
+                : Collections.emptyList();
+
         String latitud = (h.getUbicacion() != null && h.getUbicacion().getLatitud() != null)
                 ? h.getUbicacion().getLatitud().toString()
                 : null;
@@ -82,8 +82,8 @@ public class HechoResumenDTO {
                 nombreContribuyente,
                 h.getFechaSuceso(),
                 h.getHoraSuceso(),
-                //Collections.singletonList(h.getEtiquetas().toString()),
                 null,
+                etiquetas,
                 latitud,
                 longitud,
                 categorias

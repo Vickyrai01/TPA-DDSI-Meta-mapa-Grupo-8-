@@ -38,7 +38,7 @@ for (const p of puntos) {
         categoriasHtml = `
             <p><strong>Categorías:</strong></p>
             <div class="tags">
-                ${p.categorias.map(cat => `<span class="tag tag-orange">${cat}</span>`).join('')}
+                ${p.categorias.map(cat => `<span class="tag tag-category">${cat}</span>`).join('')}
             </div>
         `;
     }
@@ -49,7 +49,7 @@ for (const p of puntos) {
         etiquetasHtml = `
             <p><strong>Etiquetas:</strong></p>
             <div class="tags">
-                ${p.etiquetas.map(tag => `<span class="tag tag-orange">${tag}</span>`).join('')}
+                ${p.etiquetas.map(tag => `<span class="tag tag-label">${tag}</span>`).join('')}
             </div>
         `;
     }

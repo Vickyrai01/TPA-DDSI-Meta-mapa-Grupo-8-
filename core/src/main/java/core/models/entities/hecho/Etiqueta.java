@@ -1,6 +1,8 @@
 package core.models.entities.hecho;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "etiqueta")
 public class Etiqueta {
@@ -18,6 +20,9 @@ public class Etiqueta {
 
     @Column(name = "nombre")
     private String nombre;
+
+    @ManyToMany(mappedBy = "etiquetas")
+    private List<Hecho> hechos = new ArrayList<>();
 
     public  Etiqueta(){}
 

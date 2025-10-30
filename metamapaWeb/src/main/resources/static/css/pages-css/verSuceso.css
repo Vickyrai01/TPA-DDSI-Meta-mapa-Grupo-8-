@@ -253,8 +253,6 @@ body {
 
 .tag {
     display: inline-block;
-    background-color: #0099ff; /* Naranja */
-    color: white;
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 12px;
@@ -262,5 +260,15 @@ body {
     margin-right: 5px;
     margin-bottom: 5px;
     text-transform: uppercase;
+    color: white;
 }
-.tag-orange { background-color: #0099ff; }
+
+/* Color para categorías */
+.tag-category {
+    background-color: #F47C2C; /* Naranja */
+}
+
+/* Color para etiquetas */
+.tag-label {
+    background-color: #6f7a87;
+}

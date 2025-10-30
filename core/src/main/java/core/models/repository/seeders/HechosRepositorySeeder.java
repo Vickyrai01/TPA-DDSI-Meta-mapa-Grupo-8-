@@ -13,6 +13,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.HexFormat;
+import java.util.List;
 
 public class HechosRepositorySeeder {
 
@@ -79,6 +80,10 @@ public class HechosRepositorySeeder {
         contribuyentesRepository.add(contribuyente1);
         contribuyentesRepository.add(contribuyente3);
 
+        Etiqueta etiqueta1 = new Etiqueta("COTO Lanus");
+        Etiqueta etiqueta2 = new Etiqueta("Seguridad");
+
+
         Hecho hecho1 = new Hecho(coordenadas1, categoriaIncendio, null,
                 null, null, Estado.ACEPTADO, contribuyente2,
                 LocalDate.now().minusDays(2), LocalDate.now().minusDays(3),
@@ -100,13 +105,13 @@ public class HechosRepositorySeeder {
         Hecho hecho4 = new Hecho(coordenadas3, categoriaChoque, null,
                 null, null, Estado.ACEPTADO, contribuyente1,
                 LocalDate.now().minusDays(1), LocalDate.now().minusDays(2),
-                TipoFuente.ESTATICA, null, "Parecía que el conductor iba borracho, se llevó puesto una maceta que estaba en la calle", "Choque con maceta", "C2",1);
+                TipoFuente.ESTATICA, List.of(etiqueta1), "Parecía que el conductor iba borracho, se llevó puesto una maceta que estaba en la calle", "Choque con maceta", "C2",1);
         String hash4 = generarHash(hecho4.getTitulo()+hecho4.getDescripcion()+hecho4.getCategoria()+hecho4.getUbicacion().getLatitud()+hecho4.getUbicacion().getLongitud());
         hecho4.setHash(hash4);
         Hecho hecho5 = new Hecho( coordenadas4, categoriaRobo, null,
                 null, null, Estado.ACEPTADO, null,
                 LocalDate.now().minusDays(5), LocalDate.now().minusDays(6),
-                TipoFuente.ESTATICA, null, "Se robó unas manzanas y bolsas", "Hurto en una verdulería", "C4",1);
+                TipoFuente.ESTATICA, List.of(etiqueta2), "Se robó unas manzanas y bolsas", "Hurto en una verdulería", "C4",1);
         String hash5 = generarHash(hecho5.getTitulo()+hecho5.getDescripcion()+hecho5.getCategoria()+hecho5.getUbicacion().getLatitud()+hecho5.getUbicacion().getLongitud());
         hecho5.setHash(hash5);
         hechosRepository.add(hecho1);

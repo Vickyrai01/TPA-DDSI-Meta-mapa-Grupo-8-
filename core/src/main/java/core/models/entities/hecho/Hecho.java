@@ -5,6 +5,7 @@ import core.models.entities.fuentes.TipoFuente;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -148,10 +149,13 @@ public class Hecho {
         this.descripcion = descripcion;
     }
 
-    @OneToMany
-    @Column(name = "etiquetas")
-    @JoinColumn(name = "id_etiqueta")
-    private List<Etiqueta> etiquetas;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "hecho_etiqueta",
+            joinColumns = @JoinColumn(name = "id_hecho"),
+            inverseJoinColumns = @JoinColumn(name = "id_etiqueta")
+    )
+    private List<Etiqueta> etiquetas = new ArrayList<>();
     public List<Etiqueta> getEtiquetas() {
         return etiquetas;
     }
