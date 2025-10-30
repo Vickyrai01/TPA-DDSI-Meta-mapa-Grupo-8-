@@ -35,7 +35,8 @@
                 <div class="collections-list">
                     <article th:each="c : ${listaDeColecciones}"
                              class="collection-card"
-                             th:id="${'card-' + c.id()}">
+                             th:id="${'card-' + c.id()}"
+                    >
                         <div class="card-header">
                             <!-- Título SOLO texto (sin link) -->
                             <h2 class="view-mode" th:text="${c.titulo()}">Título de la colección</h2>
@@ -45,10 +46,19 @@
                                    th:value="${c.titulo()}" aria-label="Editar título">
 
                             <div class="card-actions">
-                                <!-- agrega type="button" por si algún día esto queda dentro de un form -->
-                                <button type="button" class="icon-btn view-mode delete-btn" aria-label="Eliminar">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
+                                <!-- FORM para eliminar esta colección vía Controller -->
+                                <form th:action="@{/admin/colecciones/{id}/eliminar(id=${c.id()})}"
+                                      method="post"
+                                      class="delete-form">
+                                    <!-- CSRF si usás Spring Security -->
+                                    <input type="hidden" name="_csrf" th:if="${_csrf}" th:value="${_csrf.token}"/>
+
+                                    <!-- TACHITO: no envía el form directo; solo abre el modal -->
+                                    <button type="button" class="icon-btn view-mode delete-btn" aria-label="Eliminar">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </form>
+
                                 <button type="button" class="icon-btn view-mode edit-btn" aria-label="Editar">
                                     <i class="fa-solid fa-pencil"></i>
                                 </button>

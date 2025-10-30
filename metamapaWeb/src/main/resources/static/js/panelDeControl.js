@@ -18,16 +18,20 @@ document.addEventListener('DOMContentLoaded', () => {
     currentCardForDelete = null;
   }
 
-  cancelBtnDelete?.addEventListener('click', (e) => { e.preventDefault(); closeDeleteModal(); });
-  confirmBtnDelete?.addEventListener('click', (e) => {
-    e.preventDefault();
-    // TODO: acá hacé el fetch/POST real para eliminar en backend
-    if (currentCardForDelete) currentCardForDelete.remove();
-    closeDeleteModal();
-  });
-  modalDelete?.addEventListener('click', (e) => {
-    if (e.target.id === 'delete-modal') closeDeleteModal();
-  });
+ confirmBtnDelete?.addEventListener('click', (e) => {
+   e.preventDefault();
+   if (!currentCardForDelete) return;
+
+   // Enviamos el <form class="delete-form"> de ESTA card
+   const form = currentCardForDelete.querySelector('form.delete-form');
+   if (form) {
+     form.submit();         // ← hace POST a /admin/colecciones/{id}/eliminar
+   } else {
+     // si por algún motivo no hay form, cerramos modal
+     closeDeleteModal();
+   }
+ });
+
 
   // ===== Modal Crear =====
   const modalAdd = document.getElementById('add-modal');
