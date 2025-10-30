@@ -236,8 +236,13 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                                 h.getTitulo(),
                                 h.getDescripcion(),
                                 (h.getContribuyente()!=null ? h.getContribuyente().getNombreCompleto() : null),
+                                h.getFechaSuceso(),
+                                h.getHoraSuceso(),
+                                null,
+                                //Collections.singletonList(h.getEtiquetas().toString()),
                                 h.getUbicacion().getLatitud().toString(),
-                                h.getUbicacion().getLongitud().toString()
+                                h.getUbicacion().getLongitud().toString(),
+                                Collections.singletonList(h.getCategoria().toString())
                         )
                 );
             }

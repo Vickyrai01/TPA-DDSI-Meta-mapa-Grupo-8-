@@ -5,6 +5,7 @@ import core.models.entities.hecho.Hecho;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,21 +17,27 @@ public class HechoResumenDTO {
     public LocalDate fechaSuceso;
     public LocalTime horaSuceso;
     public List<String> multimedia;
-    public List<Etiqueta> etiquetas;
+    public List<String> etiquetas;
     public String latitud;
     public String longitud;
+    private List<String> categorias;
 
 
-    public HechoResumenDTO(String hash, String titulo, String descripcion, String nombreContribuyente, String latitud, String longitud){
+    public HechoResumenDTO(String hash, String titulo, String descripcion, String nombreContribuyente, LocalDate fechaSuceso, LocalTime horaSuceso, List<String> multimedia, /*List<String> etiquetas,*/ String latitud, String longitud, List<String> categorias) {
     this.hash = hash;
     this.nombre = titulo;
     this.descripcion = descripcion;
     this.contribuyente = nombreContribuyente;
+    this.fechaSuceso = fechaSuceso;
+    this.horaSuceso = horaSuceso;
+    this.multimedia = multimedia;
+    //this.etiquetas = etiquetas;
     this.latitud = latitud;
     this.longitud = longitud;
+    this.categorias = categorias;
     }
 
-    public HechoResumenDTO(String hash, String nombre, String descripcion, String contribuyente, LocalDate fechaSuceso, LocalTime horaSuceso, List<String> multimedia, List<Etiqueta> etiquetas, String latitud, String longitud) {
+    public HechoResumenDTO(String hash, String nombre, String descripcion, String contribuyente, LocalDate fechaSuceso, LocalTime horaSuceso, List<String> multimedia, String latitud, String longitud) {
         this.hash = hash;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -38,7 +45,7 @@ public class HechoResumenDTO {
         this.fechaSuceso = fechaSuceso;
         this.horaSuceso = horaSuceso;
         this.multimedia = multimedia;
-        this.etiquetas = etiquetas;
+        //this.etiquetas = etiquetas;
         this.latitud = latitud;
         this.longitud = longitud;
     }
@@ -48,14 +55,38 @@ public class HechoResumenDTO {
         String nombreContribuyente = (h.getContribuyente() != null)
                 ? h.getContribuyente().getNombreCompleto()
                 : null;
+/*
+        List<String> etiquetas = (h.getEtiquetas() != null)
+                ? h.getEtiquetas().stream()
+                .map(Etiqueta::getNombre) // ajusta al getter real del nombre
+                .toList()
+                : List.of();
+*/
+        String latitud = (h.getUbicacion() != null && h.getUbicacion().getLatitud() != null)
+                ? h.getUbicacion().getLatitud().toString()
+                : null;
+
+        String longitud = (h.getUbicacion() != null && h.getUbicacion().getLongitud() != null)
+                ? h.getUbicacion().getLongitud().toString()
+                : null;
+
+        List<String> categorias = (h.getCategoria() != null)
+                ? List.of(h.getCategoria().toString()) // o .getNombre() si corresponde
+                : List.of();
+
 
         return new HechoResumenDTO(
                 h.getHash(),
                 h.getTitulo(),
                 h.getDescripcion(),
                 nombreContribuyente,
-                h.getUbicacion().getLatitud().toString(),
-                h.getUbicacion().getLongitud().toString()
+                h.getFechaSuceso(),
+                h.getHoraSuceso(),
+                //Collections.singletonList(h.getEtiquetas().toString()),
+                null,
+                latitud,
+                longitud,
+                categorias
         );
     }
 
@@ -93,11 +124,11 @@ public class HechoResumenDTO {
         this.multimedia = multimedia;
     }
 
-    public List<Etiqueta> getEtiquetas() {
+    public List<String> getEtiquetas() {
         return etiquetas;
     }
 
-    public void setEtiquetas(List<Etiqueta> etiquetas) {
+    public void setEtiquetas(List<String> etiquetas) {
         this.etiquetas = etiquetas;
     }
 
@@ -105,5 +136,11 @@ public class HechoResumenDTO {
 
     public String getLatitud() { return latitud;}
 
+    public List<String> getCategorias() {
+        return categorias;
+    }
 
+    public void setCategorias(List<String> categorias) {
+        this.categorias = categorias;
+    }
 }

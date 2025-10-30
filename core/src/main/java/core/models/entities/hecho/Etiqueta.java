@@ -30,4 +30,8 @@ public class Etiqueta {
     public void setTipo(String tipo) {
         this.nombre = tipo;
     }
+
+    public String getNombre() {
+        return nombre;
+    }
 }
