@@ -11,6 +11,7 @@ import java.util.Map;
 @Service
 public class ColeccionService {
     private final WebClient metamapaApi = WebClient.create("http://localhost:8081/core/api");
+    private final WebClient metamapaApiADMIN = WebClient.create("http://localhost:8082/core/api");
 
     // Obtener todas las colecciones del core
     public List<ColeccionDTO> getAll() {
@@ -39,6 +40,18 @@ public class ColeccionService {
                 .retrieve()
                 .bodyToMono(ColeccionDTO.class)
                 .block();
+    }
+    public boolean deleteById(Integer id) {
+        try {
+            var resp = metamapaApiADMIN.delete()
+                    .uri(uri -> uri.path("/colecciones/{id}").build(id)) // baseUrl: http://localhost:8082/core/api
+                    .retrieve()
+                    .toBodilessEntity()
+                    .block();
+            return resp != null && resp.getStatusCode().is2xxSuccessful();
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
 
