@@ -194,21 +194,36 @@
                             <div class="field">
                                 <span class="field-label">Fecha del hecho:</span>
                                 <span class="field-value"
-                                      th:text="${h.fechaSuceso()!=null ?
-                        #dates.format(#dates.parse(h.fechaSuceso(),'yyyy-MM-dd'),'dd/MM/yyyy') :
-                        'No indica'}"
-                                      th:classappend="${h.fechaSuceso()==null} ? 'muted' : ''">
-                                </span>
+                                      th:text="${h.fechaSuceso() != null} ?
+                   ${#temporals.format(h.fechaSuceso(), 'dd/MM/yyyy')} :
+                   'No indica'"
+                                      th:classappend="${h.fechaSuceso() == null} ? 'muted' : ''">
+    </span>
                             </div>
 
                             <!-- Fecha de carga -->
                             <div class="field">
                                 <span class="field-label">Fecha de carga:</span>
                                 <span class="field-value"
-                                      th:text="${h.fechaCarga()!=null ?
-                                        #dates.format(#dates.parse(h.fechaCarga(),'yyyy-MM-dd'),'dd/MM/yyyy') :
-                                        'No indica'}"
-                                      th:classappend="${h.fechaSuceso()==null} ? 'muted' : ''">
+                                      th:text="${h.fechaCarga() != null} ?
+                   ${#temporals.format(h.fechaCarga(), 'dd/MM/yyyy')} :
+                   'No indica'"
+                                      th:classappend="${h.fechaCarga() == null} ? 'muted' : ''">
+    </span>
+                            </div>
+
+                            <!-- Categorias -->
+                            <div class="field">
+                                <span class="field-label">Categorias:</span>
+
+                                <!-- Cuando hay Categorias -->
+                                <span class="field-value" th:if="${h.categorias()!=null and !#lists.isEmpty(h.categorias())}">
+                                    <span class="chip" th:each="tag : ${h.categorias()}" th:text="${tag}"></span>
+                                </span>
+
+                                <!-- Cuando no hay -->
+                                <span class="field-value muted" th:if="${h.categorias()==null or #lists.isEmpty(h.categorias())}">
+                                    No indica
                                 </span>
                             </div>
 
