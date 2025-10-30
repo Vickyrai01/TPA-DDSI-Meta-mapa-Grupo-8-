@@ -630,4 +630,39 @@ body{
 .solicitud-actions form {
   display: inline-block;
 }
+/* =========================
+   BOTONES DE SOLICITUDES (Aceptar / Rechazar)
+   ========================= */
+.solicitud-actions .modal-btn {
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.10);
+  border: none;
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.04s ease;
+  font-family: 'Montserrat', sans-serif;
+}
 
+.solicitud-actions .modal-btn:active {
+  transform: translateY(1px);
+}
+
+/* Botón ACEPTAR  */
+.solicitud-actions .modal-btn-primary {
+  background: var(--brand-blue, #2980B9);
+  color: #fff;
+}
+.solicitud-actions .modal-btn-primary:hover {
+  filter: brightness(1.05);
+}
+
+/* Botón RECHAZAR  */
+.solicitud-actions .modal-btn-danger {
+  background: #d9534f;
+  color: #fff;
+}
+.solicitud-actions .modal-btn-danger:hover {
+  filter: brightness(1.05);
+}
