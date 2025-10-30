@@ -83,14 +83,25 @@ public class Application {
 
     @GetMapping("/provincia-con-mas-hechos-por-categoria")
     public ResponseEntity<List<Map<String, Object>>> provinciaConMasHechosPorCategoria(
-            @RequestParam(value = "categoria", required = false) String categoria) {
-        List<Map<String, Object>> provincias = generadorTodasEstadisticas.provinciaConMasHechosEnCategoria(categoria);
+            @RequestParam("categoria") String categoria) {
+
+        if (categoria == null || categoria.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        List<Map<String, Object>> provincias =
+                generadorTodasEstadisticas.provinciaConMasHechosEnCategoria(categoria);
         return ResponseEntity.ok(provincias);
     }
 
 
     @GetMapping("/horario-categoria")
-    public ResponseEntity<List<Map<String, Object>>> horarioPorCategoria(@RequestParam(value = "categoria", required = false) String categoria) {
+    public ResponseEntity<List<Map<String, Object>>> horarioPorCategoria(@RequestParam("categoria") String categoria) {
+        if (categoria == null || categoria.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+
         List<Map<String, Object>> horarios = generadorTodasEstadisticas.horarioxCategoria(categoria);
         return ResponseEntity.ok(horarios);
     }
