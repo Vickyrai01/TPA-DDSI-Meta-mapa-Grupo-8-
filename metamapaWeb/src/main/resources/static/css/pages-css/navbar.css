@@ -1,8 +1,28 @@
+/* =======================================
+   REGLAS GLOBALES AÑADIDAS
+   ======================================= */
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  /* Esta regla empuja el footer hacia abajo en páginas cortas */
+  flex-grow: 1;
+}
+/* =======================================
+   FIN DE REGLAS GLOBALES
+   ======================================= */
+
+
 /* ====== Header / Nav ====== */
 .site-header {
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
   background: #ffffffc9;
   backdrop-filter: saturate(140%) blur(6px);
   border-bottom: 1px solid #eee;

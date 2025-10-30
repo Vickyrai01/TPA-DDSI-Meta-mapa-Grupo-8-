@@ -9,7 +9,6 @@
 
 <!-- ========== CSS ESPECÍFICO DE LA VISTA ========== -->
 <th:block id="links-panel">
-    <link rel="stylesheet" th:href="@{/css/pages-css/button.css}">
     <link rel="stylesheet" th:href="@{/css/pages-css/panelDeControl.css}">
 </th:block>
 
@@ -102,10 +101,10 @@
 
             <aside class="admin-sidebar">
                 <nav class="admin-menu">
-                    <a href="#" class="admin-menu-item active">ADMINISTRAR COLECCIONES</a>
-                    <a href="#" class="admin-menu-item">ADMINISTRAR HECHOS</a>
-                    <a href="#" class="admin-menu-item">ADMINISTRAR FUENTES</a>
-                    <a href="#" class="admin-menu-item">ADMINISTRAR SOLICITUDES DE ELIMINACIÓN</a>
+                    <a th:href="@{/admin/colecciones}" class="admin-menu-item active">ADMINISTRAR COLECCIONES</a>
+                    <a th:href="@{/admin/hechos}" class="admin-menu-item">ADMINISTRAR HECHOS</a>
+                    <a th:href="@{/admin/fuentes}" class="admin-menu-item">ADMINISTRAR FUENTES</a>
+                    <a th:href="@{/admin/solicitudEliminacion}" class="admin-menu-item">ADMINISTRAR SOLICITUDES DE ELIMINACIÓN</a>
                 </nav>
             </aside>
         </div>
