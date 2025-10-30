@@ -39,13 +39,21 @@ public class GetHechosDeColeccionesHandler implements Handler {
             criterios.add(utilsFormatos.transformarCategoriaEnCriterio(categoria));
         }
 
-        if ((fechaReporteDesde != null && !fechaReporteDesde.isBlank()) || (fechaReporteHasta != null && fechaReporteHasta.isBlank())) {
-            criterios.add(new CriterioFechaCarga(utilsFormatos.stringALocalDate(fechaReporteDesde), utilsFormatos.stringALocalDate(fechaReporteHasta)));
+        if ((fechaReporteDesde != null && !fechaReporteDesde.isBlank()) || (fechaReporteHasta != null && !fechaReporteHasta.isBlank())) {
+            criterios.add(new CriterioFechaCarga(
+                    utilsFormatos.stringALocalDate(fechaReporteDesde),
+                    utilsFormatos.stringALocalDate(fechaReporteHasta)
+            ));
+        } else {
+            System.out.println("No se han pasado las fechas de reporte");
         }
-        else {System.out.println("No se han pasado las fechas de reporte");}
 
-        if (fechaAcontecimientoDesde != null || fechaAcontecimientoHasta != null) {
-            criterios.add(new CriterioFechaSuceso(utilsFormatos.stringALocalDate(fechaAcontecimientoDesde), utilsFormatos.stringALocalDate(fechaAcontecimientoHasta)));
+        if ((fechaAcontecimientoDesde != null && !fechaAcontecimientoDesde.isBlank()) ||
+                (fechaAcontecimientoHasta != null && !fechaAcontecimientoHasta.isBlank())) {
+            criterios.add(new CriterioFechaSuceso(
+                    utilsFormatos.stringALocalDate(fechaAcontecimientoDesde),
+                    utilsFormatos.stringALocalDate(fechaAcontecimientoHasta)
+            ));
         }
 
         if (latitud != null && longitud != null) {criterios.add(utilsFormatos.transformarUbicacionEnCriterio(latitud, longitud));}

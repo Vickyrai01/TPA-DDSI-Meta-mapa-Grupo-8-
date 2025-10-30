@@ -2,3 +2,23 @@ metamapa:
   api:
     admin-base-url: http://localhost:8080/core/api
     base-url: http://localhost:8081/core/api
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            # ↓ REEMPLAZA ESTO con tu ID de Cliente de Google
+            client-id: 736930635391-dqvk6m8jucp7n9sjpo3ffhtee2bj7nmu.apps.googleusercontent.com
+            # ↓ REEMPLAZA ESTO con tu Secreto de Cliente de Google
+            client-secret: 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
+            scope:
+              - openid
+              - profile
+              - email
+
+#
+# El bloque 'provider' que tenías aquí abajo no es necesario,
+# Spring Boot ya conoce las URIs de Google.
+#

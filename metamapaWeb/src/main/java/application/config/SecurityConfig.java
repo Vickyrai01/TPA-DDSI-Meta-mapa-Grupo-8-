@@ -1,0 +1,62 @@
+package application.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import static org.springframework.security.config.Customizer.withDefaults;
+
+//@Configuration
+//@EnableWebSecurity
+//public class SecurityConfig {
+//
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers("/admin/**").authenticated()
+//                        .requestMatchers("/css/**", "/js/**", "/img/**", "/", "/verColeccion/**", "/navegarColecciones/**", "/reportarSuceso/**").permitAll()
+//                        .anyRequest().permitAll()
+//                )
+//                .oauth2Login(oauth2 -> oauth2
+//                        // usa la URL por defecto de Spring para iniciar login con Google
+//                        .loginPage("/oauth2/authorization/google")
+//                        .defaultSuccessUrl("/admin", true)
+//                )
+//                .logout(logout -> logout
+//                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+//                        .logoutSuccessUrl("/")
+//                        .permitAll()
+//                );
+//
+//        return http.build();
+//    }
+//
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        return (web) -> web.ignoring().requestMatchers("/static/**", "/webjars/**");
+//    }
+//}
+
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(authorize -> authorize
+                        // 1. Proteger SOLAMENTE la ruta /perfil
+                        .requestMatchers("/perfil").authenticated()
+                        // 2. Permitir TODAS las demás rutas (/, /mapa, /reportar, etc.)
+                        .anyRequest().permitAll()
+                )
+                .oauth2Login(withDefaults()); // Esto activa el flujo de login cuando /perfil lo requiera
+
+        return http.build();
+    }
+}

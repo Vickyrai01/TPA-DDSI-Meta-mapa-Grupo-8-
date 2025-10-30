@@ -13,12 +13,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8082/core/api/colecciones/3/hechos",
+					"raw": "http://localhost:8081/core/api/colecciones/3/hechos",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8082",
+					"port": "8081",
 					"path": [
 						"core",
 						"api",
@@ -46,12 +46,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8082/core/api/solicitudes",
+					"raw": "http://localhost:8081/core/api/solicitudes",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8082",
+					"port": "8081",
 					"path": [
 						"core",
 						"api",
@@ -75,7 +75,7 @@
 					"raw": "    \r\n    {       \"id\": 1,\r\n            \"titulo\": \"Incendio en casa\",\r\n            \"descripcion\": \"No hubo heridos, fue por una sartén\",\r\n            \"etiquetas\": null,\r\n            \"fuenteDeOrigen\": \"ESTATICA\",\r\n            \"fechaCarga\": [\r\n                2025,\r\n                7,\r\n                7\r\n            ],\r\n            \"fechaSuceso\": [\r\n                2025,\r\n                7,\r\n                6\r\n            ],\r\n            \"contribuyente\": null,\r\n            \"estado\": \"ACEPTADO\",\r\n            \"multimedia\": null,\r\n            \"ultimaFechaModificacion\": null,\r\n            \"sugerenciaDeCambio\": null,\r\n            \"categoria\": {\r\n                \"nombre\": \"Incendio\"\r\n            },\r\n            \"ubicacion\": {\r\n                \"latitud\": 123.0,\r\n                \"longitud\": 456.0\r\n            },\r\n            \"codigoDeFuente\": \"C1\"\r\n    }"
 				},
 				"url": {
-					"raw": "http://localhost:8082/core/api/colecciones/1/CURADA/hechos",
+					"raw": "http://localhost:8081/core/api/colecciones/1/CURADA/hechos",
 					"protocol": "http",
 					"host": [
 						"localhost"

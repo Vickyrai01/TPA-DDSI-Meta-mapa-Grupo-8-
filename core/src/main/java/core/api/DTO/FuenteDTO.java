@@ -18,9 +18,11 @@ public class FuenteDTO {
         this.strategyTipoConexion = strategyTipoConexion;
     }
 
+    public FuenteDTO() {
+    }
 
     public static FuenteDTO from(Fuente f) {
-        return new FuenteDTO(f.getNombre(), f.getTipoFuente().toString(), f.getLink(),  f.getStrategyTipoConexion().devolverTipoDeConexion());
+        return new FuenteDTO(f.getNombre(), f.getTipoFuente().toString(), f.getLink(), f.getStrategyTipoConexion().devolverTipoDeConexion());
     }
 
     public String getNombre() {
@@ -54,4 +56,5 @@ public class FuenteDTO {
     public void setStrategyTipoConexion(String strategyTipoConexion) {
         this.strategyTipoConexion = strategyTipoConexion;
     }
+
 }
