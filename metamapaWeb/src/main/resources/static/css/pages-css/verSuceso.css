@@ -252,23 +252,23 @@ body {
 }
 
 .tag {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 16px;
     font-size: 12px;
-    font-weight: 600;
-    margin-right: 5px;
-    margin-bottom: 5px;
-    text-transform: uppercase;
-    color: white;
+    font-weight: 500;
+    background-color: #f2f2f2;
+    color: #333;
 }
 
-/* Color para categorías */
 .tag-category {
-    background-color: #F47C2C; /* Naranja */
+    background-color: #FFF0E5;
+    color: #F47C2C;
 }
 
-/* Color para etiquetas */
 .tag-label {
-    background-color: #6f7a87;
+    background-color: #E5F3FF;
+    color: #6f7a87;
 }
