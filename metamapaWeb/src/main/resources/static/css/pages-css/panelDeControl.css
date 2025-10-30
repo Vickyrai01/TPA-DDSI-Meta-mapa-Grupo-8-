@@ -585,4 +585,49 @@ body{
 
   }
 }
+/* ====== Solicitudes ====== */
+.solicitud-card .hecho-box {
+  margin-top: 14px;
+  background: #f9fafb;
+  border: 1px solid rgba(0,0,0,0.04);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+.solicitud-card .hecho-box h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-strong);
+}
+.hecho-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+.hecho-label {
+  font-weight: 700;
+  color: #6b7280;
+  min-width: 110px;
+}
+.hecho-value {
+  flex: 1;
+  word-break: break-word;
+}
+.hecho-empty {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+/* botones centrados */
+.solicitud-actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+.solicitud-actions form {
+  display: inline-block;
+}
 
