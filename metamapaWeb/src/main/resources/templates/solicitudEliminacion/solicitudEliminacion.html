@@ -25,33 +25,28 @@
             <div class="modal-header">Solicitud eliminación</div>
             <div class="modal-body">
                 <div class="info-group">
-                    <label><strong>Título:</strong> Intento de robo de mochila</label>
+                    <label><strong>Título:</strong> <span th:text="${hecho.nombre()}">Título del hecho...</span></label>
                 </div>
                 <div class="info-group">
-                    <label><strong>Descripción:</strong> Le robaron la mochila a una persona, la policía agarró al ladrón y la mochila fue rescatada.</label>
+                    <label><strong>Descripción:</strong> <span th:text="${hecho.descripcion()}">Descripción del hecho...</span> </label>
                 </div>
                 <div class="info-group">
-                    <label><strong>Categoría:</strong> Intento de robo.</label>
+                    <label><strong>Categoría:</strong>   <span th:text="${hecho.categorias()}">Categoría del hecho...</span> </label>
                 </div>
                 <div class="info-group">
-                    <label><strong>Fecha suceso:</strong> 28/07/2025</label>
+                    <label><strong>Fecha suceso:</strong> <span th:text="${hecho.fechaSuceso()}">Fecha del hecho...</span> </label>
                 </div>
 
                 <!-- Si luego querés postear, podés usar th:action y method="post" -->
                 <form th:action="@{/solicitudes/eliminacion}" method="post" autocomplete="off">
-                    <div class="form-group">
-                        <label for="motivo"><strong>Motivo solicitud</strong></label>
-                        <textarea id="motivo" name="motivo" placeholder="Escribe el motivo de tu solicitud..." maxlength="1000"></textarea>
-                        <div class="char-count">0/1000</div>
-                    </div>
+                    <input type="hidden" name="hashHecho" th:value="${hecho.hash}" />
 
                     <div class="form-actions">
-
                         <a class="btn-form btn-secondary" th:href="@{/mapa}">Atras</a>
-
                         <button class="btn-form btn-primary" type="submit">Solicitar</button>
-
                     </div>
+
+                    <input type="hidden" name="_csrf" th:if="${_csrf}" th:value="${_csrf.token}"/>
                 </form>
             </div>
         </div>
