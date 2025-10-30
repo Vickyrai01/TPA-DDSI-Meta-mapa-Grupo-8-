@@ -15,5 +15,6 @@ public record HechoDTO(
     List<String> multimedia,
     List<String> etiquetas,
     String latitud,
-    String longitud
+    String longitud,
+    List<String> categorias
 ) {}

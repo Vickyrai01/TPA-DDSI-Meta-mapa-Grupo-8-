@@ -1,8 +1,13 @@
 package seeders;
 
 import servicioEstadisticas.model.Hecho;
+import servicioEstadisticas.model.SolicitudSpam;
 import servicioEstadisticas.repository.RepositoryServicioEstadisticas;
 
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 
 public class RepositoryServicioEstadisticasSeeder {
@@ -59,5 +64,15 @@ public class RepositoryServicioEstadisticasSeeder {
         repositoryServicioEstadisticas.addHecho(new Hecho("COR002", "Corte de energía", LocalDateTime.now().minusDays(3).withHour(19), "Santa Fe"));
         repositoryServicioEstadisticas.addHecho(new Hecho("COR003", "Corte de energía", LocalDateTime.now().minusDays(2).withHour(20), "Misiones"));
 
+        repositoryServicioEstadisticas.addSolicitud(new SolicitudSpam(false));
+        repositoryServicioEstadisticas.addSolicitud(new SolicitudSpam(false));
+        repositoryServicioEstadisticas.addSolicitud(new SolicitudSpam(true));
+        repositoryServicioEstadisticas.addSolicitud(new SolicitudSpam(true ));
+        repositoryServicioEstadisticas.addSolicitud(new SolicitudSpam(true));
+
+
     }
+
+
+
 }
