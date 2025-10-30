@@ -40,7 +40,7 @@ public class HechoAIntegrarDTO {
 @ElementCollection
     @CollectionTable(
             name = "hecho_etiqueta",
-            joinColumns = @JoinColumn(name = "hecho_id", foreignKey = @ForeignKey(name = "hecho_etiqueta_hecho"))
+            joinColumns = @JoinColumn(name = "hash", foreignKey = @ForeignKey(name = "hecho_etiqueta_hecho"))
     )
     @Column(name = "etiqueta", length = 100, nullable = false)
     public List<String> etiquetas;
@@ -51,7 +51,7 @@ public class HechoAIntegrarDTO {
     @ElementCollection
     @CollectionTable(
             name = "hecho_multimedia",
-            joinColumns = @JoinColumn(name = "hecho_id",
+            joinColumns = @JoinColumn(name = "hash",
                     foreignKey = @ForeignKey(name = "hecho_multimedia_hecho"))
     )
     @Column(name = "url", length = 500, nullable = false)
@@ -132,7 +132,37 @@ public class HechoAIntegrarDTO {
     public Integer getIdFuente() {return idFuente;}
     public void setIdFuente(Integer idFuente) {this.idFuente = idFuente;};
     public void setHash(String hash) { this.hash = hash; }
+    public List<String> getEtiquetas() {
+        return etiquetas;
+    }
 
+    public void setEtiquetas(List<String> etiquetas) {
+        this.etiquetas = etiquetas;
+    }
+
+    public Boolean getFueExtraido() {
+        return fueExtraido;
+    }
+
+    public void setFueExtraido(Boolean fueExtraido) {
+        this.fueExtraido = fueExtraido;
+    }
+
+    public String getContribuyente() {
+        return contribuyente;
+    }
+
+    public void setContribuyente(String contribuyente) {
+        this.contribuyente = contribuyente;
+    }
+
+    public List<String> getMultimedia() {
+        return multimedia;
+    }
+
+    public void setMultimedia(List<String> multimedia) {
+        this.multimedia = multimedia;
+    }
 
 
     @Override
