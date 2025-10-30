@@ -10,6 +10,7 @@ public class SolicitudConHechoDTO {
 
     private Integer id;
     private String descripcionSolicitud;
+    private  Boolean aceptada;
 
     // datos del hecho
     private String hash;
@@ -28,7 +29,8 @@ public class SolicitudConHechoDTO {
                                 String contribuyente,
                                 LocalDate fechaCarga,
                                 LocalDate fechaSuceso,
-                                LocalTime horaSuceso) {
+                                LocalTime horaSuceso,
+                                Boolean estado) {
         this.id = id;
         this.descripcionSolicitud = descripcionSolicitud;
         this.hash = hash;
@@ -38,6 +40,7 @@ public class SolicitudConHechoDTO {
         this.fechaCarga = fechaCarga;
         this.fechaSuceso = fechaSuceso;
         this.horaSuceso = horaSuceso;
+        this.aceptada = estado;
     }
 
     public static SolicitudConHechoDTO from(SolicitudDeEliminacion s) {
@@ -54,7 +57,8 @@ public class SolicitudConHechoDTO {
                         : null,
                 h != null ? h.getFechaCarga() : null,
                 h != null ? h.getFechaSuceso() : null,
-                h != null ? h.getHoraSuceso() : null
+                h != null ? h.getHoraSuceso() : null,
+                s.getAceptada()
         );
     }
 
@@ -69,6 +73,10 @@ public class SolicitudConHechoDTO {
     public LocalDate getFechaSuceso() { return fechaSuceso; }
     public LocalTime getHoraSuceso() { return horaSuceso; }
 
+    public Boolean getAceptada() {
+        return aceptada;
+    }
+
     public void setId(Integer id) { this.id = id; }
     public void setDescripcionSolicitud(String descripcionSolicitud) { this.descripcionSolicitud = descripcionSolicitud; }
     public void setHash(String hash) { this.hash = hash; }
@@ -78,5 +86,6 @@ public class SolicitudConHechoDTO {
     public void setFechaCarga(LocalDate fechaCarga) { this.fechaCarga = fechaCarga; }
     public void setFechaSuceso(LocalDate fechaSuceso) { this.fechaSuceso = fechaSuceso; }
     public void setHoraSuceso(LocalTime horaSuceso) { this.horaSuceso = horaSuceso; }
+    public void setAceptada(Boolean bool){this.aceptada = bool;}
 }
 
