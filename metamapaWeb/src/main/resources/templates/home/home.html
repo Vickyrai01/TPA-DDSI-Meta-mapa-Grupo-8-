@@ -8,7 +8,6 @@
       )}">
 
 <th:block id="links-de-home">
-    <link rel="stylesheet" th:href="@{/css/pages-css/button.css}">
     <link rel="stylesheet" th:href="@{/css/pages-css/home.css}">
 </th:block>
 
@@ -35,55 +34,24 @@
     </section>
 
     <section id="reportar" class="collab">
-        <div class="container collab-grid">
-            <div class="collab-copy">
-                <h2>Colaborá con nosotros</h2>
-            </div>
-
-            <form class="report-card" autocomplete="off">
-                <div class="report-header">Reportar suceso</div>
-                <label class="field">
-                    <span>Título suceso</span>
-                    <input type="text" placeholder="Ej: Incendio en Lugano">
-                </label>
-                <label class="field">
-                    <span>Descripción</span>
-                    <textarea rows="3" placeholder="Contanos qué pasó..."></textarea>
-                </label>
-                <label class="field">
-                    <span>Categoría</span>
-                    <select>
-                        <option value="" selected>Elegí una categoría</option>
-                        <option>Incendio</option>
-                        <option>Corte de calle</option>
-                        <option>Inundación</option>
-                        <option>Seguridad</option>
-                        <option>Otro</option>
-                    </select>
-                </label>
-                <label class="field half">
-                    <span>Fecha suceso</span>
-                    <input type="date">
-                </label>
-                <label class="field half">
-                    <span>Ubicación</span>
-                    <input type="text" placeholder="CAMBIAR DESPUES!!">
-                </label>
-                <div class="field half">
-                    <span>Adjuntar evidencias</span>
-                    <div class="attach-row">
-                        <label for="evidencias" class="file-btn">
-                            <i class="fa-solid fa-paperclip" aria-hidden="true"></i> Adjuntar
-                        </label>
-                        <span id="evidencias-name" class="file-name"></span>
-                    </div>
-                    <input id="evidencias" type="file" accept="image/*,video/*">
-                </div>
-                <button class="btn-primary" type="submit">Reportar</button>
-                <p class="hint"><i class="fa-regular fa-circle-question"></i> Al enviar aceptás los términos de uso.</p>
-            </form>
+        <div class="container" style="max-width: 700px; margin: 0 auto; text-align: left;">
+            <h2>Reportá un suceso</h2>
+            <p>
+                En <strong>MetaMapa</strong> creemos en el poder de la colaboración ciudadana.
+                Reportar un suceso significa aportar información que ayuda a visibilizar
+                problemáticas sociales, ambientales o de seguridad.
+            </p>
+            <p>
+                Cada aporte puede marcar la diferencia: desde registrar un incendio o una inundación,
+                hasta compartir un hecho que afecte a tu comunidad.
+                Tu reporte contribuye a construir un mapa vivo de nuestra realidad.
+            </p>
+            <a href="http://localhost:8080/reportar" class="btn-primary" style="margin-top: 1rem;">
+                Reportar suceso
+            </a>
         </div>
     </section>
+
 </div>
 
 

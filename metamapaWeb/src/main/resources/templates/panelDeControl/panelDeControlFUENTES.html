@@ -9,7 +9,6 @@
 
 <!-- ========== CSS específico (reusa tus estilos) ========== -->
 <th:block id="links-fuentes">
-    <link rel="stylesheet" th:href="@{/css/pages-css/button.css}">
     <link rel="stylesheet" th:href="@{/css/pages-css/panelDeControl.css}">
 </th:block>
 
@@ -85,10 +84,10 @@
             <!-- Sidebar -->
             <aside class="admin-sidebar">
                 <nav class="admin-menu">
-                    <a href="#" class="admin-menu-item">ADMINISTRAR COLECCIONES</a>
-                    <a href="#" class="admin-menu-item">ADMINISTRAR HECHOS</a>
-                    <a href="#" class="admin-menu-item active">ADMINISTRAR FUENTES</a>
-                    <a href="#" class="admin-menu-item">ADMINISTRAR SOLICITUDES DE ELIMINACIÓN</a>
+                    <a th:href="@{/admin/colecciones}" class="admin-menu-item">ADMINISTRAR COLECCIONES</a>
+                    <a th:href="@{/admin/hechos}" class="admin-menu-item">ADMINISTRAR HECHOS</a>
+                    <a th:href="@{/admin/fuentes}" class="admin-menu-item active">ADMINISTRAR FUENTES</a>
+                    <a th:href="@{/admin/solicitudesEliminacion}" class="admin-menu-item">ADMINISTRAR SOLICITUDES DE ELIMINACIÓN</a>
                 </nav>
             </aside>
         </div>
