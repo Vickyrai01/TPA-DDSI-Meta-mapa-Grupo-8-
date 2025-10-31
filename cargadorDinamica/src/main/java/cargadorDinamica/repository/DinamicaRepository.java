@@ -13,9 +13,6 @@ public class DinamicaRepository extends JpaRepositoryBase<HechoAIntegrarDTO, Str
         super(HechoAIntegrarDTO.class, DBUtils::getEntityManager, HechoAIntegrarDTO::getHash);
     }
 
-    private List<Map<HechoAIntegrarDTO, Boolean>> tablaHechos =
-            new ArrayList<>(Arrays.asList(new HashMap<>(), new HashMap<>()));
-
 
     public static DinamicaRepository getInstance() {
         if (instance == null) {
@@ -29,16 +26,67 @@ public class DinamicaRepository extends JpaRepositoryBase<HechoAIntegrarDTO, Str
     }
 
     public List<HechoAIntegrarDTO> getHechosNoProcesados() {
-        List<HechoAIntegrarDTO> noProcesados = new ArrayList<>();
-
         EntityManager em = DBUtils.getEntityManager();
+        List<HechoAIntegrarDTO> hechos = new ArrayList<>();
+
         try {
-            return em.createQuery(
-                            "SELECT h FROM HechoAIntegrarDTO h WHERE h.fueExtraido = false"
-                            ,HechoAIntegrarDTO.class)
+            // Traer los hechos no procesados (null o false)
+            hechos = em.createQuery(
+                            "SELECT h FROM HechoAIntegrarDTO h WHERE h.fueExtraido IS NULL OR h.fueExtraido = false",
+                            HechoAIntegrarDTO.class)
                     .getResultList();
+
+            if (hechos.isEmpty()) {
+                return hechos; // nada que hacer
+            }
+
+            // Marcar como procesados
+            em.getTransaction().begin();
+            for (HechoAIntegrarDTO h : hechos) {
+                h.setFueExtraido(true);
+                em.merge(h);
+            }
+            em.getTransaction().commit();
+
+            return hechos;
+        } catch (RuntimeException ex) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw ex;
         } finally {
             em.close();
+        }
+    }
+
+    public HechoAIntegrarDTO save(HechoAIntegrarDTO hecho) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            DBUtils.comenzarTransaccion(em);
+
+            if (hecho.getEtiquetas() == null) {
+                hecho.setEtiquetas(List.of());
+            }
+            if (hecho.getMultimedia() == null) {
+                hecho.setMultimedia(List.of());
+            }
+
+            // si ya existe el hash, actualizamos en vez de romper
+            HechoAIntegrarDTO existente = em.find(HechoAIntegrarDTO.class, hecho.getHash());
+            if (existente == null) {
+                em.persist(hecho);
+            } else {
+                // merge para actualizar etiquetas/multimedia también
+                em.merge(hecho);
+            }
+
+            DBUtils.commit(em);
+            return hecho;
+        } catch (RuntimeException e) {
+            DBUtils.rollback(em);
+            throw e;
+        } finally {
+            try { em.close(); } catch (Exception ignore) {}
         }
     }
 }
