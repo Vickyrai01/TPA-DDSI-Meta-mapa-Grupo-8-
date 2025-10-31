@@ -126,7 +126,6 @@
 
     <div id="add-modal" class="modal-backdrop">
         <div class="modal">
-            <!-- 🔸 Se eliminó la X de cierre -->
             <h2>Crear Nueva Colección</h2>
 
             <form class="modal-form">
@@ -141,7 +140,7 @@
                 </div>
 
                 <div class="form-group" style="grid-column: 1 / -1;">
-                    <label>Fuentes (Opcional)</label>
+                    <label>Fuentes</label>
 
                     <div class="fuentes-list-container" style="max-height: 150px; overflow-y: auto; border: 1px solid var(--border, #e5e7eb); border-radius: 12px; padding: 10px; background: #f9fafb;">
 
@@ -160,6 +159,51 @@
                             </label>
                         </div>
 
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1; border-top: 1px dashed var(--border, #e5e7eb); padding-top: 14px; margin-top: 5px;">
+                        <label>Criterios de Pertenencia (Opcional)</label>
+                        <p style="font-size: 0.85rem; color: var(--text-muted, #6b7280); margin: -10px 0 10px 0;">
+                            La colección incluirá automáticamente hechos que cumplan TODOS estos criterios.
+                        </p>
+
+                        <div class="form-group" style="margin-bottom: 5px;">
+                            <label for="new-criterio-nombre" style="font-weight: 600; font-size: 0.9rem;">TÍTULO:</label>
+                            <input type="text" id="new-criterio-nombre" class="card-input" placeholder="Ej: Incendio">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 5px;">
+                            <label for="new-criterio-descripcion" style="font-weight: 600; font-size: 0.9rem;">DESCRIPCIÓN:</label>
+                            <input type="text" id="new-criterio-descripcion" class="card-input" placeholder="Ej: perro">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 5px;">
+                            <label for="new-criterio-categoria" style="font-weight: 600; font-size: 0.9rem;">CATEGORÍA:</label>
+                            <input type="text" id="new-criterio-categoria" class="card-input" placeholder="Ej: Robo">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 5px;">
+                            <label for="new-criterio-lat" style="font-weight: 600; font-size: 0.9rem;">Ubicación</label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <input type="number" id="new-criterio-lat" class="card-input" placeholder="Latitud (ej: -34.6)">
+                                <input type="number" id="new-criterio-lon" class="card-input" placeholder="Longitud (ej: -58.4)">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 5px;">
+                            <label for="new-criterio-suceso-desde" style="font-weight: 600; font-size: 0.9rem;">Fecha Suceso</label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <input type="date" id="new-criterio-suceso-desde" class="card-input">
+                                <input type="date" id="new-criterio-suceso-hasta" class="card-input">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 5px;">
+                            <label for="new-criterio-carga-desde" style="font-weight: 600; font-size: 0.9rem;">Fecha Carga</label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <input type="date" id="new-criterio-carga-desde" class="card-input">
+                                <input type="date" id="new-criterio-carga-hasta" class="card-input">
+                            </div>
+                        </div>
                     </div>
                 </div>
 
