@@ -1,5 +1,5 @@
 package application.controller;
-
+import application.service.FuenteService;
 import application.dto.ColeccionDTO;
 import application.service.ColeccionService;
 import org.springframework.http.HttpStatus;
@@ -14,14 +14,17 @@ import java.util.Map;
 @Controller
 public class PanelDeControlController {
     private final ColeccionService coleccionService;
+    private final FuenteService fuenteService;
 
-    public PanelDeControlController(ColeccionService coleccionService) {
+    public PanelDeControlController(ColeccionService coleccionService, FuenteService fuenteService) {
         this.coleccionService = coleccionService;
+        this.fuenteService = fuenteService; // <-- AÑADIR ESTO
     }
 
     @GetMapping("/admin/colecciones")
     public String home(Model model) {
         model.addAttribute("listaDeColecciones", coleccionService.getAll());
+        model.addAttribute("listaDeFuentes", fuenteService.getAll());
         return "panelDeControl/panelDeControl";
     }
 
@@ -51,6 +54,23 @@ public class PanelDeControlController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pudo actualizar");
+    }
+
+    @PostMapping("/admin/colecciones/crear")
+    @ResponseBody
+    public ResponseEntity<?> crearColeccion(@RequestBody Map<String, Object> payload) {
+
+        // Extraemos los datos del JSON que mandó el JavaScript
+        String titulo = (String) payload.get("titulo");
+        String descripcion = (String) payload.get("descripcionColeccion");
+
+        boolean ok = coleccionService.crearColeccion(payload);
+
+        if (ok) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pudo crear la colección en el servicio core.");
+        }
     }
 }
 

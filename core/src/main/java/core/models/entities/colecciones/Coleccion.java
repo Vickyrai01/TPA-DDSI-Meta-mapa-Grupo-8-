@@ -36,6 +36,7 @@ public class Coleccion {
     public Coleccion(){}
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_coleccion")
     private Integer id;
     public Integer getId() {return id;}
@@ -80,7 +81,7 @@ public class Coleccion {
 
     /*@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "coleccion_id") // FK en la tabla de Criterio*/
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "coleccion_criterio",
             joinColumns = @JoinColumn(name = "coleccion_id"),
