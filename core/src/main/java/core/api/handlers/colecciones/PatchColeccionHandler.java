@@ -1,6 +1,7 @@
 package core.api.handlers.colecciones;
 
 import core.api.DTO.ActualizoColeccionDTO;
+import core.models.entities.fuentes.Fuente;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import core.models.entities.colecciones.Coleccion;
@@ -47,6 +48,19 @@ public class PatchColeccionHandler implements Handler {
         if (dto .criterioDePertenencia != null) {
             coleccion.setCriterioDePertenencia((List<Criterio>) dto.criterioDePertenencia);
             coleccionesRepository.update(coleccion);
+        }
+
+        // Actualizar fuentes si viene el campo
+        if (dto.fuentes != null) {
+            // Validar que existan todas las fuentes antes de actualizar
+            for (Integer idFuente : dto.fuentes) {
+                Fuente fuente = core.models.repository.FuentesRepository.getInstance().getFuente(idFuente);
+                if (fuente == null) {
+                    context.status(404).result("Fuente con ID " + idFuente + " no encontrada");
+                    return;
+                }
+            }
+            coleccionesRepository.actualizarFuentesDeColeccion(id, dto.fuentes);
         }
 
 

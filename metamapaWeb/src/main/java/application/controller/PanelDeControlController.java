@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -48,8 +49,12 @@ public class PanelDeControlController {
     ) {
         String titulo = req.get("titulo") != null ? req.get("titulo").toString() : null;
         String desc = req.get("descripcionColeccion") != null ? req.get("descripcionColeccion").toString() : null;
+        List<Integer> fuentes = req.get("fuentes") instanceof List<?> list
+                ? ((List<?>) list).stream().map(o -> Integer.parseInt(o.toString())).toList()
+                : List.of();
+        String algoritmoConsenso = req.get("algoritmoConsenso") != null ? req.get("algoritmoConsenso").toString() : null;
 
-        boolean ok = coleccionService.patchColeccion(id, titulo, desc);  // llama al otro backend
+        boolean ok = coleccionService.patchColeccion(id, titulo, desc, fuentes, algoritmoConsenso);  // llama al otro backend
         if (ok) {
             return ResponseEntity.ok().build();
         }
