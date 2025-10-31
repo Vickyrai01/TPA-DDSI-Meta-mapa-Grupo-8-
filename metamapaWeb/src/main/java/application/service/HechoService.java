@@ -21,7 +21,7 @@ public class HechoService {
             .build();
 
     public List<HechoDTO> getAll() {
-        return metamapaApi.get()
+        return adminApi.get()
                 .uri("/hechos")
                 .retrieve()
                 .bodyToFlux(HechoDTO.class)

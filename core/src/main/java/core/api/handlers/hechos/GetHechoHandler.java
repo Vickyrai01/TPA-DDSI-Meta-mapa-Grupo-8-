@@ -1,6 +1,8 @@
 package core.api.handlers.hechos;
 
+import core.api.DTO.HechoResumenDTO;
 import core.api.handlers.colecciones.UtilsFormatos;
+import core.models.entities.hecho.Estado;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import core.models.entities.colecciones.criterios.Criterio;
@@ -11,6 +13,8 @@ import core.models.entities.hecho.Hecho;
 import core.models.repository.HechosRepository;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +24,7 @@ public class GetHechoHandler implements Handler {
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
-
+        /*
         UtilsFormatos utilsFormatos = new UtilsFormatos();
 
         String categoria = context.queryParam("categoria");
@@ -52,6 +56,15 @@ public class GetHechoHandler implements Handler {
         List<Hecho> hechosFiltrados = FiltradorColecciones.getInstance().filtrarHechos(hechosTotales, criterios);
 
         context.json(hechosFiltrados);
+        */
+        List<Hecho> hechosTotales = repoHechos.obtenerTodas();
+        List<Hecho> hechosAprobados = hechosTotales.stream().filter(hecho -> hecho.getEstado().equals(Estado.ACEPTADO)).toList();
+        List<HechoResumenDTO> hechosDevolver = pasarDTO(hechosAprobados);
+        context.json(hechosDevolver);
+    }
+
+    public List<HechoResumenDTO> pasarDTO(List<Hecho> hechos){
+        return hechos.stream().map(HechoResumenDTO::from).toList();
     }
 
 }
