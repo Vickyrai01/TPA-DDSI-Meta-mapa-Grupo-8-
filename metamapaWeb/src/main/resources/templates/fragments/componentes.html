@@ -15,6 +15,7 @@
             <a th:href="@{/reportar}">Reportar suceso</a>
             <a th:href="@{/mapa}">Ver mapa</a>
             <a th:href="@{/colecciones}">Navegar sucesos</a>
+            <a th:if="${esAdmin}" th:href="@{/admin/colecciones}">Panel de Control</a>
             <a th:href="@{/perfil}" class="avatar" aria-label="Perfil"><i class="fa-regular fa-user"></i></a>
         </nav>
 
