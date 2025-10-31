@@ -210,8 +210,9 @@ public class Hecho {
         this.contribuyente = contribuyente;
     }
 
-    @Column(name = "estado")
-    private Estado estado;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado", nullable = false)
+    private  Estado estado = Estado.ACEPTADO;
     public Estado getEstado() {
         return estado;
     }
