@@ -14,7 +14,7 @@ import java.util.Map;
 @Service
 public class ColeccionService {
     private final WebClient metamapaApi = WebClient.create("http://localhost:8081/core/api");
-    private final WebClient metamapaApiADMIN = WebClient.create("http://localhost:8081/core/api");
+    private final WebClient metamapaApiADMIN = WebClient.create("http://localhost:8082/core/api");
 
     // Obtener todas las colecciones del core
     public List<ColeccionDTO> getAll() {
@@ -84,6 +84,25 @@ public class ColeccionService {
         } catch (Exception e) {
             return false;
         }
+    }
+    public boolean crearColeccion(Map<String, Object> payload) {
+        try {
+            // Usamos metamapaApiADMIN (puerto 8082)
+            var resp = metamapaApiADMIN
+                    .post() // Usamos POST
+                    .uri("/colecciones") // El endpoint del 'core'
+                    .bodyValue(payload) // Enviamos el JSON
+                    .retrieve()
+                    .toBodilessEntity()
+                    .block();
+
+            // El 'core' devuelve 201 (Created) si tiene éxito
+            return resp != null && resp.getStatusCode().is2xxSuccessful();
+        } catch (Exception e) {
+            // Imprime el error si el 'core' está caído o rechaza la petición
+            e.printStackTrace();
+            return false;
         }
+    }
 }
 
