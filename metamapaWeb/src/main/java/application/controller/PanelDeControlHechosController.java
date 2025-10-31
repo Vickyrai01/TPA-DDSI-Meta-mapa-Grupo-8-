@@ -29,18 +29,8 @@ public class PanelDeControlHechosController {
     // Renderiza Admin Hechos tomando los hechos de la colección global (criterio == null)
     @GetMapping("/admin/hechos")
     public String administrarHechos(Model model) {
-        List<ColeccionDTO> colecciones = coleccionService.getAll();
-
-        Optional<Integer> idGlobalOpt = colecciones.stream()
-                .filter(c -> c.criterioDePertenencia() == null) // colección sin criterio => global
-                .map(ColeccionDTO::id)
-                .findFirst();
-
-        List<HechoDTO> hechos = idGlobalOpt
-                .map(coleccionService::getHechosDeColeccion) // misma lógica que ver colección
-                .orElse(List.of());
-
-        model.addAttribute("listaDeHechos", hechos);
+        List<HechoDTO> hechosGlobales = hechoService.getAll();
+        model.addAttribute("listaDeHechos", Optional.ofNullable(hechosGlobales).orElse(List.of()));
         return "panelDeControl/panelDeControlHECHOS";
     }
 
