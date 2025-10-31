@@ -14,10 +14,10 @@ import io.javalin.Javalin;
 public class ApiMetaMapaConfig {
     public static void configurarEndpoints(Javalin app) {
         app.get("/core/api/colecciones/{id}/hechos", new GetHechosDeColeccionesHandler());
-        app.post("core/api/solicitudes", new PostSolicitudHandler());
-        app.get("core/api/colecciones", new GetColeccionHandler());
-        app.get("core/api/colecciones/{id}", new GetColeccionIdHandler());
-        app.get("core/api/solicitudes", new GetSolicitudHandler()); //para prueba solo
+        app.post("/core/api/solicitudes", new PostSolicitudHandler());
+        app.get("/core/api/colecciones", new GetColeccionHandler());
+        app.get("/core/api/colecciones/{id}", new GetColeccionIdHandler());
+        app.get("/core/api/solicitudes", new GetSolicitudHandler()); //para prueba solo
         app.get("/core/api/colecciones/{id}/{modoVisualizacion}/hechos", new GetHechosDeColeccionCurados());
         app.post("/core/api/hechos/reportar", new PostHechoHandler());
         app.get("/core/api/categorias", new GetCategoriasHandler());

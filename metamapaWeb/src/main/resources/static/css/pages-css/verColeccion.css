@@ -25,7 +25,7 @@
     height: 100%;
     overflow: auto;
 }
-.sidebar-header{font-weight:800;letter-spacing:.06em;color:var(--brand);margin-bottom:.25rem}
+.sidebar-header{font-weight:800;letter-spacing:.06em;color:var(--brand);margin-bottom:.25rem;margin-top: .75rem;}
 .sidebar-content h2{margin:.25rem 0 .5rem 0}
 
 @media (max-width: 1100px){
@@ -39,9 +39,14 @@
 
 /* ---- Acordeón ---- */
 .hechos-accordion details{
-    background:var(--bg); border:1px solid var(--line); border-radius:14px; padding:.75rem 1rem;
-    margin:.6rem 0; box-shadow:0 1px 2px rgba(0,0,0,.05);
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:.75rem 1rem;
+    margin:.6rem 0;
+    box-shadow:0 1px 2px rgba(0,0,0,.05);
     transition:box-shadow .15s,border-color .15s;
+    margin-right: 1.25rem;
 }
 .hechos-accordion details:hover{box-shadow:0 4px 14px rgba(0,0,0,.07); border-color:#d1d5db}
 .hechos-accordion details[open]{border-color:var(--brand); box-shadow:0 6px 20px rgba(255,140,66,.15)}
@@ -89,8 +94,11 @@ details[open] .chev{transform:rotate(90deg)}
 .media-list{display:flex;flex-wrap:wrap;gap:.45rem;margin:.3rem 0}
 .media-list a{display:inline-flex;align-items:center;gap:.35rem;text-decoration:none;color:#374151;font-size:.92rem}
 .media-list a:hover{color:#111827}
-.btn-map{background:var(--brand);color:#fff;border:none;border-radius:10px;padding:.35rem .6rem;cursor:pointer}
+
+/* ESTILO DE BOTÓN NARANJA (EL ORIGINAL) */
+.btn-map{background:var(--brand);color:#fff;border:none;border-radius:10px;padding:.35rem .6rem;cursor:pointer;text-decoration:none;}
 .btn-map:hover{filter:brightness(.95)}
+
 .popup-card .btn-map{
     display:inline-flex;
     align-items:center;
@@ -107,4 +115,54 @@ details[open] .chev{transform:rotate(90deg)}
 .hechos-accordion details.highlight{
     border-color: var(--brand);
     box-shadow: 0 0 0 2px rgba(255,140,66,0.22);
+}
+/* 1) Aumentá la especificidad de tus reglas */
+.field > .field-label{
+    font-weight: 600;
+    color: var(--dark, #1f2937);
+    margin-bottom: 0.15rem;
+}
+
+.field > .field-value{
+    font-weight: 400;
+    color: #374151; /* valor */
+    line-height: 1.4;
+}
+
+/* estado “sin dato” */
+.field > .field-value.muted{
+    color: var(--muted);
+    font-style: italic;
+}
+
+/* =======================================
+  BLOQUE DE BOTÓN DE SOLICITUD MODIFICADO
+  =======================================
+  (Ahora tiene el mismo padding, border-radius, etc. que .btn-map,
+  pero con fondo rojo)
+*/
+.btn-solicitud {
+    /* Estilos copiados de .btn-map */
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: .35rem .6rem;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block; /* Añadido para consistencia */
+    transition: filter .2s ease;
+
+    /* Color rojo de "eliminación" */
+    background: #dc3545;
+}
+
+/* Efecto al pasar el ratón (hover) */
+.btn-solicitud:hover {
+    filter: brightness(.95);
+}
+
+/* Efecto al hacer clic (active) */
+.btn-solicitud:active {
+    filter: brightness(.90);
+    transform: translateY(1px); /* Efecto de clic */
 }
