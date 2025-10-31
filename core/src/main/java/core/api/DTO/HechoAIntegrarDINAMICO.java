@@ -59,7 +59,7 @@ public class HechoAIntegrarDINAMICO {
     }
 
     public HechoAIntegrarDINAMICO(String titulo, String descripcion, String categoria, String latitud, String longitud, String fechaSuceso,
-                             List<String> etiquetas, String contribuyente, List<String> multimedia, String linkFuente)
+                             List<String> etiquetas, String contribuyente, List<String> multimedia)
     {
         this.hash = HandlerRecientes.generarHash(titulo+descripcion+categoria+latitud+longitud);
         this.titulo = titulo;
@@ -93,6 +93,29 @@ public class HechoAIntegrarDINAMICO {
     public Integer getIdFuente() {return idFuente;}
     public void setIdFuente(Integer idFuente) {this.idFuente = idFuente;};
 
+    public List<String> getEtiquetas() {
+        return etiquetas;
+    }
+
+    public void setEtiquetas(List<String> etiquetas) {
+        this.etiquetas = etiquetas;
+    }
+
+    public String getContribuyente() {
+        return contribuyente;
+    }
+
+    public void setContribuyente(String contribuyente) {
+        this.contribuyente = contribuyente;
+    }
+
+    public List<String> getMultimedia() {
+        return multimedia;
+    }
+
+    public void setMultimedia(List<String> multimedia) {
+        this.multimedia = multimedia;
+    }
 
     public Boolean tieneMismoTitulo(String tituloExterno){
         String tituloPropioLimpio = this.getTitulo().toLowerCase().replace(" ","");
