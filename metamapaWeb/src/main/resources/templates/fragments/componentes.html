@@ -16,7 +16,8 @@
             <a th:href="@{/mapa}">Ver mapa</a>
             <a th:href="@{/colecciones}">Navegar sucesos</a>
             <a th:if="${esAdmin}" th:href="@{/admin/colecciones}">Panel de Control</a>
-            <a th:href="@{/perfil}" class="avatar" aria-label="Perfil"><i class="fa-regular fa-user"></i></a>
+            <a th:if="${#authorization.expression('isAuthenticated()')}" th:href="@{/perfil}" class="avatar" aria-label="Perfil"><i class="fa-regular fa-user"></i></a>
+            <a th:if="${#authorization.expression('!isAuthenticated()')}" th:href="@{/oauth2/authorization/google}" class="avatar" aria-label="Perfil"><i class="fa-regular fa-user"></i></a>
         </nav>
 
         <button class="burger" aria-label="Abrir menú"><span></span><span></span><span></span></button>
