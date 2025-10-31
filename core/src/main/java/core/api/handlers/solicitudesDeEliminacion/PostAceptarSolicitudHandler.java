@@ -7,9 +7,7 @@ import core.models.repository.HechosRepository;
 import core.models.repository.SolicitudEliminacionRepository;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-
-public class PostAceptarSolicitudHandler implements Handler {
+import java.util.Optional;public class PostAceptarSolicitudHandler implements Handler {
     private final SolicitudEliminacionRepository repo = SolicitudEliminacionRepository.getInstance();
     private final HechosRepository repoHechos = HechosRepository.getInstance();
 
@@ -26,7 +24,13 @@ public class PostAceptarSolicitudHandler implements Handler {
         solicitud.aceptarSolicitud();
         repo.update(solicitud);
 
-        repoHechos.update(solicitud.getHecho());
+        var hecho = solicitud.getHecho();
+        if (hecho != null) {
+            hecho.desactivarse();
+            repoHechos.update(hecho);
+        }
+
         context.status(200).result("Solicitud aprobada");
     }
 }
+

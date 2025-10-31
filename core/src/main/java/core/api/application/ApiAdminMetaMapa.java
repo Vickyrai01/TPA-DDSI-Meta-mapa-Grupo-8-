@@ -10,6 +10,7 @@ import core.models.repository.seeders.SolicitudEliminacioRepositorySeeder;
 public class ApiAdminMetaMapa {
 
     public static void main(String[] args) {
+
         HechosRepositorySeeder hechosRepositorySeeder = HechosRepositorySeeder.getInstance();
         hechosRepositorySeeder.cargarHechosSeeder();
 

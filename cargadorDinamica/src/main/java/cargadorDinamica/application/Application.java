@@ -66,7 +66,10 @@ public class Application {
                 hecho.getCategoria(),
                 hecho.getLatitud(),
                 hecho.getLongitud(),
-                hecho.getFechaSuceso()
+                hecho.getFechaSuceso(),
+                hecho.getEtiquetas(),
+                hecho.getContribuyente(),
+                hecho.getMultimedia()
         );
 
         dinamicaRepository.save(hechoDTO);

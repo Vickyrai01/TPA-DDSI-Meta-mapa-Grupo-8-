@@ -2,6 +2,7 @@ metamapa:
   api:
     admin-base-url: http://localhost:8082/core/api
     base-url: http://localhost:8081/core/api
+  admin-emails: "cojedacabrera@frba.utn.edu.ar, ghrybalvarez@frba.utn.edu.ar, jmillan@frba.utn.edu.ar, ascali@frba.utn.edu.ar, vraimondo@frba.utn.edu.ar"
 
 spring:
   security:

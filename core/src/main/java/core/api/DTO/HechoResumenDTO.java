@@ -22,9 +22,10 @@ public class HechoResumenDTO {
     public String latitud;
     public String longitud;
     private List<String> categorias;
+    private String estado;
 
 
-    public HechoResumenDTO(String hash, String titulo, String descripcion, String nombreContribuyente, LocalDate fechaSuceso, LocalTime horaSuceso, List<String> multimedia, List<String> etiquetas, String latitud, String longitud, List<String> categorias) {
+    public HechoResumenDTO(String hash, String titulo, String descripcion, String nombreContribuyente, LocalDate fechaSuceso, LocalTime horaSuceso, List<String> multimedia, List<String> etiquetas, String latitud, String longitud, List<String> categorias, String estado) {
     this.hash = hash;
     this.nombre = titulo;
     this.descripcion = descripcion;
@@ -36,6 +37,7 @@ public class HechoResumenDTO {
     this.latitud = latitud;
     this.longitud = longitud;
     this.categorias = categorias;
+    this.estado = estado;
     }
 
     public HechoResumenDTO(String hash, String nombre, String descripcion, String contribuyente, LocalDate fechaSuceso, LocalTime horaSuceso, List<String> multimedia, String latitud, String longitud) {
@@ -87,7 +89,8 @@ public class HechoResumenDTO {
                 etiquetas,
                 latitud,
                 longitud,
-                categorias
+                categorias,
+                h.getEstado().toString()
         );
     }
 
@@ -159,5 +162,13 @@ public class HechoResumenDTO {
 
     public void setCategorias(List<String> categorias) {
         this.categorias = categorias;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }
