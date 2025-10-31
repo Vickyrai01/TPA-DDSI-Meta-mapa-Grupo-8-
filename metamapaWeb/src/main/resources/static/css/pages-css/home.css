@@ -89,14 +89,37 @@ body{
 }
 
 /* ====== Colaborá / Form ====== */
-.collab{
-    background-image: url("../../img/fondoHOME2.png"); /* ruta de la imagen */
-   background-size: cover;     /* que cubra todo el ancho y alto */
-   background-position: center; /* centrada */
-   background-repeat: no-repeat;
-   padding: 60px 0;            /* espacio interno para que no se tape el contenido */
-   color: white;
-margin-top: -2px;
+/* === sección "Reportá un suceso" === */
+.collab {
+    position: relative;
+    background: url("../../img/fondoHOME2.png") center/cover no-repeat;
+    padding: 8rem 1.5rem;
+    color: #fff;
+}
+
+.collab::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.55);   /* oscurece para que se lea */
+    z-index: 0;
+}
+
+.collab .container {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+}
+
+.collab h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.collab p {
+    line-height: 2;
+    margin-bottom: 2rem;
+    color: rgba(255,255,255,.92);
 }
 
 .collab-grid{
@@ -148,6 +171,7 @@ input:focus, select:focus, textarea:focus{
     background: linear-gradient(180deg, var(--orange), #e66b18);
     color:#fff;
     transition: transform .06s ease, filter .2s ease;
+    text-decoration: none;
 }
 .btn-primary:hover{ filter:saturate(110%) brightness(1.02); }
 .btn-primary:active{ transform: translateY(1px); }

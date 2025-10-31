@@ -21,8 +21,8 @@ public class HechoResumenDTO {
     public List<String> etiquetas;
     public String latitud;
     public String longitud;
-    private List<String> categorias;
-    private String estado;
+    public List<String> categorias;
+    public String estado;
 
 
     public HechoResumenDTO(String hash, String titulo, String descripcion, String nombreContribuyente, LocalDate fechaSuceso, LocalTime horaSuceso, List<String> multimedia, List<String> etiquetas, String latitud, String longitud, List<String> categorias, String estado) {
@@ -51,6 +51,22 @@ public class HechoResumenDTO {
         //this.etiquetas = etiquetas;
         this.latitud = latitud;
         this.longitud = longitud;
+    }
+
+    public HechoResumenDTO(String hash, String nombre, String descripcion, String contribuyente, LocalDate fechaCarga, LocalDate fechaSuceso, LocalTime horaSuceso, List<String> multimedia, List<String> etiquetas, String latitud, String longitud, List<String> categorias, String estado) {
+        this.hash = hash;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.contribuyente = contribuyente;
+        this.fechaCarga = fechaCarga;
+        this.fechaSuceso = fechaSuceso;
+        this.horaSuceso = horaSuceso;
+        this.multimedia = multimedia;
+        this.etiquetas = etiquetas;
+        this.latitud = latitud;
+        this.longitud = longitud;
+        this.categorias = categorias;
+        this.estado = estado;
     }
 
     public static HechoResumenDTO from(Hecho h) {
