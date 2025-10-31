@@ -5,7 +5,9 @@ import application.dto.SolicitudDeEliminacionDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SolicitudesEliminacionService {
@@ -46,6 +48,28 @@ public class SolicitudesEliminacionService {
                     .block();
             return resp != null && resp.getStatusCode().is2xxSuccessful();
         } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean crear(String idHecho, String descripcion) {
+        // el JSON que esa API espera
+        Map<String, Object> body = new HashMap<>();
+        body.put("hecho", idHecho);
+        body.put("descripcion", descripcion);
+
+        try {
+            var resp = metamapaApi.post()
+                    .uri("/solicitudes")
+                    .bodyValue(body)
+                    .retrieve()
+                    .toBodilessEntity()
+                    .block();
+
+            return resp != null && resp.getStatusCode().is2xxSuccessful();
+        } catch (Exception e) {
+            // podés loguear
+            System.err.println("Error creando solicitud de eliminación: " + e.getMessage());
             return false;
         }
     }
