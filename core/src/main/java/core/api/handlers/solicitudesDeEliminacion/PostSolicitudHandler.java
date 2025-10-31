@@ -17,7 +17,7 @@ public class PostSolicitudHandler implements Handler {
         SolicitudDeEliminacionDTO dto  = context.bodyAsClass(SolicitudDeEliminacionDTO.class);
         System.out.println("Creando solicitud de eliminación: " + dto.hecho);
 
-        Hecho hecho = HechosRepository.getInstance().getHecho(dto.hecho);
+        Hecho hecho = HechosRepository.getInstance().getHechoHash(dto.hecho);
 
         if (hecho == null) {
             context.status(404).result("Hecho con ID " + dto.hecho + " no encontrado");
