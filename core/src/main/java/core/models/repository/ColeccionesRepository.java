@@ -256,7 +256,8 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                                 etiquetas,
                                 h.getUbicacion() != null ? h.getUbicacion().getLatitud().toString() : null,
                                 h.getUbicacion() != null ? h.getUbicacion().getLongitud().toString() : null,
-                                Collections.singletonList(h.getCategoria().toString())
+                                Collections.singletonList(h.getCategoria().toString()),
+                                h.getEstado().toString()
                         )
                 );
             }
