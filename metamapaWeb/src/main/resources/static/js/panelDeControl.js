@@ -104,10 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const fuentesSeleccionadas = [];
     const checkboxes = document.querySelectorAll('input[name="fuentesSeleccionadas"]:checked');
     checkboxes.forEach((checkbox) => {
-      if (fuentesSeleccionadas.length === 0) {
-        alert('Debes seleccionar al menos una Fuente.');
-        return;
-      }
       const id = parseInt(checkbox.value, 10);
       if (Number.isFinite(id)) { // Evita IDs nulos/NaN si th:value está vacío
         fuentesSeleccionadas.push(id);
