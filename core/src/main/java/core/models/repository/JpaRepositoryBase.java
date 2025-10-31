@@ -34,7 +34,8 @@ public abstract class JpaRepositoryBase<T, ID> {
         }
     }
 
-        public List<T> obtenerTodas() {
+
+    public List<T> obtenerTodas() {
             EntityManager em = emSupplier.get();
             try {
                CriteriaBuilder cb = em.getCriteriaBuilder();
