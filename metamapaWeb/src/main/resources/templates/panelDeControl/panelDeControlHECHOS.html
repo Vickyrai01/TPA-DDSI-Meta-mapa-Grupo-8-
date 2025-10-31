@@ -83,43 +83,59 @@
                             </div>
 
                             <!-- Meta -->
-                            <div class="hecho-meta">
-                                <div class="meta-row">
-                                    <span class="meta-label">Categorías:</span>
-                                    <span class="meta-value">
-                                        <span class="chip" th:each="cat : ${h.categorias()}" th:text="${cat}">Categoría</span>
-                                    </span>
-                                </div>
-                                <div class="meta-row">
-                                    <span class="meta-label">Contribuyente:</span>
-                                    <span class="meta-value" th:text="${h.contribuyente()}">Anónimo</span>
-                                </div>
-                                <div class="meta-row">
-                                    <span class="meta-label">Fecha:</span>
-                                    <span class="meta-value">
-                                        <span th:text="${h.fechaSuceso()}">2025-10-10</span>
-                                        <span th:text="${h.horaSuceso()}">14:30</span>
-                                    </span>
-                                </div>
-                                <div class="meta-row">
-                                    <span class="meta-label">Ubicación:</span>
-                                    <span class="meta-value">
-                                        Lat: <span th:text="${h.latitud()}">-34.60</span>,
-                                        Lng: <span th:text="${h.longitud()}">-58.38</span>
-                                    </span>
+                            <!-- ... dentro de cada article .hecho-card, reemplazá el bloque de Meta por este ... -->
+
+                            <!-- Meta -->
+                            <div class="hecho-meta meta-box">
+                                <div class="meta-grid">
+                                    <!-- Dentro de la fila de Categorías -->
+                                    <div class="meta-row">
+                                        <span class="meta-label">Categorías:</span>
+                                        <span class="meta-value">
+                                        <span class="chip chip--category"
+                                              th:each="cat : ${(h.categorias() != null) ? h.categorias() : (h.categorias != null ? h.categorias : {})}"
+                                              th:text="${cat}">Categoría</span>
+                                        </span>
+                                    </div>
+
+                                    <div class="meta-row">
+                                        <span class="meta-label">Contribuyente:</span>
+                                        <span class="meta-value"
+                                              th:text="${(h.contribuyente() != null) ? h.contribuyente() : (h.contribuyente != null ? h.contribuyente : '')}">
+                                            Anónimo
+                                          </span>
+                                    </div>
+
+                                    <div class="meta-row">
+                                        <span class="meta-label">Fecha:</span>
+                                        <span class="meta-value">
+                                        <span th:text="${(h.fechaSuceso() != null) ? h.fechaSuceso() : (h.fechaSuceso != null ? h.fechaSuceso : '')}">2025-10-10</span>
+                                        <span th:text="${(h.horaSuceso() != null) ? h.horaSuceso() : (h.horaSuceso != null ? h.horaSuceso : '')}">14:30</span>
+                                        </span>
+                                    </div>
+
+                                    <div class="meta-row">
+                                        <span class="meta-label">Ubicación:</span>
+                                        <span class="meta-value">
+                                        Lat: <span th:text="${(h.latitud() != null) ? h.latitud() : (h.latitud != null ? h.latitud : '')}">-34.60</span>,
+                                        Lng: <span th:text="${(h.longitud() != null) ? h.longitud() : (h.longitud != null ? h.longitud : '')}">-58.38</span>
+                                      </span>
+                                    </div>
                                 </div>
                             </div>
 
                             <!-- Etiquetas -->
-                            <div class="card-field">
-                                <strong>Etiquetas:</strong>
-                                <div class="tags view-mode" th:if="${h.etiquetas() != null}">
-                                    <span class="chip" th:each="tag : ${h.etiquetas()}" th:text="${tag}">etiqueta</span>
-                                </div>
-                                <!-- El valor se completa automáticamente al entrar en modo edición -->
-                                <input type="text" class="card-input edit-mode" name="etiquetas"
-                                       placeholder="ej: robo, fuego, coto"
-                                       aria-label="Editar etiquetas (separadas por coma)"/>
+                            <div class="meta-row" style="grid-column: 1 / -1;">
+                                <span class="meta-label meta-label--black">Etiquetas:</span>
+
+                                    <span class="chip chip--tag"
+                                          th:each="tag : ${(h.etiquetas() != null) ? h.etiquetas() : (h.etiquetas != null ? h.etiquetas : {})}"
+                                          th:text="${tag}">robo</span>
+
+                                <input class="card-input edit-mode "
+                                       type="text"
+                                       name="etiquetas"
+                                       placeholder="Separá por comas: fuego, humo"/>
                             </div>
                         </div>
                     </article>
@@ -132,7 +148,7 @@
                     <a class="admin-menu-item" th:href="@{/admin/colecciones}">ADMINISTRAR COLECCIONES</a>
                     <a class="admin-menu-item active" th:href="@{/admin/hechos}">ADMINISTRAR HECHOS</a>
                     <a class="admin-menu-item" th:href="@{/admin/fuentes}">ADMINISTRAR FUENTES</a>
-                    <a class="admin-menu-item" th:href="@{/admin/solicitudEliminacion}">ADMINISTRAR SOLICITUDES DE ELIMINACIÓN</a>
+                    <a th:href="@{/admin/solicitudesEliminacion}" class="admin-menu-item">ADMINISTRAR SOLICITUDES DE ELIMINACIÓN</a>
                 </nav>
             </aside>
         </div>
