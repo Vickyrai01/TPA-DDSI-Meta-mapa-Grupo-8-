@@ -270,8 +270,22 @@ document.addEventListener('DOMContentLoaded', () => {
       descView.textContent = nuevaDesc;
     }
 
-    // 4. Mandar AMBOS datos al backend
-    console.log('enviando PATCH...', id, nuevoTitulo, nuevaDesc);
+    // 3.1. Obtener fuentes seleccionadas en edición
+    const fuentesSeleccionadas = [];
+    const checkboxes = card.querySelectorAll('input[name="fuentesSeleccionadasEdit"]:checked');
+    checkboxes.forEach((checkbox) => {
+      const idFuente = parseInt(checkbox.value, 10);
+      if (Number.isFinite(idFuente)) {
+        fuentesSeleccionadas.push(idFuente);
+      }
+    });
+
+    // 3.2. Obtener algoritmo de consenso seleccionado en edición
+    const algoritmoSelect = card.querySelector('select[name="algoritmoConsensoEdit"]');
+    const algoritmoConsenso = algoritmoSelect ? algoritmoSelect.value : null;
+
+    // 4. Mandar datos al backend (incluyendo fuentes y algoritmoConsenso)
+    console.log('enviando PATCH...', id, nuevoTitulo, nuevaDesc, fuentesSeleccionadas, algoritmoConsenso);
     fetch(`/admin/colecciones/${id}/modificar`, {
       method: 'PATCH',
       headers: {
@@ -279,8 +293,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Aquí deberías incluir el token CSRF si tienes Spring Security activado
       },
       body: JSON.stringify({
-        titulo: nuevoTitulo, // <-- AÑADIDO
-        descripcionColeccion: nuevaDesc
+        titulo: nuevoTitulo,
+        descripcionColeccion: nuevaDesc,
+        fuentes: fuentesSeleccionadas,
+        algoritmoConsenso: algoritmoConsenso
       })
     })
         .then(resp => {
@@ -338,33 +354,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-    const searchInput = document.getElementById('search-input');
-    const searchBtn = document.getElementById('search-btn');
-    const collectionsList = document.querySelector('.collections-list');
+  const searchInput = document.getElementById('search-input');
+  const searchBtn = document.getElementById('search-btn');
+  const collectionsList = document.querySelector('.collections-list');
 
-    const doSearch = () => {
-      const q = searchInput?.value?.toLowerCase().trim() || '';
-      const cards = collectionsList ? collectionsList.querySelectorAll('.collection-card') : [];
+  const doSearch = () => {
+    const q = searchInput?.value?.toLowerCase().trim() || '';
+    const cards = collectionsList ? collectionsList.querySelectorAll('.collection-card') : [];
 
-      cards.forEach((card) => {
-        const titulo = card.dataset.titulo?.toLowerCase() || '';
-        const descripcion = card.dataset.descripcion?.toLowerCase() || '';
+    cards.forEach((card) => {
+      const titulo = card.dataset.titulo?.toLowerCase() || '';
+      const descripcion = card.dataset.descripcion?.toLowerCase() || '';
 
-        const isVisible = titulo.includes(q) || descripcion.includes(q);
+      const isVisible = titulo.includes(q) || descripcion.includes(q);
 
-        card.style.display = isVisible ? '' : 'none';
-      });
-    };
+      card.style.display = isVisible ? '' : 'none';
+    });
+  };
 
-    searchBtn?.addEventListener('click', (e) => {
-      e.preventDefault();
+  searchBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    doSearch();
+  });
+
+  searchInput?.addEventListener('keyup', (e) => {
+    if (e.key === 'Enter') {
       doSearch();
-    });
-
-    searchInput?.addEventListener('keyup', (e) => {
-      if (e.key === 'Enter') {
-        doSearch();
-      }
-    });
+    }
+  });
 
 });

@@ -7,6 +7,6 @@ public record ColeccionDTO(
         Object criterioDePertenencia,
         Object hechos,
         String identificadorHandle,
-        Object fuente,
+        Object fuentes,
         Integer cantidadHechos
 ) {}

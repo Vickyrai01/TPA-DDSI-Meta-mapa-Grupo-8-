@@ -63,13 +63,19 @@ public class ColeccionService {
     }
 
     //VER
-    public boolean patchColeccion(Integer id, String nuevoTitulo, String nuevaDescripcion) {
+    public boolean patchColeccion(Integer id, String nuevoTitulo, String nuevaDescripcion, Object fuentes, String algoritmoConsenso) {
         Map<String, Object> body = new HashMap<>();
         if (nuevoTitulo != null && !nuevoTitulo.isBlank()) {
             body.put("titulo", nuevoTitulo);
         }
         if (nuevaDescripcion != null && !nuevaDescripcion.isBlank()) {
             body.put("descripcionColeccion", nuevaDescripcion);
+        }
+        if (fuentes != null) {
+            body.put("fuentes", fuentes);
+        }
+        if (algoritmoConsenso != null && !algoritmoConsenso.isBlank()) {
+            body.put("algoritmoConsenso", algoritmoConsenso);
         }
 
         try {

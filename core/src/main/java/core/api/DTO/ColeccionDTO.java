@@ -13,7 +13,7 @@ public class ColeccionDTO {
         this.titulo = titulo;
         this.descripcionColeccion = descripcionColeccion;
         this.criterioDePertenencia = listaCriterio;
-        this.fuente = fuentes;
+        this.fuentes = fuentes;
         this.hechos = hechos;
         this.identificadorHandle = identificadorHandle;
     }
@@ -23,7 +23,7 @@ public class ColeccionDTO {
         this.titulo = titulo;
         this.descripcionColeccion = descripcionColeccion;
         this.criterioDePertenencia = listaCriterio;
-        this.fuente = fuentes;
+        this.fuentes = fuentes;
         this.hechos = hechos;
         this.identificadorHandle = identificadorHandle;
         this.cantidadHechos = cantidadHechos;
@@ -77,12 +77,12 @@ public class ColeccionDTO {
         this.identificadorHandle = identificadorHandle;
     }
 
-    private List<Integer> fuente;
-    public List<Integer> getFuente() {
-        return fuente;
+    private List<Integer> fuentes;
+    public List<Integer> getFuentes() {
+        return fuentes;
     }
-    public void setFuente(List<Integer> fuente) {
-        this.fuente = fuente;
+    public void setFuentes(List<Integer> fuentes) {
+        this.fuentes = fuentes;
     }
 
     public Integer getCantidadHechos() {

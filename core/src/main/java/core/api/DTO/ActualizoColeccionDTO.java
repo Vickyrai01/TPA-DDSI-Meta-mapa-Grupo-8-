@@ -9,6 +9,7 @@ public class ActualizoColeccionDTO {
     public String descripcionColeccion;
     public List<Criterio> criterioDePertenencia;
     public List<Integer> hechos;
+    public List<Integer> fuentes;
 
     public ActualizoColeccionDTO() {}
 }

@@ -71,11 +71,42 @@
 
                         <div class="card-body">
 
+
                             <div class="card-field">
                                 <strong>Descripción:</strong>
                                 <p class="view-mode" th:text="${c.descripcionColeccion()}">*DESCRIPCIÓN*</p>
                                 <input type="text" class="card-input edit-mode"
                                        th:value="${c.descripcionColeccion()}" aria-label="Editar descripción">
+                            </div>
+
+                            <!-- Selector de fuentes en modo edición -->
+                            <div class="card-field edit-mode">
+                                <strong>Fuentes:</strong>
+                                <div class="fuentes-list-container" style="max-height: 150px; overflow-y: auto; border: 1px solid var(--border, #e5e7eb); border-radius: 12px; padding: 10px; background: #f9fafb;">
+                                    <p th:if="${listaDeFuentes == null or #lists.isEmpty(listaDeFuentes)}"
+                                       style="font-size: 0.9rem; color: var(--text-muted, #6b7280); margin: 0;">
+                                        No hay fuentes disponibles para agregar.
+                                    </p>
+                                    <div class="fuente-checkbox-item" th:each="fuente : ${listaDeFuentes}">
+                                        <label style="display: block; font-weight: normal; font-size: 0.95rem; cursor: pointer;">
+                                            <input type="checkbox"
+                                                   name="fuentesSeleccionadasEdit"
+                                                   th:value="${fuente.id()}"
+                                                   th:checked="${c.fuentes != null and #lists.contains(c.fuentes, fuente.id())}"
+                                                   style="margin-right: 8px; vertical-align: middle;">
+                                            <span th:text="${fuente.nombre()}">Nombre de la Fuente</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Selector de algoritmo de consenso en modo edición (igual que creación) -->
+                            <div class="form-group edit-mode" style="margin-bottom: 16px;">
+                                <label for="algoritmoConsensoEdit" style="font-weight: 600; font-size: 0.95rem;">Algoritmo de consenso</label>
+                                <select name="algoritmoConsensoEdit" class="card-select" style="margin-top: 4px;">
+                                    <option value="multiples-menciones">Multiples menciones</option>
+                                    <option value="mayoria-simple">Mayoría simple</option>
+                                    <option value="absoluta">Absoluta</option>
+                                </select>
                             </div>
 
                             <div class="card-field">

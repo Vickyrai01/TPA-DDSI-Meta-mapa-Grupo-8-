@@ -1,3 +1,4 @@
+
 package core.models.repository;
 
 import core.api.DTO.ColeccionConTodoDTO;
@@ -118,7 +119,7 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                         LEFT JOIN FETCH h.contribuyente                       
                         WHERE c.id = :id
                     """, Coleccion.class)
-            .setParameter("id", idColeccion)
+                    .setParameter("id", idColeccion)
                     .getResultStream()
                     .findFirst();
 
@@ -350,7 +351,43 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             em.close();
         }
     }
+    /**
+     * Reemplaza completamente las fuentes de una colección por las seleccionadas (solo las tildadas quedan asociadas).
+     */
+    public void actualizarFuentesDeColeccion(int idColeccion, List<Integer> idsFuentes) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            DBUtils.comenzarTransaccion(em);
+            Coleccion coleccion = em.find(Coleccion.class, idColeccion, LockModeType.PESSIMISTIC_WRITE);
+            if (coleccion == null) {
+                throw new IllegalArgumentException("No existe la Coleccion con id=" + idColeccion);
+            }
 
+            // Inicializar la lista si hace falta
+            if (coleccion.getFuentes() == null) {
+                coleccion.setFuentes(new ArrayList<>());
+            }
+
+            // Limpiar fuentes actuales
+            coleccion.getFuentes().clear();
+
+            // Agregar nuevas fuentes (solo las seleccionadas)
+            if (idsFuentes != null) {
+                for (Integer idFuente : idsFuentes) {
+                    if (idFuente == null) continue;
+                    Fuente ref = em.getReference(Fuente.class, idFuente);
+                    coleccion.getFuentes().add(ref);
+                }
+            }
+
+            DBUtils.commit(em);
+        } catch (RuntimeException ex) {
+            DBUtils.rollback(em);
+            throw ex;
+        } finally {
+            try { em.close(); } catch (Exception ignore) {}
+        }
+    }
 
 
 }
