@@ -4,6 +4,7 @@ import core.api.handlers.colecciones.GetColeccionHandler;
 import core.api.handlers.colecciones.GetColeccionIdHandler;
 import core.api.handlers.colecciones.GetHechosDeColeccionCurados;
 import core.api.handlers.colecciones.GetHechosDeColeccionesHandler;
+import core.api.handlers.hechos.GetCategoriasHandler;
 import core.api.handlers.hechos.GetHechoIdHandler;
 import core.api.handlers.hechos.PostHechoHandler;
 import core.api.handlers.solicitudesDeEliminacion.GetSolicitudHandler;
@@ -19,5 +20,6 @@ public class ApiMetaMapaConfig {
         app.get("/core/api/solicitudes", new GetSolicitudHandler()); //para prueba solo
         app.get("/core/api/colecciones/{id}/{modoVisualizacion}/hechos", new GetHechosDeColeccionCurados());
         app.post("/core/api/hechos/reportar", new PostHechoHandler());
+        app.get("/core/api/categorias", new GetCategoriasHandler());
     }
 }
