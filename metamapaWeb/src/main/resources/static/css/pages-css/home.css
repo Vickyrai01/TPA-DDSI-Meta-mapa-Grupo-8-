@@ -146,7 +146,7 @@ input:focus, select:focus, textarea:focus{
     appearance:none; border:0; border-radius:12px;
     padding:12px 16px; font-weight:800; cursor:pointer;
     background: linear-gradient(180deg, var(--orange), #e66b18);
-    color:#fff; box-shadow: 0 8px 18px rgba(244,124,44,.35);
+    color:#fff;
     transition: transform .06s ease, filter .2s ease;
 }
 .btn-primary:hover{ filter:saturate(110%) brightness(1.02); }
