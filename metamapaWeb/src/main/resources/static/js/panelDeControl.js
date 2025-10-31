@@ -89,42 +89,94 @@ document.addEventListener('DOMContentLoaded', () => {
   confirmBtnAdd?.addEventListener('click', (e) => {
     e.preventDefault();
 
-    // 1. Obtener Título y Descripción
+    // 1. Obtener Título y Descripción de la COLECCIÓN
     const nombreInput = document.getElementById('new-nombre');
     const infoInput = document.getElementById('new-info');
-    const nombre = nombreInput ? nombreInput.value.trim() : '';
-    const info = infoInput ? infoInput.value.trim() : '';
+    const nombre = nombreInput ? nombreInput.value.trim() : null;
+    const info = infoInput ? infoInput.value.trim() : null;
 
-    if (nombre === '') {
+    if (!nombre) {
       alert('El nombre es obligatorio.');
       return;
     }
 
-    // 2. Obtener los IDs de las fuentes seleccionadas
+    // 2. Obtener los IDs de las FUENTES seleccionadas
+    const fuentesSeleccionadas = [];
     const checkboxes = document.querySelectorAll('input[name="fuentesSeleccionadas"]:checked');
-    const fuentesSeleccionadas = Array.from(checkboxes)
-        .map(cb => parseInt(cb.value, 10))              // convertimos a número
-        .filter(id => Number.isFinite(id));             // eliminamos null/NaN
+    checkboxes.forEach((checkbox) => {
+      if (fuentesSeleccionadas.length === 0) {
+        alert('Debes seleccionar al menos una Fuente.');
+        return;
+      }
+      const id = parseInt(checkbox.value, 10);
+      if (Number.isFinite(id)) { // Evita IDs nulos/NaN si th:value está vacío
+        fuentesSeleccionadas.push(id);
+      }
+    });
+    // 3. Construir la lista de CRITERIOS
+    const criterios = [];
 
-    console.log("IDs de fuentes seleccionadas:", fuentesSeleccionadas);
-
-    // Validación extra
-    if (fuentesSeleccionadas.length === 0) {
-      console.warn("⚠️ No se seleccionó ninguna fuente.");
+    // Criterios de Texto
+    const criterioNombreVal = document.getElementById('new-criterio-nombre')?.value.trim();
+    if (criterioNombreVal) {
+      criterios.push({ "type": "nombre", "palabraClave": criterioNombreVal });
     }
 
-    // 3. Preparar el payload para el backend
+    const criterioDescVal = document.getElementById('new-criterio-descripcion')?.value.trim();
+    if (criterioDescVal) {
+      criterios.push({ "type": "descripcion", "palabraClave": criterioDescVal });
+    }
+
+    const criterioCatVal = document.getElementById('new-criterio-categoria')?.value.trim();
+    if (criterioCatVal) {
+      criterios.push({ "type": "categoria", "categoria": criterioCatVal });
+    }
+
+    // Criterio de Ubicación (requiere ambos campos)
+    const criterioLatVal = document.getElementById('new-criterio-lat')?.value.trim();
+    const criterioLonVal = document.getElementById('new-criterio-lon')?.value.trim();
+    if (criterioLatVal && criterioLonVal) {
+      criterios.push({
+        "type": "ubicacion",
+        "latitud": parseFloat(criterioLatVal),
+        "longitud": parseFloat(criterioLonVal)
+      });
+    }
+
+    // Criterio Fecha Suceso (requiere ambos campos)
+    const criterioSucesoDesde = document.getElementById('new-criterio-suceso-desde')?.value;
+    const criterioSucesoHasta = document.getElementById('new-criterio-suceso-hasta')?.value;
+    if (criterioSucesoDesde && criterioSucesoHasta) {
+      criterios.push({
+        "type": "fechaSuceso",
+        "desde": criterioSucesoDesde, // "YYYY-MM-DD"
+        "hasta": criterioSucesoHasta
+      });
+    }
+
+    // Criterio Fecha Carga (requiere ambos campos)
+    const criterioCargaDesde = document.getElementById('new-criterio-carga-desde')?.value;
+    const criterioCargaHasta = document.getElementById('new-criterio-carga-hasta')?.value;
+    if (criterioCargaDesde && criterioCargaHasta) {
+      criterios.push({
+        "type": "fechaCarga",
+        "desde": criterioCargaDesde,
+        "hasta": criterioCargaHasta
+      });
+    }
+
+    // 4. Preparar el 'payload' final
     const payload = {
       titulo: nombre,
       descripcionColeccion: info,
-      hechos: [],                      // lista vacía
-      fuente: fuentesSeleccionadas,    // importante: el campo se llama "fuente" (singular)
-      criterioDePertenencia: null
+      hechos: [],
+      fuente: fuentesSeleccionadas,
+      criterioDePertenencia: criterios // <-- AHORA ENVIAMOS TODOS LOS CRITERIOS
     };
 
-    console.log("Payload a enviar:", payload);
+    console.log("Enviando payload:", JSON.stringify(payload)); // Para depurar
 
-    // 4. Enviar la petición
+    // 5. Enviar la petición
     const token = getCsrfToken();
 
     fetch('/admin/colecciones/crear', {
@@ -137,18 +189,15 @@ document.addEventListener('DOMContentLoaded', () => {
     })
         .then(resp => {
           if (resp.ok) {
-            console.log("Colección creada con éxito");
             location.reload();
           } else {
-            alert('No se pudo crear la colección. Revisá la consola.');
-            console.error('Error del servidor:', resp);
-            modalAdd?.classList.remove('active');
+            alert('No se pudo crear la colección. Revisa la consola.');
+            console.error('Error del servidor al crear.', resp);
           }
         })
         .catch(err => {
           console.error('Error de red:', err);
           alert('Error de conexión al intentar crear.');
-          modalAdd?.classList.remove('active');
         });
   });
 
