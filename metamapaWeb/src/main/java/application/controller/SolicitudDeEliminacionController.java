@@ -3,11 +3,13 @@ package application.controller;
 import application.dto.ColeccionDTO;
 import application.dto.HechoDTO;
 import application.service.ColeccionService;
+import application.service.SolicitudesEliminacionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,10 +18,12 @@ import java.util.Optional;
 public class SolicitudDeEliminacionController {
 
     private final ColeccionService coleccionService;
+    private  final SolicitudesEliminacionService solicitudesEliminacionService;
 
-    public SolicitudDeEliminacionController(ColeccionService coleccionService) {
+    public SolicitudDeEliminacionController(ColeccionService coleccionService, SolicitudesEliminacionService solicitudesEliminacionService) {
             this.coleccionService = coleccionService;
-        }
+        this.solicitudesEliminacionService = solicitudesEliminacionService;
+    }
 
         // 1. Cambia el GetMapping para que acepte un 'hash'
         @GetMapping("/solicitudEliminacion/{hash}")
@@ -62,10 +66,22 @@ public class SolicitudDeEliminacionController {
 
             return "solicitudEliminacion/solicitudEliminacion";
         }
-        // (Tu método @PostMapping para recibir el form irá aquí)
-        @PostMapping("/solicitudes/eliminacion")
-        public String procesarSolicitudDeEliminacion(/* ... */) {
-            // ...
-            return "redirect:/mapa";
+
+        // POST que recibe el form y llama a la API NORMAL (8081)
+    @PostMapping("/solicitudes/eliminacion")
+    public String procesarSolicitudDeEliminacion(
+            @RequestParam("hashHecho") String hashHecho,    // hidden en el form
+            @RequestParam("descripcion") String descripcion
+    ) {
+
+        boolean ok = solicitudesEliminacionService.crear(hashHecho, descripcion);
+
+        // podés mandar un query param para mostrar mensaje
+        if (ok) {
+            return "redirect:/mapa?solicitudEliminacion=ok";
+        } else {
+            return "redirect:/mapa?solicitudEliminacion=error";
+        }
     }
+
 }

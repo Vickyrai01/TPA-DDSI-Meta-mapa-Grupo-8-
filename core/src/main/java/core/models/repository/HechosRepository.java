@@ -71,6 +71,25 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
         return findById(idHecho);
     }
 
+    public Hecho getHechoHash(String hash) {
+        if (hash == null || hash.isBlank()) return null;
+
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            return em.createQuery(
+                            "SELECT h FROM hecho h WHERE LOWER(h.hash) = LOWER(:hash)",
+                            Hecho.class
+                    )
+                    .setParameter("hash", hash.trim())
+                    .setMaxResults(1)          // por si hubiera más de uno
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+
     public void addAllEnUnaTransaccion(List<Hecho> hechos) {
         if (hechos == null || hechos.isEmpty()) return;
         EntityManager em = DBUtils.getEntityManager();
