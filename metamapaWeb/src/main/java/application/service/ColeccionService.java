@@ -25,16 +25,21 @@ public class ColeccionService {
                 .collectList()
                 .block();
     }
-
     public List<HechoDTO> getHechosDeColeccion(Integer id) {
         return metamapaApi.get()
                 .uri(uri -> uri.path("/colecciones/{id}/hechos")
                         .build(id))
                 .retrieve()
                 .bodyToFlux(HechoDTO.class)
+                .filter(h -> {
+                    String estado = h.estado();
+                    return estado == null || !estado.trim().equals("INACTIVO");
+                })
                 .collectList()
                 .block();
     }
+
+
 
     public ColeccionDTO getById(Integer id){
         return metamapaApi.get()

@@ -57,12 +57,17 @@ public class SecurityConfig {
                 )
                 // --- FIN DE LA CORRECCIÓN ---
                 .authorizeHttpRequests(authorize -> authorize
-                        // 1. Proteger SOLAMENTE la ruta /perfil
                         .requestMatchers("/perfil").authenticated()
-                        // 2. Permitir TODAS las demás rutas (/, /mapa, /reportar, etc.)
                         .anyRequest().permitAll()
                 )
-                .oauth2Login(withDefaults()); // Esto activa el flujo de login cuando /perfil lo requiera
+                .oauth2Login(oauth2 -> oauth2
+                        .defaultSuccessUrl("/", true)
+                )
+                .logout(logout -> logout
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .logoutSuccessUrl("/")
+                        .permitAll()
+                );
 
         return http.build();
     }

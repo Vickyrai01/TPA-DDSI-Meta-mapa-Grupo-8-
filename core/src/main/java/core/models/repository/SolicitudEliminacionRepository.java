@@ -28,7 +28,6 @@ public class SolicitudEliminacionRepository extends JpaRepositoryBase<SolicitudD
         }
         return instance;
     }
-
     public List<SolicitudDeEliminacion> obtenerTodasConHechoYContribuyente() {
         EntityManager em = DBUtils.getEntityManager();
         try {
@@ -36,7 +35,9 @@ public class SolicitudEliminacionRepository extends JpaRepositoryBase<SolicitudD
             CriteriaQuery<SolicitudDeEliminacion> cq = cb.createQuery(SolicitudDeEliminacion.class);
             Root<SolicitudDeEliminacion> root = cq.from(SolicitudDeEliminacion.class);
 
+            // fetch del hecho
             Fetch<SolicitudDeEliminacion, Hecho> hechoFetch = root.fetch("hecho", JoinType.LEFT);
+            // fetch del contribuyente del hecho
             hechoFetch.fetch("contribuyente", JoinType.LEFT);
 
             cq.select(root).distinct(true);

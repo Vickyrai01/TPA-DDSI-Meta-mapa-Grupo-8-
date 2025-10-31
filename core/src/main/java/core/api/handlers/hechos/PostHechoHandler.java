@@ -35,7 +35,10 @@ public class PostHechoHandler implements Handler {
                 dto.getCategoria(),
                 dto.getLatitud(),
                 dto.getLongitud(),
-                dto.getFechaSuceso()
+                dto.getFechaSuceso(),
+                dto.getEtiquetas(),
+                dto.getContribuyente(),
+                dto.getMultimedia()
         );
 
         validarNuevoHecho(hechoDTO);
@@ -97,6 +100,9 @@ public class PostHechoHandler implements Handler {
         jsonMap.put("latitud", hechoAIntegrarDTO.getLatitud());
         jsonMap.put("longitud", hechoAIntegrarDTO.getLongitud());
         jsonMap.put("fechaSuceso", hechoAIntegrarDTO.getFechaSuceso());
+        jsonMap.put("etiquetas", hechoAIntegrarDTO.getEtiquetas());
+        jsonMap.put("contribuyente", hechoAIntegrarDTO.getContribuyente());
+        jsonMap.put("multimedia", hechoAIntegrarDTO.getMultimedia());
         try {
             return mapper.writeValueAsString(jsonMap);
         } catch (JsonProcessingException e) {
