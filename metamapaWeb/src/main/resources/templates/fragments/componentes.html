@@ -13,10 +13,20 @@
             <a th:href="@{/colecciones}">Navegar sucesos</a>
             <a th:if="${esAdmin}" th:href="@{/admin/colecciones}">Panel de Control</a>
             <a th:if="${#authorization.expression('isAuthenticated()')}"
-               th:href="@{/perfil}"
-               class="avatar"
-               aria-label="Perfil">
-                <i class="fa-regular fa-user"></i>
+               href="#"
+               class="login-link-container"
+               aria-label="Perfil"
+               onclick="abrirSidebarPerfil(); return false;">
+                <div class="avatar">
+                    <img th:if="${#authentication.principal.attributes['picture'] != null}"
+                         th:src="${#authentication.principal.attributes['picture']}"
+                         class="avatar-img"
+                         alt="Perfil"
+                         style="width:36px;height:36px;border-radius:50%;object-fit:cover;">
+                    <i th:if="${#authentication.principal.attributes['picture'] == null}"
+                       class="fa-regular fa-user"></i>
+                </div>
+                <span class="login-text">Mi Perfil</span>
             </a>
 
             <a th:if="${#authorization.expression('!isAuthenticated()')}"
