@@ -7,6 +7,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+
 }
 
 main {
@@ -17,6 +18,27 @@ main {
    FIN DE REGLAS GLOBALES
    ======================================= */
 
+.login-link-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  gap: 5px;
+}
+
+
+.login-link-container .avatar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+}
 
 /* ====== Header / Nav ====== */
 .site-header {

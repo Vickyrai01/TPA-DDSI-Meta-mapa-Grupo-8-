@@ -6,19 +6,44 @@
 
 <header class="site-header" id="top" th:fragment="navbar">
     <div class="container nav">
-        <a class="brand" th:href="@{/}">
-            <img class="brand-logo" th:src="@{/img/logoNAVBAR.png}" alt="Logo MetaMapa">
-        </a>
-
         <nav class="menu">
             <a th:href="@{/}">Inicio</a>
             <a th:href="@{/reportar}">Reportar suceso</a>
             <a th:href="@{/mapa}">Ver mapa</a>
             <a th:href="@{/colecciones}">Navegar sucesos</a>
             <a th:if="${esAdmin}" th:href="@{/admin/colecciones}">Panel de Control</a>
-            <a th:if="${#authorization.expression('isAuthenticated()')}" th:href="@{/perfil}" class="avatar" aria-label="Perfil"><i class="fa-regular fa-user"></i></a>
-            <a th:if="${#authorization.expression('!isAuthenticated()')}" th:href="@{/oauth2/authorization/google}" class="avatar" aria-label="Perfil"><i class="fa-regular fa-user"></i></a>
-        </nav>
+            <a th:if="${#authorization.expression('isAuthenticated()')}"
+               href="#"
+               class="login-link-container"
+               aria-label="Perfil"
+               onclick="abrirSidebarPerfil(); return false;">
+                <div class="avatar">
+                    <img th:if="${#authentication.principal.attributes['picture'] != null}"
+                         th:src="${#authentication.principal.attributes['picture']}"
+                         class="avatar-img"
+                         alt="Perfil"
+                         style="width:36px;height:36px;border-radius:50%;object-fit:cover;">
+                    <i th:if="${#authentication.principal.attributes['picture'] == null}"
+                       class="fa-regular fa-user"></i>
+                </div>
+                <span class="login-text">Mi Perfil</span>
+            </a>
+
+            <a th:if="${#authorization.expression('!isAuthenticated()')}"
+               th:href="@{/oauth2/authorization/google}"
+               class="login-link-container"
+               aria-label="Iniciar Sesión">
+
+                <div class="avatar">
+                    <i class="fa-regular fa-user"></i>
+                </div>
+
+                <span class="login-text">Iniciar Sesión</span>
+            </a>        </nav>
+
+        <a class="brand" th:href="@{/}">
+            <img class="brand-logo" th:src="@{/img/logoNAVBAR.png}" alt="Logo MetaMapa">
+        </a>
 
         <button class="burger" aria-label="Abrir menú"><span></span><span></span><span></span></button>
     </div>
