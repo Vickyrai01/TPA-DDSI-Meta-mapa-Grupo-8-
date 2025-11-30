@@ -1,4 +1,4 @@
-package servicioEstadisticas.model;
+package servicioEstadisticas.model.entities;
 
 import javax.persistence.*;
 

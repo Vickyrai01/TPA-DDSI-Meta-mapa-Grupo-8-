@@ -1,6 +1,6 @@
 package servicioEstadisticas.csv;
 
-import servicioEstadisticas.model.GeneradorTodasEstadisticas;
+import servicioEstadisticas.GeneradorTodasEstadisticas;
 
 import java.io.IOException;
 

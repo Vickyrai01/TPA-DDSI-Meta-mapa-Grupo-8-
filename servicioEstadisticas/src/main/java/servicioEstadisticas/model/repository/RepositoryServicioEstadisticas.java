@@ -1,10 +1,8 @@
-package servicioEstadisticas.repository;
+package servicioEstadisticas.model.repository;
 
-import servicioEstadisticas.model.Hecho;
-import servicioEstadisticas.model.Coordenadas;
-import servicioEstadisticas.model.SolicitudSpam;
+import servicioEstadisticas.model.entities.Hecho;
+import servicioEstadisticas.model.entities.SolicitudSpam;
 import utils.DBUtils;
-import utils.GeocodingUtils;
 
 import javax.persistence.EntityManager;
 import java.util.Collections;
@@ -63,18 +61,13 @@ public static List<Map<String, Object>> provinciaConMasHechos() {
         List<Object[]> coordenadas = em.createQuery(jpql, Object[].class)
                 .getResultList();
 
-        System.out.println("Número de coordenadas encontradas: " + coordenadas.size());
-
         Map<String, Long> provinciaCount = new HashMap<>();
 
         for (Object[] coord : coordenadas) {
             double lat = (Double) coord[0];
             double lon = (Double) coord[1];
 
-            System.out.println("Procesando coordenadas: lat=" + lat + ", lon=" + lon);
-
             String provincia = utils.GeocodingUtils.obtenerProvincia(lat, lon);
-            System.out.println("Provincia obtenida: " + provincia);
 
             if (provincia != null) {
                 provinciaCount.merge(provincia, 1L, Long::sum);

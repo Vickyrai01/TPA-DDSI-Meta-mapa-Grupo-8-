@@ -1,4 +1,4 @@
-package servicioEstadisticas.model;
+package servicioEstadisticas.DTO;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 

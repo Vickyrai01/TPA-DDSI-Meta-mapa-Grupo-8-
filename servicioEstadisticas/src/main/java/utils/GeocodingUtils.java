@@ -22,16 +22,13 @@ public class GeocodingUtils {
                 HttpGet request = new HttpGet(url);
                 request.setHeader("User-Agent", "MetamapaApp/1.0");
 
-                System.out.println("Consultando URL: " + url);
                 String response = EntityUtils.toString(client.execute(request).getEntity());
-                System.out.println("Respuesta completa: " + response);
 
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode root = mapper.readTree(response);
 
                 JsonNode address = root.get("address");
                 if (address != null) {
-                    System.out.println("Objeto address completo: " + address.toString());
 
                     String[] posiblesCampos = {"state", "state_district", "province", "county"};
 
@@ -47,7 +44,6 @@ public class GeocodingUtils {
                 return "Desconocida";
             }
         } catch (Exception e) {
-            System.out.println("Error al consultar la API: " + e.getMessage());
             e.printStackTrace();
             return "Desconocida";
         }
