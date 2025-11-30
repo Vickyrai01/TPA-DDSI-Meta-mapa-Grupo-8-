@@ -5,8 +5,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.*;
 import seeders.RepositoryServicioEstadisticasSeeder;
-import servicioEstadisticas.model.*;
-import servicioEstadisticas.repository.RepositoryServicioEstadisticas;
+import servicioEstadisticas.DTO.HechoDTO;
+import servicioEstadisticas.GeneradorTodasEstadisticas;
+import servicioEstadisticas.model.entities.Hecho;
+import servicioEstadisticas.model.entities.SolicitudSpam;
+import servicioEstadisticas.model.repository.RepositoryServicioEstadisticas;
+import utils.HechoMapperUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -43,7 +47,7 @@ public class Application {
         }
         final Hecho hechoABD;
         try {
-            hechoABD = HechoMapper.toEntity(req);
+            hechoABD = HechoMapperUtils.toEntity(req);
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }

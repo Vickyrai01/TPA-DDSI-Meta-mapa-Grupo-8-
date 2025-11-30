@@ -1,4 +1,4 @@
-package servicioEstadisticas.model;
+package servicioEstadisticas.model.entities;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;

@@ -3,7 +3,6 @@ package servicioEstadisticas;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import seeders.RepositoryServicioEstadisticasSeeder;
-import servicioEstadisticas.model.GeneradorTodasEstadisticas;
 
 import java.util.List;
 import java.util.Map;

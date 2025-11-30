@@ -1,14 +1,6 @@
 package seeders;
 
-import servicioEstadisticas.model.Hecho;
-import servicioEstadisticas.model.SolicitudSpam;
-import servicioEstadisticas.repository.RepositoryServicioEstadisticas;
-
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.time.LocalDateTime;
+import servicioEstadisticas.model.repository.RepositoryServicioEstadisticas;
 
 public class RepositoryServicioEstadisticasSeeder {
 

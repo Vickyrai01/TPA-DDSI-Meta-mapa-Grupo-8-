@@ -1,5 +1,5 @@
-package servicioEstadisticas.model;
-import servicioEstadisticas.repository.RepositoryServicioEstadisticas;
+package servicioEstadisticas;
+import servicioEstadisticas.model.repository.RepositoryServicioEstadisticas;
 
 import java.util.List;
 import java.util.Map;
@@ -29,14 +29,19 @@ public class GeneradorTodasEstadisticas {
         this.cantSolicitudesEliminacion = RepositoryServicioEstadisticas.cantidadSolicitudesEliminacion();
     }
 
-    public List<Map<String, Object>> getCategoriaMasReportada() {
-        return categoriaMasReportada;
-    }
-
     public List<Map<String, Object>> getProvinciaConMasHechos() {
         return RepositoryServicioEstadisticas.provinciaConMasHechos();
-    }
+    }// Cambiar al return del atributo despues
 
+    /*
+    public List<Map<String, Object>> getProvinciaConMasHechos() {return provinciaConMasHechos;}
+    */
+
+    public List<Map<String, Object>> getCategoriaMasReportada() { return RepositoryServicioEstadisticas.categoriaMasReportada();}
+
+    /*
+     public List<Map<String, Object>> getCategoriaMasReportada() { return categoriaMasReportada;}
+    */
     public Map<String, Object> getCantSolicitudesEliminacion() {
         return cantSolicitudesEliminacion;
     }
