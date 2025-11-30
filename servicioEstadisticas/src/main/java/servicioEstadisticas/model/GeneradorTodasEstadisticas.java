@@ -34,7 +34,7 @@ public class GeneradorTodasEstadisticas {
     }
 
     public List<Map<String, Object>> getProvinciaConMasHechos() {
-        return provinciaConMasHechos;
+        return RepositoryServicioEstadisticas.provinciaConMasHechos();
     }
 
     public Map<String, Object> getCantSolicitudesEliminacion() {
