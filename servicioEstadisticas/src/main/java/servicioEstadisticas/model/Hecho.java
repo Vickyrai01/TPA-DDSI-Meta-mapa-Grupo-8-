@@ -21,12 +21,17 @@ public class Hecho {
     @Column(name= "provincia")
     private String provincia;
 
+    @OneToOne
+    @JoinColumn(name = "id_ubicacion")
+    private Coordenadas coordenadas;
 
-    public Hecho(String id, String categoria, LocalDateTime fecha_suceso, String provincia) {
+
+    public Hecho(String id, String categoria, LocalDateTime fecha_suceso, String provincia, Coordenadas coordenadas) {
         this.hash = id;
         this.categoria = categoria;
         this.fecha_suceso = fecha_suceso;
         this.provincia = provincia;
+        this.coordenadas = coordenadas;
     }
 
     public Hecho() {}
@@ -62,5 +67,9 @@ public class Hecho {
     public void setProvincia(String provincia) {
         this.provincia = provincia;
     }
+
+    public Coordenadas getCoordenadas() {return coordenadas;}
+
+    public void setCoordenadas(Coordenadas coordenadas) {this.coordenadas = coordenadas;}
 
 }

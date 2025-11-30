@@ -1,8 +1,11 @@
 package servicioEstadisticas.repository;
 
 import servicioEstadisticas.model.Hecho;
+import servicioEstadisticas.model.Coordenadas;
 import servicioEstadisticas.model.SolicitudSpam;
 import utils.DBUtils;
+import utils.GeocodingUtils;
+
 import javax.persistence.EntityManager;
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,7 +26,7 @@ public class RepositoryServicioEstadisticas {
         }
         return instance;
     }
-
+/*
     public static List<Map<String, Object>> provinciaConMasHechos() {
         EntityManager em = DBUtils.getEntityManager();
         try {
@@ -49,6 +52,55 @@ public class RepositoryServicioEstadisticas {
             em.close();
         }
     }
+*/
+public static List<Map<String, Object>> provinciaConMasHechos() {
+    EntityManager em = DBUtils.getEntityManager();
+    try {
+        String jpql = "SELECT c.latitud, c.longitud " +
+                "FROM Hecho h " +
+                "INNER JOIN h.coordenadas c";
+
+        List<Object[]> coordenadas = em.createQuery(jpql, Object[].class)
+                .getResultList();
+
+        System.out.println("Número de coordenadas encontradas: " + coordenadas.size());
+
+        Map<String, Long> provinciaCount = new HashMap<>();
+
+        for (Object[] coord : coordenadas) {
+            double lat = (Double) coord[0];
+            double lon = (Double) coord[1];
+
+            System.out.println("Procesando coordenadas: lat=" + lat + ", lon=" + lon);
+
+            String provincia = utils.GeocodingUtils.obtenerProvincia(lat, lon);
+            System.out.println("Provincia obtenida: " + provincia);
+
+            if (provincia != null) {
+                provinciaCount.merge(provincia, 1L, Long::sum);
+            }
+        }
+
+        return provinciaCount.entrySet().stream()
+                .map(entry -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("provincia", entry.getKey());
+                    map.put("cantidad", entry.getValue());
+                    return map;
+                })
+                .sorted((m1, m2) -> Long.compare(
+                        (Long) m2.get("cantidad"),
+                        (Long) m1.get("cantidad")
+                ))
+                .collect(Collectors.toList());
+    } catch (Exception e) {
+        e.printStackTrace();
+        return Collections.emptyList();
+    } finally {
+        em.close();
+    }
+}
+
 
     public static List<Map<String, Object>> categoriaMasReportada() {
         EntityManager em = DBUtils.getEntityManager();

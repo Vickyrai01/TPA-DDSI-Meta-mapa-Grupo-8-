@@ -2,7 +2,7 @@ package core.models.servicioEstadistica;
 
 import java.time.LocalDateTime;
 
-public class DTOHechoAgregado {
+public class    DTOHechoAgregado {
     String hash;
     String provincia;
     String categoria;

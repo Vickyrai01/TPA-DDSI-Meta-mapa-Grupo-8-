@@ -33,6 +33,7 @@ public class RepositoryServicioEstadisticasSeeder {
 
     public void cargarHechos(){
 
+        /*
         repositoryServicioEstadisticas.addHecho(new Hecho("INC001", "Incendio forestal", LocalDateTime.now().minusDays(5).withHour(14), "Misiones"));
         repositoryServicioEstadisticas.addHecho(new Hecho("INC002", "Incendio forestal", LocalDateTime.now().minusDays(3).withHour(15), "Misiones"));
         repositoryServicioEstadisticas.addHecho(new Hecho("INC003", "Incendio forestal", LocalDateTime.now().minusDays(2).withHour(14), "Córdoba"));
@@ -70,6 +71,8 @@ public class RepositoryServicioEstadisticasSeeder {
         repositoryServicioEstadisticas.addSolicitud(new SolicitudSpam(true ));
         repositoryServicioEstadisticas.addSolicitud(new SolicitudSpam(true));
 
+
+         */
 
     }
 

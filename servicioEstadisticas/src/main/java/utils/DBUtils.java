@@ -9,7 +9,7 @@ public class DBUtils {
     private static final EntityManagerFactory factory;
 
     static {
-        factory = Persistence.createEntityManagerFactory("servicioEstadisticas");
+        factory = Persistence.createEntityManagerFactory("core");
     }
 
     public static EntityManager getEntityManager() {

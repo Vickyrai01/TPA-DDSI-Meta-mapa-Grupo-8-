@@ -26,8 +26,8 @@ public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
         RepositoryServicioEstadisticasSeeder repoSeeder = RepositoryServicioEstadisticasSeeder.getInstance();
-        repoSeeder.cargarHechos();
-        generadorTodasEstadisticas.actualizarEstadisticas();
+        //repoSeeder.cargarHechos();
+        //generadorTodasEstadisticas.actualizarEstadisticas();
     }
 
     @GetMapping("/health")
