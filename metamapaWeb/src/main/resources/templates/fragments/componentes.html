@@ -6,6 +6,9 @@
 
 <header class="site-header" id="top" th:fragment="navbar">
     <div class="container nav">
+        <a class="brand" th:href="@{/}">
+            <img class="brand-logo" th:src="@{/img/logoNAVBAR.png}" alt="Logo MetaMapa">
+        </a>
         <nav class="menu">
             <a th:href="@{/}">Inicio</a>
             <a th:href="@{/reportar}">Reportar suceso</a>
@@ -21,8 +24,7 @@
                     <img th:if="${#authentication.principal.attributes['picture'] != null}"
                          th:src="${#authentication.principal.attributes['picture']}"
                          class="avatar-img"
-                         alt="Perfil"
-                         style="width:36px;height:36px;border-radius:50%;object-fit:cover;">
+                         alt="Perfil">
                     <i th:if="${#authentication.principal.attributes['picture'] == null}"
                        class="fa-regular fa-user"></i>
                 </div>
@@ -39,11 +41,8 @@
                 </div>
 
                 <span class="login-text">Iniciar Sesión</span>
-            </a>        </nav>
-
-        <a class="brand" th:href="@{/}">
-            <img class="brand-logo" th:src="@{/img/logoNAVBAR.png}" alt="Logo MetaMapa">
-        </a>
+            </a>
+        </nav>
 
         <button class="burger" aria-label="Abrir menú"><span></span><span></span><span></span></button>
     </div>

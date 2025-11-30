@@ -2,9 +2,13 @@
     <button onclick="cerrarSidebarPerfil()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:2rem;cursor:pointer">&times;</button>
     <aside class="sidebar-perfil">
         <div class="perfil-header">
-            <img th:src="${foto}" alt="Foto de perfil" class="perfil-foto" style="width:100px;border-radius:50%;">
-            <h2 th:text="${nombre + ' ' + (apellido != null ? apellido : '')}" style="font-weight:600;font-size:2rem;margin-bottom:0.5rem;">Nombre Apellido</h2>
-            <p th:text="${email}">email</p>
+            <img th:if="${#authentication.principal.attributes['picture'] != null}"
+                 th:src="${#authentication.principal.attributes['picture']}"
+                 alt="Foto de perfil" class="perfil-foto" style="width:100px;border-radius:50%;">
+            <i th:if="${#authentication.principal.attributes['picture'] == null}"
+               class="fa-regular fa-user perfil-foto" style="font-size:100px;"></i>
+            <h2 th:text="${#authentication.principal.attributes['name']}" style="font-weight:600;font-size:2rem;margin-bottom:0.5rem;">Nombre Apellido</h2>
+            <p th:text="${#authentication.principal.attributes['email']}">email</p>
         </div>
         <div class="perfil-datos">
             <p th:if="${edad}" style="margin-bottom:0.5rem;">Edad: <span th:text="${edad}">Edad</span></p>
