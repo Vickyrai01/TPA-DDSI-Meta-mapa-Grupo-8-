@@ -54,13 +54,14 @@
                         </div>
 
                         <div class="card-body">
-                            <div class="card-field">
-                                <strong>Link:</strong>
-                                <p>
-                                    <a th:href="${f.link()}" target="_blank" rel="noopener noreferrer"
-                                       th:text="${f.link()}">*LINK*</a>
-                                </p>
-                            </div>
+                            <div class="card-field" th:if="${f.link() != null}">
+                            <strong>Link:</strong>
+                            <p>
+                                <a th:href="${f.link()}" target="_blank" rel="noopener noreferrer"
+                                   th:text="${f.link()}"></a>
+                            </p>
+                        </div>
+
 
                             <div class="card-field">
                                 <strong>Tipo de fuente:</strong>
