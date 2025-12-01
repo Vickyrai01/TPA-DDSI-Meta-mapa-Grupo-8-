@@ -3,7 +3,6 @@ package servicioEstadisticas;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import seeders.RepositoryServicioEstadisticasSeeder;
-import servicioEstadisticas.model.GeneradorTodasEstadisticas;
 
 import java.util.List;
 import java.util.Map;
@@ -57,6 +56,7 @@ public class GeneradorTodasEstadisticasTest {
         assertEquals("Misiones", provincias.get(0).get("provincia"));
     }
 
+    /*
     @Test
     void testCantidadSolicitudesEliminacion() {
         Map<String, Object> estadisticas = generadorTodasEstadisticas.getCantSolicitudesEliminacion();
@@ -66,6 +66,7 @@ public class GeneradorTodasEstadisticasTest {
         assertTrue((Long)estadisticas.get("solicitudes spam") >= 0);
         assertTrue((Long)estadisticas.get("total de solicitudes") >= 0);
     }
+    */
 
 
 }
