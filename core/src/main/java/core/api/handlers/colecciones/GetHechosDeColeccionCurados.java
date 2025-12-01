@@ -26,9 +26,9 @@ public class GetHechosDeColeccionCurados implements Handler {
         String modoVisualizacion = context.pathParam("modoVisualizacion");
 
         // ─────────────────────────────────────────────
-        // 1) IRRESTRICTA → delega al handler que ya funciona
+        // 1) IRRESTRICTO → delega al handler que ya funciona
         // ─────────────────────────────────────────────
-        if ("IRRESTRICTA".equalsIgnoreCase(modoVisualizacion)) {
+        if ("IRRESTRICTO".equalsIgnoreCase(modoVisualizacion)) {
             handlerIrrestricta.handle(context);
             return;
         }
@@ -48,7 +48,7 @@ public class GetHechosDeColeccionCurados implements Handler {
             Coleccion coleccion = opt.get();
             //List<Hecho> hechosFiltrados = FiltradorColecciones.getInstance().filtrarColeccion(coleccion, criterios);
             if(coleccion.getAlgoritmoConsenso() == null){
-                context.status(404D).result("La coleccion no tiene algoritmo de consenso definido.");
+                context.status(400).result("La coleccion no tiene algoritmo de consenso definido.");
                 return;
             }
 

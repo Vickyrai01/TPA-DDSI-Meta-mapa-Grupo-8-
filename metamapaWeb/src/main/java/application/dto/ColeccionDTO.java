@@ -8,7 +8,7 @@ public record ColeccionDTO(
         Object hechos,
         Object hechosVisibles,
         String identificadorHandle,
-        String fuentes,
+        Object fuentes,
         Integer cantidadHechos,
         String algoritmoConsenso,
         String modoDeNavegacion
