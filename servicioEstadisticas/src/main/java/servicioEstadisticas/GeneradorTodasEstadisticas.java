@@ -29,8 +29,6 @@ public class GeneradorTodasEstadisticas {
         this.cantSolicitudesEliminacion = RepositoryServicioEstadisticas.cantidadSolicitudesEliminacion();
     }
 
-
-
     public List<Map<String, Object>> getProvinciaConMasHechos() {return provinciaConMasHechos;}
 
      public List<Map<String, Object>> getCategoriaMasReportada() { return categoriaMasReportada;}
