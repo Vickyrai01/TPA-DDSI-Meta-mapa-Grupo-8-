@@ -18,24 +18,24 @@
             <a th:each="c : ${listaDeColecciones}"
                th:href="@{/colecciones/{id}(id=${c.id()})}"
                class="collection-item">
+
                 <div class="collection-text">
                     <h3 th:text="${c.titulo()}">Título</h3>
-                    <p th:text="${c.descripcionColeccion()}">Descripción</p>
-                    <p>
-                        Navegación
-                        <span th:text="${c.modoDeNavegacion().toLowerCase()}"></span>
+                    <p class="collection-description"
+                       th:text="${c.descripcionColeccion()}">
+                        Descripción
                     </p>
-                    <p th:if="${c.modoDeNavegacion()} == 'IRRESTRICTA'">
-                        <span th:text="${c.cantidadHechos()}">0</span>
-                         hechos
+                    <!-- Línea meta: Navegación xxx • N hechos -->
+                    <p class="collection-meta">
+                        <!-- Navegación curada / irrestricta -->
+                        <span th:text="|Navegación ${#strings.toLowerCase(c.modoDeNavegacion())}|">Navegación irrestricta</span>
+                        <span> • </span>
+                        <!-- 3 hechos / 0 hechos, según el modo -->
+                        <span th:text="${ (c.modoDeNavegacion() == 'IRRESTRICTA'
+                                   ? c.cantidadHechos()
+                                   : c.cantidadHechosVisibles())
+                                   + ' hechos' }">0 hechos</span>
                     </p>
-                    <p th:if="${c.modoDeNavegacion()} == 'CURADA'">
-                        <span th:text="${c.cantidadHechosVisibles()}">0</span>
-                         hechos
-                    </p>
-                </div>
-                <div class="collection-image">
-                    <img th:src="@{/img/incendio1.jpg}" alt="Imagen colección" class="brand-logo">
                 </div>
             </a>
         </div>
