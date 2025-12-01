@@ -20,22 +20,28 @@ public class PostFuenteHandler implements Handler {
 
 FuentesRepository fuentesRepository = FuentesRepository.getInstance();
 
-@Override
+    @Override
     public void handle(@NotNull Context context) throws Exception {
+        System.out.println("Body crudo: " + context.body());
+
         FuenteDTO dto = context.bodyAsClass(FuenteDTO.class);
-        System.out.println("Creando fuente: " + context.body());
+        System.out.println("DTO.strategyTipoConexion = " + dto.getStrategyTipoConexion());
 
-    StrategyTipoConexion strategyTipoConexion = strategyStringToStrategy(dto.getStrategyTipoConexion());
-    TipoFuente tipoFuente = fromString(dto.getTipoFuente());
+        StrategyTipoConexion strategyTipoConexion = strategyStringToStrategy(dto.getStrategyTipoConexion());
+        System.out.println("Strategy creada = " + strategyTipoConexion
+                + " (tipo: " + (strategyTipoConexion != null ? strategyTipoConexion.getClass().getSimpleName() : "null") + ")");
 
-        Fuente fuenteDTO = new Fuente(
+        TipoFuente tipoFuente = fromString(dto.getTipoFuente());
+
+        Fuente fuente = new Fuente(
                 dto.getNombre(),
                 dto.getLink(),
                 tipoFuente,
                 strategyTipoConexion
         );
 
-        fuentesRepository.add(fuenteDTO);
+        fuentesRepository.add(fuente);
+
         context.status(201);
     }
 
@@ -46,18 +52,22 @@ FuentesRepository fuentesRepository = FuentesRepository.getInstance();
         try {
             return TipoFuente.valueOf(value.trim().toUpperCase());
         } catch (IllegalArgumentException e) {
-            // Podrías registrar un warning aquí si querés
             return null;
         }
     }
 
     public StrategyTipoConexion strategyStringToStrategy(String strategy) {
-        if (strategy == "API REST") {
-            StrategyTipoConexion strategyTipoConexion = new StrategyAPIREST();
+        if(strategy == null)
+        { System.out.println("LLEGA NULL");}
+        if ("API REST".equalsIgnoreCase(strategy)) {
+            return new StrategyAPIREST();
         }
-    if (strategy == "CSV"){
-        StrategyTipoConexion strategyTipoConexion = new StrategyCSV();
+
+        if ("CSV".equalsIgnoreCase(strategy)) {
+            return new StrategyCSV();
+        }
+
+        return null;
     }
-    return null;
-    }
+
 }
