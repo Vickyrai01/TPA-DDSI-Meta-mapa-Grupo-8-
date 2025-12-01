@@ -81,6 +81,7 @@ public class ColeccionesRepositorySeeder {
         coleccion1.cambiarAlgoritmoConsenso(TipoConsenso.ABSOLUTO);
         Coleccion coleccion2 = new Coleccion(2, "Choques", "Todos los choques", criterios, fuentes2, coleccionHechos2,hechosVisibles2, null);
         Coleccion coleccion3 = new Coleccion(3, "Sin victimas fatales", "Accidentes de cualquier tipo sin accidentes", criterios, fuentes3, coleccionHechos3,hechosVisibles3, null);
+        coleccion3.cambiarAlgoritmoConsenso(TipoConsenso.MAYORIA_SIMPLE);
 
 
         // Guardar colecciones

@@ -6,7 +6,7 @@ import core.api.DTO.ColeccionDTO;
 import core.api.DTO.FuenteDTO;
 import core.api.DTO.HechoResumenDTO;
 import core.api.DTO.criterio.CriterioDTO;
-import core.models.entities.colecciones.Coleccion;
+import core.models.entities.colecciones.*;
 import core.models.entities.colecciones.criterios.Criterio;
 import core.models.entities.fuentes.Fuente;
 import core.models.entities.hecho.Etiqueta;
@@ -136,6 +136,39 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             }
         }
     }
+
+    public Optional<Coleccion> findByIdFetchHechosVisiblesYContribuyente(Integer idColeccion) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            var q = em.createQuery("""
+                    SELECT DISTINCT c
+                    FROM coleccion c
+                    LEFT JOIN FETCH c.hechosVisibles hv
+                    LEFT JOIN FETCH hv.contribuyente
+                    WHERE c.id = :id
+                """, Coleccion.class)
+                    .setParameter("id", idColeccion)
+                    .getResultStream()
+                    .findFirst();
+
+            q.ifPresent(c -> {
+                // Inicializo etiquetas de los hechos visibles
+                for (Hecho hv : c.getHechosVisibles()) {
+                    Hibernate.initialize(hv.getEtiquetas());
+                }
+
+                // Inicializo algoritmoConsenso si existe
+                if (c.getAlgoritmoConsenso() != null) {
+                    c.getAlgoritmoConsenso().toString(); // con tocarlo basta
+                }
+            });
+
+            return q;
+        } finally {
+            try { em.close(); } catch (Exception ignore) {}
+        }
+    }
+
 
     public Optional<Coleccion> findByIdFetchFuentes(Integer idColeccion) {
         EntityManager em = DBUtils.getEntityManager();
@@ -292,14 +325,17 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
     public List<ColeccionDTO> listarColeccionesDTOConCantidadHechos() {
         EntityManager em = DBUtils.getEntityManager();
         try {
-            //Traer datos de TODAS las colecciones
             List<Object[]> bases = em.createQuery("""
-            SELECT c.id, c.titulo, c.descripcionColeccion, c.identificadorHandle
+            SELECT c.id,
+                   c.titulo,
+                   c.descripcionColeccion,
+                   c.identificadorHandle,
+                   c.modoDeNavegacion,
+                   c.algoritmoConsenso
             FROM coleccion c
             ORDER BY c.id DESC
         """, Object[].class).getResultList();
 
-            //Traer conteo de hechos por colección
             List<Object[]> rows = em.createQuery("""
             SELECT c.id, COUNT(h)
             FROM coleccion c
@@ -312,20 +348,48 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                 conteos.put((Integer) r[0], (Long) r[1]);
             }
 
-            //Armar DTO
             List<ColeccionDTO> dtos = new ArrayList<>(bases.size());
             for (Object[] b : bases) {
-                Integer id = (Integer) b[0];
-                String  titulo = (String) b[1];
-                String  descripcion = (String) b[2];
-                String  handle = (String) b[3];
+                Integer id          = (Integer) b[0];
+                String  titulo      = (String)  b[1];
+                String  descripcion = (String)  b[2];
+                String  handle      = (String)  b[3];
+
+                // 👉 tipos reales que vienen del JPQL
+                ModoDeNavegacion modo          = (ModoDeNavegacion) b[4];      // puede ser null
+                AlgoritmoConsenso algoritmoObj = (AlgoritmoConsenso) b[5];     // puede ser null
+
+                // pasar a String para el DTO
+                String modoStr = (modo != null) ? modo.name() : null;
+
+                String algoritmoStr = null;
+                if (algoritmoObj != null) {
+                    // Elegí cómo querés representarlo en string.
+                    // Opción A: nombre de la clase (StrategyAbsoluta, etc.)
+                    // algoritmoStr = algoritmoObj.getClass().getSimpleName();
+
+                    // Opción B: mapear a etiquetas “lindas”:
+                    if (algoritmoObj instanceof StrategyAbsoluta) {
+                        algoritmoStr = "ABSOLUTO";
+                    } else if (algoritmoObj instanceof StrategyMayoriaSimple) {
+                        algoritmoStr = "MAYORIA_SIMPLE";
+                    } else if (algoritmoObj instanceof StrategyMultiplesMenciones) {
+                        algoritmoStr = "MULTIPLES_MENCIONES";
+                    } else {
+                        algoritmoStr = algoritmoObj.getClass().getSimpleName();
+                    }
+                }
 
                 ColeccionDTO dto = new ColeccionDTO();
                 dto.setId(id);
                 dto.setTitulo(titulo);
                 dto.setDescripcionColeccion(descripcion);
                 dto.setIdentificadorHandle(handle);
-                dto.setCantidadHechos(Math.toIntExact(conteos.getOrDefault(id, 0L)));
+                dto.setModoDeNavegacion(modoStr);
+                dto.setAlgoritmoConsenso(algoritmoStr);
+                dto.setCantidadHechos(
+                        Math.toIntExact(conteos.getOrDefault(id, 0L))
+                );
 
                 dtos.add(dto);
             }
@@ -335,6 +399,7 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             try { em.close(); } catch (Exception ignore) {}
         }
     }
+
 
     public List<Hecho> getHechosConUbicacion(Integer idColeccion) {
         EntityManager em = DBUtils.getEntityManager();
@@ -384,6 +449,24 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
         } catch (RuntimeException ex) {
             DBUtils.rollback(em);
             throw ex;
+        } finally {
+            try { em.close(); } catch (Exception ignore) {}
+        }
+    }
+    public List<Hecho> obtenerHechosVisiblesDeColeccion(Integer idColeccion) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            Coleccion coleccion = em.find(Coleccion.class, idColeccion);
+            if (coleccion == null) {
+                return List.of();
+            }
+
+            // Fuerzo la inicialización dentro de la sesión
+            List<Hecho> visibles = coleccion.getHechosVisibles();
+            visibles.size(); // toca la colección para inicializarla
+
+            // Devuelvo una lista "normal", desconectada de Hibernate
+            return new ArrayList<>(visibles);
         } finally {
             try { em.close(); } catch (Exception ignore) {}
         }

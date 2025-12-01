@@ -100,7 +100,7 @@ public class Coleccion {
     public ModoDeNavegacion modoDeNavegacion;
 
     @Convert(converter = AlgoritmoConsensoConverter.class)
-    @Column(name = "strategy_tipo_conexion")
+    @Column(name = "algoritmoConsenso")
     public AlgoritmoConsenso algoritmoConsenso = null;
     public void cambiarAlgoritmoConsenso(TipoConsenso algoritmoConsenso){
       switch (algoritmoConsenso){
@@ -111,12 +111,6 @@ public class Coleccion {
     }
     public AlgoritmoConsenso getAlgoritmoConsenso() {return algoritmoConsenso;}
     public void setAlgoritmoConsenso(AlgoritmoConsenso algoritmoConsenso) {this.algoritmoConsenso = algoritmoConsenso;}
-
-
-
-    @Column(name = "tipoConsenso")
-    public TipoConsenso tipoConsenso;
-
 
    public void actualizarColeccionVisible(){
 

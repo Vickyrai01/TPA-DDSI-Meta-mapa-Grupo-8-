@@ -31,4 +31,23 @@ public class ColeccionesController {
         model.addAttribute("hechos", coleccionService.getHechosDeColeccion(id));
         return "verColeccion/verColeccion"; // templates/colecciones/detalle.html
     }
+
+    @GetMapping("/colecciones/{id}/{modoDeNavegacion}/hechos")
+    public String verHechosPorConsenso(
+            @PathVariable("id") Integer id,
+            @PathVariable("tipoConsenso") String tipoConsenso, // <--- CAPTURAMOS EL TIPO
+            Model model) {
+
+        // 1. Buscamos la info básica de la colección
+        model.addAttribute("coleccion", coleccionService.getById(id));
+
+        // 2. Buscamos los hechos FILTRADOS por el tipo de consenso usando el servicio corregido
+        model.addAttribute("hechos", coleccionService.getHechosVisibles(id, tipoConsenso));
+
+        // (Opcional) Es útil pasar el tipo a la vista por si quieres mostrar un título como "Viendo por Votación"
+        model.addAttribute("tipoConsensoActual", tipoConsenso);
+
+        return "verColeccion/verColeccion";
+    }
+
 }

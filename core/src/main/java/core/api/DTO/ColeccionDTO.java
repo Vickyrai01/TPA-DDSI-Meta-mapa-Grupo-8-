@@ -8,7 +8,7 @@ public class ColeccionDTO {
 
     public ColeccionDTO(){}
 
-    public ColeccionDTO(int id, String titulo, String descripcionColeccion, List<Criterio> listaCriterio, List<Integer> fuentes, List<Integer> hechos, String identificadorHandle) {
+    public ColeccionDTO(Integer id, String titulo, String descripcionColeccion, List<Criterio> listaCriterio, List<Integer> fuentes, List<Integer> hechos, String identificadorHandle) {
         this.id = id;
         this.titulo = titulo;
         this.descripcionColeccion = descripcionColeccion;
@@ -18,7 +18,7 @@ public class ColeccionDTO {
         this.identificadorHandle = identificadorHandle;
     }
 
-    public ColeccionDTO(int id, String titulo, String descripcionColeccion, List<Criterio> listaCriterio, List<Integer> fuentes, List<Integer> hechos, String identificadorHandle, Integer cantidadHechos) {
+    public ColeccionDTO(Integer id, String titulo, String descripcionColeccion, List<Criterio> listaCriterio, List<Integer> fuentes, List<Integer> hechos, String identificadorHandle, Integer cantidadHechos) {
         this.id = id;
         this.titulo = titulo;
         this.descripcionColeccion = descripcionColeccion;
@@ -29,11 +29,11 @@ public class ColeccionDTO {
         this.cantidadHechos = cantidadHechos;
     }
 
-    private int id;
-    public int getId() {
+    private Integer id;
+    public Integer getId() {
         return id;
     }
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -94,5 +94,21 @@ public class ColeccionDTO {
     }
 
     private Integer cantidadHechos;
+
+    private String modoDeNavegacion;
+    public String getModoDeNavegacion() {
+        return modoDeNavegacion;
+    }
+    public void setModoDeNavegacion(String modoDeNavegacion) {
+        this.modoDeNavegacion = modoDeNavegacion;
+    }
+
+    private String algoritmoConsenso;
+    public String getAlgoritmoConsenso() {
+        return algoritmoConsenso;
+    }
+    public void setAlgoritmoConsenso(String algoritmoConsenso) {
+        this.algoritmoConsenso = algoritmoConsenso;
+    }
 
 }
