@@ -39,7 +39,19 @@ public class ColeccionService {
                 .block();
     }
 
-
+    public List<HechoDTO> getHechosVisibles(Integer id, String modoDeNavegacion) {
+        return metamapaApi.get()
+                .uri(uri -> uri.path("/colecciones/{id}/{modoDeNavegacion}/hechos")
+                        .build(id, modoDeNavegacion))
+                .retrieve()
+                .bodyToFlux(HechoDTO.class)
+                .filter(h -> {
+                    String estado = h.estado();
+                    return estado == null || !estado.trim().equals("INACTIVO");
+                })
+                .collectList()
+                .block();
+    }
 
     public ColeccionDTO getById(Integer id){
         return metamapaApi.get()

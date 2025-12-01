@@ -6,7 +6,10 @@ public record ColeccionDTO(
         String descripcionColeccion,
         Object criterioDePertenencia,
         Object hechos,
+        Object hechosVisibles,
         String identificadorHandle,
-        Object fuentes,
-        Integer cantidadHechos
+        String fuentes,
+        Integer cantidadHechos,
+        String algoritmoConsenso,
+        String modoDeNavegacion
 ) {}
