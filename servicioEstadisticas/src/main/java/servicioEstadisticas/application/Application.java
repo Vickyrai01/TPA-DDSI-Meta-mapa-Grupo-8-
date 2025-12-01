@@ -39,33 +39,6 @@ public class Application {
         return "servicio de estadisticas ACTIVA";
     }
 
-    @PostMapping("/hecho")
-    public ResponseEntity<String> agregarHecho(@RequestBody HechoDTO req) {
-        System.out.println("Hecho: " + req.toString());
-        if (req.getHash() == null || req.getCategoria() == null || req.getProvincia() == null || req.getFecha_suceso() == null) {
-            return ResponseEntity.badRequest().body("Faltan campos obligatorios: hash, categoria, provincia o fecha_suceso");
-        }
-        final Hecho hechoABD;
-        try {
-            hechoABD = HechoMapperUtils.toEntity(req);
-        } catch (IllegalArgumentException ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        }
-        RepositoryServicioEstadisticas.addHecho(hechoABD);
-        return ResponseEntity.status(201).body("Hecho agregado correctamente");
-    }
-
-    @PostMapping("/solicitudSpam")
-    public ResponseEntity<String> agregarSolicitudSpam(@RequestBody SolicitudSpam solicitudSpam) {
-
-        SolicitudSpam solicitudABD = new SolicitudSpam(
-                solicitudSpam.getFueSpam()
-        );
-
-        RepositoryServicioEstadisticas.addSolicitud(solicitudABD);
-        return ResponseEntity.status(201).body("Solicitud agregado correctamente");
-    }
-
     @GetMapping("/provincia-con-mas-hechos")
     public ResponseEntity<List<Map<String, Object>>> provinciaConMasHechos() {
         List<Map<String, Object>> provincias = generadorTodasEstadisticas.getProvinciaConMasHechos();
