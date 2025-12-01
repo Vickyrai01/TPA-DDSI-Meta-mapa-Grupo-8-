@@ -20,8 +20,9 @@ public class HechoMapperUtils {
         }
         return new Hecho(
                 req.getHash(),
-                null, // CAMBIAR DESPUES HOLA SOY UN PROBLEMA DEL FUTURO NO ME IGNORES HIJA DE PUTA!!!!!
+                null,// CAMBIAR DESPUES HOLA SOY UN PROBLEMA DEL FUTURO NO ME IGNORES HIJA DE PUTA!!!!!
                 fecha,
+                null,
                 req.getProvincia()
                 ,null // CAMBIAR DESPUES HOLA SOY UN PROBLEMA DEL FUTURO NO ME IGNORES HIJA DE PUTA!!!!!
         );
