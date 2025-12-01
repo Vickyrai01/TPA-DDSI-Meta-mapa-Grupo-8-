@@ -23,10 +23,18 @@ public class DeleteFuenteHandler implements Handler {
         Integer id = context.pathParamAsClass("id", Integer.class).get();
         hechosRepository.eliminarHechosPorIdFuente(id);
         coleccionesRepository.eliminarFuenteDeTodasLasColecciones(id);
+
         Optional<Fuente> fuenteOptional = fuentesRepository.obtenerTodas().stream()
                 .filter(c -> c.getId() == id)
                 .findFirst();
 
+        if (fuenteOptional.isPresent()) {
+            fuentesRepository.delete(fuenteOptional.get());
+            context.status(200).result("Fuente con ID " + id + " eliminada");
+        } else {
+            context.status(404).result("Fuente con ID " + id + " no encontrada");
+        }
     }
 
-}
+    }
+
