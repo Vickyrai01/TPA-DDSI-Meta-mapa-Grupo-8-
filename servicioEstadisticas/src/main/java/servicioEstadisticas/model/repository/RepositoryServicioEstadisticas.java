@@ -94,7 +94,7 @@ public static List<Map<String, Object>> provinciaConMasHechos() {
     }
 }
 
-
+/*
     public static List<Map<String, Object>> categoriaMasReportada() {
         EntityManager em = DBUtils.getEntityManager();
         try {
@@ -120,7 +120,35 @@ public static List<Map<String, Object>> provinciaConMasHechos() {
             em.close();
         }
     }
+*/
+    public static List<Map<String, Object>> categoriaMasReportada() {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            String jpql = "SELECT c.nombre, COUNT(h) as cantidad " +
+                    "FROM Hecho h " +
+                    "JOIN h.categoria c "+
+                    "GROUP BY c.nombre " +
+                    "ORDER BY COUNT(h) DESC";
 
+            List<Object[]> results = em.createQuery(jpql, Object[].class)
+                    .getResultList();
+
+            return results.stream()
+                    .map(result -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("categoria", result[0]);
+                        map.put("cantidad", result[1]);
+                        return map;
+                    })
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        } finally {
+            em.close();
+        }
+    }
+/*
     public static Map<String, Object> cantidadSolicitudesEliminacion() {
         EntityManager em = DBUtils.getEntityManager();
         try {
@@ -136,6 +164,34 @@ public static List<Map<String, Object>> provinciaConMasHechos() {
 
             Map<String, Object> resultado = new HashMap<>();
             resultado.put("solicitudes spam", cantidadSpam);
+            resultado.put("total de solicitudes", cantidadTotal);
+
+            return resultado;
+        } catch (Exception e) {
+            Map<String, Object> errorResultado = new HashMap<>();
+            errorResultado.put("solicitudes spam", 0);
+            errorResultado.put("total de solicitudes", 0);
+            return errorResultado;
+        } finally {
+            em.close();
+        }
+    }
+*/
+    public static Map<String, Object> cantidadSolicitudesEliminacion() {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            // Consulta para obtener la cantidad de solicitudes aceptadas
+            String jpqlAceptadas = "SELECT COUNT(s) FROM SolicitudSpam s WHERE s.aceptada = true";
+            Long cantidadAceptadas = em.createQuery(jpqlAceptadas, Long.class)
+                    .getSingleResult();
+
+            // Consulta para obtener el total de solicitudes
+            String jpqlTotal = "SELECT COUNT(s) FROM SolicitudSpam s";
+            Long cantidadTotal = em.createQuery(jpqlTotal, Long.class)
+                    .getSingleResult();
+
+            Map<String, Object> resultado = new HashMap<>();
+            resultado.put("solicitudes spam", cantidadAceptadas);
             resultado.put("total de solicitudes", cantidadTotal);
 
             return resultado;

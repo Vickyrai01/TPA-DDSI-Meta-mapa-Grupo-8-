@@ -42,9 +42,10 @@ public class GeneradorTodasEstadisticas {
     /*
      public List<Map<String, Object>> getCategoriaMasReportada() { return categoriaMasReportada;}
     */
-    public Map<String, Object> getCantSolicitudesEliminacion() {
-        return cantSolicitudesEliminacion;
-    }
+    /*
+    public Map<String, Object> getCantSolicitudesEliminacion() {return cantSolicitudesEliminacion;}
+    */
+    public Map<String, Object> getCantSolicitudesEliminacion() {return RepositoryServicioEstadisticas.cantidadSolicitudesEliminacion();}
 
     public List<Map<String, Object>> horarioxCategoria(String categoria) {
         return RepositoryServicioEstadisticas.horarioxCategoria(categoria);

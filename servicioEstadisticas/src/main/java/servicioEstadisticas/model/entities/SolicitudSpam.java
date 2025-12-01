@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 
 @Entity
-@Table(name = "solicitud_spam")
+@Table(name = "solicitud_de_eliminacion")
 public class SolicitudSpam {
 
 
@@ -12,13 +12,13 @@ public class SolicitudSpam {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_spam;
 
-    @Column(name = "fue_spam")
-    private Boolean fueSpam;
+    @Column(name = "aceptada")
+    private Boolean aceptada;
 
 
-    public SolicitudSpam(Boolean fueSpam) {
-        this.fueSpam = fueSpam;
-    }
+    public SolicitudSpam(Boolean aceptada) {this.aceptada = aceptada;}
+
+    public SolicitudSpam() {}
 
 
     public Integer getId_spam() {
@@ -30,10 +30,10 @@ public class SolicitudSpam {
     }
 
     public Boolean getFueSpam() {
-        return fueSpam;
+        return aceptada;
     }
 
-    public void setFueSpam(Boolean fueSpam) {
-        this.fueSpam = fueSpam;
+    public void setFueSpam(Boolean aceptada) {
+        this.aceptada = aceptada;
     }
 }
