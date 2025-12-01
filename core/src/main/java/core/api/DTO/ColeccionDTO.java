@@ -111,4 +111,15 @@ public class ColeccionDTO {
         this.algoritmoConsenso = algoritmoConsenso;
     }
 
+    private Integer cantidadHechosVisibles;
+
+    public Integer getCantidadHechosVisibles() {
+        return cantidadHechosVisibles;
+    }
+
+    public void setCantidadHechosVisibles(Integer cantidadHechosVisibles) {
+        this.cantidadHechosVisibles = cantidadHechosVisibles;
+    }
+
+
 }

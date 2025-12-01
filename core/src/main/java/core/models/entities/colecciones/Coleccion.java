@@ -29,7 +29,7 @@ public class Coleccion {
         this.hechos = hechos != null ? new ArrayList<>(hechos) : new ArrayList<>();
         this.hechosVisibles = hechosVisibles != null ? new ArrayList<>(hechosVisibles) : new ArrayList<>();
         this.identificadorHandle = identificadorHandle;
-        this.modoDeNavegacion = ModoDeNavegacion.IRRESTRICTO;
+        this.modoDeNavegacion = ModoDeNavegacion.IRRESTRICTA;
         this.algoritmoConsenso = null;
     }
 
@@ -116,7 +116,7 @@ public class Coleccion {
 
    public void actualizarColeccionVisible(){
 
-       if(modoDeNavegacion==modoDeNavegacion.IRRESTRICTO || algoritmoConsenso == null){
+       if(modoDeNavegacion==modoDeNavegacion.IRRESTRICTA || algoritmoConsenso == null){
            hechosVisibles=hechos;
 
        }else{

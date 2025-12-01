@@ -338,6 +338,7 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
     public List<ColeccionDTO> listarColeccionesDTOConCantidadHechos() {
         EntityManager em = DBUtils.getEntityManager();
         try {
+            // BASE
             List<Object[]> bases = em.createQuery("""
             SELECT c.id,
                    c.titulo,
@@ -349,6 +350,7 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             ORDER BY c.id DESC
         """, Object[].class).getResultList();
 
+            // CANTIDAD DE HECHOS
             List<Object[]> rows = em.createQuery("""
             SELECT c.id, COUNT(h)
             FROM coleccion c
@@ -361,6 +363,20 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                 conteos.put((Integer) r[0], (Long) r[1]);
             }
 
+            // 🔹 CANTIDAD DE HECHOS VISIBLES
+            List<Object[]> rowsVisibles = em.createQuery("""
+            SELECT c.id, COUNT(hv)
+            FROM coleccion c
+            LEFT JOIN c.hechosVisibles hv
+            GROUP BY c.id
+        """, Object[].class).getResultList();
+
+            Map<Integer, Long> conteosVisibles = new HashMap<>();
+            for (Object[] r : rowsVisibles) {
+                conteosVisibles.put((Integer) r[0], (Long) r[1]);
+            }
+
+            // ARMAR DTOS
             List<ColeccionDTO> dtos = new ArrayList<>(bases.size());
             for (Object[] b : bases) {
                 Integer id          = (Integer) b[0];
@@ -377,11 +393,6 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
 
                 String algoritmoStr = null;
                 if (algoritmoObj != null) {
-                    // Elegí cómo querés representarlo en string.
-                    // Opción A: nombre de la clase (StrategyAbsoluta, etc.)
-                    // algoritmoStr = algoritmoObj.getClass().getSimpleName();
-
-                    // Opción B: mapear a etiquetas “lindas”:
                     if (algoritmoObj instanceof StrategyAbsoluta) {
                         algoritmoStr = "ABSOLUTO";
                     } else if (algoritmoObj instanceof StrategyMayoriaSimple) {
@@ -400,8 +411,15 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                 dto.setIdentificadorHandle(handle);
                 dto.setModoDeNavegacion(modoStr);
                 dto.setAlgoritmoConsenso(algoritmoStr);
+
+                // cantidad de hechos totales
                 dto.setCantidadHechos(
                         Math.toIntExact(conteos.getOrDefault(id, 0L))
+                );
+
+                // cantidad de hechos visibles
+                dto.setCantidadHechosVisibles(
+                        Math.toIntExact(conteosVisibles.getOrDefault(id, 0L))
                 );
 
                 dtos.add(dto);
@@ -412,6 +430,7 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             try { em.close(); } catch (Exception ignore) {}
         }
     }
+
 
 
     public List<Hecho> getHechosConUbicacion(Integer idColeccion) {
