@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.plaf.PanelUI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ FuentesRepository fuentesRepository = FuentesRepository.getInstance();
         System.out.println("Strategy creada = " + strategyTipoConexion
                 + " (tipo: " + (strategyTipoConexion != null ? strategyTipoConexion.getClass().getSimpleName() : "null") + ")");
 
-        TipoFuente tipoFuente = fromString(dto.getTipoFuente());
+        TipoFuente tipoFuente = obtenerTipoFuente(dto.getStrategyTipoConexion());
 
         Fuente fuente = new Fuente(
                 dto.getNombre(),
@@ -70,4 +71,14 @@ FuentesRepository fuentesRepository = FuentesRepository.getInstance();
         return null;
     }
 
+
+    public TipoFuente obtenerTipoFuente(String tipoFuente)
+    { if("CSV".equalsIgnoreCase(tipoFuente))
+        {TipoFuente idFuente = fromString("ESTATICA");
+            return idFuente;}
+        if("API REST".equalsIgnoreCase(tipoFuente))
+             {TipoFuente idFuente = fromString("PROXY");
+                 return idFuente;}
+        return null;
+    }
 }
