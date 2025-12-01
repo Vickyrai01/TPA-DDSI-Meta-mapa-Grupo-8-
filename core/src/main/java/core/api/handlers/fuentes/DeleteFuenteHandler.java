@@ -16,13 +16,13 @@ public class DeleteFuenteHandler implements Handler {
 
     private final FuentesRepository fuentesRepository = FuentesRepository.getInstance();
     HechosRepository hechosRepository = HechosRepository.getInstance();
+    ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
         Integer id = context.pathParamAsClass("id", Integer.class).get();
-
-
         hechosRepository.eliminarHechosPorIdFuente(id);
+        coleccionesRepository.eliminarFuenteDeTodasLasColecciones(id);
         Optional<Fuente> fuenteOptional = fuentesRepository.obtenerTodas().stream()
                 .filter(c -> c.getId() == id)
                 .findFirst();
