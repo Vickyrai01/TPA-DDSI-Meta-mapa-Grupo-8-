@@ -1,12 +1,15 @@
-package servicioEstadisticas.model;
+package utils;
+
+import servicioEstadisticas.DTO.HechoDTO;
+import servicioEstadisticas.model.entities.Hecho;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-public class HechoMapper {
-    private HechoMapper() {}
+public class HechoMapperUtils {
+    private HechoMapperUtils() {}
 
     public static Hecho toEntity(HechoDTO req) {
         System.out.println("Antes de empezar a mapear" + req.toString());
@@ -17,9 +20,11 @@ public class HechoMapper {
         }
         return new Hecho(
                 req.getHash(),
-                req.getCategoria(),
+                null,// CAMBIAR DESPUES HOLA SOY UN PROBLEMA DEL FUTURO NO ME IGNORES HIJA DE PUTA!!!!!
                 fecha,
+                null,
                 req.getProvincia()
+                ,null // CAMBIAR DESPUES HOLA SOY UN PROBLEMA DEL FUTURO NO ME IGNORES HIJA DE PUTA!!!!!
         );
     }
 
