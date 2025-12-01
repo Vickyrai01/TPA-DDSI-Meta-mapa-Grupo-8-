@@ -22,11 +22,11 @@
       --muted:#6b7280;
     }
     body {
-        background-image: url('/img/fondoHOME1.png');
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-        background-attachment: fixed;
+      background-image: url('/img/fondoHOME1.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-attachment: fixed;
     }
     .report-wrapper{
       display: flex;
@@ -283,16 +283,19 @@
       <!-- FORMULARIO (solo si NO hay ok) -->
       <form th:if="${!ok}" th:action="@{/reportar}" method="post" id="form-reportar">
         <div class="report-header">REPORTAR SUCESO</div>
+        <div style="padding: 0.5rem 1rem; color: #F47C2C; font-size: 0.98rem;">
+          <span style="font-weight: bold;">*</span> Campos obligatorios
+        </div>
         <div class="report-body">
           <!-- fila 1: titulo / categoria -->
           <div class="form-grid">
             <div class="form-group">
-              <label for="titulo">Título suceso</label>
+              <label for="titulo">Título suceso <span style="color:#F47C2C;">*</span></label>
               <input type="text" id="titulo" name="titulo" placeholder="Ej: Árbol caído en la vereda" required>
             </div>
 
             <div class="form-group">
-              <label for="categoria">Categoría</label>
+              <label for="categoria">Categoría <span style="color:#F47C2C;">*</span></label>
               <select id="categoria" name="categoria" required>
                 <option value="">Elegí una categoría</option>
                 <option th:each="c : ${categorias}"
@@ -305,14 +308,14 @@
             </div>
 
             <div class="form-group">
-              <label for="fechaSuceso">Fecha de suceso</label>
+              <label for="fechaSuceso">Fecha de suceso <span style="color:#F47C2C;">*</span></label>
               <input type="date" id="fechaSuceso" name="fechaSuceso"
-                     placeholder="dd/mm/aaaa">
+                     placeholder="dd/mm/aaaa" required>
             </div>
 
             <!-- input que aparece solo si se elige "Otro" -->
             <div class="form-group hidden" id="categoria-otra-group">
-              <label for="categoriaOtra">Especificá la categoría</label>
+              <label for="categoriaOtra">Especificá la categoría <span style="color:#F47C2C;">*</span></label>
               <input type="text" id="categoriaOtra" name="categoriaOtra"
                      placeholder="Describí la categoría">
             </div>
@@ -348,12 +351,12 @@
 
           <!-- mapa -->
           <div class="form-group" style="margin-top:.25rem;">
-            <label>Ubicación</label>
+            <label>Ubicación <span style="color:#F47C2C;">*</span></label>
             <div id="mapa-reportar"></div>
             <p class="map-help">Hacé clic en el mapa para marcar la ubicación del suceso.</p>
             <!-- campos ocultos donde se guarda la posición -->
-            <input type="hidden" id="latitud" name="latitud">
-            <input type="hidden" id="longitud" name="longitud">
+            <input type="hidden" id="latitud" name="latitud" required>
+            <input type="hidden" id="longitud" name="longitud" required>
           </div>
 
           <div class="report-actions">
@@ -376,6 +379,18 @@
 
   <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function () {
+      // Validación para obligar a seleccionar ubicación en el mapa
+      const form = document.getElementById('form-reportar');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          const lat = document.getElementById('latitud').value;
+          const lon = document.getElementById('longitud').value;
+          if (!lat || !lon) {
+            alert('Debes seleccionar una ubicación en el mapa antes de enviar el reporte.');
+            e.preventDefault();
+          }
+        });
+      }
       // ====== mostrar/ocultar "Otro" ======
       const categoriaSelect = document.getElementById('categoria');
       const categoriaOtraGroup = document.getElementById('categoria-otra-group');
