@@ -1,5 +1,6 @@
 package application.controller;
 
+import application.dto.ColeccionDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,25 +28,27 @@ public class ColeccionesController {
 
     @GetMapping("/colecciones/{id}")
     public String detalle(@PathVariable("id") Integer id, Model model) {
-        model.addAttribute("coleccion", coleccionService.getById(id));
-        model.addAttribute("hechos", coleccionService.getHechosDeColeccion(id));
-        return "verColeccion/verColeccion"; // templates/colecciones/detalle.html
-    }
 
-    @GetMapping("/colecciones/{id}/{modoDeNavegacion}/hechos")
-    public String verHechosPorConsenso(
-            @PathVariable("id") Integer id,
-            @PathVariable("tipoConsenso") String tipoConsenso, // <--- CAPTURAMOS EL TIPO
-            Model model) {
+        // 1. Buscamos la colección primero para saber su configuración
+        ColeccionDTO coleccion = coleccionService.getById(id);
+        System.out.println(coleccion);
+        System.out.println(coleccion.modoDeNavegacion());
 
-        // 1. Buscamos la info básica de la colección
-        model.addAttribute("coleccion", coleccionService.getById(id));
+        // 2. Obtenemos el modo de navegación predeterminado de la colección
+        // (Asumo que en tu ColeccionDTO el campo se llama algoritmoConsenso, basado en tu método patch)
+        String modoPredeterminado = coleccion.modoDeNavegacion();
+        if (modoPredeterminado == null || modoPredeterminado.isBlank()) {
+            modoPredeterminado = "irrestricto"; // <--- O el valor que use tu Core por defecto
+        }
 
-        // 2. Buscamos los hechos FILTRADOS por el tipo de consenso usando el servicio corregido
-        model.addAttribute("hechos", coleccionService.getHechosVisibles(id, tipoConsenso));
+        // 3. Buscamos los hechos usando ESE modo específico
+        model.addAttribute("hechos", coleccionService.getHechosVisibles(id, modoPredeterminado));
 
-        // (Opcional) Es útil pasar el tipo a la vista por si quieres mostrar un título como "Viendo por Votación"
-        model.addAttribute("tipoConsensoActual", tipoConsenso);
+        // 4. Agregamos la colección y el dato del modo actual al modelo
+        model.addAttribute("coleccion", coleccion);
+
+        // Es importante pasar esto por si tu vista usa esta variable para resaltar botones o títulos
+        model.addAttribute("tipoConsensoActual", modoPredeterminado);
 
         return "verColeccion/verColeccion";
     }

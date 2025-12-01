@@ -98,6 +98,8 @@ public class Coleccion {
 
     @Column(name = "modoDeNavegacion")
     public ModoDeNavegacion modoDeNavegacion;
+    public ModoDeNavegacion getModoDeNavegacion() {return modoDeNavegacion;}
+    public void setModoDeNavegacion(ModoDeNavegacion modoDeNavegacion) {this.modoDeNavegacion = modoDeNavegacion;}
 
     @Convert(converter = AlgoritmoConsensoConverter.class)
     @Column(name = "algoritmoConsenso")

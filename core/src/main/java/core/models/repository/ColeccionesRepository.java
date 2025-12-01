@@ -278,6 +278,8 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                         .toList()
                         : Collections.emptyList();
 
+
+
                 hechoDTOs.add(
                         new HechoResumenDTO(
                                 h.getHash(),
@@ -304,6 +306,15 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                     .map(CriterioDTO::from)
                     .toList();
 
+            String modoNavStr = c.getModoDeNavegacion() != null
+                    ? c.getModoDeNavegacion().name()
+                    : null;
+
+            String algoritmoStr = c.getAlgoritmoConsenso() != null
+                    ? c.getAlgoritmoConsenso().devolverTipoDeConsenso()
+                    : null;
+
+
             ColeccionConTodoDTO dto = new ColeccionConTodoDTO(
                     c.getId(),
                     c.getTitulo(),
@@ -311,7 +322,9 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                     fuenteDTOs,
                     hechoDTOs,
                     hechoVisiblesDTOs,
-                    criterioDTOs
+                    criterioDTOs,
+                    modoNavStr,
+                    algoritmoStr
             );
 
             return Optional.of(dto);
