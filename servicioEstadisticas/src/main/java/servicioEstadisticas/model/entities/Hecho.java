@@ -11,8 +11,9 @@ public class Hecho {
     @Id
     private String hash;
 
-    @Column(name = "categoria")
-    private String categoria;
+    @ManyToOne
+    @JoinColumn(name = "id_categoria")
+    private Categoria categoria;
 
     @Column(name= "fecha_suceso")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -26,7 +27,7 @@ public class Hecho {
     private Coordenadas coordenadas;
 
 
-    public Hecho(String id, String categoria, LocalDateTime fecha_suceso, String provincia, Coordenadas coordenadas) {
+    public Hecho(String id, Categoria categoria, LocalDateTime fecha_suceso, String provincia, Coordenadas coordenadas) {
         this.hash = id;
         this.categoria = categoria;
         this.fecha_suceso = fecha_suceso;
@@ -44,11 +45,11 @@ public class Hecho {
         this.hash = hash;
     }
 
-    public String getCategoria() {
+    public Categoria getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(String categoria) {
+    public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
     }
 
