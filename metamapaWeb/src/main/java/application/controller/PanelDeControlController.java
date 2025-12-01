@@ -5,6 +5,8 @@ import application.service.ColeccionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import application.service.AdminService;
+import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -16,21 +18,30 @@ import java.util.Map;
 public class PanelDeControlController {
     private final ColeccionService coleccionService;
     private final FuenteService fuenteService;
+    private final AdminService adminService;
 
-    public PanelDeControlController(ColeccionService coleccionService, FuenteService fuenteService) {
+    public PanelDeControlController(ColeccionService coleccionService, FuenteService fuenteService, AdminService adminService) {
         this.coleccionService = coleccionService;
-        this.fuenteService = fuenteService; // <-- AÑADIR ESTO
+        this.fuenteService = fuenteService;
+        this.adminService = adminService;
     }
 
     @GetMapping("/admin/colecciones")
-    public String home(Model model) {
+    public String home(Model model, Authentication authentication) {
+        if (!adminService.isAdmin(authentication)) {
+            return "redirect:/";
+        }
         model.addAttribute("listaDeColecciones", coleccionService.getAll());
         model.addAttribute("listaDeFuentes", fuenteService.getAll());
         return "panelDeControl/panelDeControl";
     }
 
     @PostMapping("/admin/colecciones/{id}/eliminar")
-    public String eliminar(@PathVariable("id") Integer id, RedirectAttributes ra) {
+    public String eliminar(@PathVariable("id") Integer id, RedirectAttributes ra, Authentication authentication) {
+        if (!adminService.isAdmin(authentication)) {
+            ra.addFlashAttribute("toastError", "No tienes permisos para realizar esta acción.");
+            return "redirect:/";
+        }
         boolean ok = coleccionService.deleteById(id);
         if (ok) {
             ra.addFlashAttribute("toastOk", "Colección eliminada.");
@@ -45,8 +56,12 @@ public class PanelDeControlController {
     @ResponseBody
     public ResponseEntity<?> modificarColeccionPatch(
             @PathVariable("id") Integer id,
-            @RequestBody Map<String, Object> req
+            @RequestBody Map<String, Object> req,
+            Authentication authentication
     ) {
+        if (!adminService.isAdmin(authentication)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No tienes permisos para realizar esta acción.");
+        }
         String titulo = req.get("titulo") != null ? req.get("titulo").toString() : null;
         String desc = req.get("descripcionColeccion") != null ? req.get("descripcionColeccion").toString() : null;
         List<Integer> fuentes = req.get("fuentes") instanceof List<?> list
