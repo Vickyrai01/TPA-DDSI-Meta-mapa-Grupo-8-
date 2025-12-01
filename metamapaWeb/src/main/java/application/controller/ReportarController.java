@@ -7,6 +7,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,7 +27,7 @@ public class ReportarController {
     }
 
     @GetMapping("/reportar")
-    public String reportarSuceso(Model model, @RequestParam(value= "ok", required = false) String ok) throws JsonProcessingException {
+    public String reportarSuceso(Model model, @RequestParam(value= "ok", required = false) String ok, Authentication authentication) throws JsonProcessingException {
         // esto hoy te devuelve un String con el JSON
         String categoriasJson = reportarService.getCategorias();
 
@@ -37,6 +39,12 @@ public class ReportarController {
 
         model.addAttribute("categorias", categorias);
         model.addAttribute("ok", ok != null);
+        // Obtener correo del usuario autenticado
+        String email = null;
+        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof OAuth2User oAuth2User) {
+            email = oAuth2User.getAttribute("email");
+        }
+        model.addAttribute("email", email);
         return "reportarSuceso/reportarSuceso";
     }
 
@@ -50,7 +58,8 @@ public class ReportarController {
             @RequestParam("latitud") Double latitud,
             @RequestParam("longitud") Double longitud,
             @RequestParam("multimedia") String multimedia,
-            @RequestParam(value = "etiquetas", required = false) String etiquetas
+            @RequestParam(value = "etiquetas", required = false) String etiquetas,
+            org.springframework.security.core.Authentication authentication
     ) {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> jsonMap = new HashMap<>();
@@ -58,6 +67,12 @@ public class ReportarController {
         String lon = longitud.toString();
         jsonMap.put("titulo", titulo);
         jsonMap.put("descripcion", descripcion);
+        // Obtener el correo del usuario autenticado para el campo contribuyente
+        String contribuyente = null;
+        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof org.springframework.security.oauth2.core.user.OAuth2User oAuth2User) {
+            contribuyente = oAuth2User.getAttribute("email");
+        }
+        jsonMap.put("contribuyente", contribuyente);
         if (categoria.equals("Otro")) {
             jsonMap.put("categoria", categoriaOtra);
         } else {
