@@ -116,11 +116,8 @@ main {
 }
 
 .collection-text p {
-    margin: 4px 0;
-    font-size: 0.9rem;
-    color: var(--muted);
     font-weight: 600;
-    line-height: 1.4;
+    line-height: 2;
 }
 
 /* Parte de la imagen (derecha) */
@@ -249,4 +246,39 @@ main {
 }
 .modal-btn-danger:hover {
     background-color: #c9302c; /* Un rojo más oscuro */
+}
+.collection-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    text-decoration: none;
+    color: inherit;
+}
+
+.collection-text h3 {
+    margin: 0 0 0.25rem;
+    font-size: 1rem;
+    letter-spacing: 0.03em;
+}
+
+.collection-description {
+    margin: 0 0 0.4rem;
+    font-size: 0.9rem;
+    color: #4b5563; /* gris más fuerte para que se lea bien */
+}
+
+.collection-meta {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #6b7280; /* gris más suave, sensación de “dato secundario” */
+}
+
+.collection-image img {
+    width: 110px;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
 }
