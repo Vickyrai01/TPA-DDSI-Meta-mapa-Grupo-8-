@@ -4,6 +4,7 @@ import servicioEstadisticas.model.entities.Categoria;
 import servicioEstadisticas.model.entities.Hecho;
 import servicioEstadisticas.model.entities.SolicitudSpam;
 import utils.DBUtils;
+import utils.GeocodingUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -192,7 +193,7 @@ public static List<Map<String, Object>> provinciaConMasHechos() {
             em.close();
         }
     }
-
+/*
     public static List<Map<String, Object>> provinciaConMasHechosEnCategoria(String categoria) {
         EntityManager em = DBUtils.getEntityManager();
         try {
@@ -220,6 +221,54 @@ public static List<Map<String, Object>> provinciaConMasHechos() {
             em.close();
         }
     }
+*/
+    public static List<Map<String, Object>> provinciaConMasHechosEnCategoria(String nombreCategoria) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            String jpqlCategoria = "SELECT c FROM Categoria c WHERE c.nombre = :nombreCategoria";
+            Categoria categoria = em.createQuery(jpqlCategoria, Categoria.class)
+                    .setParameter("nombreCategoria", nombreCategoria)
+                    .getSingleResult();
+
+            String jpql = "SELECT c.latitud, c.longitud " +
+                    "FROM Hecho h " +
+                    "JOIN h.coordenadas c " +
+                    "WHERE h.categoria = :categoria ";
+
+            List<Object[]> coordenadas = em.createQuery(jpql, Object[].class)
+                    .setParameter("categoria", categoria)
+                    .getResultList();
+
+            Map<String, Long> provinciaCount = new HashMap<>();
+            for (Object[] coord : coordenadas) {
+                double lat = (Double) coord[0];
+                double lon = (Double) coord[1];
+                String provincia = GeocodingUtils.obtenerProvincia(lat, lon);
+
+                if (provincia != null) {
+                    provinciaCount.merge(provincia, 1L, Long::sum);
+                }
+            }
+
+            return provinciaCount.entrySet().stream()
+                    .map(entry -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("provincia", entry.getKey());
+                        map.put("cantidad", entry.getValue());
+                        return map;
+                    })
+                    .sorted((m1, m2) -> Long.compare((Long) m2.get("cantidad"), (Long) m1.get("cantidad")))
+                    .collect(Collectors.toList());
+        } catch (NoResultException e) {
+            return Collections.emptyList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        } finally {
+            em.close();
+        }
+    }
+
 
     public static void addHecho(Hecho hecho) {
         EntityManager em = DBUtils.getEntityManager();
