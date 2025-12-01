@@ -10,7 +10,6 @@ import servicioEstadisticas.GeneradorTodasEstadisticas;
 import servicioEstadisticas.model.entities.Hecho;
 import servicioEstadisticas.model.entities.SolicitudSpam;
 import servicioEstadisticas.model.repository.RepositoryServicioEstadisticas;
-import utils.HechoMapperUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
