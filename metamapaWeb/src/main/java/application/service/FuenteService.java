@@ -33,4 +33,12 @@ public class FuenteService {
                 .toBodilessEntity()  // o .bodyToMono(Void.class)
                 .block();
     }
+
+    public ResponseEntity<Void> eliminarFuente(Integer idFuente) {
+        return metamapaApiADMIN.post()
+                .uri("/fuentes/{id}/eliminar", idFuente) // o "/fuente/{id}/eliminar" según tu API
+                .retrieve()
+                .toBodilessEntity()
+                .block();
+    }
 }

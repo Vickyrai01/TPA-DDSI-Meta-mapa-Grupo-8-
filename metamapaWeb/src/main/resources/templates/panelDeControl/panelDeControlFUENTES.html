@@ -44,10 +44,10 @@
                             <div class="card-actions">
                                 <!-- Eliminar -->
                                 <form class="delete-form"
-                                      th:action="@{/admin/fuentes/{nombre}/eliminar(nombre=${f.nombre()})}"
+                                      th:action="@{/admin/fuentes/{id}/eliminar(id=${f.id()})}"
                                       method="post">
                                     <input type="hidden" name="_csrf" th:if="${_csrf}" th:value="${_csrf.token}"/>
-                                    <button type="button" class="icon-btn delete-btn" aria-label="Eliminar">
+                                    <button type="submit" class="icon-btn delete-btn" aria-label="Eliminar">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
                                 </form>

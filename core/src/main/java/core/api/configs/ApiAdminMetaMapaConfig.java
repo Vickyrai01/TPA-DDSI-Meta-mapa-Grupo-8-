@@ -28,7 +28,7 @@ public class ApiAdminMetaMapaConfig {
         app.patch("core/api/colecciones/{id}/consenso/modificar", new PatchAlgoritmoDeConsenso());
         app.post("/core/api/fuente", new PostFuenteHandler());
         app.get("/core/api/fuentes", new GetFuentesHandler());
-        app.delete("core/admin/eliminar/{id}/fuente", new DeleteFuenteHandler());
+        app.post("core/api/fuentes/{id}/eliminar", new DeleteFuenteHandler());
 
         app.patch("/core/api/hechos/{hash}", new PatchHechoHandler());
         app.delete("/core/api/hechos/{hash}", new DeleteHechoHandler());
