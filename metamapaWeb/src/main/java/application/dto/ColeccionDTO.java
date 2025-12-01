@@ -10,6 +10,7 @@ public record ColeccionDTO(
         String identificadorHandle,
         Object fuentes,
         Integer cantidadHechos,
+        Integer cantidadHechosVisibles,
         String algoritmoConsenso,
         String modoDeNavegacion
 ) {}
