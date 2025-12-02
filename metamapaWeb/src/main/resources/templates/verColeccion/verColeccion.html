@@ -116,13 +116,27 @@
                             </div>
 
                             <!-- Multimedia -->
+
                             <div class="field" th:if="${h.multimedia()!=null and !h.multimedia().isEmpty()}">
                                 <span class="field-label">Multimedia:</span>
-                                <span class="field-value">
-                                    <a th:each="m : ${h.multimedia()}" th:href="${m}" target="_blank" rel="noreferrer">
-                                         <i class="fa-solid fa-link"></i><span th:text="${#strings.abbreviate(m, 30)}">Archivo</span>
-                                    </a>
-                                </span>
+                                <div class="field-value" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 5px;">
+
+                                    <div th:each="m : ${h.multimedia()}">
+
+                                        <img th:if="${#strings.startsWith(m, 'http')}"
+                                             th:src="${m}"
+                                             alt="Evidencia"
+                                             style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ccc; cursor: pointer;"
+                                             onclick="window.open(this.src, '_blank')">
+
+                                        <img th:unless="${#strings.startsWith(m, 'http')}"
+                                             th:src="@{'/img/uploads/' + ${m}}"
+                                             alt="Evidencia local"
+                                             style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ccc; cursor: pointer;"
+                                             onclick="window.open(this.src, '_blank')">
+                                    </div>
+
+                                </div>
                             </div>
 
                             <!-- Botón Ver en mapa -->

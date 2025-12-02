@@ -113,8 +113,8 @@ public class HechosRepositorySeeder {
 
         //Hechos
 
-        Hecho hecho10 = new Hecho(
-                coordenadas10, categoriaEstafa, null, null, null, Estado.ACEPTADO, contribuyente11,
+         Hecho hecho10 = new Hecho(
+                coordenadas10, categoriaEstafa, null, null, List.of("prueba.jpg"), Estado.ACEPTADO, contribuyente11,
                 LocalDate.now().minusDays(4), LocalDate.now().minusDays(5),
                 TipoFuente.ESTATICA, null,
                 "El vendedor prometió un producto que nunca llegó luego de recibir el pago.",
