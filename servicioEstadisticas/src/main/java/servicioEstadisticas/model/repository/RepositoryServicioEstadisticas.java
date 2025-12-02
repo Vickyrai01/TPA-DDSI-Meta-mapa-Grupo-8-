@@ -28,48 +28,56 @@ public class RepositoryServicioEstadisticas {
         return instance;
     }
 
-public static List<Map<String, Object>> provinciaConMasHechos() {
-    EntityManager em = DBUtils.getEntityManager();
-    try {
-        String jpql = "SELECT c.latitud, c.longitud " +
-                "FROM Hecho h " +
-                "INNER JOIN h.coordenadas c";
+    public static List<Map<String, Object>> provinciaConMasHechos() {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            String jpql = "SELECT c.latitud, c.longitud " +
+                    "FROM Hecho h " +
+                    "INNER JOIN h.coordenadas c";
 
-        List<Object[]> coordenadas = em.createQuery(jpql, Object[].class)
-                .getResultList();
+            List<Object[]> coordenadas = em.createQuery(jpql, Object[].class)
+                    .getResultList();
 
-        Map<String, Long> provinciaCount = new HashMap<>();
+            Map<String, Long> provinciaCount = new HashMap<>();
 
-        for (Object[] coord : coordenadas) {
-            double lat = (Double) coord[0];
-            double lon = (Double) coord[1];
+            for (Object[] coord : coordenadas) {
+                double lat = (Double) coord[0];
+                double lon = (Double) coord[1];
 
-            String provincia = utils.GeocodingUtils.obtenerProvincia(lat, lon);
+                String provincia = utils.GeocodingUtils.obtenerProvincia(lat, lon);
 
-            if (provincia != null) {
-                provinciaCount.merge(provincia, 1L, Long::sum);
+                if (provincia == null) {
+                    System.out.println("[DEBUG] Hecho con coordenadas (" + lat + "," + lon + ") NO mapeado a ninguna provincia");
+                }
+                if (provincia != null) {
+                    provinciaCount.merge(provincia, 1L, Long::sum);
+                }
             }
-        }
 
-        return provinciaCount.entrySet().stream()
-                .map(entry -> {
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("provincia", entry.getKey());
-                    map.put("cantidad", entry.getValue());
-                    return map;
-                })
-                .sorted((m1, m2) -> Long.compare(
-                        (Long) m2.get("cantidad"),
-                        (Long) m1.get("cantidad")
-                ))
-                .collect(Collectors.toList());
-    } catch (Exception e) {
-        e.printStackTrace();
-        return Collections.emptyList();
-    } finally {
-        em.close();
+            // Acá, después del for:
+            System.out.println("[DEBUG] ***** Total hechos: " + coordenadas.size());
+            System.out.println("[DEBUG] ***** Total mapeados a provincia: " + provinciaCount.values().stream().mapToLong(l -> l).sum());
+            System.out.println("[DEBUG] ***** Detalle por provincia: " + provinciaCount);
+
+            return provinciaCount.entrySet().stream()
+                    .map(entry -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("provincia", entry.getKey());
+                        map.put("cantidad", entry.getValue());
+                        return map;
+                    })
+                    .sorted((m1, m2) -> Long.compare(
+                            (Long) m2.get("cantidad"),
+                            (Long) m1.get("cantidad")
+                    ))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        } finally {
+            em.close();
+        }
     }
-}
 
     public static List<Map<String, Object>> categoriaMasReportada() {
         EntityManager em = DBUtils.getEntityManager();
@@ -131,9 +139,11 @@ public static List<Map<String, Object>> provinciaConMasHechos() {
         EntityManager em = DBUtils.getEntityManager();
         try {
             String jpqlCategoria = "SELECT c FROM Categoria c WHERE c.nombre = :nombreCategoria";
-            Categoria categoria = em.createQuery(jpqlCategoria, Categoria.class)
+            List<Categoria> categorias = em.createQuery(jpqlCategoria, Categoria.class)
                     .setParameter("nombreCategoria", categoriaNombre)
-                    .getSingleResult();
+                    .getResultList();
+            if (categorias.isEmpty()) return Collections.emptyList();
+            Categoria categoria = categorias.get(0); // usa la primera
 
             String jpql = "SELECT HOUR(h.hora_suceso) as hora, COUNT(h) as cantidad " +
                     "FROM Hecho h " +
@@ -155,8 +165,6 @@ public static List<Map<String, Object>> provinciaConMasHechos() {
                         return map;
                     })
                     .collect(Collectors.toList());
-        } catch (NoResultException e) {
-            return Collections.emptyList();
         } catch (Exception e) {
             e.printStackTrace();
             return Collections.emptyList();
@@ -169,9 +177,11 @@ public static List<Map<String, Object>> provinciaConMasHechos() {
         EntityManager em = DBUtils.getEntityManager();
         try {
             String jpqlCategoria = "SELECT c FROM Categoria c WHERE c.nombre = :nombreCategoria";
-            Categoria categoria = em.createQuery(jpqlCategoria, Categoria.class)
+            List<Categoria> categorias = em.createQuery(jpqlCategoria, Categoria.class)
                     .setParameter("nombreCategoria", nombreCategoria)
-                    .getSingleResult();
+                    .getResultList();
+            if (categorias.isEmpty()) return Collections.emptyList();
+            Categoria categoria = categorias.get(0); // usa la primera
 
             String jpql = "SELECT c.latitud, c.longitud " +
                     "FROM Hecho h " +
@@ -202,8 +212,6 @@ public static List<Map<String, Object>> provinciaConMasHechos() {
                     })
                     .sorted((m1, m2) -> Long.compare((Long) m2.get("cantidad"), (Long) m1.get("cantidad")))
                     .collect(Collectors.toList());
-        } catch (NoResultException e) {
-            return Collections.emptyList();
         } catch (Exception e) {
             e.printStackTrace();
             return Collections.emptyList();
