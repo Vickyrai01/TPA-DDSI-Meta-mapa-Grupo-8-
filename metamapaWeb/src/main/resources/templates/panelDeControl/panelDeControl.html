@@ -162,17 +162,17 @@
 
             <form class="modal-form">
                 <div class="form-group">
-                    <label for="new-nombre">Nombre:</label>
-                    <input type="text" id="new-nombre" class="card-input" placeholder="Ej: Robos en Palermo">
+                    <label for="new-nombre" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">Nombre: <span style="color: #F47C2C;">*</span></label>
+                    <input type="text" id="new-nombre" class="card-input" placeholder="Ej: Robos en Palermo" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">
                 </div>
 
                 <div class="form-group">
-                    <label for="new-info">Información</label>
-                    <input type="text" id="new-info" class="card-input" placeholder="Info, cantidad hechos, etc.">
+                    <label for="new-info" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">Información</label>
+                    <input type="text" id="new-info" class="card-input" placeholder="Info, cantidad hechos, etc." style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">
                 </div>
 
                 <div class="form-group" style="grid-column: 1 / -1;">
-                    <label>Fuentes</label>
+                    <label style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">Fuentes <span style="color: #F47C2C;">*</span></label>
 
                     <div class="fuentes-list-container" style="max-height: 150px; overflow-y: auto; border: 1px solid var(--border, #e5e7eb); border-radius: 12px; padding: 10px; background: #f9fafb;">
 
@@ -199,49 +199,61 @@
                         </p>
 
                         <div class="form-group" style="margin-bottom: 5px;">
-                            <label for="new-criterio-nombre" style="font-weight: 600; font-size: 0.9rem;">TÍTULO:</label>
-                            <input type="text" id="new-criterio-nombre" class="card-input" placeholder="Ej: Incendio">
+                            <label for="new-criterio-nombre" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">TÍTULO: <span style="color: #F47C2C;">*</span></label>
+                            <input type="text" id="new-criterio-nombre" class="card-input" placeholder="Ej: Incendio" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 5px;">
-                            <label for="new-criterio-descripcion" style="font-weight: 600; font-size: 0.9rem;">DESCRIPCIÓN:</label>
-                            <input type="text" id="new-criterio-descripcion" class="card-input" placeholder="Ej: perro">
+                            <label for="new-criterio-descripcion" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">DESCRIPCIÓN:</label>
+                            <input type="text" id="new-criterio-descripcion" class="card-input" placeholder="Ej: perro" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 5px;">
-                            <label for="new-criterio-categoria" style="font-weight: 600; font-size: 0.9rem;">CATEGORÍA:</label>
-                            <input type="text" id="new-criterio-categoria" class="card-input" placeholder="Ej: Robo">
+                            <label for="new-criterio-categoria" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">CATEGORÍA: <span style="color: #F47C2C;">*</span></label>
+                            <input type="text" id="new-criterio-categoria" class="card-input" placeholder="Ej: Robo" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 5px;">
-                            <label for="new-criterio-lat" style="font-weight: 600; font-size: 0.9rem;">Ubicación</label>
+                            <label for="new-criterio-lat" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">Ubicación <span style="color: #F47C2C;">*</span></label>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <input type="number" id="new-criterio-lat" class="card-input" placeholder="Latitud (ej: -34.6)">
-                                <input type="number" id="new-criterio-lon" class="card-input" placeholder="Longitud (ej: -58.4)">
+                                <input type="number" id="new-criterio-lat" class="card-input" placeholder="Latitud (ej: -34.6)" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">
+                                <input type="number" id="new-criterio-lon" class="card-input" placeholder="Longitud (ej: -58.4)" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">
                             </div>
                         </div>
 
                         <div class="form-group" style="margin-bottom: 5px;">
-                            <label for="new-criterio-suceso-desde" style="font-weight: 600; font-size: 0.9rem;">Fecha Suceso</label>
+                            <label for="new-criterio-suceso-desde" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">Fecha Suceso <span style="color: #F47C2C;">*</span></label>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <input type="date" id="new-criterio-suceso-desde" class="card-input">
-                                <input type="date" id="new-criterio-suceso-hasta" class="card-input">
+                                <div style="display: flex; flex-direction: column;">
+                                    <span style="font-size: 0.85em; color: #666; margin-bottom: 2px;">Desde</span>
+                                    <input type="date" id="new-criterio-suceso-desde" class="card-input" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">
+                                </div>
+                                <div style="display: flex; flex-direction: column;">
+                                    <span style="font-size: 0.85em; color: #666; margin-bottom: 2px;">Hasta</span>
+                                    <input type="date" id="new-criterio-suceso-hasta" class="card-input" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">
+                                </div>
                             </div>
                         </div>
 
                         <div class="form-group" style="margin-bottom: 5px;">
-                            <label for="new-criterio-carga-desde" style="font-weight: 600; font-size: 0.9rem;">Fecha Carga</label>
+                            <label for="new-criterio-carga-desde" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">Fecha Carga <span style="color: #F47C2C;">*</span></label>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <input type="date" id="new-criterio-carga-desde" class="card-input">
-                                <input type="date" id="new-criterio-carga-hasta" class="card-input">
+                                <div style="display: flex; flex-direction: column;">
+                                    <span style="font-size: 0.85em; color: #666; margin-bottom: 2px;">Desde</span>
+                                    <input type="date" id="new-criterio-carga-desde" class="card-input" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">
+                                </div>
+                                <div style="display: flex; flex-direction: column;">
+                                    <span style="font-size: 0.85em; color: #666; margin-bottom: 2px;">Hasta</span>
+                                    <input type="date" id="new-criterio-carga-hasta" class="card-input" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="new-algoritmo">Algoritmo de consenso</label>
-                    <select id="new-algoritmo" class="card-select">
+                    <label for="new-algoritmo" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">Algoritmo de consenso <span style="color: #F47C2C;">*</span></label>
+                    <select id="new-algoritmo" class="card-select" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">
                         <option value="multiples-menciones">Multiples menciones</option>
                         <option value="mayoria-simple" selected>Mayoría simple</option>
                         <option value="absoluta">Absoluta</option>
@@ -250,8 +262,11 @@
             </form>
 
             <div class="modal-actions">
-                <button id="cancel-add" class="modal-btn modal-btn-secondary">Cancelar</button>
-                <button id="confirm-add" class="modal-btn modal-btn-primary">Crear Colección</button>
+                <div style="display: flex; align-items: center; width: 100%; justify-content: flex-start;">
+                    <span style="font-family: 'Montserrat', Arial, sans-serif; font-size: 0.85rem; font-weight: bold; color: #F47C2C; margin-right: 18px;">* campos obligatorios</span>
+                    <button id="cancel-add" class="modal-btn modal-btn-secondary" style="margin-left: auto;">Cancelar</button>
+                    <button id="confirm-add" class="modal-btn modal-btn-primary" style="margin-left: 12px;">Crear Colección</button>
+                </div>
             </div>
         </div>
     </div>
