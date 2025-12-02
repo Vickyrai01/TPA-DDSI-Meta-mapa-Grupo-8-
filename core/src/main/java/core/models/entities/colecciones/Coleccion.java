@@ -109,6 +109,7 @@ public class Coleccion {
           case ABSOLUTO -> this.setAlgoritmoConsenso(new StrategyAbsoluta());
           case MAYORIA_SIMPLE -> this.setAlgoritmoConsenso(new StrategyMayoriaSimple());
           case MULTIPLES_MENCIONES -> this.setAlgoritmoConsenso(new StrategyMultiplesMenciones());
+          case null -> this.setAlgoritmoConsenso(null);
        }
     }
     public AlgoritmoConsenso getAlgoritmoConsenso() {return algoritmoConsenso;}

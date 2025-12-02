@@ -101,11 +101,46 @@
                             </div>
                             <!-- Selector de algoritmo de consenso en modo edición (igual que creación) -->
                             <div class="form-group edit-mode" style="margin-bottom: 16px;">
-                                <label for="algoritmoConsensoEdit" style="font-weight: 600; font-size: 0.95rem;">Algoritmo de consenso</label>
-                                <select name="algoritmoConsensoEdit" class="card-select" style="margin-top: 4px;">
-                                    <option value="multiples-menciones">Multiples menciones</option>
-                                    <option value="mayoria-simple">Mayoría simple</option>
-                                    <option value="absoluta">Absoluta</option>
+                                <label th:for="${'algoritmoConsensoEdit-' + c.id()}"
+                                       style="font-weight: 600; font-size: 0.95rem;">Algoritmo de consenso</label>
+
+                                <select th:id="${'algoritmoConsensoEdit-' + c.id()}"
+                                        name="algoritmoConsensoEdit"
+                                        class="card-select"
+                                        style="margin-top: 4px;">
+
+                                    <!-- Opción para dejarlo NULO (Sin algoritmo) -->
+                                    <option value="SIN"
+                                            th:selected="${c.algoritmoConsenso() == 'SIN'}">
+                                        Sin algoritmo</option>
+
+                                    <!-- Opciones con selección dinámica -->
+                                    <option value="MULTIPLES_MENCIONES"
+                                            th:selected="${c.algoritmoConsenso() == 'MULTIPLES_MENCIONES'}">
+                                        Multiples menciones
+                                    </option>
+                                    <option value="MAYORIA_SIMPLE"
+                                            th:selected="${c.algoritmoConsenso() == 'MAYORIA_SIMPLE'}">
+                                        Mayoría simple
+                                    </option>
+                                    <option value="ABSOLUTO"
+                                            th:selected="${c.algoritmoConsenso() == 'ABSOLUTO'}">
+                                        Absoluto
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="card-field">
+                                <strong>Modo de Navegación:</strong>
+
+                                <p class="view-mode"
+                                   th:text="${c.modoDeNavegacion()}">IRRESTRICTA</p>
+
+                                <select name="modoDeNavegacionEdit" class="card-select edit-mode">
+                                    <option value="IRRESTRICTA"
+                                            th:selected="${c.modoDeNavegacion() == 'IRRESTRICTA'}">Irrestricta</option>
+                                    <option value="CURADA"
+                                            th:selected="${c.modoDeNavegacion() == 'CURADA'}">Curada</option>
                                 </select>
                             </div>
 
@@ -121,6 +156,14 @@
                                 <p class="view-mode"><span th:text="${c.cantidadHechos()}">0</span></p>
                                 <p class="card-input edit-mode" style="background: #f3f4f6; color: #6b7280; cursor: not-allowed;"
                                    th:text="${c.cantidadHechos()}"></p>
+                            </div>
+
+                            <div class="card-field">
+                                <strong>Cantidad de hechos visibles:</strong>
+                                (modo de navegación curado, puede estar desactualizado)
+                                <p class="view-mode"><span th:text="${c.cantidadHechosVisibles()}">0</span></p>
+                                <p class="card-input edit-mode" style="background: #f3f4f6; color: #6b7280; cursor: not-allowed;"
+                                   th:text="${c.cantidadHechosVisibles()}"></p>
                             </div>
                         </div>
                     </article>

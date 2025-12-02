@@ -2,10 +2,8 @@ package application.service;
 
 import application.dto.ColeccionDTO;
 import application.dto.HechoDTO;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 import java.util.List;
@@ -75,7 +73,7 @@ public class ColeccionService {
     }
 
     //VER
-    public boolean patchColeccion(Integer id, String nuevoTitulo, String nuevaDescripcion, Object fuentes, String algoritmoConsenso) {
+    public boolean patchColeccion(Integer id, String nuevoTitulo, String nuevaDescripcion, Object fuentes, String algoritmoConsenso, String modoDeNavegacion) {
         Map<String, Object> body = new HashMap<>();
         if (nuevoTitulo != null && !nuevoTitulo.isBlank()) {
             body.put("titulo", nuevoTitulo);
@@ -88,6 +86,9 @@ public class ColeccionService {
         }
         if (algoritmoConsenso != null && !algoritmoConsenso.isBlank()) {
             body.put("algoritmoConsenso", algoritmoConsenso);
+        }
+        if (modoDeNavegacion != null && !modoDeNavegacion.isBlank()) {
+            body.put("modoDeNavegacion", modoDeNavegacion);
         }
 
         try {

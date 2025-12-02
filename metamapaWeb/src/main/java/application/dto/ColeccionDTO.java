@@ -1,5 +1,7 @@
 package application.dto;
 
+import java.util.List;
+
 public record ColeccionDTO(
         Integer id,
         String titulo,
@@ -8,7 +10,7 @@ public record ColeccionDTO(
         Object hechos,
         Object hechosVisibles,
         String identificadorHandle,
-        Object fuentes,
+        List<Integer> fuentes,
         Integer cantidadHechos,
         Integer cantidadHechosVisibles,
         String algoritmoConsenso,
