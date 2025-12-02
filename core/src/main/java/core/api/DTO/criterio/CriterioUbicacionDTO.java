@@ -1,5 +1,8 @@
 package core.api.DTO.criterio;
 
+import core.models.entities.colecciones.criterios.CriterioUbicacion;
+import core.models.entities.hecho.Coordenadas;
+
 public class CriterioUbicacionDTO extends CriterioDTO{
     private Double latitud;
     private Double longitud;
@@ -10,6 +13,12 @@ public class CriterioUbicacionDTO extends CriterioDTO{
         super(id);
         this.latitud = latitud;
         this.longitud = longitud;
+    }
+
+    @Override
+    public CriterioUbicacion toEntity(){
+        Coordenadas coordenadas = new Coordenadas(latitud,longitud);
+        return new CriterioUbicacion(coordenadas);
     }
 
     public Double getLatitud() { return latitud; }

@@ -12,6 +12,11 @@ public class CriterioDescripcionDTO extends CriterioDTO {
         this.palabraClave = descripcion;
     }
 
+    @Override
+    public CriterioDescripcion toEntity(){
+        return new CriterioDescripcion(palabraClave);
+    }
+
     public String getPalabraClave() {return palabraClave;}
     public void setPalabraClave(String clave) {this.palabraClave = clave; }
 }

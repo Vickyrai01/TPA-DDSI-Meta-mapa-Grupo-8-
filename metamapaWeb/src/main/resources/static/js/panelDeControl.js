@@ -161,13 +161,32 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // 4. Preparar el 'payload' final
+    // 4. Algoritmo de consenso (nuevo)
+    const algoritmoSelect = document.getElementById('new-algoritmo');
+    const algoritmoConsenso = algoritmoSelect ? algoritmoSelect.value : null;
+    // O sea: "SIN", "MULTIPLES_MENCIONES", "MAYORIA_SIMPLE", "ABSOLUTO"
+
+    // 5. Modo de navegación (nuevo)
+    const modoSelect = document.getElementById('new-modoNavegacion');
+    const modoDeNavegacion = modoSelect ? modoSelect.value : null;
+    // "IRRESTRICTA" o "CURADA"
+
+    // Regla de negocio
+    if (modoDeNavegacion === 'CURADA' &&
+        (!algoritmoConsenso || algoritmoConsenso === 'SIN')) {
+      alert('Las colecciones CURADAS necesitan un algoritmo de consenso (no puede ser "Sin algoritmo").');
+      return;
+    }
+
+    // 6. Preparar el 'payload' final
     const payload = {
       titulo: nombre,
       descripcionColeccion: info,
       hechos: [],
-      fuente: fuentesSeleccionadas,
-      criterioDePertenencia: criterios // <-- AHORA ENVIAMOS TODOS LOS CRITERIOS
+      fuentes: fuentesSeleccionadas,
+      criterioDePertenencia: criterios,
+      algoritmoConsenso: algoritmoConsenso,
+      modoDeNavegacion: modoDeNavegacion
     };
 
     console.log("Enviando payload:", JSON.stringify(payload)); // Para depurar
@@ -282,6 +301,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const modoViewContainer = modoSelect ? modoSelect.previousElementSibling : null;
 
     const modoNavegacion = modoSelect ? modoSelect.value : null;
+
+    if (modoNavegacion === 'CURADA' &&
+        (!algoritmoConsenso || algoritmoConsenso === 'SIN')) {
+      alert('Las colecciones CURADAS necesitan un algoritmo de consenso (no puede ser "Sin algoritmo").');
+      return;
+    }
 
     // 5. Preparar Headers con Token CSRF
     const token = getCsrfToken();

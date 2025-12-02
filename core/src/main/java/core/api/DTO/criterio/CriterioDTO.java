@@ -34,7 +34,7 @@ public abstract class CriterioDTO {
         this.id = id;
     }
 
-    //public abstract Criterio toEntity();
+    public abstract Criterio toEntity();
 
     public static CriterioDTO from(Criterio criterio) {
         if (criterio instanceof CriterioCategoria c) {

@@ -394,6 +394,25 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                         .add(idFuente);
             }
 
+            // CRITERIOS DE CADA COLECCIÓN
+            List<Object[]> rowsCriterios = em.createQuery("""
+                SELECT c.id, crit
+                FROM coleccion c
+                JOIN c.criterioDePertenencia crit
+                ORDER BY c.id
+            """, Object[].class).getResultList();
+
+            Map<Integer, List<core.api.DTO.criterio.CriterioDTO>> criteriosPorColeccion = new HashMap<>();
+
+            for (Object[] r : rowsCriterios) {
+                Integer idColeccion = (Integer) r[0];
+                Criterio crit       = (Criterio) r[1];
+
+                criteriosPorColeccion
+                        .computeIfAbsent(idColeccion, k -> new ArrayList<>())
+                        .add(core.api.DTO.criterio.CriterioDTO.from(crit));
+            }
+
             // ARMAR DTOS
             List<ColeccionDTO> dtos = new ArrayList<>(bases.size());
             for (Object[] b : bases) {
@@ -402,7 +421,7 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                 String  descripcion = (String)  b[2];
                 String  handle      = (String)  b[3];
 
-                // 👉 tipos reales que vienen del JPQL
+                // tipos reales que vienen del JPQL
                 ModoDeNavegacion modo          = (ModoDeNavegacion) b[4];      // puede ser null
                 AlgoritmoConsenso algoritmoObj = (AlgoritmoConsenso) b[5];     // puede ser null
 
@@ -440,10 +459,15 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                         Math.toIntExact(conteosVisibles.getOrDefault(id, 0L))
                 );
 
+                // ids de las fuentes
                 dto.setFuentes(
                         fuentesPorColeccion.getOrDefault(id, new ArrayList<>())
                 );
 
+                // criterios
+                dto.setCriterioDePertenencia(
+                        criteriosPorColeccion.getOrDefault(id, new ArrayList<>())
+                );
 
                 dtos.add(dto);
             }
@@ -527,5 +551,51 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
         }
     }
 
+    @Override
+    public void delete(Coleccion entity) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            DBUtils.comenzarTransaccion(em);
+
+            // 1. Re-attach la entidad si es necesario para poder acceder a sus colecciones
+            Coleccion managed = em.contains(entity) ? entity : em.merge(entity);
+
+            // 2. Guardamos los criterios asociados ANTES de borrar la colección
+            // (Hacemos una copia de la lista para no tener problemas de concurrencia)
+            List<Criterio> criteriosAsociados = new ArrayList<>(managed.getCriterioDePertenencia());
+
+            // 3. Borramos la colección
+            // Esto eliminará la colección y las filas de unión en 'coleccion_criterio'
+            em.remove(managed);
+
+            // Hacemos flush para que la BD actualice la tabla intermedia inmediatamente
+            em.flush();
+
+            // 4. Verificamos "huérfanos": ¿Quedó algún criterio suelto?
+            for (Criterio c : criteriosAsociados) {
+                // Contamos cuántas colecciones siguen usando este criterio específico
+                Long count = em.createQuery(
+                                "SELECT COUNT(c) FROM coleccion c JOIN c.criterioDePertenencia cr WHERE cr.id = :id",
+                                Long.class)
+                        .setParameter("id", c.getId())
+                        .getSingleResult();
+
+                // Si nadie más lo usa (count == 0), lo borramos
+                if (count == 0) {
+                    Criterio criterioABorrar = em.find(Criterio.class, c.getId());
+                    if (criterioABorrar != null) {
+                        em.remove(criterioABorrar);
+                    }
+                }
+            }
+
+            DBUtils.commit(em);
+        } catch (RuntimeException ex) {
+            DBUtils.rollback(em);
+            throw ex;
+        } finally {
+            try { em.close(); } catch (Exception ignore) {}
+        }
+    }
 
 }

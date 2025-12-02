@@ -46,11 +46,11 @@ public class PatchColeccionHandler implements Handler {
             coleccionesRepository.update(coleccion);
         }
 
-        if (dto .criterioDePertenencia != null) {
-            List<Criterio> criterios = new ArrayList<>();
-            for (CriterioDTO criterioDTO : (List<CriterioDTO>) dto.criterioDePertenencia) {
+        if (dto.criterioDePertenencia != null) {
+            List<Criterio> criterios = dto.criterioDePertenencia.stream()
+                    .map(core.api.DTO.criterio.CriterioDTO::toEntity)
+                    .toList();
 
-            }
             coleccion.setCriterioDePertenencia(criterios);
             coleccionesRepository.update(coleccion);
         }
