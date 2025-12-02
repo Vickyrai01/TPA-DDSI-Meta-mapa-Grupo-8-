@@ -7,11 +7,11 @@ import core.api.handlers.colecciones.PatchAgregarFuentesColeccionHandler;
 import core.models.agregador.ConfigLoader;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
-import core.models.agregador.HechoAIntegrarDTO;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -25,25 +25,53 @@ public class PostHechoHandler implements Handler {
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
-        HechoAIntegrarDINAMICO dto = context.bodyAsClass(HechoAIntegrarDINAMICO.class);
-        System.out.println("Creando hecho: " + context.body());
+        try {
+            HechoAIntegrarDINAMICO dto = context.bodyAsClass(HechoAIntegrarDINAMICO.class);
+            System.out.println("Creando hecho: " + context.body());
 
 
-        HechoAIntegrarDINAMICO hechoDTO = new HechoAIntegrarDINAMICO(
-                dto.getTitulo(),
-                dto.getDescripcion(),
-                dto.getCategoria(),
-                dto.getLatitud(),
-                dto.getLongitud(),
-                dto.getFechaSuceso(),
-                dto.getEtiquetas(),
-                dto.getContribuyente(),
-                dto.getMultimedia()
-        );
+            HechoAIntegrarDINAMICO hechoDTO = new HechoAIntegrarDINAMICO(
+                    dto.getTitulo(),
+                    dto.getDescripcion(),
+                    dto.getCategoria(),
+                    dto.getLatitud(),
+                    dto.getLongitud(),
+                    dto.getFechaSuceso(),
+                    dto.getEtiquetas(),
+                    dto.getContribuyente(),
+                    dto.getMultimedia()
+            );
+            validarNuevoHecho(hechoDTO);
 
-        validarNuevoHecho(hechoDTO);
-        enviarHechoAlCargador(hechoDTO);
-        context.status(201);
+            HttpResponse<String> responseCargador = enviarHechoAlCargador(hechoDTO);
+            int statusCargador = responseCargador.statusCode();
+            String bodyCargador = responseCargador.body();
+
+            if (statusCargador == 201) {
+                log.info("Hecho enviado correctamente al cargador");
+                context.status(201);
+            } else if (statusCargador >= 400 && statusCargador < 500) {
+                // Error “del cliente” que mandó el hecho
+               log.warn("Error 4xx del cargador: {} - {}", statusCargador, bodyCargador);
+               context.status(statusCargador).result(bodyCargador);
+            } else {
+                // Error servidor cargador
+                log.error("Error del cargador: {} - {}", statusCargador, bodyCargador);
+                context.status(502).result("Error al registrar el hecho en el cargador");
+            }
+        } catch (IllegalArgumentException e) {
+            // Validación del propio core
+            log.warn("Validación fallida al crear hecho: {}", e.getMessage());
+            context.status(400).result(e.getMessage());
+        } catch (IOException | InterruptedException e) {
+            // Problemas de red / HTTP client
+            log.error("Error de comunicación con el cargador", e);
+            context.status(502).result("Error de comunicación con el cargador de hechos");
+        } catch (Exception e) {
+            // Cualquier otra cosa
+            log.error("Error inesperado al crear hecho", e);
+            context.status(500).result("Error interno del servidor");
+        }
     }
 
     private void validarNuevoHecho(HechoAIntegrarDINAMICO hecho) {
@@ -52,7 +80,7 @@ public class PostHechoHandler implements Handler {
         }
     }
 
-    private void enviarHechoAlCargador(HechoAIntegrarDINAMICO hecho) throws JsonProcessingException {
+    private HttpResponse<String> enviarHechoAlCargador(HechoAIntegrarDINAMICO hecho) throws IOException, InterruptedException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         String jsonHecho = this.hechoAJson(hecho);
@@ -74,20 +102,7 @@ public class PostHechoHandler implements Handler {
                 )
                 .POST(HttpRequest.BodyPublishers.ofString(jsonHecho))
                 .build();
-
-        try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            int status = response.statusCode();
-            String responseBody = response.body();
-
-            if (status != 201) {
-                throw new RuntimeException("Error en la llamada HTTP (" + status + "): " + responseBody);
-            }
-            log.info("Hecho enviada al cargador: " + hecho.getTitulo());
-        } catch (Exception e) {
-            log.info("Error al enviar Hecho " + hecho + ": " + e.getMessage());
-        }
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
     private String hechoAJson(HechoAIntegrarDINAMICO hechoAIntegrarDTO){
