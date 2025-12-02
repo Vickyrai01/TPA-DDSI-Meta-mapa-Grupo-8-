@@ -101,8 +101,8 @@
                             </div>
                             <!-- Selector de algoritmo de consenso en modo edición (igual que creación) -->
                             <div class="form-group edit-mode" style="margin-bottom: 16px;">
-                                <label for="algoritmoConsensoEdit" style="font-weight: 600; font-size: 0.95rem;">Algoritmo de consenso</label>
-                                <select name="algoritmoConsensoEdit" class="card-select" style="margin-top: 4px;">
+                                <label for="algoritmoConsensoEditSelect" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">Algoritmo de consenso <span style="color: #F47C2C;">*</span></label>
+                                <select id="algoritmoConsensoEditSelect" name="algoritmoConsensoEdit" class="card-select" style="margin-top: 4px; font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">
                                     <option value="multiples-menciones">Multiples menciones</option>
                                     <option value="mayoria-simple">Mayoría simple</option>
                                     <option value="absoluta">Absoluta</option>
@@ -167,7 +167,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="new-info" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">Información</label>
+                    <label for="new-info" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">Descripción <span style="color: #F47C2C;">*</span></label>
                     <input type="text" id="new-info" class="card-input" placeholder="Info, cantidad hechos, etc." style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">
                 </div>
 
@@ -204,7 +204,7 @@
                         </div>
 
                         <div class="form-group" style="margin-bottom: 5px;">
-                            <label for="new-criterio-descripcion" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">DESCRIPCIÓN:</label>
+                            <label for="new-criterio-descripcion" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">DESCRIPCIÓN: <span style="color: #F47C2C;">*</span></label>
                             <input type="text" id="new-criterio-descripcion" class="card-input" placeholder="Ej: perro" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 1rem; font-weight: bold;">
                         </div>
 
@@ -262,11 +262,8 @@
             </form>
 
             <div class="modal-actions">
-                <div style="display: flex; align-items: center; width: 100%; justify-content: flex-start;">
-                    <span style="font-family: 'Montserrat', Arial, sans-serif; font-size: 0.85rem; font-weight: bold; color: #F47C2C; margin-right: 18px;">* campos obligatorios</span>
-                    <button id="cancel-add" class="modal-btn modal-btn-secondary" style="margin-left: auto;">Cancelar</button>
-                    <button id="confirm-add" class="modal-btn modal-btn-primary" style="margin-left: 12px;">Crear Colección</button>
-                </div>
+                <button id="cancel-add" class="modal-btn modal-btn-secondary">Cancelar</button>
+                <button id="confirm-add" class="modal-btn modal-btn-primary">Crear Colección</button>
             </div>
         </div>
     </div>
