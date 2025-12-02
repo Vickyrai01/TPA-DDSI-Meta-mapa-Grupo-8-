@@ -111,7 +111,6 @@ public class ServicioDeAgregacion {
 
     private void agregarHechosAColecciones(Coleccion coleccion)
     {
-            System.out.println("Si esto es lo ultimo, se traba el get");
             List<Criterio> criterios = coleccion.getCriterioDePertenencia();
             System.out.println("Criterios de pertenencia: " + criterios.size());
             /*
@@ -120,9 +119,7 @@ public class ServicioDeAgregacion {
                 .toList();
             List<Hecho> hechosFiltradosFuentes = hechosLimpios.stream().filter(h -> linkFuentesDeColeccion.contains(h.getIdFuente())).toList();
             */
-            System.out.println("Antes del filtrado");
             List<Hecho> hechosFiltradosCriterio = filtradorCriterios.filtrarHechos(hechosLimpios, criterios);
-            System.out.println("PASE EL FILTRADO");
             /*
             for (Hecho hecho : hechosFiltradosCriterio) {
                if(!coleccion.hechoYaExistenteEnColeccion(hecho.getHash())){
@@ -141,7 +138,6 @@ public class ServicioDeAgregacion {
          eliminarSpam(hechosAIntegrar);
          eliminarDuplicados(hechosAIntegrar);
          normalizadorCategoria.estandarizarCategoriasDuplicadas(hechosAIntegrar);
-
     }
 
     //EL QUE SE USA!!

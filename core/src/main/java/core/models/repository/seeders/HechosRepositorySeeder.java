@@ -87,31 +87,31 @@ public class HechosRepositorySeeder {
         Hecho hecho1 = new Hecho(coordenadas1, categoriaIncendio, null,
                 null, null, Estado.ACEPTADO, contribuyente2,
                 LocalDate.now().minusDays(2), LocalDate.now().minusDays(3),
-                TipoFuente.ESTATICA, null, "No hubo heridos, fue por una sartén", "Incendio en casa", "C1",1);
+                TipoFuente.ESTATICA, null, "No hubo heridos, fue por una sartén", "Incendio en casa", null,1);
         String hash1 = generarHash(hecho1.getTitulo()+hecho1.getDescripcion()+hecho1.getCategoria()+hecho1.getUbicacion().getLatitud()+hecho1.getUbicacion().getLongitud());
         hecho1.setHash(hash1);
         Hecho hecho2 = new Hecho(coordenadas2, categoriaChoque, null,
                 null, null, Estado.ACEPTADO, contribuyente3,
                 LocalDate.now().minusDays(2), LocalDate.now().minusDays(3),
-                TipoFuente.ESTATICA, null, "Un perro cruzo por la calle y frenó de golpe, todos a salvo.", "Choque entre moto y gol", "C1",1);
+                TipoFuente.ESTATICA, null, "Un perro cruzo por la calle y frenó de golpe, todos a salvo.", "Choque entre moto y gol", null,1);
         String hash2 = generarHash(hecho2.getTitulo()+hecho2.getDescripcion()+hecho2.getCategoria()+hecho2.getUbicacion().getLatitud()+hecho2.getUbicacion().getLongitud());
         hecho2.setHash(hash2);
         Hecho hecho3 = new Hecho(coordenadas5, categoriaIncendio, null,
                 null, null, Estado.ACEPTADO, null,
                 LocalDate.now().minusDays(1), LocalDate.now().minusDays(2),
-                TipoFuente.ESTATICA, null, "Causa desconocida", "Departamento en un edicio", "C3",1);
+                TipoFuente.PROXY, null, "Causa desconocida", "Departamento en un edicio", null,2);
         String hash3 = generarHash(hecho3.getTitulo()+hecho3.getDescripcion()+hecho3.getCategoria()+hecho3.getUbicacion().getLatitud()+hecho3.getUbicacion().getLongitud());
         hecho3.setHash(hash3);
         Hecho hecho4 = new Hecho(coordenadas3, categoriaChoque, null,
                 null, null, Estado.ACEPTADO, contribuyente1,
                 LocalDate.now().minusDays(1), LocalDate.now().minusDays(2),
-                TipoFuente.ESTATICA, List.of(etiqueta1), "Parecía que el conductor iba borracho, se llevó puesto una maceta que estaba en la calle", "Choque con maceta", "C2",1);
+                TipoFuente.PROXY, List.of(etiqueta1), "Parecía que el conductor iba borracho, se llevó puesto una maceta que estaba en la calle", "Choque con maceta", null,2);
         String hash4 = generarHash(hecho4.getTitulo()+hecho4.getDescripcion()+hecho4.getCategoria()+hecho4.getUbicacion().getLatitud()+hecho4.getUbicacion().getLongitud());
         hecho4.setHash(hash4);
         Hecho hecho5 = new Hecho( coordenadas4, categoriaRobo, null,
                 null, null, Estado.ACEPTADO, null,
                 LocalDate.now().minusDays(5), LocalDate.now().minusDays(6),
-                TipoFuente.ESTATICA, List.of(etiqueta2), "Se robó unas manzanas y bolsas", "Hurto en una verdulería", "C4",1);
+                TipoFuente.ESTATICA, List.of(etiqueta2), "Se robó unas manzanas y bolsas", "Hurto en una verdulería", null,1);
         String hash5 = generarHash(hecho5.getTitulo()+hecho5.getDescripcion()+hecho5.getCategoria()+hecho5.getUbicacion().getLatitud()+hecho5.getUbicacion().getLongitud());
         hecho5.setHash(hash5);
         hechosRepository.add(hecho1);
