@@ -379,6 +379,16 @@
 
   <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function () {
+      // Limitar fecha máxima al día actual
+      const fechaInput = document.getElementById('fechaSuceso');
+      if (fechaInput) {
+        const hoy = new Date();
+        const yyyy = hoy.getFullYear();
+        const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+        const dd = String(hoy.getDate()).padStart(2, '0');
+        const maxDate = `${yyyy}-${mm}-${dd}`;
+        fechaInput.setAttribute('max', maxDate);
+      }
       // Validación para obligar a seleccionar ubicación en el mapa
       const form = document.getElementById('form-reportar');
       if (form) {
