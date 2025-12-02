@@ -263,10 +263,10 @@
 
 <div id="contenido-reportar">
   <div class="report-wrapper">
-    <div class="report-card">
+    <div class="report-card" th:switch="${estado}">
 
       <!-- VISTA DE ÉXITO -->
-      <div th:if="${ok}" class="success-state">
+      <div th:case="'ok'" class="success-state">
         <div class="success-icon">
           <i class="fa-solid fa-circle-check"></i>
         </div>
@@ -280,12 +280,24 @@
         </div>
       </div>
 
-      <!-- FORMULARIO (solo si NO hay ok) -->
-      <form th:if="${!ok}" th:action="@{/reportar}" method="post" id="form-reportar">
-        <div class="report-header">REPORTAR SUCESO</div>
-        <div style="padding: 0.5rem 1rem; color: #F47C2C; font-size: 0.98rem;">
-          <span style="font-weight: bold;">*</span> Campos obligatorios
+      <!-- VISTA DE ERROR -->
+      <div th:case="'error'" class="success-state">
+        <div class="success-icon" style="background: rgba(239,68,68,0.1); color:#ef4444;">
+          <i class="fa-solid fa-triangle-exclamation"></i>
         </div>
+        <h2>Algo salió mal</h2>
+        <p th:text="${mensajeError != null} ? ${mensajeError} : 'No se pudo enviar el reporte.'">
+          No se pudo enviar el reporte.
+        </p>
+        <div class="success-actions">
+          <a th:href="@{/reportar}" class="btn-primary">Volver a intentar</a>
+          <a th:href="@{/}" class="btn-secondary">Volver al inicio</a>
+        </div>
+      </div>
+
+      <!-- FORMULARIO (solo si NO hay ok) -->
+      <form th:case="*" th:action="@{/reportar}" method="post" id="form-reportar" >
+        <div class="report-header">REPORTAR SUCESO</div>
         <div class="report-body">
           <!-- fila 1: titulo / categoria -->
           <div class="form-grid">
@@ -320,12 +332,9 @@
                      placeholder="Describí la categoría">
             </div>
 
-
-
             <!-- descripción ocupa todo -->
             <div class="form-group" style="grid-column: 1 / -1;">
-              <label for="descripcion">Descripción <span style="color: orange;">*</span></label>
-              <textarea id="descripcion" name="descripcion" required
+
                         placeholder="Contanos qué pasó..."></textarea>
             </div>
 
@@ -359,10 +368,13 @@
             <input type="hidden" id="longitud" name="longitud" required>
           </div>
 
+          <div style="color: #F47C2C; font-size: 0.98rem;">
+            <span style="font-weight: bold;">*</span> Campos obligatorios
+          </div>
+
           <div class="report-actions">
             <button type="submit" class="btn-primary">Reportar</button>
           </div>
-
         </div>
     </div>
     </form>
