@@ -205,7 +205,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if (value === "API REST") {
       linkGroup.style.display = "block";
       linkInput.required = true;
-
     } else if (value === "CSV") {
       fileGroup.style.display = "block";
       fileInput.required = true;
@@ -215,12 +214,16 @@ document.addEventListener("DOMContentLoaded", function () {
   formatoInput.addEventListener("input", actualizarCamposFormato);
 
   // Botón que abre el input file oculto
-  fileButton.addEventListener("click", function () {
-    fileInput.click();
-  });
+  if (fileButton) {
+    fileButton.addEventListener("click", function () {
+      fileInput.click();
+    });
+  }
 
   // Mostrar nombre del archivo
-  fileInput.addEventListener("change", function () {
-    fileName.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : "";
-  });
+  if (fileInput && fileName) {
+    fileInput.addEventListener("change", function () {
+      fileName.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : "";
+    });
+  }
 });

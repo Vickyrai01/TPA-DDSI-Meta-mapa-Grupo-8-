@@ -36,7 +36,7 @@ public class FuenteService {
 
     public ResponseEntity<Void> eliminarFuente(Integer idFuente) {
         return metamapaApiADMIN.post()
-                .uri("/fuentes/{id}/eliminar", idFuente) // o "/fuente/{id}/eliminar" según tu API
+                .uri("/fuentes/{id}/eliminar", idFuente)
                 .retrieve()
                 .toBodilessEntity()
                 .block();
