@@ -14,6 +14,7 @@ Promise.all([
         `<b>Solicitudes de eliminación aceptadas</b><br>${spam["solicitudes spam"]} / ${spam["total de solicitudes"]}`;
 });
 
+
 // =============== Gráficos principales ===============
 fetch(`${API_BASE}/provincia-con-mas-hechos`).then(r=>r.json()).then(provincias => {
     new Chart(document.getElementById('hechos-por-provincia'), {
@@ -26,21 +27,14 @@ fetch(`${API_BASE}/provincia-con-mas-hechos`).then(r=>r.json()).then(provincias 
                 backgroundColor: [
                     '#2B76B9', '#23BFA9', '#77C5D5', '#FFB85F', '#82C0E2', '#146886', '#DF7373', '#E5F3FA'
                 ],
-                borderRadius: 12, // <--- hace las barras redondeadas
-                borderSkipped: false, // <--- redondeado también abajo
+                borderRadius: 12,
+                borderSkipped: false,
             }]
         },
         options: {
             responsive:true,
             plugins: {
-                legend: { display: false },
-                tooltip: {
-                    backgroundColor: '#2B76B9',
-                    titleColor: '#fff',
-                    bodyColor: '#fff',
-                    borderColor: '#23BFA9',
-                    borderWidth: 1.5
-                }
+                legend: { display: false }
             },
             scales: {
                 x: {
@@ -151,3 +145,40 @@ filtroSel.addEventListener('change', function() {
         });
     });
 });
+// Ejemplo de labels típicos
+const provinciasLabels = [""];
+const horasLabels = [""];
+
+// Iniciar gráficos con labels y data en cero:
+function initEmptyCategoryCharts() {
+    if (chartProvCat) chartProvCat.destroy();
+    chartProvCat = new Chart(document.getElementById('hechos-por-provincia-cat'), {
+        type: 'bar',
+        data: {
+            labels: provinciasLabels,
+            datasets: [{
+                label: 'Hechos',
+                data: provinciasLabels.map(_ => 0), // barras en 0
+                backgroundColor: '#23BFA9'
+            }]
+        },
+        options:{responsive:true, plugins:{legend:{display:false}}}
+    });
+
+    if (chartHoraCat) chartHoraCat.destroy();
+    chartHoraCat = new Chart(document.getElementById('hechos-por-hora-cat'), {
+        type:'bar',
+        data: {
+            labels: horasLabels,
+            datasets: [{
+                label:'Hechos',
+                data: horasLabels.map(_ => 0),
+                backgroundColor:'#FFB85F'
+            }]
+        },
+        options:{responsive:true, plugins:{legend:{display:false}}}
+    });
+}
+
+// Llamar al cargar la página
+initEmptyCategoryCharts();
