@@ -246,31 +246,22 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // --- Helper para leer el token CSRF del HTML ---
+    // --- Helper para obtener el token CSRF ---
     const getCsrfToken = () => {
       const tokenInput = document.querySelector('input[name="_csrf"]');
       return tokenInput ? tokenInput.value : null;
     };
 
-    // 1. Obtener datos del TÍTULO
+    // 1. Obtener datos Inputs Texto
     const tituloInput = card.querySelector('.card-header .card-input.edit-mode');
     const tituloView  = card.querySelector('.card-header .view-mode');
     const nuevoTitulo = tituloInput ? tituloInput.value.trim() : null;
 
-    // 2. Obtener datos de la DESCRIPCIÓN
     const descInput = card.querySelector('.card-body .card-field:nth-child(1) .card-input.edit-mode');
     const descView  = card.querySelector('.card-body .card-field:nth-child(1) .view-mode');
     const nuevaDesc = descInput ? descInput.value.trim() : null;
 
-    // 3. Actualizar la vista (UI)
-    if (tituloView && nuevoTitulo !== null) {
-      tituloView.textContent = nuevoTitulo;
-    }
-    if (descView && nuevaDesc !== null) {
-      descView.textContent = nuevaDesc;
-    }
-
-    // 3.1. Obtener fuentes seleccionadas en edición
+    // 2. Obtener FUENTES seleccionadas
     const fuentesSeleccionadas = [];
     const checkboxes = card.querySelectorAll('input[name="fuentesSeleccionadasEdit"]:checked');
     checkboxes.forEach((checkbox) => {
@@ -280,44 +271,79 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // 3.2. Obtener algoritmo de consenso seleccionado en edición
+    // 3. Obtener ALGORITMO
     const algoritmoSelect = card.querySelector('select[name="algoritmoConsensoEdit"]');
     const algoritmoConsenso = algoritmoSelect ? algoritmoSelect.value : null;
 
-    // 4. Mandar datos al backend (incluyendo fuentes y algoritmoConsenso)
-    console.log('enviando PATCH...', id, nuevoTitulo, nuevaDesc, fuentesSeleccionadas, algoritmoConsenso);
+    // 4. Obtener MODO DE NAVEGACIÓN (¡Nuevo!)
+    const modoSelect = card.querySelector('select[name="modoDeNavegacionEdit"]');
+    const modoView = card.querySelector('.card-field p.view-mode[th\\:text*="modoDeNavegacion"]'); // Selector aproximado, mejor si le pones ID o clase específica al <p>
+    // O busca el <p> que está justo antes del select en el mismo div
+    const modoViewContainer = modoSelect ? modoSelect.previousElementSibling : null;
+
+    const modoNavegacion = modoSelect ? modoSelect.value : null;
+
+    // 5. Preparar Headers con Token CSRF
+    const token = getCsrfToken();
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    if (token) {
+      headers['X-CSRF-TOKEN'] = token;
+    }
+
+    // 6. Enviar Fetch
+    console.log('Enviando PATCH...', id, {
+      titulo: nuevoTitulo,
+      modo: modoNavegacion,
+      algoritmo: algoritmoConsenso
+    });
+
     fetch(`/admin/colecciones/${id}/modificar`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        // Aquí deberías incluir el token CSRF si tienes Spring Security activado
-      },
+      headers: headers, // <--- Importante: enviar headers con CSRF
       body: JSON.stringify({
         titulo: nuevoTitulo,
         descripcionColeccion: nuevaDesc,
         fuentes: fuentesSeleccionadas,
-        algoritmoConsenso: algoritmoConsenso
+        algoritmoConsenso: algoritmoConsenso,
+        modoDeNavegacion: modoNavegacion
       })
     })
         .then(resp => {
           if (!resp.ok) {
-            console.error('No se pudo guardar la colección');
-            // Si falla, revertimos los cambios visuales (opcional pero recomendado)
-            cancelEdit(card);
-          } else {
-            console.log('Colección actualizada ok');
-            // Si tiene éxito, actualizamos los "valores originales" para el próximo "cancelar"
-            if (tituloInput) card.dataset.originalTitulo = nuevoTitulo;
-            if (descInput) card.dataset.originalDesc = nuevaDesc;
+            console.error('Error al guardar:', resp.status);
+            throw new Error('Error en la respuesta del servidor');
           }
+          return resp; // o resp.json() si el backend devuelve algo
+        })
+        .then(() => {
+          console.log('Colección actualizada ok');
+
+          // Actualizar la vista (View Mode)
+          if (tituloView && nuevoTitulo !== null) tituloView.textContent = nuevoTitulo;
+          if (descView && nuevaDesc !== null) descView.textContent = nuevaDesc;
+
+          // Actualizar texto del Modo de Navegación en la vista
+          // Buscamos el elemento <p> hermano del select para actualizar su texto
+          if (modoSelect && modoSelect.parentElement) {
+            const pView = modoSelect.parentElement.querySelector('.view-mode');
+            if (pView) pView.textContent = modoNavegacion;
+          }
+
+          // Actualizar "Originales" para futura edición
+          if (tituloInput) card.dataset.originalTitulo = nuevoTitulo;
+          if (descInput) card.dataset.originalDesc = nuevaDesc;
+          // (Opcional: guardar también el estado original de los selects para restaurar con Cancelar)
+
+          card.classList.remove('is-editing');
+          adminMainContent?.classList.remove('child-is-editing');
         })
         .catch(err => {
           console.error(err);
-          cancelEdit(card); // Revertir si hay error de red
+          alert('No se pudo guardar la colección. Verifica la consola.');
+          cancelEdit(card); // Revertir cambios visuales
         });
-
-    card.classList.remove('is-editing');
-    adminMainContent?.classList.remove('child-is-editing');
   };
 
   // delegación

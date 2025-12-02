@@ -49,12 +49,19 @@ public class PanelDeControlController {
     ) {
         String titulo = req.get("titulo") != null ? req.get("titulo").toString() : null;
         String desc = req.get("descripcionColeccion") != null ? req.get("descripcionColeccion").toString() : null;
+
         List<Integer> fuentes = req.get("fuentes") instanceof List<?> list
                 ? ((List<?>) list).stream().map(o -> Integer.parseInt(o.toString())).toList()
-                : List.of();
+                : null; // Mejor usar null si no viene, para que el servicio decida qué hacer (o List.of() si quieres vaciarlo)
+
         String algoritmoConsenso = req.get("algoritmoConsenso") != null ? req.get("algoritmoConsenso").toString() : null;
 
-        boolean ok = coleccionService.patchColeccion(id, titulo, desc, fuentes, algoritmoConsenso);  // llama al otro backend
+        // --- AGREGADO: Capturar el Modo de Navegación ---
+        String modoDeNavegacion = req.get("modoDeNavegacion") != null ? req.get("modoDeNavegacion").toString() : null;
+
+        // Llamamos al servicio pasando el nuevo parámetro
+        boolean ok = coleccionService.patchColeccion(id, titulo, desc, fuentes, algoritmoConsenso, modoDeNavegacion);
+
         if (ok) {
             return ResponseEntity.ok().build();
         }

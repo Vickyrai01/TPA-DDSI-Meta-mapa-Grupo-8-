@@ -363,17 +363,35 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                 conteos.put((Integer) r[0], (Long) r[1]);
             }
 
-            // 🔹 CANTIDAD DE HECHOS VISIBLES
+            // CANTIDAD DE HECHOS VISIBLES
             List<Object[]> rowsVisibles = em.createQuery("""
-            SELECT c.id, COUNT(hv)
-            FROM coleccion c
-            LEFT JOIN c.hechosVisibles hv
-            GROUP BY c.id
-        """, Object[].class).getResultList();
+                SELECT c.id, COUNT(hv)
+                FROM coleccion c
+                LEFT JOIN c.hechosVisibles hv
+                GROUP BY c.id
+            """, Object[].class).getResultList();
 
             Map<Integer, Long> conteosVisibles = new HashMap<>();
             for (Object[] r : rowsVisibles) {
                 conteosVisibles.put((Integer) r[0], (Long) r[1]);
+            }
+            // FUENTES DE CADA COLECCIÓN → List<Integer> con IDs
+            List<Object[]> rowsFuentes = em.createQuery("""
+                SELECT c.id, f.id
+                FROM coleccion c
+                JOIN c.fuentes f
+                ORDER BY c.id
+            """, Object[].class).getResultList();
+
+            Map<Integer, List<Integer>> fuentesPorColeccion = new HashMap<>();
+
+            for (Object[] r : rowsFuentes) {
+                Integer idColeccion = (Integer) r[0];
+                Integer idFuente    = (Integer) r[1];
+
+                fuentesPorColeccion
+                        .computeIfAbsent(idColeccion, k -> new ArrayList<>())
+                        .add(idFuente);
             }
 
             // ARMAR DTOS
@@ -421,6 +439,11 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                 dto.setCantidadHechosVisibles(
                         Math.toIntExact(conteosVisibles.getOrDefault(id, 0L))
                 );
+
+                dto.setFuentes(
+                        fuentesPorColeccion.getOrDefault(id, new ArrayList<>())
+                );
+
 
                 dtos.add(dto);
             }

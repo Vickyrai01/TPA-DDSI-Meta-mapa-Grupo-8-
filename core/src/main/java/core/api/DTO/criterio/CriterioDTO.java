@@ -20,6 +20,8 @@ import core.models.entities.colecciones.criterios.*;
 public abstract class CriterioDTO {
     private Integer id;
 
+    public CriterioDTO(){}
+
     public CriterioDTO(Integer id) {
         this.id = id;
     }
@@ -31,6 +33,8 @@ public abstract class CriterioDTO {
     public void setId(Integer id) {
         this.id = id;
     }
+
+    //public abstract Criterio toEntity();
 
     public static CriterioDTO from(Criterio criterio) {
         if (criterio instanceof CriterioCategoria c) {
