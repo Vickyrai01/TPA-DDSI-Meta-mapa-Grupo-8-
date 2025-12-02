@@ -103,7 +103,8 @@ main {
 /* Parte del texto (izquierda) */
 .collection-text {
     flex: 1; /* Ocupa el espacio sobrante */
-    padding: 20px;
+    text-align: center;
+    padding: 1rem 1.25rem;
 }
 
 .collection-text h3 {
