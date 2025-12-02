@@ -41,7 +41,7 @@ public class PanelDeControlFuente {
             @RequestParam("nombre") String nombre,
             @RequestParam("strategyTipoConexion") String formato,          // "API REST" o "CSV"
             @RequestParam(value = "link") String link
-          //  @RequestParam(value = "archivoCsv", required = false) MultipartFile archivoCsv
+            //  @RequestParam(value = "archivoCsv", required = false) MultipartFile archivoCsv
     ) {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> jsonMap = new HashMap<>();
@@ -62,13 +62,12 @@ public class PanelDeControlFuente {
     @PostMapping("/admin/fuentes/{id}/eliminar")
     @ResponseBody
     public ResponseEntity<Void> eliminarFuente(@PathVariable("id") Integer id) {
-
         try {
             fuenteService.eliminarFuente(id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-        e.printStackTrace();
-        return ResponseEntity.status(500).build();
-    }
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
     }
 }
