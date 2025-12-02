@@ -1,4 +1,5 @@
 package cargadorEstatica.application;
+import org.springframework.web.multipart.MultipartFile;
 import utils.DBUtils;
 import javax.persistence.EntityManager;
 
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
+import java.nio.file.*;
 import java.util.List;
 
 @SpringBootApplication
@@ -65,6 +67,40 @@ public class Application {
         if(fuentes.isEmpty()) return ResponseEntity.status(204).build();
         return ResponseEntity.ok(fuentes);
     }
+
+    @PostMapping("/fuentes/{id}/csv")
+    public ResponseEntity<?> subirCsv(
+            @PathVariable("id") Integer fuenteId,
+            @RequestParam("archivoCsv") MultipartFile archivoCsv
+    ) {
+        try {
+            var fuente = repoFuentes.findById(fuenteId);
+            if (fuente == null) {
+                return ResponseEntity.status(404).body("Fuente no encontrada");
+            }
+            // carpeta base, ajustá path según dónde guardes los CSV
+            Path carpeta = Paths.get("cargadorEstatica", "csv");
+            Files.createDirectories(carpeta);
+
+            String nombreArchivo = archivoCsv.getOriginalFilename();
+            if (nombreArchivo == null || nombreArchivo.isBlank()) {
+                nombreArchivo = "fuente_" + fuenteId + ".csv";
+            }
+
+            Path destino = carpeta.resolve(nombreArchivo);
+            Files.copy(archivoCsv.getInputStream(), destino, StandardCopyOption.REPLACE_EXISTING);
+
+            // guardar solo el nombre relativo, que StrategyCSV usa
+            fuente.setLink(nombreArchivo);
+            repoFuentes.save(fuente);
+
+            return ResponseEntity.status(201).body("CSV guardado correctamente");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error al guardar CSV");
+        }
+    }
+
 
 }
 
