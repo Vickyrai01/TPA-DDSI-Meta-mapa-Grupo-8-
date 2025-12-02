@@ -120,7 +120,7 @@
                                 <span class="field-label">Multimedia:</span>
                                 <span class="field-value" th:if="${h.multimedia()!=null and !h.multimedia().isEmpty()}">
                                     <span th:each="m : ${h.multimedia()}">
-                                        <img th:src="@{'/uploads/' + ${m}}" alt="Evidencia" style="max-width: 200px; max-height: 150px; margin: 5px 0; display:block;"/>
+                                        <a th:href="@{'/uploads/' + ${m}}" th:text="${m}" target="_self" style="display:block; margin: 5px 0; color: #ff6600; text-decoration: underline;"/>
                                     </span>
                                 </span>
                                 <span class="field-value muted" th:if="${h.multimedia()==null or h.multimedia().isEmpty()}">
