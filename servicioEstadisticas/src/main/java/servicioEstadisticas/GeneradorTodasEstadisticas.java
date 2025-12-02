@@ -1,4 +1,5 @@
 package servicioEstadisticas;
+import servicioEstadisticas.model.entities.EstadisticasEstaticas;
 import servicioEstadisticas.model.repository.RepositoryServicioEstadisticas;
 
 import java.util.List;
@@ -6,11 +7,9 @@ import java.util.Map;
 
 public class GeneradorTodasEstadisticas {
 
-    private List<Map<String, Object>> provinciaConMasHechos;
-    private List<Map<String, Object>> categoriaMasReportada;
-    private Map<String, Object> cantSolicitudesEliminacion;
-
     public static volatile GeneradorTodasEstadisticas instance;
+
+    private EstadisticasEstaticas estadisticasEstaticas = EstadisticasEstaticas.getInstance();
 
     public static GeneradorTodasEstadisticas getInstance() {
         if (instance == null) {
@@ -23,17 +22,13 @@ public class GeneradorTodasEstadisticas {
         return instance;
     }
 
-    public void actualizarEstadisticas(){
-        this.provinciaConMasHechos = RepositoryServicioEstadisticas.provinciaConMasHechos();
-        this.categoriaMasReportada = RepositoryServicioEstadisticas.categoriaMasReportada();
-        this.cantSolicitudesEliminacion = RepositoryServicioEstadisticas.cantidadSolicitudesEliminacion();
-    }
+    public void actualizarEstadisticas(){ estadisticasEstaticas.actualizarEstadisticas();}
 
-    public List<Map<String, Object>> getProvinciaConMasHechos() {return provinciaConMasHechos;}
+    public List<Map<String, Object>> getProvinciaConMasHechos() {return estadisticasEstaticas.getProvinciaConMasHechos();}
 
-     public List<Map<String, Object>> getCategoriaMasReportada() { return categoriaMasReportada;}
+     public List<Map<String, Object>> getCategoriaMasReportada() { return estadisticasEstaticas.getCategoriaMasReportada();}
 
-    public Map<String, Object> getCantSolicitudesEliminacion() {return cantSolicitudesEliminacion;}
+    public Map<String, Object> getCantSolicitudesEliminacion() {return estadisticasEstaticas.getCantSolicitudesEliminacion();}
 
 
     public List<Map<String, Object>> horarioxCategoria(String categoria) {
