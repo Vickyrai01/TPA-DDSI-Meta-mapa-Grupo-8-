@@ -1,6 +1,10 @@
 package application.controller;
 
 import application.service.FuenteService;
+import application.service.AdminService;
+import org.springframework.security.core.Authentication;
+import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpServletRequest;
 import application.service.SolicitudesEliminacionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,20 +16,31 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class PanelDeControlSolicitudesController {
     private final SolicitudesEliminacionService solicitudesEliminacionService;
+    private final AdminService adminService;
 
-    public PanelDeControlSolicitudesController(SolicitudesEliminacionService solicitudesEliminacionService) {
+    @Autowired
+    public PanelDeControlSolicitudesController(SolicitudesEliminacionService solicitudesEliminacionService, AdminService adminService) {
         this.solicitudesEliminacionService = solicitudesEliminacionService;
+        this.adminService = adminService;
     }
 
     @GetMapping("/admin/solicitudesEliminacion")
-    public String home(Model model) {
+    public String home(Model model, Authentication authentication, HttpServletRequest request, RedirectAttributes ra) {
+        if (!adminService.isAdmin(authentication)) {
+            ra.addFlashAttribute("toastError", "No podes ingresar porque no sos admin :v");
+            return "redirect:/";
+        }
         model.addAttribute("listaDeSolicitudes", solicitudesEliminacionService.getAll());
         return "panelDeControl/panelDeControlSolicitudes";
     }
 
 
     @PostMapping("/admin/solicitudesEliminacion/{id}/rechazar")
-    public String rechazar(@PathVariable("id") Integer id, RedirectAttributes ra) {
+    public String rechazar(@PathVariable("id") Integer id, RedirectAttributes ra, Authentication authentication) {
+        if (!adminService.isAdmin(authentication)) {
+            ra.addFlashAttribute("toastError", "No podes ingresar porque no sos admin :v");
+            return "redirect:/";
+        }
         boolean ok = solicitudesEliminacionService.rechazar(id);
         if (ok) {
             ra.addFlashAttribute("toastOk", "Solicitud rechazada.");
@@ -36,7 +51,11 @@ public class PanelDeControlSolicitudesController {
     }
 
     @PostMapping("/admin/solicitudesEliminacion/{id}/aceptar")
-    public String aceptar(@PathVariable("id") Integer id, RedirectAttributes ra) {
+    public String aceptar(@PathVariable("id") Integer id, RedirectAttributes ra, Authentication authentication) {
+        if (!adminService.isAdmin(authentication)) {
+            ra.addFlashAttribute("toastError", "No podes ingresar porque no sos admin :v");
+            return "redirect:/";
+        }
         boolean ok = solicitudesEliminacionService.aceptar(id);
         if (ok) {
             ra.addFlashAttribute("toastOk", "Solicitud aceptada.");

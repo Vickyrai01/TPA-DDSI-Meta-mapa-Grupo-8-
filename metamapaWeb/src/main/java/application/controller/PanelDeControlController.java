@@ -2,6 +2,9 @@ package application.controller;
 import application.service.FuenteService;
 import application.dto.ColeccionDTO;
 import application.service.ColeccionService;
+import application.service.AdminService;
+import org.springframework.security.core.Authentication;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,14 +19,21 @@ import java.util.Map;
 public class PanelDeControlController {
     private final ColeccionService coleccionService;
     private final FuenteService fuenteService;
+    private final AdminService adminService;
 
-    public PanelDeControlController(ColeccionService coleccionService, FuenteService fuenteService) {
+    @Autowired
+    public PanelDeControlController(ColeccionService coleccionService, FuenteService fuenteService, AdminService adminService) {
         this.coleccionService = coleccionService;
-        this.fuenteService = fuenteService; // <-- AÑADIR ESTO
+        this.fuenteService = fuenteService;
+        this.adminService = adminService;
     }
 
     @GetMapping("/admin/colecciones")
-    public String home(Model model) {
+    public String home(Model model, Authentication authentication, RedirectAttributes ra) {
+        if (!adminService.isAdmin(authentication)) {
+            ra.addFlashAttribute("toastError", "No podes ingresar porque no sos admin :v");
+            return "redirect:/";
+        }
         model.addAttribute("listaDeColecciones", coleccionService.getAll());
         model.addAttribute("listaDeFuentes", fuenteService.getAll());
         return "panelDeControl/panelDeControl";

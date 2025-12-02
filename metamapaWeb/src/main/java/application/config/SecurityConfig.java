@@ -57,6 +57,7 @@ public class SecurityConfig {
                 )
                 // --- FIN DE LA CORRECCIÓN ---
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/admin/**", "/panelDeControl/**").authenticated()
                         .requestMatchers("/perfil").authenticated()
                         .anyRequest().permitAll()
                 )
