@@ -32,14 +32,6 @@ public class Application {
     public static void main(String[] args) {
         repositoryFuentesSeeder.cargarRepos();
         SpringApplication.run(Application.class, args);
-        EntityManager em = DBUtils.getEntityManager();
-        DBUtils.comenzarTransaccion(em);
-
-        Fuente fuentePrueba = new Fuente("Fuente de prueba 1", "incendios_en_san_luis.csv", new StrategyCSV(), "CSV");
-        Fuente fuente2 = new Fuente("Fuente 2", "hechosarevisar.csv", new StrategyCSV(), "CSV");
-        em.persist(fuentePrueba);
-        em.persist(fuente2);
-        DBUtils.commit(em);
     }
 
     @GetMapping("/health")
@@ -57,7 +49,7 @@ public class Application {
     public ResponseEntity<?> agregarFuente(@RequestBody FuenteDTO fuenteDTO) {
         StrategyTipoConexion strategyFuente = obtenerStrategyFuente(fuenteDTO.getTipoFuente());
         if (strategyFuente == null) return ResponseEntity.status(400).body("Tipo de fuente no reconocido");
-        Fuente fuente = new Fuente(null, fuenteDTO.getNombre(), fuenteDTO.getLink(), strategyFuente, fuenteDTO.getTipoFuente());
+        Fuente fuente = new Fuente(fuenteDTO.getNombre(), fuenteDTO.getLink(), strategyFuente, fuenteDTO.getTipoFuente());
         repoFuentes.save(fuente);
         return ResponseEntity.status(201).body("Fuente guardada correctamente");
     }
