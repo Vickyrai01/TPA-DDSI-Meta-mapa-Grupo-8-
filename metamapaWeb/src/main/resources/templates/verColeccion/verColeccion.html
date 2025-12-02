@@ -115,25 +115,33 @@
                                 </span>
                             </div>
 
-                            <!-- Multimedia -->
-
-                            <div class="field" th:if="${h.multimedia()!=null and !h.multimedia().isEmpty()}">
+                            <!-- Multimedia: always show the field label; show content depending on state -->
+                            <div class="field">
                                 <span class="field-label">Multimedia:</span>
-                                <div class="field-value" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 5px;">
+                                <div class="field-value" style="margin-top:5px;">
 
-                                    <div th:each="m : ${h.multimedia()}">
+                                    <!-- Caso: la propiedad es NULL (valor inesperado) -->
+                                    <div th:if="${h.multimedia() == null}" class="muted">Nulo</div>
 
-                                        <img th:if="${#strings.startsWith(m, 'http')}"
-                                             th:src="${m}"
-                                             alt="Evidencia"
-                                             style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ccc; cursor: pointer;"
-                                             onclick="window.open(this.src, '_blank')">
+                                    <!-- Caso: lista vacía -->
+                                    <div th:if="${h.multimedia() != null and #lists.isEmpty(h.multimedia())}" class="muted">No hay multimedia</div>
 
-                                        <img th:unless="${#strings.startsWith(m, 'http')}"
-                                             th:src="@{'/img/uploads/' + ${m}}"
-                                             alt="Evidencia local"
-                                             style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ccc; cursor: pointer;"
-                                             onclick="window.open(this.src, '_blank')">
+                                    <!-- Caso: hay elementos -> mostramos imágenes -->
+                                    <div th:if="${h.multimedia() != null and !#lists.isEmpty(h.multimedia())}"
+                                         style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                        <div th:each="m : ${h.multimedia()}">
+                                            <img th:if="${#strings.startsWith(m, 'http')}"
+                                                 th:src="${m}"
+                                                 alt="Evidencia"
+                                                 style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ccc; cursor: pointer;"
+                                                 onclick="window.open(this.src, '_blank')">
+
+                                            <img th:unless="${#strings.startsWith(m, 'http')}"
+                                                 th:src="@{'/img/uploads/' + ${m}}"
+                                                 alt="Evidencia local"
+                                                 style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ccc; cursor: pointer;"
+                                                 onclick="window.open(this.src, '_blank')">
+                                        </div>
                                     </div>
 
                                 </div>

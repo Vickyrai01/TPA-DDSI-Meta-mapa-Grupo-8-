@@ -26,7 +26,7 @@ public class Hecho {
         this.categoria = categoria;
         this.sugerenciaDeCambio = sugerenciaDeCambio;
         this.ultimaFechaModificacion = ultimaFechaModificacion;
-        this.multimedia = multimedia;
+    this.multimedia = (multimedia != null) ? multimedia : new ArrayList<>();
         this.estado = estado;
         this.contribuyente = contribuyente;
         this.fechaCarga = fechaCarga;
@@ -38,6 +38,7 @@ public class Hecho {
         this.codigoDeFuente = codigoDeFuente;
         this.hash = hash;
         this.idFuente =idFuente;
+        if (this.multimedia == null) this.multimedia = new ArrayList<>();
     }
 
     public Hecho(Integer id, Coordenadas ubicacion, Categoria categoria,
@@ -53,7 +54,7 @@ public class Hecho {
         this.categoria = categoria;
         this.sugerenciaDeCambio = sugerenciaDeCambio;
         this.ultimaFechaModificacion = ultimaFechaModificacion;
-        this.multimedia = multimedia;
+    this.multimedia = (multimedia != null) ? multimedia : new ArrayList<>();
         this.estado = estado;
         this.contribuyente = contribuyente;
         this.fechaCarga = fechaCarga;
@@ -66,6 +67,7 @@ public class Hecho {
         this.hash = hash;
         this.idFuente =idFuente;
         this.linkFuente = linkFuente;
+        if (this.multimedia == null) this.multimedia = new ArrayList<>();
     }
 
     public Hecho(Integer id, Coordenadas ubicacion, Categoria categoria,
@@ -81,7 +83,7 @@ public class Hecho {
         this.categoria = categoria;
         this.sugerenciaDeCambio = sugerenciaDeCambio;
         this.ultimaFechaModificacion = ultimaFechaModificacion;
-        this.multimedia = multimedia;
+    this.multimedia = (multimedia != null) ? multimedia : new ArrayList<>();
         this.estado = estado;
         this.contribuyente = contribuyente;
         this.fechaCarga = fechaCarga;
@@ -93,6 +95,7 @@ public class Hecho {
         this.codigoDeFuente = codigoDeFuente;
         this.hash = hash;
         this.horaSuceso = horarioSuceso;
+        if (this.multimedia == null) this.multimedia = new ArrayList<>();
     }
     //Es para el seeder
     public Hecho(Coordenadas ubicacion, Categoria categoria,
@@ -119,6 +122,7 @@ public class Hecho {
         this.codigoDeFuente = codigoDeFuente;
         this.idFuente =idFuente;
         this.horaSuceso = horarioSuceso;
+        if (this.multimedia == null) this.multimedia = new ArrayList<>();
     }
 
     public Hecho(){}
@@ -145,6 +149,7 @@ public class Hecho {
         this.titulo = titulo;
         this.codigoDeFuente = codigoDeFuente;
         this.idFuente =idFuente;
+        if (this.multimedia == null) this.multimedia = new ArrayList<>();
     }
 
     @Id
@@ -254,12 +259,12 @@ public class Hecho {
             joinColumns = @JoinColumn(name = "hecho_id",
                     foreignKey = @ForeignKey(name = "hecho_multimedia_hecho"))
     )
-    private List<String> multimedia;
+    private List<String> multimedia = new ArrayList<>();
     public List<String> getMultimedia() {
         return multimedia;
     }
     public void setMultimedia(List<String> multimedia) {
-        this.multimedia = multimedia;
+        this.multimedia = (multimedia != null) ? multimedia : new ArrayList<>();
     }
 
     @Column(name = "ultima_fecha_modificacion")
