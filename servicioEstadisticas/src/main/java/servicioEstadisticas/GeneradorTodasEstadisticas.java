@@ -7,10 +7,6 @@ import java.util.Map;
 
 public class GeneradorTodasEstadisticas {
 
-    private List<Map<String, Object>> provinciaConMasHechos;
-    private List<Map<String, Object>> categoriaMasReportada;
-    private Map<String, Object> cantSolicitudesEliminacion;
-
     public static volatile GeneradorTodasEstadisticas instance;
 
     private EstadisticasEstaticas estadisticasEstaticas = EstadisticasEstaticas.getInstance();
