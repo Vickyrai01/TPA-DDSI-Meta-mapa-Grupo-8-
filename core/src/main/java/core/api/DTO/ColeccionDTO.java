@@ -1,6 +1,6 @@
 package core.api.DTO;
 
-import core.models.entities.colecciones.criterios.Criterio;
+import core.api.DTO.criterio.CriterioDTO;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ public class ColeccionDTO {
 
     public ColeccionDTO(){}
 
-    public ColeccionDTO(Integer id, String titulo, String descripcionColeccion, List<Criterio> listaCriterio, List<Integer> fuentes, List<Integer> hechos, String identificadorHandle) {
+    public ColeccionDTO(Integer id, String titulo, String descripcionColeccion, List<CriterioDTO> listaCriterio, List<Integer> fuentes, List<Integer> hechos, String identificadorHandle) {
         this.id = id;
         this.titulo = titulo;
         this.descripcionColeccion = descripcionColeccion;
@@ -18,7 +18,7 @@ public class ColeccionDTO {
         this.identificadorHandle = identificadorHandle;
     }
 
-    public ColeccionDTO(Integer id, String titulo, String descripcionColeccion, List<Criterio> listaCriterio, List<Integer> fuentes, List<Integer> hechos, String identificadorHandle, Integer cantidadHechos) {
+    public ColeccionDTO(Integer id, String titulo, String descripcionColeccion, List<CriterioDTO> listaCriterio, List<Integer> fuentes, List<Integer> hechos, String identificadorHandle, Integer cantidadHechos) {
         this.id = id;
         this.titulo = titulo;
         this.descripcionColeccion = descripcionColeccion;
@@ -53,11 +53,11 @@ public class ColeccionDTO {
         this.descripcionColeccion = descripcionColeccion;
     }
 
-    private List<Criterio> criterioDePertenencia;
-    public List<Criterio> getCriterioDePertenencia() {
+    private List<CriterioDTO> criterioDePertenencia;
+    public List<CriterioDTO> getCriterioDePertenencia() {
         return criterioDePertenencia;
     }
-    public void setCriterioDePertenencia(List<Criterio> criterioDePertenencia) {
+    public void setCriterioDePertenencia(List<CriterioDTO> criterioDePertenencia) {
         this.criterioDePertenencia = criterioDePertenencia;
     }
 

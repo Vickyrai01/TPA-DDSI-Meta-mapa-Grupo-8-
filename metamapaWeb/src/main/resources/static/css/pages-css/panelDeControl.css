@@ -236,23 +236,40 @@ body{
 /* =========================
    BOTÓN FLOTANTE +  (AZUL)
    ========================= */
-.add-btn{
-  position:absolute;
-  bottom:0;
-  right:0;
-  width:56px;
-  height:56px;
-  border-radius:50%;
-  background:var(--brand-blue);
-  border:1px solid var(--brand-blue);
-  color:#fff;
-  font-size:22px;
-  cursor:pointer;
-  box-shadow:var(--shadow-md);
-  transition:transform .04s ease, filter .2s ease;
+.add-btn {
+  /* Posicionamiento Fijo: esto es lo que lo hace flotar */
+  position: fixed;
+  bottom: 30px;    /* Distancia desde abajo */
+  right: 30px;     /* Distancia desde la derecha */
+  z-index: 1000;   /* Asegura que flote por encima de otros elementos */
+
+  /* Estilo visual (manteniendo tu diseño actual) */
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--brand-blue); /* O el color que uses */
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+
+  /* Sombra para darle efecto de elevación */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  /* Centrado del ícono */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Animación suave al pasar el mouse */
+  transition: transform 0.2s ease, background-color 0.2s;
 }
-.add-btn:hover{ filter:brightness(1.05); }
-.add-btn:active{ transform:translateY(1px); }
+
+/* Efecto Hover */
+.add-btn:hover {
+  transform: scale(1.1); /* Crece un poco */
+  filter: brightness(1.1);
+}
 
 /* =========================
    SIDEBAR

@@ -14,7 +14,7 @@ public class CriterioCategoriaDTO extends CriterioDTO {
         this.categoria = categoria;
     }
 
-    //@Override
+    @Override
     public Criterio toEntity(){
         Categoria categoriaReal = new Categoria(categoria);
         return new CriterioCategoria(categoriaReal);

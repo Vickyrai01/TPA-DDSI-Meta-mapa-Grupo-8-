@@ -1,5 +1,7 @@
 package core.api.DTO.criterio;
 
+import core.models.entities.colecciones.criterios.CriterioFechaSuceso;
+
 import java.time.LocalDate;
 
 public class CriterioFechaSucesoDTO extends CriterioDTO{
@@ -12,6 +14,11 @@ public class CriterioFechaSucesoDTO extends CriterioDTO{
         super(id);
         this.desde = fechaInicio;
         this.hasta = fechaFin;
+    }
+
+    @Override
+    public CriterioFechaSuceso toEntity(){
+        return new CriterioFechaSuceso(desde, hasta);
     }
 
     public LocalDate getDesde() { return desde; }

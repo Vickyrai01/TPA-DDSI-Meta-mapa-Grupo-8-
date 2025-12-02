@@ -6,7 +6,7 @@ public record ColeccionDTO(
         Integer id,
         String titulo,
         String descripcionColeccion,
-        Object criterioDePertenencia,
+        List<CriterioDTO> criterioDePertenencia,
         Object hechos,
         Object hechosVisibles,
         String identificadorHandle,

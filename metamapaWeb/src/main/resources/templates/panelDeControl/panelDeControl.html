@@ -283,11 +283,20 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="new-modoNavegacion">Modo de Navegación</label>
+                    <select id="new-modoNavegacion" class="card-select">
+                        <option value="IRRESTRICTA" selected>Irrestricta</option>
+                        <option value="CURADA">Curada</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
                     <label for="new-algoritmo">Algoritmo de consenso</label>
                     <select id="new-algoritmo" class="card-select">
-                        <option value="multiples-menciones">Multiples menciones</option>
-                        <option value="mayoria-simple" selected>Mayoría simple</option>
-                        <option value="absoluta">Absoluta</option>
+                        <option value="SIN" selected>Sin algoritmo</option>
+                        <option value="MULTIPLES_MENCIONES">Multiples menciones</option>
+                        <option value="MAYORIA_SIMPLE">Mayoría simple</option>
+                        <option value="ABSOLUTO">Absoluto</option>
                     </select>
                 </div>
             </form>
