@@ -2,21 +2,29 @@ body {
     background: url("../../img/fondoHOME1.png") repeat center center fixed;
     background-size: cover;
 }
-.dashboard-header {
-    background: #E5F3FA;
-    padding: 2rem 1rem 1rem 1rem;
+#titulo{
+    background: #F47C2C;
     border-radius: 16px 16px 0 0;
     margin-bottom: 1rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-.resaltar-metamapa { color: #2B76B9; }
-.dashboard-kpis {
     display: flex;
-    gap: 1.5rem;
-    justify-content: space-around;
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
+    justify-content: center;
+    color: white;
+
 }
+.dashboard-header {
+    background: #E5F3FA;
+    padding: 1rem;
+    border-radius: 1rem;
+    margin: 3rem 4rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.dashboard-kpis{
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
 .kpi {
     background: #fff;
     padding: 1rem 2rem;
@@ -32,8 +40,14 @@ body {
     gap: 2rem;
     margin-bottom: 1.2rem;
     flex-wrap: wrap;
-    padding: 1rem;
     justify-content: center;
+}
+.dashboard-row1 {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 .dashboard-chart-card {
     flex: 1 1 340px;
@@ -63,13 +77,12 @@ body {
     margin-left:1em;
 }
 .dashboard-extra-panels {
-    padding: 1.5rem 0;
+    margin: 0rem 4rem;
 }
-select#categoria-filtro {
-    padding: 0.2em 0.6em;
+#categoria-filtro {
+
     border-radius: 7px;
     border: 1px solid #b1d7ec;
-    margin-left: 7px;
     margin-bottom: 1em;
     color: #146886;
     font-size: 1em;
@@ -85,7 +98,7 @@ select#categoria-filtro {
 .dashboard-chart-card {
     flex: 1 1 400px;
     min-width: 340px;
-    max-width: 520px; /* limita el ancho para que no sea full-width en pantallas grandes */
+    max-width: 600px; /* limita el ancho para que no sea full-width en pantallas grandes */
     background: #fff;
     border-radius: 12px;
     padding: 1.2rem 2rem;
@@ -94,4 +107,38 @@ select#categoria-filtro {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+}
+.dashboard-maincard {
+    max-width: 1280px;
+    margin: 38px auto 36px auto;
+    background: #FBFEFF;
+    border-radius: 32px;
+    box-shadow: 0 6px 32px rgba(44,171,176,0.15);
+    padding: 0 0 2.5rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    border: 1.5px solid #E5F3FA;
+    /* Si en mobile ocupa mucho, usá width:95vw y max-width */
+    width: 97vw;
+}
+
+#contenido-dashboard {
+
+    background: #FBFEFF;
+    margin: 2rem 15rem;
+    border-radius: 2rem ;
+}
+
+
+
+@media (max-width: 900px) {
+    .dashboard-maincard {
+        padding-bottom: 0.8rem;
+        border-radius: 20px;
+        width: 99vw;
+    }
+    #contenido-dashboard {
+        padding: 0 0.2rem;
+    }
 }
