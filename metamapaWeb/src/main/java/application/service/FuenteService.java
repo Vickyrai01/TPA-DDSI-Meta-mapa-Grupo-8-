@@ -2,6 +2,8 @@ package application.service;
 
 import application.dto.ColeccionDTO;
 import application.dto.FuenteDTO;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -22,4 +24,21 @@ public class FuenteService {
                 .block();
     }
 
+    public ResponseEntity<Void> postearFuente(String fuenteJson){
+        return metamapaApiADMIN.post()
+                .uri("/fuente")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(fuenteJson)
+                .retrieve()
+                .toBodilessEntity()  // o .bodyToMono(Void.class)
+                .block();
+    }
+
+    public ResponseEntity<Void> eliminarFuente(Integer idFuente) {
+        return metamapaApiADMIN.post()
+                .uri("/fuentes/{id}/eliminar", idFuente) // o "/fuente/{id}/eliminar" según tu API
+                .retrieve()
+                .toBodilessEntity()
+                .block();
+    }
 }

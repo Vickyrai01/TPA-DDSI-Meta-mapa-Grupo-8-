@@ -176,7 +176,85 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
         }
     }
 
-    private class Contribuyente {
+    public int eliminarHechosPorIdFuente(Integer idFuente) {
+        if (idFuente == null) return 0;
+
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            DBUtils.comenzarTransaccion(em);
+
+            // Traigo todos los hechos de esa fuente
+            List<Hecho> hechos = em.createQuery(
+                            "SELECT h FROM hecho h WHERE h.idFuente = :idFuente",
+                            Hecho.class
+                    )
+                    .setParameter("idFuente", idFuente)
+                    .getResultList();
+
+            if (hechos.isEmpty()) {
+                DBUtils.commit(em);
+                return 0;
+            }
+
+            int eliminados = 0;
+
+            for (Hecho hecho : hechos) {
+                Integer id = hecho.getId();
+
+                // Limpiar relaciones para evitar errores de FK
+                try {
+                    em.createNativeQuery("DELETE FROM coleccion_hecho WHERE id_hecho = :id")
+                            .setParameter("id", id)
+                            .executeUpdate();
+                } catch (Exception ignore) {}
+
+                try {
+                    em.createNativeQuery("DELETE FROM hecho_etiqueta WHERE id_hecho = :id")
+                            .setParameter("id", id)
+                            .executeUpdate();
+                } catch (Exception ignore) {}
+
+                try {
+                    em.createNativeQuery("DELETE FROM hecho_multimedia WHERE hecho_id = :id")
+                            .setParameter("id", id)
+                            .executeUpdate();
+                } catch (Exception ignore) {}
+
+                try {
+                    em.createNativeQuery("DELETE FROM hechos_visibles WHERE id_hecho = :id")
+                            .setParameter("id", id)
+                            .executeUpdate();
+                } catch (Exception ignore) {}
+
+                try {
+                    em.createNativeQuery("DELETE FROM solicitud_de_eliminacion WHERE hecho_id_hecho = :id")
+                            .setParameter("id", id)
+                            .executeUpdate();
+                } catch (Exception ignore) {}
+
+                // Eliminar el hecho
+                Hecho managed = em.contains(hecho) ? hecho : em.merge(hecho);
+                em.remove(managed);
+
+                eliminados++;
+
+                // Por si son muchos, flush/clear cada tanto
+                if (eliminados % 50 == 0) {
+                    em.flush();
+                    em.clear();
+                }
+            }
+
+            DBUtils.commit(em);
+            return eliminados;
+
+        } catch (RuntimeException ex) {
+            DBUtils.rollback(em);
+            throw ex;
+        } finally {
+            try { em.close(); } catch (Exception ignore) {}
+        }
     }
+
 }
 
