@@ -43,13 +43,13 @@ public class DashboardController {
 
     @GetMapping("/dashboard-api/provincia-con-mas-hechos-por-categoria")
     @ResponseBody
-    public List<Map> provinciaConMasHechosPorCategoria(@RequestParam String categoria) {
+    public List<Map> provinciaConMasHechosPorCategoria(@RequestParam("categoria") String categoria) {
         return estadisticasService.provinciaConMasHechosPorCategoria(categoria);
     }
 
     @GetMapping("/dashboard-api/horario-por-categoria")
     @ResponseBody
-    public List<Map> horarioPorCategoria(@RequestParam String categoria) {
+    public List<Map> horarioPorCategoria(@RequestParam("categoria") String categoria) {
         return estadisticasService.horarioPorCategoria(categoria);
     }
 }
