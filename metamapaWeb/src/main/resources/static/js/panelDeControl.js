@@ -1,5 +1,20 @@
 // panelDeControl.js — versión con restauración y envío al backend
 document.addEventListener('DOMContentLoaded', () => {
+  // Limitar fecha máxima al día actual en los campos de fecha del modal de crear colección
+  const fechaInputs = [
+    document.getElementById('new-criterio-suceso-desde'),
+    document.getElementById('new-criterio-suceso-hasta'),
+    document.getElementById('new-criterio-carga-desde'),
+    document.getElementById('new-criterio-carga-hasta')
+  ];
+  const hoy = new Date();
+  const yyyy = hoy.getFullYear();
+  const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+  const dd = String(hoy.getDate()).padStart(2, '0');
+  const maxDate = `${yyyy}-${mm}-${dd}`;
+  fechaInputs.forEach(input => {
+    if (input) input.setAttribute('max', maxDate);
+  });
   const adminMainContent = document.querySelector('.admin-main-content');
   const list = document.querySelector('.collections-list');
 
@@ -89,14 +104,92 @@ document.addEventListener('DOMContentLoaded', () => {
   confirmBtnAdd?.addEventListener('click', (e) => {
     e.preventDefault();
 
-    // 1. Obtener Título y Descripción de la COLECCIÓN
+    // Obtener todos los campos obligatorios
     const nombreInput = document.getElementById('new-nombre');
     const infoInput = document.getElementById('new-info');
-    const nombre = nombreInput ? nombreInput.value.trim() : null;
-    const info = infoInput ? infoInput.value.trim() : null;
+    const fuentesCheckboxes = document.querySelectorAll('input[name="fuentesSeleccionadas"]');
+    const criterioNombreInput = document.getElementById('new-criterio-nombre');
+    const criterioDescInput = document.getElementById('new-criterio-descripcion');
+    const criterioCatInput = document.getElementById('new-criterio-categoria');
+    const criterioLatInput = document.getElementById('new-criterio-lat');
+    const criterioLonInput = document.getElementById('new-criterio-lon');
+    const criterioSucesoDesdeInput = document.getElementById('new-criterio-suceso-desde');
+    const criterioSucesoHastaInput = document.getElementById('new-criterio-suceso-hasta');
+    const criterioCargaDesdeInput = document.getElementById('new-criterio-carga-desde');
+    const criterioCargaHastaInput = document.getElementById('new-criterio-carga-hasta');
+    const algoritmoSelect = document.getElementById('new-algoritmo');
 
-    if (!nombre) {
-      alert('El nombre es obligatorio.');
+    // Limpiar errores previos
+    [nombreInput, infoInput, criterioNombreInput, criterioDescInput, criterioCatInput, criterioLatInput, criterioLonInput, criterioSucesoDesdeInput, criterioSucesoHastaInput, criterioCargaDesdeInput, criterioCargaHastaInput, algoritmoSelect].forEach(el => {
+      if (el) el.classList.remove('input-error');
+    });
+
+    let errorMsg = '';
+    let errorFields = [];
+
+    if (!nombreInput.value.trim()) {
+      errorMsg = 'El nombre es obligatorio.';
+      errorFields.push(nombreInput);
+    }
+    if (!infoInput.value.trim()) {
+      errorMsg = 'La descripción es obligatoria.';
+      errorFields.push(infoInput);
+    }
+    if (![...fuentesCheckboxes].some(cb => cb.checked)) {
+      errorMsg = 'Debes seleccionar al menos una fuente.';
+      errorFields.push(fuentesCheckboxes[0]);
+    }
+    if (!criterioNombreInput.value.trim()) {
+      errorMsg = 'El título es obligatorio.';
+      errorFields.push(criterioNombreInput);
+    }
+    if (!criterioDescInput.value.trim()) {
+      errorMsg = 'La descripción del criterio es obligatoria.';
+      errorFields.push(criterioDescInput);
+    }
+    if (!criterioCatInput.value.trim()) {
+      errorMsg = 'La categoría es obligatoria.';
+      errorFields.push(criterioCatInput);
+    }
+    if (!criterioLatInput.value.trim() || !criterioLonInput.value.trim()) {
+      errorMsg = 'La ubicación es obligatoria.';
+      errorFields.push(criterioLatInput);
+      errorFields.push(criterioLonInput);
+    }
+    if (!criterioSucesoDesdeInput.value || !criterioSucesoHastaInput.value) {
+      errorMsg = 'Las fechas de suceso son obligatorias.';
+      errorFields.push(criterioSucesoDesdeInput);
+      errorFields.push(criterioSucesoHastaInput);
+    } else {
+      const desdeSuceso = new Date(criterioSucesoDesdeInput.value);
+      const hastaSuceso = new Date(criterioSucesoHastaInput.value);
+      if (desdeSuceso > hastaSuceso) {
+        errorMsg = 'La fecha "Desde" de suceso no puede ser mayor que la fecha "Hasta".';
+        errorFields.push(criterioSucesoDesdeInput);
+        errorFields.push(criterioSucesoHastaInput);
+      }
+    }
+    if (!criterioCargaDesdeInput.value || !criterioCargaHastaInput.value) {
+      errorMsg = 'Las fechas de carga son obligatorias.';
+      errorFields.push(criterioCargaDesdeInput);
+      errorFields.push(criterioCargaHastaInput);
+    } else {
+      const desdeCarga = new Date(criterioCargaDesdeInput.value);
+      const hastaCarga = new Date(criterioCargaHastaInput.value);
+      if (desdeCarga > hastaCarga) {
+        errorMsg = 'La fecha "Desde" de carga no puede ser mayor que la fecha "Hasta".';
+        errorFields.push(criterioCargaDesdeInput);
+        errorFields.push(criterioCargaHastaInput);
+      }
+    }
+    if (!algoritmoSelect.value) {
+      errorMsg = 'El algoritmo de consenso es obligatorio.';
+      errorFields.push(algoritmoSelect);
+    }
+
+    if (errorFields.length > 0) {
+      errorFields.forEach(el => { if (el) el.classList.add('input-error'); });
+      alert(errorMsg || 'Completa todos los campos obligatorios.');
       return;
     }
 
@@ -105,72 +198,57 @@ document.addEventListener('DOMContentLoaded', () => {
     const checkboxes = document.querySelectorAll('input[name="fuentesSeleccionadas"]:checked');
     checkboxes.forEach((checkbox) => {
       const id = parseInt(checkbox.value, 10);
-      if (Number.isFinite(id)) { // Evita IDs nulos/NaN si th:value está vacío
+      if (Number.isFinite(id)) {
         fuentesSeleccionadas.push(id);
       }
     });
     // 3. Construir la lista de CRITERIOS
     const criterios = [];
-
-    // Criterios de Texto
-    const criterioNombreVal = document.getElementById('new-criterio-nombre')?.value.trim();
+    const criterioNombreVal = criterioNombreInput.value.trim();
     if (criterioNombreVal) {
       criterios.push({ "type": "nombre", "palabraClave": criterioNombreVal });
     }
-
-    const criterioDescVal = document.getElementById('new-criterio-descripcion')?.value.trim();
+    const criterioDescVal = criterioDescInput.value.trim();
     if (criterioDescVal) {
       criterios.push({ "type": "descripcion", "palabraClave": criterioDescVal });
     }
-
-    const criterioCatVal = document.getElementById('new-criterio-categoria')?.value.trim();
+    const criterioCatVal = criterioCatInput.value.trim();
     if (criterioCatVal) {
       criterios.push({ "type": "categoria", "categoria": criterioCatVal });
     }
-
-    // Criterio de Ubicación (requiere ambos campos)
-    const criterioLatVal = document.getElementById('new-criterio-lat')?.value.trim();
-    const criterioLonVal = document.getElementById('new-criterio-lon')?.value.trim();
-    if (criterioLatVal && criterioLonVal) {
+    if (criterioLatInput.value.trim() && criterioLonInput.value.trim()) {
       criterios.push({
         "type": "ubicacion",
-        "latitud": parseFloat(criterioLatVal),
-        "longitud": parseFloat(criterioLonVal)
+        "latitud": parseFloat(criterioLatInput.value.trim()),
+        "longitud": parseFloat(criterioLonInput.value.trim())
       });
     }
-
-    // Criterio Fecha Suceso (requiere ambos campos)
-    const criterioSucesoDesde = document.getElementById('new-criterio-suceso-desde')?.value;
-    const criterioSucesoHasta = document.getElementById('new-criterio-suceso-hasta')?.value;
-    if (criterioSucesoDesde && criterioSucesoHasta) {
+    if (criterioSucesoDesdeInput.value && criterioSucesoHastaInput.value) {
       criterios.push({
         "type": "fechaSuceso",
-        "desde": criterioSucesoDesde, // "YYYY-MM-DD"
-        "hasta": criterioSucesoHasta
+        "desde": criterioSucesoDesdeInput.value,
+        "hasta": criterioSucesoHastaInput.value
       });
     }
-
-    // Criterio Fecha Carga (requiere ambos campos)
-    const criterioCargaDesde = document.getElementById('new-criterio-carga-desde')?.value;
-    const criterioCargaHasta = document.getElementById('new-criterio-carga-hasta')?.value;
-    if (criterioCargaDesde && criterioCargaHasta) {
+    if (criterioCargaDesdeInput.value && criterioCargaHastaInput.value) {
       criterios.push({
         "type": "fechaCarga",
-        "desde": criterioCargaDesde,
-        "hasta": criterioCargaHasta
+        fuente: fuentesSeleccionadas,
+        "hasta": criterioCargaHastaInput.value
       });
     }
 
     // 4. Preparar el 'payload' final
     const payload = {
-      titulo: nombre,
-      descripcionColeccion: info,
+      titulo: nombreInput.value.trim(),
+      descripcionColeccion: infoInput.value.trim(),
       hechos: [],
-      fuente: fuentesSeleccionadas,
-      criterioDePertenencia: criterios // <-- AHORA ENVIAMOS TODOS LOS CRITERIOS
+      fuentes: fuentesSeleccionadas,
+      criterioDePertenencia: criterios,
+      algoritmoConsenso: algoritmoSelect.value
     };
 
-    console.log("Enviando payload:", JSON.stringify(payload)); // Para depurar
+    console.log("Enviando payload:", JSON.stringify(payload));
 
     // 5. Enviar la petición
     const token = getCsrfToken();
