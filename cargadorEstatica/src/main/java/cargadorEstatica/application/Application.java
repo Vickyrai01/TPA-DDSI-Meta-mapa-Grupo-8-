@@ -1,4 +1,5 @@
 package cargadorEstatica.application;
+import cargadorEstatica.handlers.AlmacenamientoCsv;
 import org.springframework.web.multipart.MultipartFile;
 import utils.DBUtils;
 import javax.persistence.EntityManager;
@@ -78,7 +79,7 @@ public class Application {
             if (fuente == null) {
                 return ResponseEntity.status(404).body("Fuente no encontrada");
             }
-            // carpeta base, ajustá path según dónde guardes los CSV
+
             Path carpeta = Paths.get("cargadorEstatica", "csv");
             Files.createDirectories(carpeta);
 
@@ -101,6 +102,25 @@ public class Application {
         }
     }
 
-
+    @PostMapping("/eliminar/{id}")
+    public ResponseEntity<?> eliminarFuente(@PathVariable("id") Integer id){
+        try {
+            Fuente fuente = repoFuentes.findById(id);
+            if(fuente == null) return ResponseEntity.status(404).build();
+            Path carpeta = Paths.get("cargadorEstatica", "csv");
+            Path destino = carpeta.resolve(fuente.getLink());
+            try {
+                Files.deleteIfExists(destino);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(500).body("No se pudo borrar archivo físico");
+            }
+            repoFuentes.deleteById(id);
+            return ResponseEntity.status(204).build();
+        } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.status(500).body("Error al eliminar fuente estática");
+        }
+    }
 }
 

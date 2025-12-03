@@ -66,7 +66,7 @@ public class PostFuenteHandler implements Handler {
         dtoParaCargador.setNombre(dto.getNombre());
         dtoParaCargador.setLink(dto.getLink());
         dtoParaCargador.setTipoFuente(tipoFuente.name());                 // "ESTATICA" o "PROXY"
-        dtoParaCargador.setStrategyTipoConexion(dto.getStrategyTipoConexion()); // "CSV" o "API REST"
+        dtoParaCargador.setStrategyTipoConexion(dto.getStrategyTipoConexion()); // "CSV", "API REST" O "BIBLIOTECA"
 
         String jsonBody = mapper.writeValueAsString(dtoParaCargador);
 
@@ -76,7 +76,7 @@ public class PostFuenteHandler implements Handler {
         if ("CSV".equalsIgnoreCase(dto.getStrategyTipoConexion())) {
             // fuente estática → cargadorEstatica
             urlCargador = CARGADOR_ESTATICO_BASE_URL + "/agregarFuente";
-        } else if ("API REST".equalsIgnoreCase(dto.getStrategyTipoConexion())) {
+        } else if ("API REST".equalsIgnoreCase(dto.getStrategyTipoConexion()) || "BIBLIOTECA".equalsIgnoreCase(dto.getStrategyTipoConexion())) {
             // fuente API → cargador dinámico / proxy
             urlCargador = CARGADOR_DINAMICO_BASE_URL + "/agregarFuente";
         } else {
@@ -118,27 +118,24 @@ public class PostFuenteHandler implements Handler {
     }
 
     public StrategyTipoConexion strategyStringToStrategy(String strategy) {
-        if(strategy == null)
-        { System.out.println("LLEGA NULL");}
-        if ("API REST".equalsIgnoreCase(strategy)) {
-            return new StrategyAPIREST();
+        if(strategy == null) {
+            System.out.println("LLEGA NULL");
+            return null;
         }
-
-        if ("CSV".equalsIgnoreCase(strategy)) {
-            return new StrategyCSV();
-        }
-
-        return null;
+        return switch(strategy){
+            case "API REST" -> new StrategyAPIREST();
+            case "CSV" -> new StrategyCSV();
+            case "BIBLIOTECA" -> new StrategyBibliotecaCliente();
+            default -> null;
+        };
     }
 
 
-    public TipoFuente obtenerTipoFuente(String tipoFuente)
-    { if("CSV".equalsIgnoreCase(tipoFuente))
-        {TipoFuente idFuente = fromString("ESTATICA");
-            return idFuente;}
-        if("API REST".equalsIgnoreCase(tipoFuente))
-             {TipoFuente idFuente = fromString("PROXY");
-                 return idFuente;}
-        return null;
+    public TipoFuente obtenerTipoFuente(String tipoFuente) {
+        return switch (tipoFuente) {
+            case "CSV" -> TipoFuente.ESTATICA;
+            case "API REST","BIBLIOTECA" -> TipoFuente.PROXY;
+            default -> null;
+        };
     }
 }

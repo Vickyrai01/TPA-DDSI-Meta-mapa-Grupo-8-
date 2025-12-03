@@ -23,4 +23,9 @@ public class AlmacenamientoCsv {
         // devolvemos el nombre relativo que usará StrategyCSV
         return nombreArchivo; // p.ej. "fuente_3.csv"
     }
+
+    public static void eliminarCsv(String nombreArchivo) throws IOException {
+        Path archivo = Paths.get(BASE_CSV_DIR, nombreArchivo);
+        Files.deleteIfExists(archivo);
+    }
 }

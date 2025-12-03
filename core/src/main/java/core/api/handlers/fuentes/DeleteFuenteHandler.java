@@ -2,6 +2,7 @@ package core.api.handlers.fuentes;
 
 import core.models.agregador.ConfigLoader;
 import core.models.repository.ColeccionesRepository;
+import core.models.repository.FuentesRepository;
 import core.models.repository.HechosRepository;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -16,6 +17,7 @@ public class DeleteFuenteHandler implements Handler {
 
     private final HechosRepository hechosRepository = HechosRepository.getInstance();
     private final ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();
+    private final FuentesRepository fuentesRepository = FuentesRepository.getInstance();
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
     private static final String CARGADOR_ESTATICO_BASE_URL =
@@ -30,10 +32,11 @@ public class DeleteFuenteHandler implements Handler {
         // 1) Limpio en el core TODO lo que dependa de esa fuente
         hechosRepository.eliminarHechosPorIdFuente(id);
         coleccionesRepository.eliminarFuenteDeTodasLasColecciones(id);
+        fuentesRepository.deleteById(id);
 
         // 2) Intento borrar en cada cargador
-        boolean eliminadoEnEstatica = eliminarEnCargador(CARGADOR_ESTATICO_BASE_URL + "/fuentes/" + id);
-        boolean eliminadoEnProxy   = eliminarEnCargador(CARGADOR_PROXY_BASE_URL   + "/fuentes/" + id);
+        boolean eliminadoEnEstatica = eliminarEnCargador(CARGADOR_ESTATICO_BASE_URL + "/eliminar/" + id);
+        boolean eliminadoEnProxy   = eliminarEnCargador(CARGADOR_PROXY_BASE_URL   + "/eliminar/" + id);
 
         if (eliminadoEnEstatica || eliminadoEnProxy) {
             context.status(200).result("Fuente con ID " + id + " eliminada");
@@ -50,7 +53,7 @@ public class DeleteFuenteHandler implements Handler {
         try {
             HttpRequest req = HttpRequest.newBuilder()
                     .uri(URI.create(url))
-                    .DELETE()
+                    .POST(HttpRequest.BodyPublishers.noBody())
                     .build();
 
             HttpResponse<String> resp = httpClient.send(req, HttpResponse.BodyHandlers.ofString());

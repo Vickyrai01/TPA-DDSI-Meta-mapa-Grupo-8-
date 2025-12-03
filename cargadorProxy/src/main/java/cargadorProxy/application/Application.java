@@ -57,7 +57,7 @@ public class Application {
         return switch (strategyTipoConexion) {
             case "BIBLIOTECA" -> new StrategyBibliotecaCliente();
             case "API REST", "APIREST" -> new StrategyAPIREST();
-            default -> new StrategyAPIREST();
+            default -> null;
         };
     }
 
@@ -66,6 +66,12 @@ public class Application {
         List<Fuente> fuentes = repoFuentes.findAll();
         if(fuentes.isEmpty()) return ResponseEntity.status(204).build();
         return ResponseEntity.ok(fuentes);
+    }
+
+    @PostMapping("/eliminar/{id}")
+    public ResponseEntity<?> eliminarFuente(@PathVariable("id") Integer id){
+        repoFuentes.deleteById(id);
+        return ResponseEntity.status(204).build();
     }
 
 }

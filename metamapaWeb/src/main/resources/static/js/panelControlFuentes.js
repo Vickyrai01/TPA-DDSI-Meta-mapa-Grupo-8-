@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
     linkInput.required = false;
     fileInput.required = false;
 
-    if (value === "API REST") {
+    if (value === "API REST" || value === "BIBLIOTECA") {
       linkGroup.style.display = "block";
       linkInput.required = true;
     } else if (value === "CSV") {
