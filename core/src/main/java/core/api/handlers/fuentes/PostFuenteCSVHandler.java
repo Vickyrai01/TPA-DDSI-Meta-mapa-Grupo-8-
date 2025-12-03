@@ -2,6 +2,7 @@ package core.api.handlers.fuentes;
 
 import core.api.utils.MultipartBodyPublisher;
 import core.models.agregador.ConfigLoader;
+import core.models.entities.fuentes.Fuente;
 import core.models.repository.FuentesRepository;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -56,6 +57,9 @@ public class PostFuenteCSVHandler implements Handler{
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() / 100 == 2) {
+            Fuente fuente = fuentesRepository.findById(idFuenteCargador);
+            fuente.setLink(nombreArchivo);
+            fuentesRepository.update(fuente);
             ctx.status(201).result("CSV enviado y guardado en cargadorEstatica");
         } else {
             System.out.println("[Core] Error al mandar CSV al cargadorEstatica: "
