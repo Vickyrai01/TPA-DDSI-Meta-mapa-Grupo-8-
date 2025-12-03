@@ -53,11 +53,12 @@ public class Application {
         if (strategyFuente == null) return ResponseEntity.status(400).body("Tipo de fuente no reconocido");
         Fuente fuente = new Fuente(fuenteDTO.getNombre(), fuenteDTO.getLink(), strategyFuente, fuenteDTO.getTipoFuente());
         repoFuentes.save(fuente);
-        return ResponseEntity.status(201).body("Fuente guardada correctamente");
+        FuenteDTO respuesta = FuenteDTO.from(fuente);
+        return ResponseEntity.status(201).body(respuesta);
     }
 
     private StrategyTipoConexion obtenerStrategyFuente(String tipoFuente) {
-        if (tipoFuente.equals("CSV")) return new StrategyCSV();
+        if (tipoFuente.equals("ESTATICA")) return new StrategyCSV();
         else return null;
     }
 
