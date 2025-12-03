@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- CÓDIGO NUEVO CON FETCH ---
-  // Helper para leer el token CSRF del HTML (lo necesitamos)
   const getCsrfToken = () => {
     const tokenInput = document.querySelector('input[name="_csrf"]');
     return tokenInput ? tokenInput.value : null;
@@ -77,6 +76,162 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // ==========================================
+  //   LÓGICA DEL MODAL DE AGREGAR CRITERIO
+  // ==========================================
+  const modalCriteria = document.getElementById('modal-add-criteria');
+  const selectType = document.getElementById('select-criteria-type');
+  const containerInputs = document.getElementById('criteria-inputs-container');
+  const btnCancelCrit = document.getElementById('btn-cancel-criteria');
+  const btnConfirmCrit = document.getElementById('btn-confirm-criteria');
+
+  // Variable para recordar qué tarjeta abrió el modal
+  let currentEditingCard = null;
+
+  // 1. Abrir Modal desde la tarjeta
+  // Variable para saber DÓNDE agregar el <li> (puede ser una tarjeta o la lista de creación)
+  let targetUlForCriteria = null;
+
+  // CASO 1: Abrir desde una tarjeta existente (EDICIÓN)
+  list.addEventListener('click', (e) => {
+    if (e.target.closest('.btn-open-criteria-modal')) {
+      e.preventDefault();
+      const card = e.target.closest('.collection-card');
+      targetUlForCriteria = card.querySelector('.criteria-list-edit'); // Destino: lista de la card
+
+      resetCriteriaModal();
+      modalCriteria.classList.add('active');
+    }
+
+    // Borrar criterio (Edición)
+    if (e.target.classList.contains('btn-delete-crit')) {
+      e.preventDefault();
+      e.target.closest('li').remove();
+    }
+  });
+
+  // CASO 2: Abrir desde el formulario de crear nueva colección (CREACIÓN)
+  const btnAddCritCreation = document.getElementById('btn-add-crit-creation');
+  const newListUl = document.getElementById('new-collection-criteria-list'); // La lista vacía del HTML nuevo
+
+  // Listener para borrar en el formulario de creación (delegación en la lista nueva)
+  newListUl?.addEventListener('click', (e) => {
+    if (e.target.classList.contains('btn-delete-crit')) {
+      e.preventDefault();
+      e.target.closest('li').remove();
+    }
+  });
+
+  btnAddCritCreation?.addEventListener('click', (e) => {
+    e.preventDefault();
+    targetUlForCriteria = newListUl; // Destino: lista del modal de creación
+
+    resetCriteriaModal();
+    modalCriteria.classList.add('active');
+  });
+
+  // 2. Cerrar Modal
+  const closeCriteriaModal = () => modalCriteria.classList.remove('active');
+  btnCancelCrit?.addEventListener('click', (e) => { e.preventDefault(); closeCriteriaModal(); });
+
+  // 3. Lógica del Desplegable (Mostrar inputs según selección)
+  selectType?.addEventListener('change', () => {
+    const type = selectType.value;
+    containerInputs.style.display = 'block';
+
+    // Ocultar todos primero
+    document.querySelectorAll('.dynamic-group').forEach(el => el.classList.add('hidden'));
+
+    // Mostrar el correcto
+    if (type === 'nombre' || type === 'descripcion') {
+      document.getElementById('input-group-text').classList.remove('hidden');
+    } else if (type === 'categoria') {
+      document.getElementById('input-group-cat').classList.remove('hidden');
+    } else if (type === 'ubicacion') {
+      document.getElementById('input-group-geo').classList.remove('hidden');
+    } else if (type === 'fechaSuceso' || type === 'fechaCarga') {
+      document.getElementById('input-group-date').classList.remove('hidden');
+    }
+  });
+
+  // 4. Confirmar y Agregar a la tarjeta
+  btnConfirmCrit?.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    // Validación de seguridad
+    if (!targetUlForCriteria) return;
+
+    const type = selectType.value;
+    if (!type) { alert('Selecciona un tipo'); return; }
+
+    // ... (TODA LA LÓGICA DE RECOLECCIÓN DE DATOS QUEDA IGUAL) ...
+    // Recolectar datos
+    let palabra = null, cat = null, lat = null, lon = null, desde = null, hasta = null;
+    let displayText = "";
+
+    if (type === 'nombre' || type === 'descripcion') {
+      palabra = document.getElementById('crit-input-keyword').value;
+      displayText = `${type}: ${palabra}`;
+    } else if (type === 'categoria') {
+      cat = document.getElementById('crit-input-category').value;
+      displayText = `Categoría: ${cat}`;
+    } else if (type === 'ubicacion') {
+      lat = document.getElementById('crit-input-lat').value;
+      lon = document.getElementById('crit-input-lon').value;
+      displayText = `Ubicación: ${lat}, ${lon}`;
+    } else if (type.startsWith('fecha')) {
+      desde = document.getElementById('crit-input-from').value;
+      hasta = document.getElementById('crit-input-to').value;
+      displayText = `${type}: ${desde} al ${hasta}`;
+    }
+
+    // Validar mínimamente
+    if ((type === 'ubicacion' && (!lat || !lon)) ||
+        ((type === 'nombre' || type === 'descripcion') && !palabra) ||
+        (type === 'categoria' && !cat)) {
+      alert('Completa los campos requeridos');
+      return;
+    }
+
+    // CREAR EL ELEMENTO LI
+    const li = document.createElement('li');
+    // Importante: usar las mismas clases que en el HTML para que se vea igual
+    li.style.display = 'flex';
+    li.style.justifyContent = 'space-between';
+    li.style.alignItems = 'center';
+    li.style.padding = '8px 12px';
+    li.style.background = '#f9fafb';
+    li.style.border = '1px solid var(--border)';
+    li.style.borderRadius = '8px';
+    li.style.marginBottom = '6px';
+
+    // Asignar dataset
+    li.dataset.type = type;
+    if (palabra) li.dataset.palabra = palabra;
+    if (cat) li.dataset.categoria = cat;
+    if (lat) li.dataset.lat = lat;
+    if (lon) li.dataset.lon = lon;
+    if (desde) li.dataset.desde = desde;
+    if (hasta) li.dataset.hasta = hasta;
+
+    li.innerHTML = `
+          <span>${displayText}</span>
+          <button type="button" class="delete-source-btn btn-delete-crit">×</button>
+      `;
+
+    // AQUI ESTA LA MAGIA: Agregamos al destino que definimos al abrir
+    targetUlForCriteria.appendChild(li);
+
+    closeCriteriaModal();
+  });
+
+  function resetCriteriaModal() {
+    document.getElementById('form-add-criteria').reset();
+    selectType.value = "";
+    containerInputs.style.display = 'none';
+    document.querySelectorAll('.dynamic-group').forEach(el => el.classList.add('hidden'));
+  }
+
 
   // ===== Modal Crear =====
   const modalAdd = document.getElementById('add-modal');
@@ -89,96 +244,62 @@ document.addEventListener('DOMContentLoaded', () => {
   confirmBtnAdd?.addEventListener('click', (e) => {
     e.preventDefault();
 
-    // 1. Obtener Título y Descripción de la COLECCIÓN
+    // 1. Obtener Título y Descripción (Igual)
     const nombreInput = document.getElementById('new-nombre');
     const infoInput = document.getElementById('new-info');
     const nombre = nombreInput ? nombreInput.value.trim() : null;
     const info = infoInput ? infoInput.value.trim() : null;
 
-    if (!nombre) {
-      alert('El nombre es obligatorio.');
-      return;
-    }
+    if (!nombre) { alert('El nombre es obligatorio.'); return; }
 
-    // 2. Obtener los IDs de las FUENTES seleccionadas
+    // 2. Obtener los IDs de las FUENTES (Igual)
     const fuentesSeleccionadas = [];
     const checkboxes = document.querySelectorAll('input[name="fuentesSeleccionadas"]:checked');
     checkboxes.forEach((checkbox) => {
       const id = parseInt(checkbox.value, 10);
-      if (Number.isFinite(id)) { // Evita IDs nulos/NaN si th:value está vacío
-        fuentesSeleccionadas.push(id);
-      }
+      if (Number.isFinite(id)) fuentesSeleccionadas.push(id);
     });
-    // 3. Construir la lista de CRITERIOS
+
+    // 3. Construir la lista de CRITERIOS (¡NUEVO!)
     const criterios = [];
 
-    // Criterios de Texto
-    const criterioNombreVal = document.getElementById('new-criterio-nombre')?.value.trim();
-    if (criterioNombreVal) {
-      criterios.push({ "type": "nombre", "palabraClave": criterioNombreVal });
-    }
+    // Leemos la lista del modal de creación (#new-collection-criteria-list)
+    const listItems = document.querySelectorAll('#new-collection-criteria-list li');
 
-    const criterioDescVal = document.getElementById('new-criterio-descripcion')?.value.trim();
-    if (criterioDescVal) {
-      criterios.push({ "type": "descripcion", "palabraClave": criterioDescVal });
-    }
+    listItems.forEach(li => {
+      const type = li.dataset.type;
+      const c = { type: type };
 
-    const criterioCatVal = document.getElementById('new-criterio-categoria')?.value.trim();
-    if (criterioCatVal) {
-      criterios.push({ "type": "categoria", "categoria": criterioCatVal });
-    }
+      const getVal = (val) => (val && val !== 'null' && val.trim() !== '') ? val : undefined;
+      const getNum = (val) => (val && val !== 'null') ? parseFloat(val) : undefined;
 
-    // Criterio de Ubicación (requiere ambos campos)
-    const criterioLatVal = document.getElementById('new-criterio-lat')?.value.trim();
-    const criterioLonVal = document.getElementById('new-criterio-lon')?.value.trim();
-    if (criterioLatVal && criterioLonVal) {
-      criterios.push({
-        "type": "ubicacion",
-        "latitud": parseFloat(criterioLatVal),
-        "longitud": parseFloat(criterioLonVal)
-      });
-    }
+      if (type === 'nombre' || type === 'descripcion') {
+        c.palabraClave = getVal(li.dataset.palabra);
+      } else if (type === 'categoria') {
+        c.categoria = getVal(li.dataset.categoria);
+      } else if (type === 'ubicacion') {
+        c.latitud = getNum(li.dataset.lat);
+        c.longitud = getNum(li.dataset.lon);
+      } else if (type === 'fechaSuceso' || type === 'fechaCarga') {
+        c.desde = getVal(li.dataset.desde);
+        c.hasta = getVal(li.dataset.hasta);
+      }
 
-    // Criterio Fecha Suceso (requiere ambos campos)
-    const criterioSucesoDesde = document.getElementById('new-criterio-suceso-desde')?.value;
-    const criterioSucesoHasta = document.getElementById('new-criterio-suceso-hasta')?.value;
-    if (criterioSucesoDesde && criterioSucesoHasta) {
-      criterios.push({
-        "type": "fechaSuceso",
-        "desde": criterioSucesoDesde, // "YYYY-MM-DD"
-        "hasta": criterioSucesoHasta
-      });
-    }
+      criterios.push(c);
+    });
 
-    // Criterio Fecha Carga (requiere ambos campos)
-    const criterioCargaDesde = document.getElementById('new-criterio-carga-desde')?.value;
-    const criterioCargaHasta = document.getElementById('new-criterio-carga-hasta')?.value;
-    if (criterioCargaDesde && criterioCargaHasta) {
-      criterios.push({
-        "type": "fechaCarga",
-        "desde": criterioCargaDesde,
-        "hasta": criterioCargaHasta
-      });
-    }
-
-    // 4. Algoritmo de consenso (nuevo)
+    // 4. Algoritmo y Modo (Igual)
     const algoritmoSelect = document.getElementById('new-algoritmo');
     const algoritmoConsenso = algoritmoSelect ? algoritmoSelect.value : null;
-    // O sea: "SIN", "MULTIPLES_MENCIONES", "MAYORIA_SIMPLE", "ABSOLUTO"
-
-    // 5. Modo de navegación (nuevo)
     const modoSelect = document.getElementById('new-modoNavegacion');
     const modoDeNavegacion = modoSelect ? modoSelect.value : null;
-    // "IRRESTRICTA" o "CURADA"
 
-    // Regla de negocio
-    if (modoDeNavegacion === 'CURADA' &&
-        (!algoritmoConsenso || algoritmoConsenso === 'SIN')) {
-      alert('Las colecciones CURADAS necesitan un algoritmo de consenso (no puede ser "Sin algoritmo").');
+    if (modoDeNavegacion === 'CURADA' && (!algoritmoConsenso || algoritmoConsenso === 'SIN')) {
+      alert('Las colecciones CURADAS necesitan un algoritmo de consenso.');
       return;
     }
 
-    // 6. Preparar el 'payload' final
+    // 5. Payload
     const payload = {
       titulo: nombre,
       descripcionColeccion: info,
@@ -222,6 +343,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ===== Edición in-place =====
   if (!list) return;
+
+  // --- NUEVO: Listener para eliminar criterios visualmente ---
+  list.addEventListener('click', (e) => {
+    if (e.target.classList.contains('btn-delete-crit')) {
+      e.preventDefault();
+      const li = e.target.closest('li');
+      if (li) li.remove(); // Se elimina del DOM (al guardar, ya no se incluirá)
+    }
+  });
 
   const getCard = (el) => el.closest('.collection-card');
 
@@ -308,7 +438,35 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // 5. Preparar Headers con Token CSRF
+    // --- RECONSTRUIR LISTA DE CRITERIOS ---
+    const criteriosFinales = [];
+
+    // Ahora iteramos sobre TODA la lista (existentes + nuevos agregados por modal)
+    // Nota: cambié la clase selectora a 'criteria-item' en el HTML para unificar
+    const items = card.querySelectorAll('.criteria-list-edit li');
+
+    items.forEach(li => {
+      const type = li.dataset.type;
+      const c = { type: type };
+
+      const getVal = (val) => (val && val !== 'null' && val.trim() !== '') ? val : undefined;
+      const getNum = (val) => (val && val !== 'null') ? parseFloat(val) : undefined;
+
+      if (type === 'nombre' || type === 'descripcion') {
+        c.palabraClave = getVal(li.dataset.palabra);
+      } else if (type === 'categoria') {
+        c.categoria = getVal(li.dataset.categoria);
+      } else if (type === 'ubicacion') {
+        c.latitud = getNum(li.dataset.lat);
+        c.longitud = getNum(li.dataset.lon);
+      } else if (type === 'fechaSuceso' || type === 'fechaCarga') {
+        c.desde = getVal(li.dataset.desde);
+        c.hasta = getVal(li.dataset.hasta);
+      }
+
+      criteriosFinales.push(c);
+    });
+
     const token = getCsrfToken();
     const headers = {
       'Content-Type': 'application/json'
@@ -317,7 +475,6 @@ document.addEventListener('DOMContentLoaded', () => {
       headers['X-CSRF-TOKEN'] = token;
     }
 
-    // 6. Enviar Fetch
     console.log('Enviando PATCH...', id, {
       titulo: nuevoTitulo,
       modo: modoNavegacion,
@@ -332,7 +489,8 @@ document.addEventListener('DOMContentLoaded', () => {
         descripcionColeccion: nuevaDesc,
         fuentes: fuentesSeleccionadas,
         algoritmoConsenso: algoritmoConsenso,
-        modoDeNavegacion: modoNavegacion
+        modoDeNavegacion: modoNavegacion,
+        criterioDePertenencia: criteriosFinales
       })
     })
         .then(resp => {

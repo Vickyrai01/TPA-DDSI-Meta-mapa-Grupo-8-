@@ -99,6 +99,21 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="card-field">
+                                <strong>Modo de Navegación:</strong>
+
+                                <p class="view-mode"
+                                   th:text="${c.modoDeNavegacion()}">IRRESTRICTA</p>
+
+                                <select name="modoDeNavegacionEdit" class="card-select edit-mode">
+                                    <option value="IRRESTRICTA"
+                                            th:selected="${c.modoDeNavegacion() == 'IRRESTRICTA'}">Irrestricta</option>
+                                    <option value="CURADA"
+                                            th:selected="${c.modoDeNavegacion() == 'CURADA'}">Curada</option>
+                                </select>
+                            </div>
+
                             <!-- Selector de algoritmo de consenso en modo edición (igual que creación) -->
                             <div class="form-group edit-mode" style="margin-bottom: 16px;">
                                 <label th:for="${'algoritmoConsensoEdit-' + c.id()}"
@@ -129,19 +144,43 @@
                                     </option>
                                 </select>
                             </div>
-
                             <div class="card-field">
-                                <strong>Modo de Navegación:</strong>
+                                <strong>Criterios de Pertenencia:</strong>
 
-                                <p class="view-mode"
-                                   th:text="${c.modoDeNavegacion()}">IRRESTRICTA</p>
+                                <ul class="view-mode source-list" style="margin-top: 5px;">
+                                    <li th:each="crit : ${c.criterioDePertenencia}">
+            <span th:text="|${crit.type}: ${crit.palabraClave ?: ''} ${crit.categoria ?: ''} ${crit.latitud != null ? (crit.latitud + ', ' + crit.longitud) : ''} ${crit.desde != null ? (crit.desde + ' al ' + crit.hasta) : ''}|">
+                Criterio
+            </span>
+                                    </li>
+                                    <li th:if="${#lists.isEmpty(c.criterioDePertenencia)}" style="color: #999;">Ninguno</li>
+                                </ul>
 
-                                <select name="modoDeNavegacionEdit" class="card-select edit-mode">
-                                    <option value="IRRESTRICTA"
-                                            th:selected="${c.modoDeNavegacion() == 'IRRESTRICTA'}">Irrestricta</option>
-                                    <option value="CURADA"
-                                            th:selected="${c.modoDeNavegacion() == 'CURADA'}">Curada</option>
-                                </select>
+                                <div class="edit-mode criteria-manager">
+                                    <p style="font-size:0.85rem; color:#666; margin-bottom:5px;">Lista actual:</p>
+
+                                    <ul class="criteria-list-edit source-list">
+                                        <li th:each="crit : ${c.criterioDePertenencia}"
+                                            class="criteria-item"
+                                            th:attr="data-type=${crit.type},
+                                             data-palabra=${crit.palabraClave},
+                                             data-categoria=${crit.categoria},
+                                             data-lat=${crit.latitud},
+                                             data-lon=${crit.longitud},
+                                             data-desde=${crit.desde},
+                                             data-hasta=${crit.hasta}">
+
+                                            <span th:text="|${crit.type}: ${crit.palabraClave ?: ''}${crit.categoria ?: ''}${crit.latitud != null ? (' Ubicación') : ''}${crit.desde != null ? (' Rango fechas') : ''}|">Info</span>
+
+                                            <button type="button" class="delete-source-btn btn-delete-crit">×</button>
+                                        </li>
+                                    </ul>
+
+                                    <button type="button" class="modal-btn modal-btn-secondary btn-open-criteria-modal"
+                                            style="width: 100%; margin-top: 10px; border: 1px dashed #ccc;">
+                                        <i class="fa-solid fa-plus"></i> Agregar nuevo criterio
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="card-field">
@@ -160,7 +199,7 @@
 
                             <div class="card-field">
                                 <strong>Cantidad de hechos visibles:</strong>
-                                (modo de navegación curado, puede estar desactualizado)
+                                (Modo de navegación curado, puede estar desactualizado)
                                 <p class="view-mode"><span th:text="${c.cantidadHechosVisibles()}">0</span></p>
                                 <p class="card-input edit-mode" style="background: #f3f4f6; color: #6b7280; cursor: not-allowed;"
                                    th:text="${c.cantidadHechosVisibles()}"></p>
@@ -205,105 +244,126 @@
 
             <form class="modal-form">
                 <div class="form-group">
-                    <label for="new-nombre">Nombre:</label>
+                    <label for="new-nombre">Nombre de la Colección</label>
                     <input type="text" id="new-nombre" class="card-input" placeholder="Ej: Robos en Palermo">
                 </div>
 
                 <div class="form-group">
-                    <label for="new-info">Información</label>
-                    <input type="text" id="new-info" class="card-input" placeholder="Info, cantidad hechos, etc.">
+                    <label for="new-info">Información / Descripción</label>
+                    <input type="text" id="new-info" class="card-input" placeholder="Detalles de la colección...">
                 </div>
 
-                <div class="form-group" style="grid-column: 1 / -1;">
-                    <label>Fuentes</label>
-
-                    <div class="fuentes-list-container" style="max-height: 150px; overflow-y: auto; border: 1px solid var(--border, #e5e7eb); border-radius: 12px; padding: 10px; background: #f9fafb;">
-
+                <div class="form-group">
+                    <label>Fuentes de datos</label>
+                    <div class="fuentes-list-container">
                         <p th:if="${listaDeFuentes == null or #lists.isEmpty(listaDeFuentes)}"
-                           style="font-size: 0.9rem; color: var(--text-muted, #6b7280); margin: 0;">
-                            No hay fuentes disponibles para agregar.
+                           style="font-size: 0.9rem; color: #666; text-align: center;">
+                            No hay fuentes disponibles.
                         </p>
 
                         <div class="fuente-checkbox-item" th:each="fuente : ${listaDeFuentes}">
-                            <label style="display: block; font-weight: normal; font-size: 0.95rem; cursor: pointer;">
-                                <input type="checkbox"
-                                       name="fuentesSeleccionadas"
-                                       th:value="${fuente.id()}" style="margin-right: 8px; vertical-align: middle;">
-
-                                <span th:text="${fuente.nombre()}">Nombre de la Fuente</span>
+                            <label style="cursor: pointer; display: flex; align-items: center; width: 100%;">
+                                <input type="checkbox" name="fuentesSeleccionadas" th:value="${fuente.id()}">
+                                <span th:text="${fuente.nombre()}">Nombre Fuente</span>
                             </label>
                         </div>
-
-                    </div>
-                    <div class="form-group" style="grid-column: 1 / -1; border-top: 1px dashed var(--border, #e5e7eb); padding-top: 14px; margin-top: 5px;">
-                        <label>Criterios de Pertenencia (Opcional)</label>
-                        <p style="font-size: 0.85rem; color: var(--text-muted, #6b7280); margin: -10px 0 10px 0;">
-                            La colección incluirá automáticamente hechos que cumplan TODOS estos criterios.
-                        </p>
-
-                        <div class="form-group" style="margin-bottom: 5px;">
-                            <label for="new-criterio-nombre" style="font-weight: 600; font-size: 0.9rem;">TÍTULO:</label>
-                            <input type="text" id="new-criterio-nombre" class="card-input" placeholder="Ej: Incendio">
-                        </div>
-
-                        <div class="form-group" style="margin-bottom: 5px;">
-                            <label for="new-criterio-descripcion" style="font-weight: 600; font-size: 0.9rem;">DESCRIPCIÓN:</label>
-                            <input type="text" id="new-criterio-descripcion" class="card-input" placeholder="Ej: perro">
-                        </div>
-
-                        <div class="form-group" style="margin-bottom: 5px;">
-                            <label for="new-criterio-categoria" style="font-weight: 600; font-size: 0.9rem;">CATEGORÍA:</label>
-                            <input type="text" id="new-criterio-categoria" class="card-input" placeholder="Ej: Robo">
-                        </div>
-
-                        <div class="form-group" style="margin-bottom: 5px;">
-                            <label for="new-criterio-lat" style="font-weight: 600; font-size: 0.9rem;">Ubicación</label>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <input type="number" id="new-criterio-lat" class="card-input" placeholder="Latitud (ej: -34.6)">
-                                <input type="number" id="new-criterio-lon" class="card-input" placeholder="Longitud (ej: -58.4)">
-                            </div>
-                        </div>
-
-                        <div class="form-group" style="margin-bottom: 5px;">
-                            <label for="new-criterio-suceso-desde" style="font-weight: 600; font-size: 0.9rem;">Fecha Suceso</label>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <input type="date" id="new-criterio-suceso-desde" class="card-input">
-                                <input type="date" id="new-criterio-suceso-hasta" class="card-input">
-                            </div>
-                        </div>
-
-                        <div class="form-group" style="margin-bottom: 5px;">
-                            <label for="new-criterio-carga-desde" style="font-weight: 600; font-size: 0.9rem;">Fecha Carga</label>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <input type="date" id="new-criterio-carga-desde" class="card-input">
-                                <input type="date" id="new-criterio-carga-hasta" class="card-input">
-                            </div>
-                        </div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="new-modoNavegacion">Modo de Navegación</label>
-                    <select id="new-modoNavegacion" class="card-select">
-                        <option value="IRRESTRICTA" selected>Irrestricta</option>
-                        <option value="CURADA">Curada</option>
-                    </select>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="new-modoNavegacion">Modo de Navegación</label>
+                        <select id="new-modoNavegacion" class="card-select">
+                            <option value="IRRESTRICTA" selected>Irrestricta</option>
+                            <option value="CURADA">Curada</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="new-algoritmo">Algoritmo de Consenso</label>
+                        <select id="new-algoritmo" class="card-select">
+                            <option value="SIN" selected>Sin algoritmo</option>
+                            <option value="MULTIPLES_MENCIONES">Múltiples menciones</option>
+                            <option value="MAYORIA_SIMPLE">Mayoría simple</option>
+                            <option value="ABSOLUTO">Absoluto</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="new-algoritmo">Algoritmo de consenso</label>
-                    <select id="new-algoritmo" class="card-select">
-                        <option value="SIN" selected>Sin algoritmo</option>
-                        <option value="MULTIPLES_MENCIONES">Multiples menciones</option>
-                        <option value="MAYORIA_SIMPLE">Mayoría simple</option>
-                        <option value="ABSOLUTO">Absoluto</option>
-                    </select>
+                <div class="form-group" style="border-top: 1px dashed var(--border); padding-top: 15px; margin-top: 5px;">
+                    <label>Criterios de Pertenencia</label>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">
+                        Define reglas automáticas para esta colección.
+                    </p>
+
+                    <ul id="new-collection-criteria-list" class="source-list" style="margin-bottom: 10px;"></ul>
+
+                    <button type="button" id="btn-add-crit-creation" class="modal-btn modal-btn-secondary" style="width: 100%; border: 1px dashed #ccc; background: #fff;">
+                        <i class="fa-solid fa-plus"></i> Agregar nuevo criterio
+                    </button>
                 </div>
             </form>
 
             <div class="modal-actions">
                 <button id="cancel-add" class="modal-btn modal-btn-secondary">Cancelar</button>
                 <button id="confirm-add" class="modal-btn modal-btn-primary">Crear Colección</button>
+            </div>
+        </div>
+    </div>
+    <!-- Modal para criterios -->
+    <div id="modal-add-criteria" class="modal-backdrop">
+        <div class="modal" style="max-width: 500px;">
+            <h2>Agregar Criterio</h2>
+
+            <form id="form-add-criteria" class="modal-form" style="display: flex; flex-direction: column; gap: 15px;">
+
+                <div class="form-group">
+                    <label for="select-criteria-type">Seleccionar criterio</label>
+                    <select id="select-criteria-type" class="card-select">
+                        <option value="" disabled selected>-- Elegí un tipo --</option>
+                        <option value="nombre">Nombre (Palabra clave)</option>
+                        <option value="descripcion">Descripción (Palabra clave)</option>
+                        <option value="categoria">Categoría</option>
+                        <option value="ubicacion">Ubicación (Lat/Lon)</option>
+                        <option value="fechaSuceso">Fecha de Suceso</option>
+                        <option value="fechaCarga">Fecha de Carga</option>
+                    </select>
+                </div>
+
+                <div id="criteria-inputs-container" style="background: #f9f9f9; padding: 15px; border-radius: 8px; display:none;">
+
+                    <div id="input-group-text" class="dynamic-group hidden">
+                        <label>Palabra Clave:</label>
+                        <input type="text" id="crit-input-keyword" class="card-input">
+                    </div>
+
+                    <div id="input-group-cat" class="dynamic-group hidden">
+                        <label>Categoría Exacta:</label>
+                        <input type="text" id="crit-input-category" class="card-input" placeholder="Ej: Robo">
+                    </div>
+
+                    <div id="input-group-geo" class="dynamic-group hidden">
+                        <label>Coordenadas:</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <input type="number" id="crit-input-lat" class="card-input" placeholder="Latitud">
+                            <input type="number" id="crit-input-lon" class="card-input" placeholder="Longitud">
+                        </div>
+                    </div>
+
+                    <div id="input-group-date" class="dynamic-group hidden">
+                        <label>Rango de Fechas:</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <input type="date" id="crit-input-from" class="card-input">
+                            <input type="date" id="crit-input-to" class="card-input">
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+
+            <div class="modal-actions">
+                <button id="btn-cancel-criteria" class="modal-btn modal-btn-secondary">Cancelar</button>
+                <button id="btn-confirm-criteria" class="modal-btn modal-btn-primary">Agregar a la lista</button>
             </div>
         </div>
     </div>

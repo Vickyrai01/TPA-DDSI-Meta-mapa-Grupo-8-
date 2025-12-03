@@ -1,6 +1,7 @@
 package core.api.DTO.criterio;
 
 import core.models.entities.colecciones.criterios.CriterioDescripcion;
+import core.models.repository.CriteriosRepository;
 
 public class CriterioDescripcionDTO extends CriterioDTO {
     private String palabraClave;
@@ -14,7 +15,22 @@ public class CriterioDescripcionDTO extends CriterioDTO {
 
     @Override
     public CriterioDescripcion toEntity(){
-        return new CriterioDescripcion(palabraClave);
+        if (palabraClave == null || palabraClave.isBlank()) {
+            throw new IllegalArgumentException("palabraClave vacía para CriterioDescripcionDTO");
+        }
+
+        CriteriosRepository repo = CriteriosRepository.getInstance();
+
+        // 1) Buscar si ya existe un criterio igual
+        CriterioDescripcion existente = repo.buscarDescripcion(palabraClave);
+        if (existente != null) {
+            return existente;
+        }
+
+        // 2) Crear y persistir uno nuevo
+        CriterioDescripcion nuevo = new CriterioDescripcion(palabraClave);
+        repo.add(nuevo);
+        return nuevo;
     }
 
     public String getPalabraClave() {return palabraClave;}

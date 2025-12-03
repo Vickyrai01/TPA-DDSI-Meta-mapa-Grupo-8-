@@ -1,6 +1,7 @@
 package core.api.DTO.criterio;
 
 import core.models.entities.colecciones.criterios.CriterioFechaCarga;
+import core.models.repository.CriteriosRepository;
 
 import java.time.LocalDate;
 
@@ -18,7 +19,20 @@ public class CriterioFechaCargaDTO extends CriterioDTO {
 
     @Override
     public CriterioFechaCarga toEntity(){
-        return new CriterioFechaCarga(desde, hasta);
+        if (desde == null || hasta == null) {
+            throw new IllegalArgumentException("rango de fecha carga inválido en CriterioFechaCargaDTO");
+        }
+
+        CriteriosRepository repo = CriteriosRepository.getInstance();
+
+        CriterioFechaCarga existente = repo.buscarFechaCarga(desde, hasta);
+        if (existente != null) {
+            return existente;
+        }
+
+        CriterioFechaCarga nuevo = new CriterioFechaCarga(desde, hasta);
+        repo.add(nuevo);
+        return nuevo;
     }
 
     public LocalDate getDesde() { return desde; }

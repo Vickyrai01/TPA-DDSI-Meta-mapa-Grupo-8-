@@ -1,6 +1,7 @@
 package core.api.DTO.criterio;
 
 import core.models.entities.colecciones.criterios.CriterioFechaSuceso;
+import core.models.repository.CriteriosRepository;
 
 import java.time.LocalDate;
 
@@ -18,7 +19,20 @@ public class CriterioFechaSucesoDTO extends CriterioDTO{
 
     @Override
     public CriterioFechaSuceso toEntity(){
-        return new CriterioFechaSuceso(desde, hasta);
+        if (desde == null || hasta == null) {
+            throw new IllegalArgumentException("rango de fecha suceso inválido en CriterioFechaSucesoDTO");
+        }
+
+        CriteriosRepository repo = CriteriosRepository.getInstance();
+
+        CriterioFechaSuceso existente = repo.buscarFechaSuceso(desde, hasta);
+        if (existente != null) {
+            return existente;
+        }
+
+        CriterioFechaSuceso nuevo = new CriterioFechaSuceso(desde, hasta);
+        repo.add(nuevo);
+        return nuevo;
     }
 
     public LocalDate getDesde() { return desde; }
