@@ -63,8 +63,12 @@ public class PanelDeControlFuente {
             // 1) Crear fuente en el core (que a su vez llama al cargador)
             Map<String, Object> body = new HashMap<>();
             body.put("nombre", nombre);
-            // si es API REST mando el link, si es CSV lo puedo mandar null
-            body.put("link", "API REST".equalsIgnoreCase(strategyTipoConexion) ? link : null);
+            // CSV no necesita link; API REST y BIBLIOTECA sí
+            if ("CSV".equalsIgnoreCase(strategyTipoConexion)) {
+                body.put("link", null);
+            } else {
+                body.put("link", link);
+            }
             body.put("strategyTipoConexion", strategyTipoConexion);
 
             HttpHeaders headers = new HttpHeaders();
