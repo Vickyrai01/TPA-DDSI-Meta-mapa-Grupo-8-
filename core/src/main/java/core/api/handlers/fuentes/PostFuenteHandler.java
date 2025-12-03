@@ -29,7 +29,7 @@ public class PostFuenteHandler implements Handler {
     private final ObjectMapper mapper = new ObjectMapper();
 
     private static final String CARGADOR_ESTATICO_BASE_URL = ConfigLoader.getProperty("CargadorEstatico");
-    private static final String CARGADOR_DINAMICO_BASE_URL = ConfigLoader.getProperty("CargadorDinamico");
+    private static final String CARGADOR_DINAMICO_BASE_URL = ConfigLoader.getProperty("CargadorProxy");
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
@@ -56,11 +56,13 @@ public class PostFuenteHandler implements Handler {
                 strategyTipoConexion
         );
 
-        //fuentesRepository.add(fuente);
+        fuentesRepository.add(fuenteCore);
+        FuenteDTO respuestaCore = FuenteDTO.from(fuenteCore);
 
         // 4) Construir el JSON que se manda al cargador
         //    Reusamos FuenteDTO pero completando tipoFuente y strategyTipoConexion
         FuenteDTO dtoParaCargador = new FuenteDTO();
+        dtoParaCargador.setId(respuestaCore.getId());
         dtoParaCargador.setNombre(dto.getNombre());
         dtoParaCargador.setLink(dto.getLink());
         dtoParaCargador.setTipoFuente(tipoFuente.name());                 // "ESTATICA" o "PROXY"
@@ -101,10 +103,7 @@ public class PostFuenteHandler implements Handler {
             return;
         }
 
-        // Parsear lo que devolvió el cargador (incluye id remoto)
-        FuenteDTO respuestaCargador = mapper.readValue(response.body(), FuenteDTO.class);
-
-        context.status(201).json(respuestaCargador);
+        context.status(201).json(respuestaCore);
     }
 
     public static TipoFuente fromString(String value) {

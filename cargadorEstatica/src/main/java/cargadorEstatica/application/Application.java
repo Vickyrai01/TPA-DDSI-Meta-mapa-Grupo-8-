@@ -51,10 +51,9 @@ public class Application {
     public ResponseEntity<?> agregarFuente(@RequestBody FuenteDTO fuenteDTO) {
         StrategyTipoConexion strategyFuente = obtenerStrategyFuente(fuenteDTO.getTipoFuente());
         if (strategyFuente == null) return ResponseEntity.status(400).body("Tipo de fuente no reconocido");
-        Fuente fuente = new Fuente(fuenteDTO.getNombre(), fuenteDTO.getLink(), strategyFuente, fuenteDTO.getTipoFuente());
+        Fuente fuente = new Fuente(fuenteDTO.getId(), fuenteDTO.getNombre(), fuenteDTO.getLink(), strategyFuente, fuenteDTO.getTipoFuente());
         repoFuentes.save(fuente);
-        FuenteDTO respuesta = FuenteDTO.from(fuente);
-        return ResponseEntity.status(201).body(respuesta);
+        return ResponseEntity.status(201).build();
     }
 
     private StrategyTipoConexion obtenerStrategyFuente(String tipoFuente) {
