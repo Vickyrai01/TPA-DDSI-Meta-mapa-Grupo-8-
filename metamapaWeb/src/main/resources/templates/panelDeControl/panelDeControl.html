@@ -71,6 +71,12 @@
 
                         <div class="card-body">
 
+                            <div class="card-field">
+                                <strong style="color: var(--brand-primary);">Identificador:</strong>
+                                <p class="view-mode" th:text="${c.id()}">*IDENTIFICADOR*</p>
+                                <p class="card-input edit-mode" style="background: #f3f4f6; color: #6b7280; cursor: not-allowed;"
+                                   th:text="${c.id()}"></p>
+                            </div>
 
                             <div class="card-field">
                                 <strong>Descripción:</strong>
@@ -115,32 +121,34 @@
                             </div>
 
                             <!-- Selector de algoritmo de consenso en modo edición (igual que creación) -->
-                            <div class="form-group edit-mode" style="margin-bottom: 16px;">
-                                <label th:for="${'algoritmoConsensoEdit-' + c.id()}"
-                                       style="font-weight: 600; font-size: 0.95rem;">Algoritmo de consenso</label>
+                            <div class="card-field">
+                                <strong>Algoritmo de consenso:</strong>
 
-                                <select th:id="${'algoritmoConsensoEdit-' + c.id()}"
-                                        name="algoritmoConsensoEdit"
-                                        class="card-select"
-                                        style="margin-top: 4px;">
+                                <p class="view-mode"
+                                   th:text="${c.algoritmoConsenso() != null ? c.algoritmoConsenso() : '-'}">
+                                    -
+                                </p>
 
-                                    <!-- Opción para dejarlo NULO (Sin algoritmo) -->
+                                <select class="card-input edit-mode" name="algoritmoConsensoEdit">
+
                                     <option value="SIN"
-                                            th:selected="${c.algoritmoConsenso() == 'SIN'}">
-                                        Sin algoritmo</option>
+                                            th:selected="${c.algoritmoConsenso() == null}">
+                                        Ninguno
+                                    </option>
 
-                                    <!-- Opciones con selección dinámica -->
-                                    <option value="MULTIPLES_MENCIONES"
-                                            th:selected="${c.algoritmoConsenso() == 'MULTIPLES_MENCIONES'}">
-                                        Multiples menciones
-                                    </option>
-                                    <option value="MAYORIA_SIMPLE"
-                                            th:selected="${c.algoritmoConsenso() == 'MAYORIA_SIMPLE'}">
-                                        Mayoría simple
-                                    </option>
                                     <option value="ABSOLUTO"
                                             th:selected="${c.algoritmoConsenso() == 'ABSOLUTO'}">
                                         Absoluto
+                                    </option>
+
+                                    <option value="MAYORIA_SIMPLE"
+                                            th:selected="${c.algoritmoConsenso() == 'MAYORIA_SIMPLE'}">
+                                        Mayoría Simple
+                                    </option>
+
+                                    <option value="MULTIPLES_MENCIONES"
+                                            th:selected="${c.algoritmoConsenso() == 'MULTIPLES_MENCIONES'}">
+                                        Múltiples Menciones
                                     </option>
                                 </select>
                             </div>
@@ -181,13 +189,6 @@
                                         <i class="fa-solid fa-plus"></i> Agregar nuevo criterio
                                     </button>
                                 </div>
-                            </div>
-
-                            <div class="card-field">
-                                <strong>Identificador:</strong>
-                                <p class="view-mode" th:text="${c.id()}">*IDENTIFICADOR*</p>
-                                <p class="card-input edit-mode" style="background: #f3f4f6; color: #6b7280; cursor: not-allowed;"
-                                   th:text="${c.id()}"></p>
                             </div>
 
                             <div class="card-field">
