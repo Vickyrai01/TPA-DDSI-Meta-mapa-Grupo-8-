@@ -35,6 +35,8 @@ public class PatchColeccionHandler implements Handler {
 
         Coleccion coleccion = coleccionOpt.get();
         ActualizoColeccionDTO dto = context.bodyAsClass(ActualizoColeccionDTO.class);
+        System.out.println("DTO recibido: " + context.body());
+        System.out.println("criterios DTO: " + dto.criterioDePertenencia);
 
         if (dto.titulo != null) {
             coleccion.setTitulo(dto.titulo);

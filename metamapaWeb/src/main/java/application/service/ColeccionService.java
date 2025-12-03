@@ -73,7 +73,7 @@ public class ColeccionService {
     }
 
     //VER
-    public boolean patchColeccion(Integer id, String nuevoTitulo, String nuevaDescripcion, Object fuentes, String algoritmoConsenso, String modoDeNavegacion) {
+    public boolean patchColeccion(Integer id, String nuevoTitulo, String nuevaDescripcion, Object fuentes, String algoritmoConsenso, String modoDeNavegacion, Object criterios) {
         Map<String, Object> body = new HashMap<>();
         if (nuevoTitulo != null && !nuevoTitulo.isBlank()) {
             body.put("titulo", nuevoTitulo);
@@ -90,7 +90,9 @@ public class ColeccionService {
         if (modoDeNavegacion != null && !modoDeNavegacion.isBlank()) {
             body.put("modoDeNavegacion", modoDeNavegacion);
         }
-
+        if (criterios != null) {
+            body.put("criterioDePertenencia", criterios);
+        }
         try {
             var resp = metamapaApiADMIN
                     .patch()

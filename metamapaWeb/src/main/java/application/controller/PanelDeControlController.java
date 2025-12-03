@@ -1,4 +1,5 @@
 package application.controller;
+import application.dto.CriterioDTO;
 import application.service.FuenteService;
 import application.dto.ColeccionDTO;
 import application.service.ColeccionService;
@@ -55,12 +56,11 @@ public class PanelDeControlController {
                 : null; // Mejor usar null si no viene, para que el servicio decida qué hacer (o List.of() si quieres vaciarlo)
 
         String algoritmoConsenso = req.get("algoritmoConsenso") != null ? req.get("algoritmoConsenso").toString() : null;
-
-        // --- AGREGADO: Capturar el Modo de Navegación ---
         String modoDeNavegacion = req.get("modoDeNavegacion") != null ? req.get("modoDeNavegacion").toString() : null;
+        List<CriterioDTO> criterios = (List<CriterioDTO>) req.get("criterioDePertenencia");
 
         // Llamamos al servicio pasando el nuevo parámetro
-        boolean ok = coleccionService.patchColeccion(id, titulo, desc, fuentes, algoritmoConsenso, modoDeNavegacion);
+        boolean ok = coleccionService.patchColeccion(id, titulo, desc, fuentes, algoritmoConsenso, modoDeNavegacion, criterios);
 
         if (ok) {
             return ResponseEntity.ok().build();

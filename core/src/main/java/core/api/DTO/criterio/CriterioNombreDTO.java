@@ -1,6 +1,7 @@
 package core.api.DTO.criterio;
 
 import core.models.entities.colecciones.criterios.CriterioNombre;
+import core.models.repository.CriteriosRepository;
 
 public class CriterioNombreDTO extends CriterioDTO {
     private String palabraClave;
@@ -14,13 +15,26 @@ public class CriterioNombreDTO extends CriterioDTO {
 
     @Override
     public CriterioNombre toEntity(){
-        return new CriterioNombre(palabraClave);
+        if (palabraClave == null || palabraClave.isBlank()) {
+            throw new IllegalArgumentException("palabraClave vacía para CriterioNombreDTO");
+        }
+
+        CriteriosRepository repo = CriteriosRepository.getInstance();
+
+        CriterioNombre existente = repo.buscarNombre(palabraClave);
+        if (existente != null) {
+            return existente;
+        }
+
+        CriterioNombre nuevo = new CriterioNombre(palabraClave);
+        repo.add(nuevo);
+        return nuevo;
     }
 
     public String getPalabraClave() {
         return palabraClave;
     }
     public void setPalabraClave(String clave) {
-        this.palabraClave = palabraClave;
+        this.palabraClave = clave;
     }
 }

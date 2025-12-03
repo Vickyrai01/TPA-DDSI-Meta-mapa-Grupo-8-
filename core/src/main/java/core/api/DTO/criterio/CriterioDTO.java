@@ -9,13 +9,13 @@ import core.models.entities.colecciones.criterios.*;
         include = JsonTypeInfo.As.PROPERTY,
         property = "type")
 @JsonSubTypes({
+        @JsonSubTypes.Type(value = CriterioNombreDTO.class, name = "nombre"),
         @JsonSubTypes.Type(value = CriterioCategoriaDTO.class, name = "categoria"),
         @JsonSubTypes.Type(value = CriterioDescripcionDTO.class, name = "descripcion"),
         @JsonSubTypes.Type(value = CriterioFechaCargaDTO.class, name = "fechaCarga"),
         @JsonSubTypes.Type(value = CriterioUbicacionDTO.class, name = "ubicacion"),
         @JsonSubTypes.Type(value = CriterioFechaModificacionDTO.class, name = "fechaModificacion"),
-        @JsonSubTypes.Type(value = CriterioFechaSucesoDTO.class, name = "fechaSuceso"),
-        @JsonSubTypes.Type(value = CriterioNombreDTO.class, name = "nombre")
+        @JsonSubTypes.Type(value = CriterioFechaSucesoDTO.class, name = "fechaSuceso")
 })
 public abstract class CriterioDTO {
     private Integer id;

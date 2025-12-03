@@ -2,6 +2,8 @@ package core.api.DTO.criterio;
 
 import core.models.entities.colecciones.criterios.CriterioUbicacion;
 import core.models.entities.hecho.Coordenadas;
+import core.models.repository.CoordenadasRepository;
+import core.models.repository.CriteriosRepository;
 
 public class CriterioUbicacionDTO extends CriterioDTO{
     private Double latitud;
@@ -17,8 +19,30 @@ public class CriterioUbicacionDTO extends CriterioDTO{
 
     @Override
     public CriterioUbicacion toEntity(){
-        Coordenadas coordenadas = new Coordenadas(latitud,longitud);
-        return new CriterioUbicacion(coordenadas);
+        if (latitud == null || longitud == null) {
+            throw new IllegalArgumentException("latitud/longitud nulas en CriterioUbicacionDTO");
+        }
+
+        CoordenadasRepository coordsRepo = CoordenadasRepository.getInstance();
+        CriteriosRepository criteriosRepo = CriteriosRepository.getInstance();
+
+        // 1) Buscar o crear las coordenadas
+        Coordenadas ejemplo = new Coordenadas(latitud, longitud);
+        Coordenadas coords = coordsRepo.buscarPorCoordenadas(ejemplo);
+        if (coords == null) {
+            coords = coordsRepo.add(ejemplo);
+        }
+
+        // 2) Buscar si ya existe un criterio con esas coords
+        CriterioUbicacion existente = criteriosRepo.buscarUbicacion(coords);
+        if (existente != null) {
+            return existente;
+        }
+
+        // 3) Crear y persistir criterio nuevo
+        CriterioUbicacion nuevo = new CriterioUbicacion(coords);
+        criteriosRepo.add(nuevo);
+        return nuevo;
     }
 
     public Double getLatitud() { return latitud; }
