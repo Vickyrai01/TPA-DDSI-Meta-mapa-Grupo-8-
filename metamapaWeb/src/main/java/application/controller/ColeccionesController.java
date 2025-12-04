@@ -6,6 +6,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import application.service.ColeccionService;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Objects;
 
 @Controller
 public class ColeccionesController {
@@ -27,28 +30,37 @@ public class ColeccionesController {
     }
 
     @GetMapping("/colecciones/{id}")
-    public String detalle(@PathVariable("id") Integer id, Model model) {
+    public String detalle(
+            @PathVariable("id") Integer id,
+            @RequestParam(value = "modo", required = false) String modoParam,
+            Model model
+    ) {
 
         // 1. Buscamos la colección primero para saber su configuración
         ColeccionDTO coleccion = coleccionService.getById(id);
-        System.out.println(coleccion);
-        System.out.println(coleccion.modoDeNavegacion());
 
         // 2. Obtenemos el modo de navegación predeterminado de la colección
-        // (Asumo que en tu ColeccionDTO el campo se llama algoritmoConsenso, basado en tu método patch)
         String modoPredeterminado = coleccion.modoDeNavegacion();
-        if (modoPredeterminado == null || modoPredeterminado.isBlank()) {
-            modoPredeterminado = "irrestricto"; // <--- O el valor que use tu Core por defecto
+
+        String modoActual = (modoParam != null) ? modoParam : modoPredeterminado;
+
+        if(modoParam != null) {
+            if (Objects.equals(modoPredeterminado, "IRRESTRICTA") && Objects.equals(modoParam, "CURADA")) {
+                modoActual = "IRRESTRICTA";
+            }
+            if (!(modoParam.equals("CURADA") || modoParam.equals("IRRESTRICTA"))) {
+                modoActual = modoPredeterminado;
+            }
         }
 
         // 3. Buscamos los hechos usando ESE modo específico
-        model.addAttribute("hechos", coleccionService.getHechosVisibles(id, modoPredeterminado));
+        model.addAttribute("hechos", coleccionService.getHechosVisibles(id, modoActual));
 
         // 4. Agregamos la colección y el dato del modo actual al modelo
         model.addAttribute("coleccion", coleccion);
 
         // Es importante pasar esto por si tu vista usa esta variable para resaltar botones o títulos
-        model.addAttribute("tipoConsensoActual", modoPredeterminado);
+        model.addAttribute("modoActual", modoActual);
 
         return "verColeccion/verColeccion";
     }

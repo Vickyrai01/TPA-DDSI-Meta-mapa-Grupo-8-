@@ -26,9 +26,9 @@ public class GetHechosDeColeccionCurados implements Handler {
         String modoVisualizacion = context.pathParam("modoVisualizacion");
 
         // ─────────────────────────────────────────────
-        // 1) IRRESTRICTO → delega al handler que ya funciona
+        // 1) IRRESTRICTA → delega al handler que ya funciona
         // ─────────────────────────────────────────────
-        if ("IRRESTRICTO".equalsIgnoreCase(modoVisualizacion)) {
+        if ("IRRESTRICTA".equalsIgnoreCase(modoVisualizacion)) {
             handlerIrrestricta.handle(context);
             return;
         }
