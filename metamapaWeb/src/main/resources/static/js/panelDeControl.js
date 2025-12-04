@@ -133,7 +133,24 @@ document.addEventListener('DOMContentLoaded', () => {
       palabra = document.getElementById('crit-input-keyword').value;
       displayText = `${type}: ${palabra}`;
     } else if (type === 'categoria') {
-      cat = document.getElementById('crit-input-category').value;
+      const select = document.getElementById('crit-select-category');
+      const otra   = document.getElementById('crit-input-category-otra');
+
+      if (!select.value) {
+        alert('Elegí una categoría');
+        return;
+      }
+
+      if (select.value === 'Otro') {
+        cat = otra.value.trim();
+        if (!cat) {
+          alert('Especificá la categoría');
+          return;
+        }
+      } else {
+        cat = select.value;
+      }
+
       displayText = `Categoría: ${cat}`;
     } else if (type === 'ubicacion') {
       lat = document.getElementById('crit-input-lat').value;
@@ -166,6 +183,8 @@ document.addEventListener('DOMContentLoaded', () => {
     selectType.value = "";
     containerInputs.style.display = 'none';
     document.querySelectorAll('.dynamic-group').forEach(el => el.classList.add('hidden'));
+
+    if (catOtraGroup) catOtraGroup.classList.add('hidden');
   }
 
 
@@ -214,9 +233,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Algoritmo y Modo
     const algoritmoConsenso = document.getElementById('new-algoritmo').value;
-    const modoNavegacion = document.getElementById('new-modoNavegacion').value;
+    const modoDeNavegacion = document.getElementById('new-modoNavegacion').value;
 
-    if (modoNavegacion === 'CURADA' && (!algoritmoConsenso || algoritmoConsenso === 'SIN')) {
+    if (modoDeNavegacion === 'CURADA' && (!algoritmoConsenso || algoritmoConsenso === 'SIN')) {
       alert('Las colecciones CURADAS necesitan un algoritmo de consenso.');
       return;
     }
@@ -404,4 +423,17 @@ document.addEventListener('DOMContentLoaded', () => {
   searchBtn?.addEventListener('click', (e) => { e.preventDefault(); doSearch(); });
   searchInput?.addEventListener('keyup', (e) => { if (e.key === 'Enter') doSearch(); });
 
+});
+
+const catSelect = document.getElementById('crit-select-category');
+const catOtraGroup = document.getElementById('crit-category-otra-group');
+const catOtraInput = document.getElementById('crit-input-category-otra');
+
+catSelect?.addEventListener('change', () => {
+  if (catSelect.value === 'Otro') {
+    catOtraGroup.classList.remove('hidden');
+  } else {
+    catOtraGroup.classList.add('hidden');
+    if (catOtraInput) catOtraInput.value = '';
+  }
 });

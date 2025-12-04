@@ -341,9 +341,24 @@
                     </div>
 
                     <div id="input-group-cat" class="dynamic-group hidden">
-                        <label>Categoría Exacta:</label>
-                        <input type="text" id="crit-input-category" class="card-input" placeholder="Ej: Robo">
+                        <label for="crit-select-category">Categoría</label>
+                        <select id="crit-select-category" class="card-select">
+                            <option value="">Elegí una categoría</option>
+                            <option th:each="c : ${categorias}"
+                                    th:value="${c}"
+                                    th:text="${c}">
+                            </option>
+                            <option value="Otro">Otro</option>
+                        </select>
+
+                        <!-- Input que aparece solo si se elige "Otro" -->
+                        <div class="form-group hidden" id="crit-category-otra-group" style="margin-top: 8px;">
+                            <label for="crit-input-category-otra">Especificá la categoría</label>
+                            <input type="text" id="crit-input-category-otra" class="card-input"
+                                   placeholder="Describí la categoría">
+                        </div>
                     </div>
+
 
                     <div id="input-group-geo" class="dynamic-group hidden">
                         <label>Coordenadas:</label>
