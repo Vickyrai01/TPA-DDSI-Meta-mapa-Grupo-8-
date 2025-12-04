@@ -29,7 +29,7 @@ public class GeneradorTodasEstadisticasTest {
         List<Map<String, Object>> categorias = generadorTodasEstadisticas.getCategoriaMasReportada();
         assertNotNull(categorias);
         assertFalse(categorias.isEmpty());
-        assertEquals("Accidente vial", categorias.get(0).get("categoria"));
+        assertEquals("Incendio", categorias.get(0).get("categoria"));
     }
 
     @Test
@@ -37,26 +37,25 @@ public class GeneradorTodasEstadisticasTest {
         List<Map<String, Object>> provincias = generadorTodasEstadisticas.getProvinciaConMasHechos();
         assertNotNull(provincias);
         assertFalse(provincias.isEmpty());
-        assertEquals("Buenos Aires", provincias.get(0).get("provincia"));
+        assertEquals("Córdoba", provincias.get(0).get("provincia"));
     }
 
     @Test
     void testHorarioMasFrencuentePorCategoria() {
-        List<Map<String, Object>> horarios = generadorTodasEstadisticas.horarioxCategoria("Accidente vial");
+        List<Map<String, Object>> horarios = generadorTodasEstadisticas.horarioxCategoria("Robo");
         assertNotNull(horarios);
         assertFalse(horarios.isEmpty());
-        assertTrue(horarios.get(0).get("hora").toString().contains("8:00"));
+        assertTrue(horarios.get(0).get("hora").toString().contains("13:00"));
     }
 
     @Test
     void testProvinciaMasHechosPorCategoria() {
-        List<Map<String, Object>> provincias = generadorTodasEstadisticas.provinciaConMasHechosEnCategoria("Incendio forestal");
+        List<Map<String, Object>> provincias = generadorTodasEstadisticas.provinciaConMasHechosEnCategoria("Amenaza");
         assertNotNull(provincias);
         assertFalse(provincias.isEmpty());
-        assertEquals("Misiones", provincias.get(0).get("provincia"));
+        assertEquals("Córdoba", provincias.get(0).get("provincia"));
     }
 
-    /*
     @Test
     void testCantidadSolicitudesEliminacion() {
         Map<String, Object> estadisticas = generadorTodasEstadisticas.getCantSolicitudesEliminacion();
@@ -66,7 +65,7 @@ public class GeneradorTodasEstadisticasTest {
         assertTrue((Long)estadisticas.get("solicitudes spam") >= 0);
         assertTrue((Long)estadisticas.get("total de solicitudes") >= 0);
     }
-    */
+
 
 
 }

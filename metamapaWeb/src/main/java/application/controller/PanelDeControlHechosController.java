@@ -4,6 +4,9 @@ import application.dto.ColeccionDTO;
 import application.dto.HechoDTO;
 import application.service.ColeccionService;
 import application.service.HechoService;
+import application.service.AdminService;
+import org.springframework.security.core.Authentication;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,15 +23,22 @@ public class PanelDeControlHechosController {
 
     private final ColeccionService coleccionService;
     private final HechoService hechoService;
+    private final AdminService adminService;
 
-    public PanelDeControlHechosController(ColeccionService coleccionService, HechoService hechoService) {
+    @Autowired
+    public PanelDeControlHechosController(ColeccionService coleccionService, HechoService hechoService, AdminService adminService) {
         this.coleccionService = coleccionService;
         this.hechoService = hechoService;
+        this.adminService = adminService;
     }
 
     // Renderiza Admin Hechos tomando los hechos de la colección global (criterio == null)
     @GetMapping("/admin/hechos")
-    public String administrarHechos(Model model) {
+    public String administrarHechos(Model model, Authentication authentication, RedirectAttributes ra) {
+        if (!adminService.isAdmin(authentication)) {
+            ra.addFlashAttribute("toastError", "No podes ingresar porque no sos admin :v");
+            return "redirect:/";
+        }
         List<HechoDTO> hechosGlobales = hechoService.getAll();
         model.addAttribute("listaDeHechos", Optional.ofNullable(hechosGlobales).orElse(List.of()));
         return "panelDeControl/panelDeControlHECHOS";
