@@ -7,6 +7,9 @@ import application.service.ReportarService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import application.service.AdminService;
+import org.springframework.security.core.Authentication;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,17 +25,23 @@ public class PanelDeControlController {
     private final ColeccionService coleccionService;
     private final FuenteService fuenteService;
     private final ReportarService reportarService;
-    private final ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;  
+    private final AdminService adminService;
 
-    public PanelDeControlController(ColeccionService coleccionService, FuenteService fuenteService, ReportarService reportarService, ObjectMapper objectMapper) {
+    @Autowired
+    public PanelDeControlController(ColeccionService coleccionService, FuenteService fuenteService, AdminService adminService, ObjectMapper objectMapper) {
         this.coleccionService = coleccionService;
         this.fuenteService = fuenteService;
-        this.reportarService = reportarService;
+        this.adminService = adminService;
         this.objectMapper = objectMapper;
     }
 
     @GetMapping("/admin/colecciones")
-    public String home(Model model) throws JsonProcessingException {
+    public String home(Model model, Authentication authentication, RedirectAttributes ra) throws JsonProcessingException {
+        if (!adminService.isAdmin(authentication)) {
+            ra.addFlashAttribute("toastError", "No podes ingresar porque no sos admin :v");
+            return "redirect:/";
+        }
         model.addAttribute("listaDeColecciones", coleccionService.getAll());
         model.addAttribute("listaDeFuentes", fuenteService.getAll());
         String categoriasJson = reportarService.getCategorias();

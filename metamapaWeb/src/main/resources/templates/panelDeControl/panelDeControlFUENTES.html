@@ -12,6 +12,7 @@
     <link rel="stylesheet" th:href="@{/css/pages-css/panelDeControl.css}">
 </th:block>
 
+
 <main id="contenido-fuentes" class="admin-page">
     <div class="admin-bg"></div>
 
@@ -43,10 +44,10 @@
                             <div class="card-actions">
                                 <!-- Eliminar -->
                                 <form class="delete-form"
-                                      th:action="@{/admin/fuentes/{nombre}/eliminar(nombre=${f.nombre()})}"
+                                      th:action="@{/admin/fuentes/{id}/eliminar(id=${f.id()})}"
                                       method="post">
                                     <input type="hidden" name="_csrf" th:if="${_csrf}" th:value="${_csrf.token}"/>
-                                    <button type="button" class="icon-btn delete-btn" aria-label="Eliminar">
+                                    <button type="submit" class="icon-btn delete-btn" aria-label="Eliminar">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
                                 </form>
@@ -54,13 +55,14 @@
                         </div>
 
                         <div class="card-body">
-                            <div class="card-field">
+                            <div class="card-field" th:if="${f.link() != null}">
                                 <strong>Link:</strong>
                                 <p>
                                     <a th:href="${f.link()}" target="_blank" rel="noopener noreferrer"
-                                       th:text="${f.link()}">*LINK*</a>
+                                       th:text="${f.link()}"></a>
                                 </p>
                             </div>
+
 
                             <div class="card-field">
                                 <strong>Tipo de fuente:</strong>
@@ -68,7 +70,7 @@
                             </div>
 
                             <div class="card-field">
-                                <strong>Estrategia de conexión:</strong>
+                                <strong>Formato de conexión:</strong>
                                 <p th:text="${f.strategyTipoConexion()}">*ESTRATEGIA*</p>
                             </div>
                         </div>
@@ -110,42 +112,82 @@
         <div class="modal">
             <h2>Nueva Fuente</h2>
 
-            <form id="add-form" class="modal-form">
+            <!-- AHORA ES UN FORM REAL -->
+            <!-- IMPORTANTE: th:action apunta al endpoint POST /fuentes -->
+            <form id="add-form"
+                  class="modal-form"
+                  th:action="@{/admin/fuentes}"
+                  method="post"
+                  enctype="multipart/form-data">
+
+                <!-- Nombre -->
+                <!-- IMPORTANTE: name="nombre" debe coincidir con @RequestParam("nombre") -->
                 <div class="form-group" style="grid-column:1 / -1">
                     <label for="new-nombre">Nombre</label>
-                    <input id="new-nombre" class="card-input" type="text" required placeholder="Ej: Boletín Policial">
+                    <input
+                            id="new-nombre"
+                            name="nombre"
+                            class="card-input"
+                            type="text"
+                            required
+                            placeholder="Ej: Boletín Policial"
+                    >
                 </div>
 
+                <!-- Formato de fuente (API REST / CSV) -->
                 <div class="form-group" style="grid-column:1 / -1">
+                    <label for="new-formato">Formato de fuente</label>
+                    <input
+                            id="new-formato"
+                            name="strategyTipoConexion"
+                            class="card-input"
+                            list="formatos-fuente"
+                            placeholder="Seleccionar formato..."
+                            required
+                    >
+                    <datalist id="formatos-fuente">
+                        <option value="API REST"></option>
+                        <option value="CSV"></option>
+                    </datalist>
+                </div>
+
+                <!-- Campo LINK (solo API REST) -->
+                <div class="form-group" id="group-link" style="grid-column:1 / -1; display:none;">
                     <label for="new-link">Link</label>
-                    <input id="new-link" class="card-input" type="url" placeholder="https://...">
+                    <input
+                            id="new-link"
+                            name="link"
+                            class="card-input"
+                            type="url"
+                            placeholder="https://..."
+                    >
                 </div>
 
-                <div class="form-group">
-                    <label for="new-tipo">Tipo de fuente</label>
-                    <input id="new-tipo" class="card-input" list="tipos-fuente" placeholder="Seleccionar tipo...">
-                    <datalist id="tipos-fuente">
-                        <option value="DINAMICA"/>
-                        <option value="PROXY"/>
-                        <option value="ESTATICA"/>
-                    </datalist>
+                <!-- Campo ARCHIVO (solo CSV) -->
+                <div class="form-group" id="group-file" style="grid-column:1 / -1; display:none;">
+                    <label for="new-file">Archivo CSV</label>
+                    <label class="attach-btn">
+                        <span id="archivoCsvLabel">Seleccionar archivo</span>
+                        <input
+                                id="new-file"
+                                name="archivoCsv"
+                                type="file"
+                                accept=".csv"
+                                style="display:none"
+                        >
+                    </label>
                 </div>
 
-                <div class="form-group">
-                    <label for="new-strategy">Estrategia de conexión</label>
-                    <input id="new-strategy" class="card-input" list="estrategias-conexion" placeholder="Seleccionar estrategia...">
-                    <datalist id="estrategias-conexion">
-                        <option value="API REST"/>
-                        <option value="BIBLIOTECA CLIENTE"/>
-                        <option value="CSV"/>
-                    </datalist>
+                <!-- ACCIONES DEL MODAL DENTRO DEL FORM -->
+                <div class="modal-actions">
+                    <button type="button" id="cancel-add" class="modal-btn modal-btn-secondary">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="modal-btn modal-btn-primary">
+                        Crear Fuente
+                    </button>
                 </div>
             </form>
-
-            <div class="modal-actions">
-                <button id="cancel-add" class="modal-btn modal-btn-secondary">Cancelar</button>
-                <button id="confirm-add" class="modal-btn modal-btn-primary">Crear Fuente</button>
-            </div>
         </div>
     </div>
 
@@ -156,4 +198,3 @@
     <script th:src="@{/js/panelControlFuentes.js}" defer></script>
 </th:block>
 </html>
-

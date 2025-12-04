@@ -1,4 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // Limitar fecha máxima al día actual en los campos de fecha del modal de crear colección
+  const fechaInputs = [
+    document.getElementById('new-criterio-suceso-desde'),
+    document.getElementById('new-criterio-suceso-hasta'),
+    document.getElementById('new-criterio-carga-desde'),
+    document.getElementById('new-criterio-carga-hasta')
+  ];
+  const hoy = new Date();
+  const yyyy = hoy.getFullYear();
+  const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+  const dd = String(hoy.getDate()).padStart(2, '0');
+  const maxDate = `${yyyy}-${mm}-${dd}`;
+  fechaInputs.forEach(input => {
+    if (input) input.setAttribute('max', maxDate);
+  });
   const adminMainContent = document.querySelector('.admin-main-content');
   const list = document.querySelector('.collections-list');
 
