@@ -3,6 +3,10 @@ import application.dto.CriterioDTO;
 import application.service.FuenteService;
 import application.dto.ColeccionDTO;
 import application.service.ColeccionService;
+import application.service.ReportarService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,16 +21,27 @@ import java.util.Map;
 public class PanelDeControlController {
     private final ColeccionService coleccionService;
     private final FuenteService fuenteService;
+    private final ReportarService reportarService;
+    private final ObjectMapper objectMapper;
 
-    public PanelDeControlController(ColeccionService coleccionService, FuenteService fuenteService) {
+    public PanelDeControlController(ColeccionService coleccionService, FuenteService fuenteService, ReportarService reportarService, ObjectMapper objectMapper) {
         this.coleccionService = coleccionService;
-        this.fuenteService = fuenteService; // <-- AÑADIR ESTO
+        this.fuenteService = fuenteService;
+        this.reportarService = reportarService;
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping("/admin/colecciones")
-    public String home(Model model) {
+    public String home(Model model) throws JsonProcessingException {
         model.addAttribute("listaDeColecciones", coleccionService.getAll());
         model.addAttribute("listaDeFuentes", fuenteService.getAll());
+        String categoriasJson = reportarService.getCategorias();
+        // lo parseamos a List<String>
+        List<String> categorias = objectMapper.readValue(
+                categoriasJson,
+                new TypeReference<List<String>>() {}
+        );
+        model.addAttribute("categorias", categorias);
         return "panelDeControl/panelDeControl";
     }
 
