@@ -16,6 +16,7 @@ import utils.DBUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
+import javax.persistence.NoResultException;
 import java.util.*;
 
 public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer> {
@@ -478,6 +479,129 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
         }
     }
 
+    public ColeccionDTO obtenerColeccionDTOConCantidadHechos(Integer idColeccion) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            // =========================
+            //  BASE: datos principales
+            // =========================
+            Object[] base = em.createQuery("""
+            SELECT c.id,
+                   c.titulo,
+                   c.descripcionColeccion,
+                   c.identificadorHandle,
+                   c.modoDeNavegacion,
+                   c.algoritmoConsenso
+            FROM coleccion c
+            WHERE c.id = :idColeccion
+        """, Object[].class)
+                    .setParameter("idColeccion", idColeccion)
+                    .getSingleResult();
+
+            Integer id          = (Integer) base[0];
+            String  titulo      = (String)  base[1];
+            String  descripcion = (String)  base[2];
+            String  handle      = (String)  base[3];
+            ModoDeNavegacion modo          = (ModoDeNavegacion) base[4];  // puede ser null
+            AlgoritmoConsenso algoritmoObj = (AlgoritmoConsenso) base[5]; // puede ser null
+
+            // =========================
+            //  CANTIDAD DE HECHOS
+            // =========================
+            Long cantHechos = em.createQuery("""
+            SELECT COUNT(h)
+            FROM coleccion c
+            LEFT JOIN c.hechos h
+            WHERE c.id = :idColeccion
+        """, Long.class)
+                    .setParameter("idColeccion", idColeccion)
+                    .getSingleResult();
+
+            // =========================
+            //  CANTIDAD DE HECHOS VISIBLES
+            // =========================
+            Long cantHechosVisibles = em.createQuery("""
+            SELECT COUNT(hv)
+            FROM coleccion c
+            LEFT JOIN c.hechosVisibles hv
+            WHERE c.id = :idColeccion
+        """, Long.class)
+                    .setParameter("idColeccion", idColeccion)
+                    .getSingleResult();
+
+            // =========================
+            //  FUENTES (lista de IDs)
+            // =========================
+            List<Integer> fuentesIds = em.createQuery("""
+            SELECT f.id
+            FROM coleccion c
+            JOIN c.fuentes f
+            WHERE c.id = :idColeccion
+            ORDER BY f.id
+        """, Integer.class)
+                    .setParameter("idColeccion", idColeccion)
+                    .getResultList();
+
+            // =========================
+            //  CRITERIOS
+            // =========================
+            List<Object[]> rowsCriterios = em.createQuery("""
+            SELECT c.id, crit
+            FROM coleccion c
+            JOIN c.criterioDePertenencia crit
+            WHERE c.id = :idColeccion
+            ORDER BY c.id
+        """, Object[].class)
+                    .setParameter("idColeccion", idColeccion)
+                    .getResultList();
+
+            List<core.api.DTO.criterio.CriterioDTO> criteriosDTO = new ArrayList<>();
+            for (Object[] r : rowsCriterios) {
+                Criterio crit = (Criterio) r[1];
+                criteriosDTO.add(core.api.DTO.criterio.CriterioDTO.from(crit));
+            }
+
+            // =========================
+            //  MAPEO A DTO
+            // =========================
+            String modoStr = (modo != null) ? modo.name() : null;
+
+            String algoritmoStr = null;
+            if (algoritmoObj != null) {
+                if (algoritmoObj instanceof StrategyAbsoluta) {
+                    algoritmoStr = "ABSOLUTO";
+                } else if (algoritmoObj instanceof StrategyMayoriaSimple) {
+                    algoritmoStr = "MAYORIA_SIMPLE";
+                } else if (algoritmoObj instanceof StrategyMultiplesMenciones) {
+                    algoritmoStr = "MULTIPLES_MENCIONES";
+                } else {
+                    algoritmoStr = algoritmoObj.getClass().getSimpleName();
+                }
+            }
+
+            ColeccionDTO dto = new ColeccionDTO();
+            dto.setId(id);
+            dto.setTitulo(titulo);
+            dto.setDescripcionColeccion(descripcion);
+            dto.setIdentificadorHandle(handle);
+            dto.setModoDeNavegacion(modoStr);
+            dto.setAlgoritmoConsenso(algoritmoStr);
+
+            dto.setCantidadHechos(Math.toIntExact(cantHechos != null ? cantHechos : 0L));
+            dto.setCantidadHechosVisibles(Math.toIntExact(cantHechosVisibles != null ? cantHechosVisibles : 0L));
+
+            dto.setFuentes(fuentesIds != null ? fuentesIds : new ArrayList<>());
+            dto.setCriterioDePertenencia(criteriosDTO);
+
+            return dto;
+
+        } catch (NoResultException e) {
+            // si querés, podés devolver null o tirar una excepción custom
+            return null;
+        } finally {
+            try { em.close(); } catch (Exception ignore) {}
+        }
+    }
 
 
     public List<Hecho> getHechosConUbicacion(Integer idColeccion) {
