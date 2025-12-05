@@ -1,6 +1,6 @@
 package core.api.DTO;
 
-import core.models.entities.colecciones.criterios.Criterio;
+import core.api.DTO.criterio.CriterioDTO;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ public class ColeccionDTO {
 
     public ColeccionDTO(){}
 
-    public ColeccionDTO(int id, String titulo, String descripcionColeccion, List<Criterio> listaCriterio, List<Integer> fuentes, List<Integer> hechos, String identificadorHandle) {
+    public ColeccionDTO(Integer id, String titulo, String descripcionColeccion, List<CriterioDTO> listaCriterio, List<Integer> fuentes, List<Integer> hechos, String identificadorHandle) {
         this.id = id;
         this.titulo = titulo;
         this.descripcionColeccion = descripcionColeccion;
@@ -18,7 +18,7 @@ public class ColeccionDTO {
         this.identificadorHandle = identificadorHandle;
     }
 
-    public ColeccionDTO(int id, String titulo, String descripcionColeccion, List<Criterio> listaCriterio, List<Integer> fuentes, List<Integer> hechos, String identificadorHandle, Integer cantidadHechos) {
+    public ColeccionDTO(Integer id, String titulo, String descripcionColeccion, List<CriterioDTO> listaCriterio, List<Integer> fuentes, List<Integer> hechos, String identificadorHandle, Integer cantidadHechos) {
         this.id = id;
         this.titulo = titulo;
         this.descripcionColeccion = descripcionColeccion;
@@ -29,11 +29,11 @@ public class ColeccionDTO {
         this.cantidadHechos = cantidadHechos;
     }
 
-    private int id;
-    public int getId() {
+    private Integer id;
+    public Integer getId() {
         return id;
     }
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -53,11 +53,11 @@ public class ColeccionDTO {
         this.descripcionColeccion = descripcionColeccion;
     }
 
-    private List<Criterio> criterioDePertenencia;
-    public List<Criterio> getCriterioDePertenencia() {
+    private List<CriterioDTO> criterioDePertenencia;
+    public List<CriterioDTO> getCriterioDePertenencia() {
         return criterioDePertenencia;
     }
-    public void setCriterioDePertenencia(List<Criterio> criterioDePertenencia) {
+    public void setCriterioDePertenencia(List<CriterioDTO> criterioDePertenencia) {
         this.criterioDePertenencia = criterioDePertenencia;
     }
 
@@ -94,5 +94,32 @@ public class ColeccionDTO {
     }
 
     private Integer cantidadHechos;
+
+    private String modoDeNavegacion;
+    public String getModoDeNavegacion() {
+        return modoDeNavegacion;
+    }
+    public void setModoDeNavegacion(String modoDeNavegacion) {
+        this.modoDeNavegacion = modoDeNavegacion;
+    }
+
+    private String algoritmoConsenso;
+    public String getAlgoritmoConsenso() {
+        return algoritmoConsenso;
+    }
+    public void setAlgoritmoConsenso(String algoritmoConsenso) {
+        this.algoritmoConsenso = algoritmoConsenso;
+    }
+
+    private Integer cantidadHechosVisibles;
+
+    public Integer getCantidadHechosVisibles() {
+        return cantidadHechosVisibles;
+    }
+
+    public void setCantidadHechosVisibles(Integer cantidadHechosVisibles) {
+        this.cantidadHechosVisibles = cantidadHechosVisibles;
+    }
+
 
 }

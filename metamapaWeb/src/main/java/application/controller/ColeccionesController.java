@@ -1,10 +1,14 @@
 package application.controller;
 
+import application.dto.ColeccionDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import application.service.ColeccionService;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Objects;
 
 @Controller
 public class ColeccionesController {
@@ -26,9 +30,39 @@ public class ColeccionesController {
     }
 
     @GetMapping("/colecciones/{id}")
-    public String detalle(@PathVariable("id") Integer id, Model model) {
-        model.addAttribute("coleccion", coleccionService.getById(id));
-        model.addAttribute("hechos", coleccionService.getHechosDeColeccion(id));
-        return "verColeccion/verColeccion"; // templates/colecciones/detalle.html
+    public String detalle(
+            @PathVariable("id") Integer id,
+            @RequestParam(value = "modo", required = false) String modoParam,
+            Model model
+    ) {
+
+        // 1. Buscamos la colección primero para saber su configuración
+        ColeccionDTO coleccion = coleccionService.getById(id);
+
+        // 2. Obtenemos el modo de navegación predeterminado de la colección
+        String modoPredeterminado = coleccion.modoDeNavegacion();
+
+        String modoActual = (modoParam != null) ? modoParam : modoPredeterminado;
+
+        if(modoParam != null) {
+            if (Objects.equals(modoPredeterminado, "IRRESTRICTA") && Objects.equals(modoParam, "CURADA")) {
+                modoActual = "IRRESTRICTA";
+            }
+            if (!(modoParam.equals("CURADA") || modoParam.equals("IRRESTRICTA"))) {
+                modoActual = modoPredeterminado;
+            }
+        }
+
+        // 3. Buscamos los hechos usando ESE modo específico
+        model.addAttribute("hechos", coleccionService.getHechosVisibles(id, modoActual));
+
+        // 4. Agregamos la colección y el dato del modo actual al modelo
+        model.addAttribute("coleccion", coleccion);
+
+        // Es importante pasar esto por si tu vista usa esta variable para resaltar botones o títulos
+        model.addAttribute("modoActual", modoActual);
+
+        return "verColeccion/verColeccion";
     }
+
 }
