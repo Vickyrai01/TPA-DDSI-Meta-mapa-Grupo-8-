@@ -45,17 +45,20 @@ public class Application {
 
     @PostMapping("/agregarFuente")
     public ResponseEntity<?> agregarFuente(@RequestBody FuenteDTO fuenteDTO) {
-        StrategyTipoConexion strategyFuente = obtenerStrategyFuente(fuenteDTO.getTipoFuente());
-        if (strategyFuente == null) return ResponseEntity.status(400).body("Tipo de fuente no reconocido");
-        Fuente fuente = new Fuente(null, fuenteDTO.getNombre(), fuenteDTO.getLink(), strategyFuente, fuenteDTO.getTipoFuente());
+        StrategyTipoConexion strategyFuente = obtenerStrategyFuente(fuenteDTO.getStrategyTipoConexion());
+        if (strategyFuente == null)
+            return ResponseEntity.status(400).body("Tipo de fuente no reconocido");
+        Fuente fuente = new Fuente(fuenteDTO.getId(), fuenteDTO.getNombre(), fuenteDTO.getLink(), strategyFuente, fuenteDTO.getTipoFuente());
         repoFuentes.save(fuente);
-        return ResponseEntity.status(201).body("Fuente guardada correctamente");
+        return ResponseEntity.status(201).build();
     }
 
-    private StrategyTipoConexion obtenerStrategyFuente(String tipoFuente) {
-        if (tipoFuente.equals("BIBLIOTECA")) return new StrategyBibliotecaCliente();
-        else if (tipoFuente.equals("APIREST")) return new StrategyAPIREST();
-        else return null;
+    private StrategyTipoConexion obtenerStrategyFuente(String strategyTipoConexion) {
+        return switch (strategyTipoConexion) {
+            case "BIBLIOTECA" -> new StrategyBibliotecaCliente();
+            case "API REST", "APIREST" -> new StrategyAPIREST();
+            default -> null;
+        };
     }
 
     @GetMapping("/obtenerFuentes")
@@ -63,6 +66,12 @@ public class Application {
         List<Fuente> fuentes = repoFuentes.findAll();
         if(fuentes.isEmpty()) return ResponseEntity.status(204).build();
         return ResponseEntity.ok(fuentes);
+    }
+
+    @PostMapping("/eliminar/{id}")
+    public ResponseEntity<?> eliminarFuente(@PathVariable("id") Integer id){
+        repoFuentes.deleteById(id);
+        return ResponseEntity.status(204).build();
     }
 
 }
