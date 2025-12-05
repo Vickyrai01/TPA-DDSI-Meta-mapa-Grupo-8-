@@ -24,15 +24,8 @@ public class RepositoryFuentesSeeder {
     }
 
     StrategyTipoConexion strategyAPIREST = new StrategyAPIREST();
-    TipoConexion strategyAPIRESTENUM = TipoConexion.APIREST;
 
-    Fuente fuente = new Fuente(
-            1,
-            "API de ejemplo",
-            "https://684b1942165d05c5d35b843b.mockapi.io/metamapa/hechos",
-            strategyAPIREST,
-            "hola"
-    );
+    Fuente fuente = new Fuente(3,"API Choque", "https://choques.com",  strategyAPIREST, "API REST");
 
     public void cargarRepos() {
         repositoryFuentes.save(fuente);
