@@ -1,8 +1,5 @@
 package cargadorEstatica.application;
-import cargadorEstatica.handlers.AlmacenamientoCsv;
 import org.springframework.web.multipart.MultipartFile;
-import utils.DBUtils;
-import javax.persistence.EntityManager;
 
 import cargadorEstatica.model.*;
 import cargadorEstatica.repository.RepositoryFuentes;
@@ -13,7 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityManager;
 import java.nio.file.*;
 import java.util.List;
 
@@ -107,9 +103,9 @@ public class Application {
         try {
             Fuente fuente = repoFuentes.findById(id);
             if(fuente == null) return ResponseEntity.status(404).build();
-            Path carpeta = Paths.get("cargadorEstatica", "csv");
-            Path destino = carpeta.resolve(fuente.getLink());
             try {
+                Path carpeta = Paths.get("cargadorEstatica", "csv");
+                Path destino = carpeta.resolve(fuente.getLink());
                 Files.deleteIfExists(destino);
             } catch (Exception e) {
                 e.printStackTrace();

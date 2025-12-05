@@ -70,6 +70,8 @@ public class Application {
 
     @PostMapping("/eliminar/{id}")
     public ResponseEntity<?> eliminarFuente(@PathVariable("id") Integer id){
+        Fuente fuente = repoFuentes.findById(id);
+        if(fuente == null) return ResponseEntity.status(404).build();
         repoFuentes.deleteById(id);
         return ResponseEntity.status(204).build();
     }
