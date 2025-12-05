@@ -29,7 +29,7 @@ public class Coleccion {
         this.hechos = hechos != null ? new ArrayList<>(hechos) : new ArrayList<>();
         this.hechosVisibles = hechosVisibles != null ? new ArrayList<>(hechosVisibles) : new ArrayList<>();
         this.identificadorHandle = identificadorHandle;
-        this.modoDeNavegacion = ModoDeNavegacion.IRRESTRICTO;
+        this.modoDeNavegacion = ModoDeNavegacion.IRRESTRICTA;
         this.algoritmoConsenso = null;
     }
 
@@ -81,7 +81,7 @@ public class Coleccion {
 
     /*@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "coleccion_id") // FK en la tabla de Criterio*/
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "coleccion_criterio",
             joinColumns = @JoinColumn(name = "coleccion_id"),
@@ -98,29 +98,26 @@ public class Coleccion {
 
     @Column(name = "modoDeNavegacion")
     public ModoDeNavegacion modoDeNavegacion;
+    public ModoDeNavegacion getModoDeNavegacion() {return modoDeNavegacion;}
+    public void setModoDeNavegacion(ModoDeNavegacion modoDeNavegacion) {this.modoDeNavegacion = modoDeNavegacion;}
 
     @Convert(converter = AlgoritmoConsensoConverter.class)
-    @Column(name = "strategy_tipo_conexion")
+    @Column(name = "algoritmoConsenso")
     public AlgoritmoConsenso algoritmoConsenso = null;
     public void cambiarAlgoritmoConsenso(TipoConsenso algoritmoConsenso){
       switch (algoritmoConsenso){
           case ABSOLUTO -> this.setAlgoritmoConsenso(new StrategyAbsoluta());
           case MAYORIA_SIMPLE -> this.setAlgoritmoConsenso(new StrategyMayoriaSimple());
           case MULTIPLES_MENCIONES -> this.setAlgoritmoConsenso(new StrategyMultiplesMenciones());
+          case null -> this.setAlgoritmoConsenso(null);
        }
     }
     public AlgoritmoConsenso getAlgoritmoConsenso() {return algoritmoConsenso;}
     public void setAlgoritmoConsenso(AlgoritmoConsenso algoritmoConsenso) {this.algoritmoConsenso = algoritmoConsenso;}
 
-
-
-    @Column(name = "tipoConsenso")
-    public TipoConsenso tipoConsenso;
-
-
    public void actualizarColeccionVisible(){
 
-       if(modoDeNavegacion==modoDeNavegacion.IRRESTRICTO || algoritmoConsenso == null){
+       if(modoDeNavegacion==modoDeNavegacion.IRRESTRICTA || algoritmoConsenso == null){
            hechosVisibles=hechos;
 
        }else{

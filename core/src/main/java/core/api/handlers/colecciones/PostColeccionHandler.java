@@ -1,6 +1,8 @@
 package core.api.handlers.colecciones;
 
 import core.api.DTO.ColeccionDTO;
+import core.models.entities.colecciones.ModoDeNavegacion;
+import core.models.entities.colecciones.TipoConsenso;
 import core.models.repository.*;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -32,6 +34,8 @@ public class PostColeccionHandler implements Handler {
         String titulo = (String) dtoMap.get("titulo");
         String descripcion = (String) dtoMap.get("descripcionColeccion");
         String identificadorHandle = (String) dtoMap.get("identificadorHandle");
+        String modoDeNavegacion = (String) dtoMap.get("modoDeNavegacion");
+        String algoritmoConsenso = (String) dtoMap.get("algoritmoConsenso");
 
         System.out.println("Creando coleccion: " + titulo);
 
@@ -55,7 +59,7 @@ public class PostColeccionHandler implements Handler {
         }
 
         // Procesar fuentes
-        List<Integer> idFuentes = (List<Integer>) dtoMap.getOrDefault("fuente", new ArrayList<>());
+        List<Integer> idFuentes = (List<Integer>) dtoMap.getOrDefault("fuentes", new ArrayList<>());
         for (Integer idFuente : idFuentes) {
             if (idFuente == null) continue;
             Fuente fuente = fuentesRepository.getFuente(idFuente);
@@ -119,7 +123,6 @@ public class PostColeccionHandler implements Handler {
             }
         }
 
-
         Coleccion coleccion = new Coleccion(
                 null,
                 titulo,
@@ -130,6 +133,32 @@ public class PostColeccionHandler implements Handler {
                 hechosVisibles,
                 identificadorHandle
         );
+
+        if (modoDeNavegacion != null) {
+            coleccion.setModoDeNavegacion(
+                    switch (modoDeNavegacion.toUpperCase()) {
+                        case "CURADA"     -> ModoDeNavegacion.CURADA;
+                        case "IRRESTRICTA"-> ModoDeNavegacion.IRRESTRICTA;
+                        default -> throw new IllegalArgumentException(
+                                "Modo de navegacion desconocido: " + modoDeNavegacion
+                        );
+                    }
+            );
+        }
+
+        if (algoritmoConsenso != null) {
+            coleccion.cambiarAlgoritmoConsenso(
+                    switch (algoritmoConsenso.toUpperCase()) {
+                        case "ABSOLUTO", "ABSOLUTA" -> TipoConsenso.ABSOLUTO;
+                        case "MAYORIA_SIMPLE", "MAYORIA-SIMPLE" -> TipoConsenso.MAYORIA_SIMPLE;
+                        case "MULTIPLES_MENCIONES", "MULTIPLES-MENCIONES" -> TipoConsenso.MULTIPLES_MENCIONES;
+                        case "SIN" -> null;
+                        default -> throw new IllegalArgumentException(
+                                "Tipo de algoritmo desconocido: " + algoritmoConsenso
+                        );
+                    }
+            );
+        }
 
         System.out.println(coleccion);
         coleccionesRepository.add(coleccion);
