@@ -29,19 +29,16 @@ public class DeleteFuenteHandler implements Handler {
     public void handle(@NotNull Context context) throws Exception {
         Integer id = context.pathParamAsClass("id", Integer.class).get();
 
-        // 1) Limpio en el core TODO lo que dependa de esa fuente
-        hechosRepository.eliminarHechosPorIdFuente(id);
-        coleccionesRepository.eliminarFuenteDeTodasLasColecciones(id);
-        fuentesRepository.deleteById(id);
-
-        // 2) Intento borrar en cada cargador
         boolean eliminadoEnEstatica = eliminarEnCargador(CARGADOR_ESTATICO_BASE_URL + "/eliminar/" + id);
         boolean eliminadoEnProxy   = eliminarEnCargador(CARGADOR_PROXY_BASE_URL   + "/eliminar/" + id);
 
         if (eliminadoEnEstatica || eliminadoEnProxy) {
+            hechosRepository.eliminarHechosPorIdFuente(id);
+            coleccionesRepository.eliminarFuenteDeTodasLasColecciones(id);
+            fuentesRepository.deleteById(id);
             context.status(200).result("Fuente con ID " + id + " eliminada");
         } else {
-            context.status(404).result("Fuente con ID " + id + " no encontrada en ningún cargador");
+            context.status(404).result("La fuente con ID " + id + " no pudo ser eliminada");
         }
     }
 
@@ -68,6 +65,7 @@ public class DeleteFuenteHandler implements Handler {
 
             System.out.println("[Core] Error al eliminar fuente en " + url +
                     " status=" + status + " body=" + resp.body());
+            return false;
         } catch (Exception e) {
             System.out.println("[Core] Excepción al llamar a " + url);
             e.printStackTrace();
