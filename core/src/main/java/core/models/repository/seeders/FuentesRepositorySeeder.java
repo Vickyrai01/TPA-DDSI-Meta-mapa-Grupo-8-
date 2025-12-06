@@ -30,13 +30,13 @@ public class FuentesRepositorySeeder {
     public void cargarFuentesSeeder()
     {
         Fuente fuente1 = FuenteFactory.crearFuente("Accidentes en AMBA", null,  TipoFuente.ESTATICA, TipoConexion.CSV);
-        Fuente fuente4 = FuenteFactory.crearFuente("CSV Incendio", null,  TipoFuente.ESTATICA, TipoConexion.CSV);
         Fuente fuente2 = FuenteFactory.crearFuente("API Choque", "https://choques.com",  TipoFuente.PROXY, TipoConexion.APIREST);
         Fuente fuente3 = FuenteFactory.crearFuente("Contribucion",null ,  TipoFuente.DINAMICA, TipoConexion.APIREST);
+        Fuente fuente4 = FuenteFactory.crearFuente("CSV Incendio", null,  TipoFuente.ESTATICA, TipoConexion.CSV);
         fuentesRepository.add(fuente1);
-        fuentesRepository.add(fuente4);
         fuentesRepository.add(fuente2);
         fuentesRepository.add(fuente3);
+        fuentesRepository.add(fuente4);
     }
 
 

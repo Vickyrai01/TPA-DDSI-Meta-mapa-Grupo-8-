@@ -17,14 +17,14 @@ public class GetColeccionIdHandler implements Handler {
 
         Integer idBuscado = ctx.pathParamAsClass("id", Integer.class).get();
 
-        var optDto = repoColecciones.obtenerColeccionDTOConCantidadHechos(idBuscado);
+        var optDto = repoColecciones.findColeccionCompletaDTO(idBuscado);
 
-        if (optDto == null) {
+        if (optDto.isEmpty()) {
             ctx.status(404).result("Colección no encontrada con ID: " + idBuscado);
             return;
         }
 
         // Devuelve el DTO completo ya armado
-        ctx.status(200).json(optDto);
+        ctx.status(200).json(optDto.get());
     }
 }

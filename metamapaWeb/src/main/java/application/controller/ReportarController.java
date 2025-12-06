@@ -63,7 +63,7 @@ public class ReportarController {
             @RequestParam("descripcion") String descripcion,
             @RequestParam("latitud") Double latitud,
             @RequestParam("longitud") Double longitud,
-            @RequestParam("multimedia") String multimedia,
+            @RequestParam(value = "multimedia", required = false) org.springframework.web.multipart.MultipartFile multimedia,
             @RequestParam(value = "etiquetas", required = false) String etiquetas,
             org.springframework.security.core.Authentication authentication,
             RedirectAttributes ra
@@ -77,16 +77,8 @@ public class ReportarController {
             jsonMap.put("descripcion", descripcion);
             // Obtener el correo del usuario autenticado para el campo contribuyente
             String contribuyente = null;
-            if (authentication != null && authentication.isAuthenticated()) {
-                Object principal = authentication.getPrincipal();
-                if (principal instanceof org.springframework.security.oauth2.core.user.OAuth2User oAuth2User) {
-                    contribuyente = oAuth2User.getAttribute("email");
-                } else if (principal instanceof java.util.Map<?,?> map) {
-                    Object mailObj = map.get("email");
-                    if (mailObj instanceof String) {
-                        contribuyente = (String) mailObj;
-                    }
-                }
+            if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof org.springframework.security.oauth2.core.user.OAuth2User oAuth2User) {
+                contribuyente = oAuth2User.getAttribute("email");
             }
             jsonMap.put("contribuyente", contribuyente);
             if (categoria.equals("Otro")) {
@@ -97,11 +89,15 @@ public class ReportarController {
             jsonMap.put("latitud", lat);
             jsonMap.put("longitud", lon);
             jsonMap.put("fechaSuceso", fechaSuceso);
-            if (multimedia != null && !multimedia.isBlank()) {
-                // si tiene contenido, lo mandamos como lista de un solo elemento
-                jsonMap.put("multimedia", List.of(multimedia));
+            if (multimedia != null && !multimedia.isEmpty()) {
+                // Guardar el archivo en el servidor o en base64, aquí solo ejemplo de nombre
+                // Puedes guardar el archivo en disco, en base de datos, o subirlo a un servicio externo
+                // Aquí solo se agrega el nombre del archivo como ejemplo
+                jsonMap.put("multimedia", List.of(multimedia.getOriginalFilename()));
+                // Si necesitas el contenido en base64:
+                // String base64 = Base64.getEncoder().encodeToString(multimedia.getBytes());
+                // jsonMap.put("multimedia", List.of(base64));
             } else {
-                // si está vacío, mandamos lista vacía
                 jsonMap.put("multimedia", new ArrayList<>());
             }
             //jsonMap.put("etiquetas", etiquetas);

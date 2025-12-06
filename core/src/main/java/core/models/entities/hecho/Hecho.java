@@ -176,7 +176,7 @@ public class Hecho {
         this.descripcion = descripcion;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "hecho_etiqueta",
             joinColumns = @JoinColumn(name = "id_hecho"),
@@ -248,7 +248,7 @@ public class Hecho {
     }
 
     @Column(name = "multimedia")
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "hecho_multimedia",
             joinColumns = @JoinColumn(name = "hecho_id",

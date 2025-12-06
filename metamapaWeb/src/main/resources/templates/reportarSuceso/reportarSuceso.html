@@ -296,7 +296,7 @@
       </div>
 
       <!-- FORMULARIO (solo si NO hay ok) -->
-      <form th:case="*" th:action="@{/reportar}" method="post" id="form-reportar" >
+      <form th:case="*" th:action="@{/reportar}" method="post" id="form-reportar" enctype="multipart/form-data">
         <div class="report-header">REPORTAR SUCESO</div>
         <div class="report-body">
           <!-- fila 1: titulo / categoria -->

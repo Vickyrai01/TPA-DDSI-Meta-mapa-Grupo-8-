@@ -1,13 +1,11 @@
 package cargadorEstatica.model;
 
 public class FuenteDTO {
-    private Integer id;
     private String nombre;
     private String link;
     private String tipoFuente;
 
-    public FuenteDTO(Integer id, String nombre, String link, String tipoFuente) {
-        this.id = id;
+    public FuenteDTO(String nombre, String link, String tipoFuente) {
         this.nombre = nombre;
         this.link = link;
         this.tipoFuente = tipoFuente;
@@ -35,16 +33,5 @@ public class FuenteDTO {
 
     public void setTipoFuente(String tipoFuente) {
         this.tipoFuente = tipoFuente;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public static FuenteDTO from(Fuente fuente) {
-        return new FuenteDTO(fuente.getId(), fuente.getNombre(), fuente.getLink(), fuente.getStrategyManeraDeObtenerHechos().devolverTipoDeConexion());
     }
 }

@@ -6,7 +6,7 @@ import core.api.DTO.ColeccionDTO;
 import core.api.DTO.FuenteDTO;
 import core.api.DTO.HechoResumenDTO;
 import core.api.DTO.criterio.CriterioDTO;
-import core.models.entities.colecciones.*;
+import core.models.entities.colecciones.Coleccion;
 import core.models.entities.colecciones.criterios.Criterio;
 import core.models.entities.fuentes.Fuente;
 import core.models.entities.hecho.Etiqueta;
@@ -16,7 +16,6 @@ import utils.DBUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
-import javax.persistence.NoResultException;
 import java.util.*;
 
 public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer> {
@@ -138,42 +137,6 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
         }
     }
 
-    public Optional<Coleccion> findByIdFetchHechosVisiblesYContribuyente(Integer idColeccion) {
-        EntityManager em = DBUtils.getEntityManager();
-        try {
-            var q = em.createQuery("""
-                    SELECT DISTINCT c
-                    FROM coleccion c
-                    LEFT JOIN FETCH c.hechosVisibles hv
-                    LEFT JOIN FETCH hv.contribuyente
-                    WHERE c.id = :id
-                """, Coleccion.class)
-                    .setParameter("id", idColeccion)
-                    .getResultStream()
-                    .findFirst();
-
-            q.ifPresent(c -> {
-                // Inicializo etiquetas de los hechos visibles
-                for (Hecho hv : c.getHechosVisibles()) {
-                    Hibernate.initialize(hv.getEtiquetas());
-                }
-
-                // Inicializo algoritmoConsenso si existe
-                if (c.getAlgoritmoConsenso() != null) {
-                    c.getAlgoritmoConsenso().toString(); // con tocarlo basta
-                }
-            });
-
-            return q;
-        } finally {
-            try {
-                em.close();
-            } catch (Exception ignore) {
-            }
-        }
-    }
-
-
     public Optional<Coleccion> findByIdFetchFuentes(Integer idColeccion) {
         EntityManager em = DBUtils.getEntityManager();
         try {
@@ -266,7 +229,7 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                 etiquetasPorHash = new java.util.HashMap<>();
                 for (Object[] row : filas) {
                     String hash = (String) row[0];
-                    String tipo = (String) row[1];
+                    String tipo  = (String) row[1];
                     etiquetasPorHash.computeIfAbsent(hash, k -> new java.util.ArrayList<>()).add(tipo);
                 }
             }
@@ -282,13 +245,12 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                         .toList()
                         : Collections.emptyList();
 
-
                 hechoDTOs.add(
                         new HechoResumenDTO(
                                 h.getHash(),
                                 h.getTitulo(),
                                 h.getDescripcion(),
-                                (h.getContribuyente() != null ? h.getContribuyente().getNombreCompleto() : null),
+                                (h.getContribuyente()!=null ? h.getContribuyente().getNombreCompleto() : null),
                                 h.getFechaSuceso(),
                                 h.getHoraSuceso(),
                                 null,
@@ -309,15 +271,6 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                     .map(CriterioDTO::from)
                     .toList();
 
-            String modoNavStr = c.getModoDeNavegacion() != null
-                    ? c.getModoDeNavegacion().name()
-                    : null;
-
-            String algoritmoStr = c.getAlgoritmoConsenso() != null
-                    ? c.getAlgoritmoConsenso().devolverTipoDeConsenso()
-                    : null;
-
-
             ColeccionConTodoDTO dto = new ColeccionConTodoDTO(
                     c.getId(),
                     c.getTitulo(),
@@ -325,18 +278,13 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                     fuenteDTOs,
                     hechoDTOs,
                     hechoVisiblesDTOs,
-                    criterioDTOs,
-                    modoNavStr,
-                    algoritmoStr
+                    criterioDTOs
             );
 
             return Optional.of(dto);
 
         } finally {
-            try {
-                em.close();
-            } catch (Exception ignore) {
-            }
+            try { em.close(); } catch (Exception ignore) {}
         }
     }
 
@@ -344,19 +292,14 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
     public List<ColeccionDTO> listarColeccionesDTOConCantidadHechos() {
         EntityManager em = DBUtils.getEntityManager();
         try {
-            // BASE
+            //Traer datos de TODAS las colecciones
             List<Object[]> bases = em.createQuery("""
-            SELECT c.id,
-                   c.titulo,
-                   c.descripcionColeccion,
-                   c.identificadorHandle,
-                   c.modoDeNavegacion,
-                   c.algoritmoConsenso
+            SELECT c.id, c.titulo, c.descripcionColeccion, c.identificadorHandle
             FROM coleccion c
             ORDER BY c.id DESC
         """, Object[].class).getResultList();
 
-            // CANTIDAD DE HECHOS
+            //Traer conteo de hechos por colección
             List<Object[]> rows = em.createQuery("""
             SELECT c.id, COUNT(h)
             FROM coleccion c
@@ -369,251 +312,29 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                 conteos.put((Integer) r[0], (Long) r[1]);
             }
 
-            // CANTIDAD DE HECHOS VISIBLES
-            List<Object[]> rowsVisibles = em.createQuery("""
-                SELECT c.id, COUNT(hv)
-                FROM coleccion c
-                LEFT JOIN c.hechosVisibles hv
-                GROUP BY c.id
-            """, Object[].class).getResultList();
-
-            Map<Integer, Long> conteosVisibles = new HashMap<>();
-            for (Object[] r : rowsVisibles) {
-                conteosVisibles.put((Integer) r[0], (Long) r[1]);
-            }
-            // FUENTES DE CADA COLECCIÓN → List<Integer> con IDs
-            List<Object[]> rowsFuentes = em.createQuery("""
-                SELECT c.id, f.id
-                FROM coleccion c
-                JOIN c.fuentes f
-                ORDER BY c.id
-            """, Object[].class).getResultList();
-
-            Map<Integer, List<Integer>> fuentesPorColeccion = new HashMap<>();
-
-            for (Object[] r : rowsFuentes) {
-                Integer idColeccion = (Integer) r[0];
-                Integer idFuente = (Integer) r[1];
-
-                fuentesPorColeccion
-                        .computeIfAbsent(idColeccion, k -> new ArrayList<>())
-                        .add(idFuente);
-            }
-
-            // CRITERIOS DE CADA COLECCIÓN
-            List<Object[]> rowsCriterios = em.createQuery("""
-                SELECT c.id, crit
-                FROM coleccion c
-                JOIN c.criterioDePertenencia crit
-                ORDER BY c.id
-            """, Object[].class).getResultList();
-
-            Map<Integer, List<core.api.DTO.criterio.CriterioDTO>> criteriosPorColeccion = new HashMap<>();
-
-            for (Object[] r : rowsCriterios) {
-                Integer idColeccion = (Integer) r[0];
-                Criterio crit = (Criterio) r[1];
-
-                criteriosPorColeccion
-                        .computeIfAbsent(idColeccion, k -> new ArrayList<>())
-                        .add(core.api.DTO.criterio.CriterioDTO.from(crit));
-            }
-
-            // ARMAR DTOS
+            //Armar DTO
             List<ColeccionDTO> dtos = new ArrayList<>(bases.size());
             for (Object[] b : bases) {
                 Integer id = (Integer) b[0];
-                String titulo = (String) b[1];
-                String descripcion = (String) b[2];
-                String handle = (String) b[3];
-
-                // tipos reales que vienen del JPQL
-                ModoDeNavegacion modo = (ModoDeNavegacion) b[4];      // puede ser null
-                AlgoritmoConsenso algoritmoObj = (AlgoritmoConsenso) b[5];     // puede ser null
-
-                // pasar a String para el DTO
-                String modoStr = (modo != null) ? modo.name() : null;
-
-                String algoritmoStr = null;
-                if (algoritmoObj != null) {
-                    if (algoritmoObj instanceof StrategyAbsoluta) {
-                        algoritmoStr = "ABSOLUTO";
-                    } else if (algoritmoObj instanceof StrategyMayoriaSimple) {
-                        algoritmoStr = "MAYORIA_SIMPLE";
-                    } else if (algoritmoObj instanceof StrategyMultiplesMenciones) {
-                        algoritmoStr = "MULTIPLES_MENCIONES";
-                    } else {
-                        algoritmoStr = algoritmoObj.getClass().getSimpleName();
-                    }
-                }
+                String  titulo = (String) b[1];
+                String  descripcion = (String) b[2];
+                String  handle = (String) b[3];
 
                 ColeccionDTO dto = new ColeccionDTO();
                 dto.setId(id);
                 dto.setTitulo(titulo);
                 dto.setDescripcionColeccion(descripcion);
                 dto.setIdentificadorHandle(handle);
-                dto.setModoDeNavegacion(modoStr);
-                dto.setAlgoritmoConsenso(algoritmoStr);
-
-                // cantidad de hechos totales
-                dto.setCantidadHechos(
-                        Math.toIntExact(conteos.getOrDefault(id, 0L))
-                );
-
-                // cantidad de hechos visibles
-                dto.setCantidadHechosVisibles(
-                        Math.toIntExact(conteosVisibles.getOrDefault(id, 0L))
-                );
-
-                // ids de las fuentes
-                dto.setFuentes(
-                        fuentesPorColeccion.getOrDefault(id, new ArrayList<>())
-                );
-
-                // criterios
-                dto.setCriterioDePertenencia(
-                        criteriosPorColeccion.getOrDefault(id, new ArrayList<>())
-                );
+                dto.setCantidadHechos(Math.toIntExact(conteos.getOrDefault(id, 0L)));
 
                 dtos.add(dto);
             }
             return dtos;
 
         } finally {
-            try {
-                em.close();
-            } catch (Exception ignore) {
-            }
+            try { em.close(); } catch (Exception ignore) {}
         }
     }
-
-    public ColeccionDTO obtenerColeccionDTOConCantidadHechos(Integer idColeccion) {
-        EntityManager em = DBUtils.getEntityManager();
-        try {
-            // =========================
-            //  BASE: datos principales
-            // =========================
-            Object[] base = em.createQuery("""
-            SELECT c.id,
-                   c.titulo,
-                   c.descripcionColeccion,
-                   c.identificadorHandle,
-                   c.modoDeNavegacion,
-                   c.algoritmoConsenso
-            FROM coleccion c
-            WHERE c.id = :idColeccion
-        """, Object[].class)
-                    .setParameter("idColeccion", idColeccion)
-                    .getSingleResult();
-
-            Integer id = (Integer) base[0];
-            String titulo = (String) base[1];
-            String descripcion = (String) base[2];
-            String handle = (String) base[3];
-            ModoDeNavegacion modo = (ModoDeNavegacion) base[4];  // puede ser null
-            AlgoritmoConsenso algoritmoObj = (AlgoritmoConsenso) base[5]; // puede ser null
-
-            // =========================
-            //  CANTIDAD DE HECHOS
-            // =========================
-            Long cantHechos = em.createQuery("""
-            SELECT COUNT(h)
-            FROM coleccion c
-            LEFT JOIN c.hechos h
-            WHERE c.id = :idColeccion
-        """, Long.class)
-                    .setParameter("idColeccion", idColeccion)
-                    .getSingleResult();
-
-            // =========================
-            //  CANTIDAD DE HECHOS VISIBLES
-            // =========================
-            Long cantHechosVisibles = em.createQuery("""
-            SELECT COUNT(hv)
-            FROM coleccion c
-            LEFT JOIN c.hechosVisibles hv
-            WHERE c.id = :idColeccion
-        """, Long.class)
-                    .setParameter("idColeccion", idColeccion)
-                    .getSingleResult();
-
-            // =========================
-            //  FUENTES (lista de IDs)
-            // =========================
-            List<Integer> fuentesIds = em.createQuery("""
-            SELECT f.id
-            FROM coleccion c
-            JOIN c.fuentes f
-            WHERE c.id = :idColeccion
-            ORDER BY f.id
-        """, Integer.class)
-                    .setParameter("idColeccion", idColeccion)
-                    .getResultList();
-
-            // =========================
-            //  CRITERIOS
-            // =========================
-            List<Object[]> rowsCriterios = em.createQuery("""
-            SELECT c.id, crit
-            FROM coleccion c
-            JOIN c.criterioDePertenencia crit
-            WHERE c.id = :idColeccion
-            ORDER BY c.id
-        """, Object[].class)
-                    .setParameter("idColeccion", idColeccion)
-                    .getResultList();
-
-            List<core.api.DTO.criterio.CriterioDTO> criteriosDTO = new ArrayList<>();
-            for (Object[] r : rowsCriterios) {
-                Criterio crit = (Criterio) r[1];
-                criteriosDTO.add(core.api.DTO.criterio.CriterioDTO.from(crit));
-            }
-
-            // =========================
-            //  MAPEO A DTO
-            // =========================
-            String modoStr = (modo != null) ? modo.name() : null;
-
-            String algoritmoStr = null;
-            if (algoritmoObj != null) {
-                if (algoritmoObj instanceof StrategyAbsoluta) {
-                    algoritmoStr = "ABSOLUTO";
-                } else if (algoritmoObj instanceof StrategyMayoriaSimple) {
-                    algoritmoStr = "MAYORIA_SIMPLE";
-                } else if (algoritmoObj instanceof StrategyMultiplesMenciones) {
-                    algoritmoStr = "MULTIPLES_MENCIONES";
-                } else {
-                    algoritmoStr = algoritmoObj.getClass().getSimpleName();
-                }
-            }
-
-            ColeccionDTO dto = new ColeccionDTO();
-            dto.setId(id);
-            dto.setTitulo(titulo);
-            dto.setDescripcionColeccion(descripcion);
-            dto.setIdentificadorHandle(handle);
-            dto.setModoDeNavegacion(modoStr);
-            dto.setAlgoritmoConsenso(algoritmoStr);
-
-            dto.setCantidadHechos(Math.toIntExact(cantHechos != null ? cantHechos : 0L));
-            dto.setCantidadHechosVisibles(Math.toIntExact(cantHechosVisibles != null ? cantHechosVisibles : 0L));
-
-            dto.setFuentes(fuentesIds != null ? fuentesIds : new ArrayList<>());
-            dto.setCriterioDePertenencia(criteriosDTO);
-
-            return dto;
-
-        } catch (NoResultException e) {
-            // si querés, podés devolver null o tirar una excepción custom
-            return null;
-        } finally {
-            try {
-                em.close();
-            } catch (Exception ignore) {
-            }
-        }
-    }
-
 
     public List<Hecho> getHechosConUbicacion(Integer idColeccion) {
         EntityManager em = DBUtils.getEntityManager();
@@ -630,7 +351,6 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             em.close();
         }
     }
-
     /**
      * Reemplaza completamente las fuentes de una colección por las seleccionadas (solo las tildadas quedan asociadas).
      */
@@ -665,102 +385,33 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             DBUtils.rollback(em);
             throw ex;
         } finally {
-            try {
-                em.close();
-            } catch (Exception ignore) {
-            }
-        }
-    }
-
-    public List<Hecho> obtenerHechosVisiblesDeColeccion(Integer idColeccion) {
-        EntityManager em = DBUtils.getEntityManager();
-        try {
-            Coleccion coleccion = em.find(Coleccion.class, idColeccion);
-            if (coleccion == null) {
-                return List.of();
-            }
-
-            // Fuerzo la inicialización dentro de la sesión
-            List<Hecho> visibles = coleccion.getHechosVisibles();
-            visibles.size(); // toca la colección para inicializarla
-
-            // Devuelvo una lista "normal", desconectada de Hibernate
-            return new ArrayList<>(visibles);
-        } finally {
-            try {
-                em.close();
-            } catch (Exception ignore) {
-            }
-        }
-    }
-
-    @Override
-    public void delete(Coleccion entity) {
-        EntityManager em = DBUtils.getEntityManager();
-        try {
-            DBUtils.comenzarTransaccion(em);
-
-            // 1. Re-attach la entidad si es necesario para poder acceder a sus colecciones
-            Coleccion managed = em.contains(entity) ? entity : em.merge(entity);
-
-            // 2. Guardamos los criterios asociados ANTES de borrar la colección
-            // (Hacemos una copia de la lista para no tener problemas de concurrencia)
-            List<Criterio> criteriosAsociados = new ArrayList<>(managed.getCriterioDePertenencia());
-
-            // 3. Borramos la colección
-            // Esto eliminará la colección y las filas de unión en 'coleccion_criterio'
-            em.remove(managed);
-
-            // Hacemos flush para que la BD actualice la tabla intermedia inmediatamente
-            em.flush();
-
-            // 4. Verificamos "huérfanos": ¿Quedó algún criterio suelto?
-            for (Criterio c : criteriosAsociados) {
-                // Contamos cuántas colecciones siguen usando este criterio específico
-                Long count = em.createQuery(
-                                "SELECT COUNT(c) FROM coleccion c JOIN c.criterioDePertenencia cr WHERE cr.id = :id",
-                                Long.class)
-                        .setParameter("id", c.getId())
-                        .getSingleResult();
-
-                // Si nadie más lo usa (count == 0), lo borramos
-                if (count == 0) {
-                    Criterio criterioABorrar = em.find(Criterio.class, c.getId());
-                    if (criterioABorrar != null) {
-                        em.remove(criterioABorrar);
-                    }
-                }
-            }
-
-            DBUtils.commit(em);
-        } catch (RuntimeException ex) {
-            DBUtils.rollback(em);
-            throw ex;
-        } finally {
-            try {
-                em.close();
-            } catch (Exception ignore) {
-            }
-        }
-    }
-
-    public void eliminarFuenteDeTodasLasColecciones(Integer idFuente) {
-        if (idFuente == null) return;
-        EntityManager em = DBUtils.getEntityManager();
-        try {
-            DBUtils.comenzarTransaccion(em);
-            int filas = em.createNativeQuery(
-                            "DELETE FROM coleccion_fuente WHERE id_fuente = ?1"
-                    )
-                    .setParameter(1, idFuente)
-                    .executeUpdate();
-            DBUtils.commit(em);
-        } catch (RuntimeException ex) {
-            DBUtils.rollback(em);
-            throw ex;
-        } finally {
             try { em.close(); } catch (Exception ignore) {}
         }
     }
-}
+
+    public int eliminarFuenteDeTodasLasColecciones(Integer idFuente) {
+            if (idFuente == null) return 0;
+
+            EntityManager em = DBUtils.getEntityManager();
+            try {
+                DBUtils.comenzarTransaccion(em);
+
+                int filas = em.createNativeQuery(
+                                "DELETE FROM coleccion_fuente WHERE id_fuente = :id"
+                        ).setParameter("id", idFuente)
+                        .executeUpdate();
+
+                DBUtils.commit(em);
+                return filas;
+
+            } catch (RuntimeException ex) {
+                DBUtils.rollback(em);
+                throw ex;
+            } finally {
+                try { em.close(); } catch (Exception ignore) {}
+            }
+        }
+
+    }
+
 

@@ -15,12 +15,27 @@
     <link rel="stylesheet" th:href="@{/css/pages-css/verSuceso.css}">
 </th:block>
 
+
 <div id="contenido-de-mapa">
     <div class="map-section">
         <div class="map-panel" id="mapa"></div>
-
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    </div>
 
+    <!-- Mostrar multimedia si existe -->
+    <div th:if="${hechos != null}">
+        <div th:each="hecho : ${hechos}">
+            <div>
+                <div th:if="${hecho.multimedia != null and !hecho.multimedia.isEmpty()}">
+                    <div th:each="media : ${hecho.multimedia}">
+                        <img th:src="@{'/uploads/' + ${media}}" alt="Evidencia" style="max-width: 400px; max-height: 300px; margin: 10px 0;"/>
+                    </div>
+                </div>
+                <div th:if="${hecho.multimedia == null or hecho.multimedia.isEmpty()}">
+                    <p style="color: #888; font-style: italic;">No tiene fotos adjuntas.</p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

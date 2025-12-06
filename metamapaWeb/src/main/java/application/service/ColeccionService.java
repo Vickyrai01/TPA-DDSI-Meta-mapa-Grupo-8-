@@ -2,12 +2,10 @@ package application.service;
 
 import application.dto.ColeccionDTO;
 import application.dto.HechoDTO;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,9 +15,6 @@ import java.util.Map;
 public class ColeccionService {
     private final WebClient metamapaApi = WebClient.create("http://localhost:8081/core/api");
     private final WebClient metamapaApiADMIN = WebClient.create("http://localhost:8082/core/api");
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     // Obtener todas las colecciones del core
     public List<ColeccionDTO> getAll() {
@@ -44,46 +39,16 @@ public class ColeccionService {
                 .block();
     }
 
-    public List<HechoDTO> getHechosVisibles(Integer id, String modoDeNavegacion) {
-        return metamapaApi.get()
-                .uri(uri -> uri.path("/colecciones/{id}/{modoDeNavegacion}/hechos")
-                        .build(id, modoDeNavegacion))
-                .retrieve()
-                .bodyToFlux(HechoDTO.class)
-                .filter(h -> {
-                    String estado = h.estado();
-                    return estado == null || !estado.trim().equals("INACTIVO");
-                })
-                .collectList()
-                .block();
-    }
+
 
     public ColeccionDTO getById(Integer id){
-        try {
-            // 1. Traemos la respuesta como un árbol JSON genérico (JsonNode)
-            JsonNode root = metamapaApi.get()
-                    .uri(uri -> uri.path("/colecciones/{id}").build(id))
-                    .retrieve()
-                    .bodyToMono(JsonNode.class)
-                    .block();
-
-            // 2. Eliminamos manualmente los campos conflictivos para este endpoint
-            if (root instanceof ObjectNode) {
-                ObjectNode objectNode = (ObjectNode) root;
-                objectNode.remove("fuentes"); // Borramos fuentes (que vienen como objetos)
-                objectNode.remove("hechos");  // Borramos hechos (que vienen como objetos)
-                // Nota: ColeccionDTO espera List<Integer>, pero el JSON trae List<Object>
-            }
-
-            // 3. Convertimos el JSON "limpio" a tu ColeccionDTO existente
-            return objectMapper.treeToValue(root, ColeccionDTO.class);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null; // O manejar el error como prefieras
-        }
+        return metamapaApi.get()
+                .uri(uri -> uri.path("/colecciones/{id}")
+                        .build(id))
+                .retrieve()
+                .bodyToMono(ColeccionDTO.class)
+                .block();
     }
-
     public boolean deleteById(Integer id) {
         try {
             var resp = metamapaApiADMIN.delete()
@@ -98,7 +63,7 @@ public class ColeccionService {
     }
 
     //VER
-    public boolean patchColeccion(Integer id, String nuevoTitulo, String nuevaDescripcion, Object fuentes, String algoritmoConsenso, String modoDeNavegacion, Object criterios) {
+    public boolean patchColeccion(Integer id, String nuevoTitulo, String nuevaDescripcion, Object fuentes, String algoritmoConsenso) {
         Map<String, Object> body = new HashMap<>();
         if (nuevoTitulo != null && !nuevoTitulo.isBlank()) {
             body.put("titulo", nuevoTitulo);
@@ -112,12 +77,7 @@ public class ColeccionService {
         if (algoritmoConsenso != null && !algoritmoConsenso.isBlank()) {
             body.put("algoritmoConsenso", algoritmoConsenso);
         }
-        if (modoDeNavegacion != null && !modoDeNavegacion.isBlank()) {
-            body.put("modoDeNavegacion", modoDeNavegacion);
-        }
-        if (criterios != null) {
-            body.put("criterioDePertenencia", criterios);
-        }
+
         try {
             var resp = metamapaApiADMIN
                     .patch()
