@@ -3,6 +3,7 @@ package application.controller;
 import application.dto.ColeccionDTO;
 import application.dto.HechoDTO;
 import application.service.ColeccionService;
+import application.service.HechoService;
 import application.service.SolicitudesEliminacionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,10 +19,12 @@ import java.util.Optional;
 public class SolicitudDeEliminacionController {
 
     private final ColeccionService coleccionService;
+    private final HechoService hechoService;
     private  final SolicitudesEliminacionService solicitudesEliminacionService;
 
-    public SolicitudDeEliminacionController(ColeccionService coleccionService, SolicitudesEliminacionService solicitudesEliminacionService) {
+    public SolicitudDeEliminacionController(ColeccionService coleccionService, HechoService hechoService, SolicitudesEliminacionService solicitudesEliminacionService) {
             this.coleccionService = coleccionService;
+        this.hechoService = hechoService;
         this.solicitudesEliminacionService = solicitudesEliminacionService;
     }
 
@@ -39,8 +42,21 @@ public class SolicitudDeEliminacionController {
                         .findFirst();
 
                 if (idGlobalOpt.isEmpty()) {
-                    System.err.println("Error: No se encontró una colección global (criterio == null)");
-                    return "redirect:/mapa";
+                    // Si no existe la colección "global", hacemos un fallback: pedimos todos los hechos
+                    // al admin API y buscamos el hash entre ellos.
+                    System.err.println("Advertencia: No se encontró una colección global (criterio == null). Intentando fallback por hechos globales.");
+                    List<HechoDTO> todosLosHechos = hechoService.getAll();
+                    Optional<HechoDTO> hechoBuscado = todosLosHechos == null ? Optional.empty() : todosLosHechos.stream()
+                            .filter(hecho -> hecho.hash() != null && hecho.hash().equals(hash))
+                            .findFirst();
+
+                    if (hechoBuscado.isPresent()) {
+                        model.addAttribute("hecho", hechoBuscado.get());
+                        return "solicitudEliminacion/solicitudEliminacion";
+                    } else {
+                        System.err.println("Error: El hecho con HASH " + hash + " no se encontró en el fallback de hechos.");
+                        return "redirect:/mapa";
+                    }
                 }
 
                 // 4. Traemos TODOS los hechos de esa colección

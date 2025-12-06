@@ -260,9 +260,22 @@
         }
 
         // ===== Solo cuando tocan "Ver hecho" en el popup =====
+        // Nota: evitamos bloquear la navegación si el click se produce sobre
+        // un <a> con un href real (por ejemplo los links de "Solicitar eliminación").
         document.addEventListener('click', (e) => {
             const link = e.target.closest('.js-ver-hecho');
             if (!link) return;
+
+            // Si el elemento clickeado es un <a> con href distinto de '#', dejamos
+            // que el navegador maneje la navegación (no hacemos preventDefault).
+            const clickedAnchor = e.target.closest('a');
+            if (clickedAnchor) {
+                const href = clickedAnchor.getAttribute('href');
+                if (href && href !== '#') {
+                    // permitir navegación normal
+                    return;
+                }
+            }
 
             e.preventDefault();
             const hash = link.dataset.hash;
