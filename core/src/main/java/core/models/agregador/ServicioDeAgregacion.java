@@ -6,9 +6,7 @@ import core.models.entities.colecciones.criterios.Criterio;
 import core.models.entities.colecciones.criterios.FiltradorCriterios;
 import core.models.entities.fuentes.Fuente;
 import core.models.entities.fuentes.TipoFuente;
-import core.models.entities.hecho.Categoria;
-import core.models.entities.hecho.Coordenadas;
-import core.models.entities.hecho.Hecho;
+import core.models.entities.hecho.*;
 import core.models.repository.ColeccionesRepository;
 import core.models.repository.HechosRepository;
 import core.models.repository.RevisionManualRepository;
@@ -33,6 +31,8 @@ public class ServicioDeAgregacion {
     private NormalizadorFecha normalizadorFecha = NormalizadorFecha.getInstance();
     private NormalizadorCategoria normalizadorCategoria = NormalizadorCategoria.getInstance();
     private NormalizadorCoordenada normalizadorCoordenada = NormalizadorCoordenada.getInstance();
+    private NormalizadorEtiqueta normalizadorEtiqueta = NormalizadorEtiqueta.getInstance();
+    private NormalizadorContribuyente normalizadorContribuyente = NormalizadorContribuyente.getInstance();
     private FactoryHecho factoryHecho = FactoryHecho.getInstance();
 
 
@@ -101,7 +101,9 @@ public class ServicioDeAgregacion {
                 Categoria categoria = normalizadorCategoria.obtenerCategoria(dto.getCategoria()); //Solo la crea
                 LocalDate fecha = normalizadorFecha.normalizarFecha(dto.getFechaSuceso()); // hace el quilombo de fecha
                 Coordenadas ubicacion = normalizadorCoordenada.obtenerCoordenadas(dto.getLatitud(), dto.getLongitud()); // solo la crea
-                Hecho hecho = factoryHecho.convertirHecho(dto, fecha, categoria, ubicacion); // factory que funciona
+                List<Etiqueta> etiquetas = normalizadorEtiqueta.obtenerEtiquetas(dto.getEtiquetas());
+                Contribuyente contribuyente = normalizadorContribuyente.obtenerContribuyente(dto.getContribuyente());
+                Hecho hecho = factoryHecho.convertirHecho(dto, fecha, categoria, ubicacion, etiquetas, contribuyente); // factory que funciona
                 hechosLimpios.add(hecho);
             } catch (NormalizadorFecha.ExcepcionRevisionManualFecha e) {
                 //Enviar a revisión manual
