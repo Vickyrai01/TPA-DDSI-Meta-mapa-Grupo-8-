@@ -744,8 +744,28 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
         }
     }
 
+<<<<<<< HEAD
     public void eliminarFuenteDeTodasLasColecciones(Integer id) {
 
+=======
+    public void eliminarFuenteDeTodasLasColecciones(Integer idFuente) {
+        if (idFuente == null) return;
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            DBUtils.comenzarTransaccion(em);
+            int filas = em.createNativeQuery(
+                            "DELETE FROM coleccion_fuente WHERE id_fuente = ?1"
+                    )
+                    .setParameter(1, idFuente)
+                    .executeUpdate();
+            DBUtils.commit(em);
+        } catch (RuntimeException ex) {
+            DBUtils.rollback(em);
+            throw ex;
+        } finally {
+            try { em.close(); } catch (Exception ignore) {}
+        }
+>>>>>>> bd832eb12cf4b41a37161163382060d7e3cdbe00
     }
 }
 

@@ -29,12 +29,17 @@ public class PanelDeControlController {
     private final AdminService adminService;
 
     @Autowired
+<<<<<<< HEAD
     public PanelDeControlController(ColeccionService coleccionService, FuenteService fuenteService, ReportarService reportarService, AdminService adminService, ObjectMapper objectMapper) {
+=======
+    public PanelDeControlController(ColeccionService coleccionService, FuenteService fuenteService, AdminService adminService, ObjectMapper objectMapper, ReportarService reportarService) {
+>>>>>>> bd832eb12cf4b41a37161163382060d7e3cdbe00
         this.coleccionService = coleccionService;
         this.fuenteService = fuenteService;
         this.reportarService = reportarService;
         this.adminService = adminService;
         this.objectMapper = objectMapper;
+        this.reportarService = reportarService;
     }
 
     @GetMapping("/admin/colecciones")

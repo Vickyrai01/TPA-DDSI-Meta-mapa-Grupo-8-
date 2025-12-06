@@ -1,6 +1,5 @@
 package cargadorEstatica.application;
-import utils.DBUtils;
-import javax.persistence.EntityManager;
+import org.springframework.web.multipart.MultipartFile;
 
 import cargadorEstatica.model.*;
 import cargadorEstatica.repository.RepositoryFuentes;
@@ -11,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityManager;
+import java.nio.file.*;
 import java.util.List;
 
 @SpringBootApplication
@@ -32,14 +31,6 @@ public class Application {
     public static void main(String[] args) {
         repositoryFuentesSeeder.cargarRepos();
         SpringApplication.run(Application.class, args);
-        EntityManager em = DBUtils.getEntityManager();
-        DBUtils.comenzarTransaccion(em);
-
-        Fuente fuentePrueba = new Fuente("Fuente de prueba 1", "incendios_en_san_luis.csv", new StrategyCSV(), "CSV");
-        Fuente fuente2 = new Fuente("Fuente 2", "hechosarevisar.csv", new StrategyCSV(), "CSV");
-        em.persist(fuentePrueba);
-        em.persist(fuente2);
-        DBUtils.commit(em);
     }
 
     @GetMapping("/health")
@@ -57,13 +48,13 @@ public class Application {
     public ResponseEntity<?> agregarFuente(@RequestBody FuenteDTO fuenteDTO) {
         StrategyTipoConexion strategyFuente = obtenerStrategyFuente(fuenteDTO.getTipoFuente());
         if (strategyFuente == null) return ResponseEntity.status(400).body("Tipo de fuente no reconocido");
-        Fuente fuente = new Fuente(null, fuenteDTO.getNombre(), fuenteDTO.getLink(), strategyFuente, fuenteDTO.getTipoFuente());
+        Fuente fuente = new Fuente(fuenteDTO.getId(), fuenteDTO.getNombre(), fuenteDTO.getLink(), strategyFuente, fuenteDTO.getTipoFuente());
         repoFuentes.save(fuente);
-        return ResponseEntity.status(201).body("Fuente guardada correctamente");
+        return ResponseEntity.status(201).build();
     }
 
     private StrategyTipoConexion obtenerStrategyFuente(String tipoFuente) {
-        if (tipoFuente.equals("CSV")) return new StrategyCSV();
+        if (tipoFuente.equals("ESTATICA")) return new StrategyCSV();
         else return null;
     }
 
@@ -74,5 +65,58 @@ public class Application {
         return ResponseEntity.ok(fuentes);
     }
 
+    @PostMapping("/fuentes/{id}/csv")
+    public ResponseEntity<?> subirCsv(
+            @PathVariable("id") Integer fuenteId,
+            @RequestParam("archivoCsv") MultipartFile archivoCsv
+    ) {
+        try {
+            var fuente = repoFuentes.findById(fuenteId);
+            if (fuente == null) {
+                return ResponseEntity.status(404).body("Fuente no encontrada");
+            }
+
+            Path carpeta = Paths.get("cargadorEstatica", "csv");
+            Files.createDirectories(carpeta);
+
+            String nombreArchivo = archivoCsv.getOriginalFilename();
+            if (nombreArchivo == null || nombreArchivo.isBlank()) {
+                nombreArchivo = "fuente_" + fuenteId + ".csv";
+            }
+
+            Path destino = carpeta.resolve(nombreArchivo);
+            Files.copy(archivoCsv.getInputStream(), destino, StandardCopyOption.REPLACE_EXISTING);
+
+            // guardar solo el nombre relativo, que StrategyCSV usa
+            fuente.setLink(nombreArchivo);
+            repoFuentes.save(fuente);
+
+            return ResponseEntity.status(201).body("CSV guardado correctamente");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error al guardar CSV");
+        }
+    }
+
+    @PostMapping("/eliminar/{id}")
+    public ResponseEntity<?> eliminarFuente(@PathVariable("id") Integer id){
+        try {
+            Fuente fuente = repoFuentes.findById(id);
+            if(fuente == null) return ResponseEntity.status(404).build();
+            try {
+                Path carpeta = Paths.get("cargadorEstatica", "csv");
+                Path destino = carpeta.resolve(fuente.getLink());
+                Files.deleteIfExists(destino);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(500).body("No se pudo borrar archivo físico");
+            }
+            repoFuentes.deleteById(id);
+            return ResponseEntity.status(204).build();
+        } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.status(500).body("Error al eliminar fuente estática");
+        }
+    }
 }
 
