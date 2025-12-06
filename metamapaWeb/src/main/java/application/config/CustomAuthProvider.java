@@ -4,6 +4,7 @@ import core.models.entities.usuario.Usuario;
 import core.models.repository.UsuarioRepository;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,11 +21,14 @@ public class CustomAuthProvider implements AuthenticationProvider {
         String correo = authentication.getName();
         String contrasena = authentication.getCredentials().toString();
         Optional<Usuario> usuarioOpt = UsuarioRepository.getInstance().findByCorreo(correo);
-        if (usuarioOpt.isPresent() && usuarioOpt.get().getContrasena().equals(contrasena)) {
-            GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_USER");
-            return new UsernamePasswordAuthenticationToken(correo, contrasena, Collections.singletonList(authority));
+        if (usuarioOpt.isEmpty()) {
+            throw new BadCredentialsException("Usuario no encontrado");
         }
-        return null;
+        if (!usuarioOpt.get().getContrasena().equals(contrasena)) {
+            throw new BadCredentialsException("Contraseña incorrecta");
+        }
+        GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_USER");
+        return new UsernamePasswordAuthenticationToken(correo, contrasena, Collections.singletonList(authority));
     }
 
     @Override
