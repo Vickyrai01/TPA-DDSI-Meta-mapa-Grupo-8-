@@ -21,6 +21,12 @@ public class Usuario {
     @Column(nullable = false)
     private String rol; // Ejemplo: "ADMIN" o "USER"
 
+    @Column(nullable = true)
+    private String foto;
+
+    @Column(nullable = false)
+    private String contrasena;
+
     // Getters y setters
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
@@ -38,14 +44,22 @@ public class Usuario {
     public String getRol() { return rol; }
     public void setRol(String rol) { this.rol = rol; }
 
+    public String getFoto() { return foto; }
+    public void setFoto(String foto) { this.foto = foto; }
+
+    public String getContrasena() { return contrasena; }
+    public void setContrasena(String contrasena) { this.contrasena = contrasena; }
+
     // Constructor vacío requerido por JPA
     public Usuario() {}
 
     // Constructor útil
-    public Usuario(String nombre, String apellido, String correo, String rol) {
+    public Usuario(String nombre, String apellido, String correo, String rol, String foto, String contrasena) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.correo = correo;
         this.rol = rol;
+        this.foto = foto;
+        this.contrasena = contrasena;
     }
 }
