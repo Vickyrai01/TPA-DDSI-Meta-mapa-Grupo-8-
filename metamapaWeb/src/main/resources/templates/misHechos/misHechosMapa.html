@@ -32,6 +32,11 @@
                             <i class="chev fa-solid fa-chevron-right" aria-hidden="true"></i>
                         </summary>
                         <div class="hecho-detalle">
+                            <div class="field" style="text-align:right; margin-bottom:8px;">
+                                <a th:href="@{'/misHechos/editar/' + ${h.hash}}" class="btn-editar" title="Editar hecho">
+                                    <i class="fa-solid fa-pen-to-square" style="font-size:1.2em;"></i>
+                                </a>
+                            </div>
                             <div class="field">
                                 <span class="field-label">Descripción:</span>
                                 <span class="field-value" th:text="${h.descripcion != null ? h.descripcion : 'No indica'}"
@@ -78,6 +83,8 @@
             </section>
         </aside>
     </main>
+    <!-- Panel lateral de edición de hecho -->
+    <div th:insert="~{misHechos/panelEditarHecho}"></div>
 </div>
 <th:block id="scripts-de-mis-hechos">
     <script th:inline="javascript">
