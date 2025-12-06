@@ -13,6 +13,7 @@ import java.util.List;
 public class Fuente {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "nombre")
     private String nombre;

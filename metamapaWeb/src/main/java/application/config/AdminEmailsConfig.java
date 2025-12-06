@@ -1,20 +1,16 @@
 package application.config;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 import java.util.List;
 
-@Component
-@ConfigurationProperties(prefix = "metamapa")
+@Configuration
 public class AdminEmailsConfig {
-    private List<String> adminEmails;
+    @Value("${metamapa.admin-emails}")
+    private String adminEmails;
 
     public List<String> getAdminEmails() {
-        return adminEmails;
-    }
-
-    public void setAdminEmails(List<String> adminEmails) {
-        this.adminEmails = adminEmails;
+        return List.of(adminEmails.split(","));
     }
 }

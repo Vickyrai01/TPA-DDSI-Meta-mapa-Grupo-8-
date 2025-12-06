@@ -121,6 +121,7 @@
                   enctype="multipart/form-data">
 
                 <!-- Nombre -->
+                <!-- IMPORTANTE: name="nombre" debe coincidir con @RequestParam("nombre") -->
                 <div class="form-group" style="grid-column:1 / -1">
                     <label for="new-nombre">Nombre</label>
                     <input
@@ -129,23 +130,25 @@
                             class="card-input"
                             type="text"
                             required
-                            placeholder="Ej: Boletín Policial">
+                            placeholder="Ej: Boletín Policial"
+                    >
                 </div>
 
                 <!-- Formato de fuente (API REST / CSV) -->
                 <div class="form-group" style="grid-column:1 / -1">
                     <label for="new-formato">Formato de fuente</label>
-                    <select
+                    <input
                             id="new-formato"
                             name="strategyTipoConexion"
                             class="card-input"
-                            required>
-                        <option value="" disabled selected>Seleccionar formato...</option>
-                        <option value="API REST">API REST</option>
-                        <option value="CSV">CSV</option>
-                        <option value="BIBLIOTECA">BIBLIOTECA</option>
-                    </select>
-
+                            list="formatos-fuente"
+                            placeholder="Seleccionar formato..."
+                            required
+                    >
+                    <datalist id="formatos-fuente">
+                        <option value="API REST"></option>
+                        <option value="CSV"></option>
+                    </datalist>
                 </div>
 
                 <!-- Campo LINK (solo API REST) -->
@@ -156,7 +159,8 @@
                             name="link"
                             class="card-input"
                             type="url"
-                            placeholder="https://...">
+                            placeholder="https://..."
+                    >
                 </div>
 
                 <!-- Campo ARCHIVO (solo CSV) -->
@@ -169,10 +173,12 @@
                                 name="archivoCsv"
                                 type="file"
                                 accept=".csv"
-                                style="display:none">
+                                style="display:none"
+                        >
                     </label>
                 </div>
 
+                <!-- ACCIONES DEL MODAL DENTRO DEL FORM -->
                 <div class="modal-actions">
                     <button type="button" id="cancel-add" class="modal-btn modal-btn-secondary">
                         Cancelar
@@ -182,7 +188,6 @@
                     </button>
                 </div>
             </form>
-
         </div>
     </div>
 

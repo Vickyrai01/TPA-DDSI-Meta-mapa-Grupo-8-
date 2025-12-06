@@ -1,4 +1,4 @@
-// panelDeControlFuentes.js — listar / buscar / agregar / eliminar
+// panelDeControlFuentes.js — versión sin edición, solo listar / buscar / agregar / eliminar
 document.addEventListener('DOMContentLoaded', () => {
   const adminMainContent = document.querySelector('.admin-main-content');
   const list = document.querySelector('#fuentes-list');
@@ -35,12 +35,14 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     if (!currentCardForDelete) return;
 
+    // tomamos el form que ya está en la card
     const form = currentCardForDelete.querySelector('form.delete-form');
     if (!form) {
       closeDeleteModal();
       return;
     }
 
+    // preferimos fetch POST para no recargar toda la página
     const action = form.getAttribute('action');
     try {
       const resp = await fetch(action, {
@@ -65,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     closeDeleteModal();
   });
 
+  // cerrar clickeando afuera
   modalDelete?.addEventListener('click', (e) => {
     if (e.target.id === 'delete-modal') {
       closeDeleteModal();
@@ -77,6 +80,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalAdd = document.getElementById('add-modal');
   const openBtnAdd = document.getElementById('open-add-modal');
   const cancelBtnAdd = document.getElementById('cancel-add');
+  const confirmBtnAdd = document.getElementById('confirm-add');
+
+  const inputNombre = document.getElementById('new-nombre');
+  const inputLink = document.getElementById('new-link');
+  const inputTipo = document.getElementById('new-tipo');
+  const inputStrategy = document.getElementById('new-strategy');
 
   const openAddModal = () => modalAdd?.classList.add('active');
   const closeAddModal = () => modalAdd?.classList.remove('active');
@@ -97,45 +106,55 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // =========================
-  //   FORMATO API REST / CSV
-  // =========================
-  const formatoInput = document.getElementById('new-formato');
-  const linkGroup = document.getElementById('group-link');
-  const fileGroup = document.getElementById('group-file');
-  const linkInput = document.getElementById('new-link');
-  const fileInput = document.getElementById('new-file');
-  const archivoCsvLabel = document.getElementById('archivoCsvLabel');
+  confirmBtnAdd?.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const nombre = inputNombre?.value?.trim();
+    const link = inputLink?.value?.trim();
+    const tipoFuente = inputTipo?.value?.trim();
+    const strategyTipoConexion = inputStrategy?.value?.trim();
 
-  function actualizarCamposFormato() {
-    const value = (formatoInput.value || "").trim().toUpperCase();
-
-    // reset
-    linkGroup.style.display = "none";
-    fileGroup.style.display = "none";
-    linkInput.required = false;
-    fileInput.required = false;
-
-    if (value === "API REST" || value === "BIBLIOTECA") {
-      linkGroup.style.display = "block";
-      linkInput.required = true;
-    } else if (value === "CSV") {
-      fileGroup.style.display = "block";
-      fileInput.required = true;
+    if (!nombre) {
+      alert('El nombre es obligatorio.');
+      return;
     }
-  }
 
-  if (formatoInput) {
-    formatoInput.addEventListener("change", actualizarCamposFormato);
-    // por si viene con valor precargado
-    actualizarCamposFormato();
-  }
+    try {
+      const resp = await fetch('/admin/fuentes/crear', {
+        method: 'POST',
+        headers: withCsrf({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({
+          nombre,
+          link,
+          tipoFuente,
+          strategyTipoConexion
+        })
+      });
+      if (!resp.ok) {
+        alert('No se pudo crear la fuente.');
+        return;
+      }
+      // opción simple: recargar
+      location.reload();
+    } catch (err) {
+      console.error(err);
+      alert('Error al crear la fuente.');
+    } finally {
+      closeAddModal();
+    }
+  });
 
-  // Mostrar nombre del archivo
-  if (fileInput && archivoCsvLabel) {
-    fileInput.addEventListener("change", function () {
-      archivoCsvLabel.textContent =
-          fileInput.files.length > 0 ? fileInput.files[0].name : "Seleccionar archivo";
+  // =========================
+  //   LISTA (delegación)
+  // =========================
+  if (list) {
+    list.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      if (btn.classList.contains('delete-btn')) {
+        e.preventDefault();
+        const card = getCard(btn);
+        if (card) openDeleteModal(card);
+      }
     });
   }
 
@@ -164,19 +183,47 @@ document.addEventListener('DOMContentLoaded', () => {
       doSearch();
     }
   });
+});
 
-  // =========================
-  //   LISTA (delegación)
-  // =========================
-  if (list) {
-    list.addEventListener('click', (e) => {
-      const btn = e.target.closest('button');
-      if (!btn) return;
-      if (btn.classList.contains('delete-btn')) {
-        e.preventDefault();
-        const card = getCard(btn);
-        if (card) openDeleteModal(card);
-      }
+document.addEventListener("DOMContentLoaded", function () {
+  const formatoInput = document.getElementById("new-formato");
+  const linkGroup = document.getElementById("group-link");
+  const fileGroup = document.getElementById("group-file");
+  const linkInput = document.getElementById("new-link");
+  const fileInput = document.getElementById("new-file");
+  const fileButton = document.getElementById("file-button");
+  const fileName = document.getElementById("file-name");
+
+  function actualizarCamposFormato() {
+    const value = (formatoInput.value || "").trim().toUpperCase();
+
+    linkGroup.style.display = "none";
+    fileGroup.style.display = "none";
+    linkInput.required = false;
+    fileInput.required = false;
+
+    if (value === "API REST") {
+      linkGroup.style.display = "block";
+      linkInput.required = true;
+    } else if (value === "CSV") {
+      fileGroup.style.display = "block";
+      fileInput.required = true;
+    }
+  }
+
+  formatoInput.addEventListener("input", actualizarCamposFormato);
+
+  // Botón que abre el input file oculto
+  if (fileButton) {
+    fileButton.addEventListener("click", function () {
+      fileInput.click();
+    });
+  }
+
+  // Mostrar nombre del archivo
+  if (fileInput && fileName) {
+    fileInput.addEventListener("change", function () {
+      fileName.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : "";
     });
   }
 });

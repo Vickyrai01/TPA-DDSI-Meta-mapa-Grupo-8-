@@ -12,16 +12,12 @@ public class ColeccionConTodoDTO {
     private List<HechoResumenDTO> hechos;
     private List<HechoResumenDTO> hechosVisibles;
     private List<CriterioDTO> criterios;
-    private String modoDeNavegacion;
-    private String algoritmoConsenso;
 
     public ColeccionConTodoDTO(Integer id, String titulo, String descripcion,
                                List<FuenteDTO> fuentes,
                                List<HechoResumenDTO> hechos,
                                List<HechoResumenDTO> hechosVisibles,
-                               List<CriterioDTO> criterios,
-                               String modoDeNavegacion,
-                               String algoritmoConsenso) {
+                               List<CriterioDTO> criterios) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
@@ -29,9 +25,6 @@ public class ColeccionConTodoDTO {
         this.hechos = hechos;
         this.hechosVisibles = hechosVisibles;
         this.criterios = criterios;
-        // Asignaciones nuevas
-        this.modoDeNavegacion = modoDeNavegacion;
-        this.algoritmoConsenso = algoritmoConsenso;
     }
 
     // --- Getters y setters ---
@@ -55,10 +48,4 @@ public class ColeccionConTodoDTO {
 
     public List<CriterioDTO> getCriterios() { return criterios; }
     public void setCriterios(List<CriterioDTO> criterios) { this.criterios = criterios; }
-
-    public String getModoDeNavegacion() { return modoDeNavegacion; }
-    public void setModoDeNavegacion(String modoDeNavegacion) { this.modoDeNavegacion = modoDeNavegacion; }
-
-    public String getAlgoritmoConsenso() { return algoritmoConsenso; }
-    public void setAlgoritmoConsenso(String algoritmoConsenso) { this.algoritmoConsenso = algoritmoConsenso; }
 }

@@ -166,19 +166,3 @@ details[open] .chev{transform:rotate(90deg)}
     filter: brightness(.90);
     transform: translateY(1px); /* Efecto de clic */
 }
-
-.collection-mode-switch {
-    margin-bottom: 1rem;
-}
-
-.modo-label {
-    font-weight: bold;
-    margin-right: 0.5rem;
-}
-
-.modo-select {
-    padding: 6px 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-}
