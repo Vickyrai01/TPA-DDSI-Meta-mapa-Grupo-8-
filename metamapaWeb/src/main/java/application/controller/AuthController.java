@@ -31,13 +31,12 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestParam String nombre,
                                       @RequestParam String apellido,
                                       @RequestParam String correo,
-                                      @RequestParam String contrasena,
-                                      @RequestParam(required = false) String foto) {
+                                      @RequestParam String contrasena) {
         Optional<Usuario> usuarioOpt = UsuarioRepository.getInstance().findByCorreo(correo);
         if (usuarioOpt.isPresent()) {
             return ResponseEntity.status(409).body("El correo ya está registrado");
         }
-        Usuario nuevo = new Usuario(nombre, apellido, correo, "USER", foto, contrasena);
+        Usuario nuevo = new Usuario(nombre, apellido, correo, "USER", null, contrasena);
         UsuarioRepository.getInstance().add(nuevo);
         return ResponseEntity.ok(nuevo);
     }
