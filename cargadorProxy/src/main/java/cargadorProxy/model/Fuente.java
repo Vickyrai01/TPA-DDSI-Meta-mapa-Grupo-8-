@@ -94,7 +94,8 @@ public class Fuente {
         hechos.forEach(h -> h.setTipoFuente("PROXY"));
         hechos.forEach(h -> h.setLinkFuente(this.getLink()));
         hechos.forEach(h -> h.setIdFuente(this.getId()));
-        return strategyManeraDeObtenerHechos.extraerHechosRecientes(link, codigoFuente);
+        System.out.println("El id de la fuente es: " + this.getId());
+        return hechos;
     }
 }
 

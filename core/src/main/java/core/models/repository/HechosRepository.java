@@ -305,5 +305,39 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
         }
     }
 
+    public List<Hecho> obtenerHechosPorIdsFuente(List<Integer> idsFuentes) {
+        if (idsFuentes == null || idsFuentes.isEmpty()) {
+            return List.of();
+        }
+
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            // 1) Traemos hechos que cumplan:
+            //   (idFuente IN lista) OR (fuenteDeOrigen = DINAMICA)
+            List<Hecho> hechos = em.createQuery("""
+            select distinct h
+            from hecho h
+            where h.fuenteDeOrigen = core.models.entities.fuentes.TipoFuente.DINAMICA
+               or h.idFuente in :idsFuentes
+            """, Hecho.class)
+                    .setParameter("idsFuentes", idsFuentes == null ? List.of(-1) : idsFuentes)
+                    .getResultList();
+
+            // 2) Inicializamos colecciones lazy (evita LazyInitializationException)
+            for (Hecho h : hechos) {
+                if (h.getEtiquetas() != null) {
+                    h.getEtiquetas().size();
+                }
+                if (h.getMultimedia() != null) {
+                    h.getMultimedia().size();
+                }
+            }
+
+            return hechos;
+            }
+        finally {
+            em.close();
+        }
+    }
 }
 

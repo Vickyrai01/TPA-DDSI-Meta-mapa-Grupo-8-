@@ -119,10 +119,9 @@ public class ServicioDeAgregacion {
         // 2) Traigo solo los IDs de las fuentes de esa colección
         List<Integer> idsFuentesDeColeccion = coleccionesRepository.obtenerIdsFuentesDeColeccion(idColeccion);
 
-        List<Hecho> hechosFiltradosFuentes = hechosLimpios.stream().filter(h -> h.getFuenteDeOrigen().equals(TipoFuente.DINAMICA) || idsFuentesDeColeccion.contains(h.getIdFuente())).toList();
+        List<Hecho> hechosFiltradosFuentes = hechosRepository.obtenerHechosPorIdsFuente(idsFuentesDeColeccion);
         List<Hecho> hechosFiltradosCriterio = filtradorCriterios.filtrarHechos(hechosFiltradosFuentes, criterios);
 
-        hechosRepository.addAllEnUnaTransaccion(hechosFiltradosCriterio);
         List<Integer> idHechos = hechosFiltradosCriterio.stream().map(Hecho::getId).toList();
         coleccionesRepository.agregarHechosAColeccion(idColeccion, idHechos);
     }
@@ -145,7 +144,7 @@ public class ServicioDeAgregacion {
         limpiarHechos();
         System.out.println("Cantidad de hechos limpiados: " + hechosAIntegrar.size());
         normalizarYCrearHechos();
-        System.out.println("Cantidad de hechos a agregar a coleccion: " + hechosLimpios.size());
+        hechosRepository.addAllEnUnaTransaccion(hechosLimpios);
         List<Coleccion> colecciones = coleccionesRepository.obtenerTodas();
         System.out.println("Obtuve todas las colecciones.." + " son " + colecciones.size() + " colecciones.");
         for (Coleccion coleccion : colecciones) {
