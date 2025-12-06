@@ -1,5 +1,6 @@
 package core.api.DTO;
 
+import core.models.entities.hecho.Contribuyente;
 import core.models.entities.hecho.Etiqueta;
 import core.models.entities.hecho.Hecho;
 
@@ -70,10 +71,14 @@ public class HechoResumenDTO {
     }
 
     public static HechoResumenDTO from(Hecho h) {
+        Contribuyente c = h.getContribuyente();
 
-        String nombreContribuyente = (h.getContribuyente() != null)
-                ? h.getContribuyente().getNombreCompleto()
-                : null;
+        String nombreContribuyente =
+                (c == null) ? null :
+                        (c.getMail() != null && !c.getMail().isBlank()) ? c.getMail() :
+                                (c.getApellido() != null && !c.getApellido().isBlank()) ? c.getApellido() :
+                                        (c.getNombre() != null && c.getApellido() != null) ? c.getNombreCompleto() :
+                                                null;
 
         List<String> etiquetas = (h.getEtiquetas() != null)
                 ? h.getEtiquetas().stream()

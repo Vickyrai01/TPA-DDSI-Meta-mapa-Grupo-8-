@@ -4,4 +4,5 @@ public enum TipoConexion {
     CSV,
     APIREST,
     BIBLIOTECA,
+    DINAMICA
 }

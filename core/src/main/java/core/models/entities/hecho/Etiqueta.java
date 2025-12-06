@@ -39,4 +39,8 @@ public class Etiqueta {
     public String getNombre() {
         return nombre;
     }
+
+    public void setNombre(String nuevoNombre) {
+        nombre = nuevoNombre;
+    }
 }

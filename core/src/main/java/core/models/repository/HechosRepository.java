@@ -1,15 +1,13 @@
 package core.models.repository;
 
 import core.models.entities.fuentes.Fuente;
-import core.models.entities.hecho.Categoria;
-import core.models.entities.hecho.Coordenadas;
-import core.models.entities.hecho.Hecho;
-import core.models.entities.hecho.Contribuyente;
+import core.models.entities.hecho.*;
 import utils.DBUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
@@ -106,7 +104,6 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
                 // Si tus mapeos de etiquetas/sugerencias no están bien, pueden causar problemas.
                 // Para aislar el issue: no persistamos esas colecciones en esta pasada.
                 h.setSugerenciaDeCambio(null); // si es @OneToMany mal mapeado, evitá que Hibernate intente tocar esa tabla
-                h.setEtiquetas(null);
 
                 //Asegurar las clases
                 if (h.getCategoria() == null || h.getUbicacion() == null)
@@ -174,31 +171,129 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
                     h.setUbicacion(coord);
                 }
 
+                if (h.getEtiquetas() != null && !h.getEtiquetas().isEmpty()) {
+                    List<Etiqueta> etiquetasOriginales = h.getEtiquetas();
+                    List<Etiqueta> etiquetasDefinitivas = new ArrayList<>();
+
+                    for (Etiqueta e : etiquetasOriginales) {
+                        if (e == null) continue;
+
+                        Etiqueta etiquetaRef = null;
+
+                        if (e.getId() != null) {
+                            // Ya tiene id → intento usar la existente
+                            etiquetaRef = em.find(Etiqueta.class, e.getId());
+                            if (etiquetaRef == null) {
+                                // Si no existe, la trato como nueva
+                                e.setId(null);
+                            }
+                        }
+
+                        if (etiquetaRef == null) {
+                            // No tiene id o el id no existe → buscar por nombre
+                            String nombreOriginal = e.getNombre();
+                            if (nombreOriginal == null || nombreOriginal.isBlank()) {
+                                continue; // etiqueta vacía, la ignoro
+                            }
+
+                            String nombreLower = nombreOriginal.toLowerCase().trim();
+
+                            try {
+                                etiquetaRef = em.createQuery(
+                                                "from etiqueta et where lower(et.nombre) = :n",
+                                                Etiqueta.class)
+                                        .setParameter("n", nombreLower)
+                                        .setMaxResults(1)
+                                        .getSingleResult();
+                            } catch (NoResultException ex) {
+                                // no existe, la creamos
+                                Etiqueta nueva = new Etiqueta();
+                                nueva.setNombre(nombreOriginal.trim());
+                                em.persist(nueva);
+                                em.flush();
+                                etiquetaRef = nueva;
+                            }
+                        }
+
+                        if (etiquetaRef != null) {
+                            etiquetasDefinitivas.add(etiquetaRef);
+                        }
+                    }
+
+                    h.setEtiquetas(etiquetasDefinitivas);
+                } else {
+                    h.setEtiquetas(Collections.emptyList());
+                }
+
                 // Contribuyente opcional: si viene, lo busco / creo; si no, lo dejo null
                 if (h.getContribuyente() != null) {
-                    core.models.entities.hecho.Contribuyente c = h.getContribuyente();
 
+                    Contribuyente c = h.getContribuyente();
+                    Contribuyente ref = null;
+
+                    // 1) Si viene id → intento por id
                     if (c.getId() != null) {
-                        // Intento traer el existente
-                        core.models.entities.hecho.Contribuyente existente =
-                                em.find(core.models.entities.hecho.Contribuyente.class, c.getId());
-
-                        if (existente != null) {
-                            // Ya existe → uso ese
-                            h.setContribuyente(existente);
+                        ref = em.find(Contribuyente.class, c.getId());
+                        if (ref != null) {
+                            h.setContribuyente(ref);
+                            continue;
                         } else {
-                            // No existe en BD pero viene con id → lo trato como nuevo
-                            c.setId(null); // opcional pero prolijo, así el persist no choca
-                            em.persist(c);
-                            em.flush();
-                            h.setContribuyente(c);
+                            c.setId(null); // tratar como nuevo
                         }
-                    } else {
-                        // No tiene id → es nuevo, lo persisto
-                        em.persist(c);
-                        em.flush();
-                        h.setContribuyente(c);
                     }
+
+                    // 2) Si tiene mail → buscar por mail
+                    if (ref == null && c.getMail() != null && !c.getMail().isBlank()) {
+
+                        String mailLower = c.getMail().toLowerCase().trim();
+
+                        try {
+                            ref = em.createQuery(
+                                            "from contribuyente ct where lower(ct.mail) = :m",
+                                            Contribuyente.class)
+                                    .setParameter("m", mailLower)
+                                    .setMaxResults(1)
+                                    .getSingleResult();
+                        } catch (NoResultException ex) {
+                            // Crear nuevo contribuyente
+                            Contribuyente nuevo = new Contribuyente();
+                            nuevo.setMail(c.getMail().trim());
+
+                            em.persist(nuevo);
+                            em.flush();
+
+                            ref = nuevo;
+                        }
+                    }
+
+                    // 3) Si no tiene mail pero sí apellido → buscar por apellido
+                    if (ref == null && c.getApellido() != null && !c.getApellido().isBlank()) {
+
+                        String apeLower = c.getApellido().toLowerCase().trim();
+
+                        try {
+                            ref = em.createQuery(
+                                            "from contribuyente ct where lower(ct.apellido) = :a",
+                                            Contribuyente.class)
+                                    .setParameter("a", apeLower)
+                                    .setMaxResults(1)
+                                    .getSingleResult();
+
+                        } catch (NoResultException ex) {
+                            // Crear nuevo contribuyente
+                            Contribuyente nuevo = new Contribuyente();
+                            nuevo.setApellido(c.getApellido().trim());
+
+                            em.persist(nuevo);
+                            em.flush();
+
+                            ref = nuevo;
+                        }
+                    }
+
+                    // 4) Si no hubo match en nada → dejar null
+                    h.setContribuyente(ref);
+
                 } else {
                     h.setContribuyente(null);
                 }
