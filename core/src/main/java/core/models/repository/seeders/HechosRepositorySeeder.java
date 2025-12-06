@@ -53,13 +53,21 @@ public class HechosRepositorySeeder {
 
     public void cargarHechosSeeder() {
 
-        Categoria categoriaIncendio = new Categoria("Incendio");
-        Categoria categoriaChoque = new Categoria("Choque");
-        Categoria categoriaRobo = new Categoria("Robo");
-
-        categoriaRepository.add(categoriaIncendio);
-        categoriaRepository.add(categoriaChoque);
-        categoriaRepository.add(categoriaRobo);
+        Categoria categoriaIncendio = categoriaRepository.buscarPorNombre("Incendio");
+        if (categoriaIncendio == null) {
+            categoriaIncendio = new Categoria("Incendio");
+            categoriaRepository.add(categoriaIncendio);
+        }
+        Categoria categoriaChoque = categoriaRepository.buscarPorNombre("Choque");
+        if (categoriaChoque == null) {
+            categoriaChoque = new Categoria("Choque");
+            categoriaRepository.add(categoriaChoque);
+        }
+        Categoria categoriaRobo = categoriaRepository.buscarPorNombre("Robo");
+        if (categoriaRobo == null) {
+            categoriaRobo = new Categoria("Robo");
+            categoriaRepository.add(categoriaRobo);
+        }
 
         Coordenadas coordenadas1 = new Coordenadas(-34.61969316128249, -58.4494697301956);
         Coordenadas coordenadas2 = new Coordenadas(-34.55289162117985, -58.697023577203126);
@@ -86,13 +94,21 @@ public class HechosRepositorySeeder {
         coordenadasRepository.add(coordenadas15);
 
         //Categorias
-        Categoria categoriaEstafa = new Categoria("Estafa");
-        Categoria categoriaVial = new Categoria("Accidente vial");
-        Categoria categoriaAmenaza = new Categoria("Amenaza");
-
-        categoriaRepository.add(categoriaEstafa);
-        categoriaRepository.add(categoriaVial);
-        categoriaRepository.add(categoriaAmenaza);
+        Categoria categoriaEstafa = categoriaRepository.buscarPorNombre("Estafa");
+        if (categoriaEstafa == null) {
+            categoriaEstafa = new Categoria("Estafa");
+            categoriaRepository.add(categoriaEstafa);
+        }
+        Categoria categoriaVial = categoriaRepository.buscarPorNombre("Accidente vial");
+        if (categoriaVial == null) {
+            categoriaVial = new Categoria("Accidente vial");
+            categoriaRepository.add(categoriaVial);
+        }
+        Categoria categoriaAmenaza = categoriaRepository.buscarPorNombre("Amenaza");
+        if (categoriaAmenaza == null) {
+            categoriaAmenaza = new Categoria("Amenaza");
+            categoriaRepository.add(categoriaAmenaza);
+        }
 
         //Contribuyentes
 
