@@ -49,17 +49,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // --- INICIO DE LA CORRECCIÓN ---
-                // Deshabilitamos CSRF específicamente para las rutas /admin/**
-                // Esto permitirá que tu JavaScript haga POST, PATCH y DELETE.
+                // Deshabilitamos CSRF para /api/auth/** y /admin/**
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers(new AntPathRequestMatcher("/admin/**"))
+                        .ignoringRequestMatchers(
+                                new AntPathRequestMatcher("/api/auth/**"),
+                                new AntPathRequestMatcher("/admin/**")
+                        )
                 )
-                // --- FIN DE LA CORRECCIÓN ---
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/admin/**", "/panelDeControl/**").authenticated()
                         .requestMatchers("/perfil").authenticated()
-                        .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
