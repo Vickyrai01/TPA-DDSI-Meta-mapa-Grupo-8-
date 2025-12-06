@@ -12,7 +12,7 @@ import java.util.Optional;
 public class AuthController {
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String correo, @RequestParam String contrasena) {
+    public ResponseEntity<?> login(@RequestParam("correo") String correo, @RequestParam("contrasena") String contrasena) {
         Optional<Usuario> usuarioOpt = UsuarioRepository.getInstance().findByCorreo(correo);
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();
@@ -28,16 +28,15 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestParam String nombre,
-                                      @RequestParam String apellido,
-                                      @RequestParam String correo,
-                                      @RequestParam String contrasena,
-                                      @RequestParam(required = false) String foto) {
+    public ResponseEntity<?> register(@RequestParam("nombre") String nombre,
+                                      @RequestParam("apellido") String apellido,
+                                      @RequestParam("correo") String correo,
+                                      @RequestParam("contrasena") String contrasena) {
         Optional<Usuario> usuarioOpt = UsuarioRepository.getInstance().findByCorreo(correo);
         if (usuarioOpt.isPresent()) {
             return ResponseEntity.status(409).body("El correo ya está registrado");
         }
-        Usuario nuevo = new Usuario(nombre, apellido, correo, "USER", foto, contrasena);
+        Usuario nuevo = new Usuario(nombre, apellido, correo, "USER", null, contrasena);
         UsuarioRepository.getInstance().add(nuevo);
         return ResponseEntity.ok(nuevo);
     }
