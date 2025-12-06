@@ -3,6 +3,7 @@
 <head>
   <title>Mis Hechos</title>
   <link rel="stylesheet" th:href="@{/css/pages-css/misHechos.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 <div class="mis-hechos-container">
@@ -13,7 +14,11 @@
   <div th:if="${!#lists.isEmpty(misHechos)}">
     <ul class="mis-hechos-list">
       <li th:each="h : ${misHechos}">
-        <div class="hecho-title" th:text="${h.nombre}">Título del hecho</div>
+        <div class="hecho-title" th:text="${h.nombre}">Título del hecho
+          <a th:href="@{'/misHechos/editar/' + ${h.hash}}" class="btn-editar" title="Editar hecho" style="margin-left:8px;">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </a>
+        </div>
         <div class="hecho-desc" th:text="${h.descripcion}">Descripción</div>
         <div class="hecho-fecha">Fecha: <span th:text="${h.fechaSuceso}">Fecha</span></div>
       </li>
