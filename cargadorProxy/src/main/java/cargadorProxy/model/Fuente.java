@@ -89,6 +89,11 @@ public class Fuente {
     }
 
     public List<HechoAIntegrarDTO> extraerHechos(){
+
+        List<HechoAIntegrarDTO> hechos = strategyManeraDeObtenerHechos.extraerHechosRecientes(link, codigoFuente);
+        hechos.forEach(h -> h.setTipoFuente("PROXY"));
+        hechos.forEach(h -> h.setLinkFuente(this.getLink()));
+        hechos.forEach(h -> h.setIdFuente(this.getId()));
         return strategyManeraDeObtenerHechos.extraerHechosRecientes(link, codigoFuente);
     }
 }

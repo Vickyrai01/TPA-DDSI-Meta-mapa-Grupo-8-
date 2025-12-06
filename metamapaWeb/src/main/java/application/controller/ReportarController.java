@@ -127,4 +127,17 @@ public class ReportarController {
             return "redirect:/reportar?estado=error";
         }
     }
+
+    @PostMapping("/ejecutar-agregacion")
+    public String ejecutarAgregacion(RedirectAttributes ra) {
+
+        try {
+            reportarService.ejecutarAgregacion();
+            ra.addFlashAttribute("popupSuccess", "Servicio de agregación ejecutado correctamente.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("popupError", "Error al ejecutar el servicio de agregación.");
+        }
+
+        return "redirect:/reportar"; // O donde quieras volver
+    }
 }

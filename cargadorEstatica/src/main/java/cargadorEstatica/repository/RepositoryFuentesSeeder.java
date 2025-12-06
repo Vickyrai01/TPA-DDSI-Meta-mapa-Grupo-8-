@@ -22,7 +22,7 @@ public class RepositoryFuentesSeeder {
 
     StrategyTipoConexion StrategyCSV = new StrategyCSV();
 
-    Fuente fuente1 = new Fuente(1,"Accidentes en AMBA", null,  StrategyCSV, "CSV");
+    Fuente fuente1 = new Fuente(1,"Accidentes en AMBA", "eventosSanitariosPrueba1.csv",  StrategyCSV, "CSV");
     Fuente fuente4 = new Fuente(2,"CSV Incendio", null,  StrategyCSV, "CSV");
 
     public void cargarRepos() {

@@ -108,28 +108,54 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
                 h.setSugerenciaDeCambio(null); // si es @OneToMany mal mapeado, evitá que Hibernate intente tocar esa tabla
                 h.setEtiquetas(null);
 
-                // ---- Resolver padres en la MISMA TX (sin hilos) ----
-                // Caso 1: ya existen por ID
+                //Asegurar las clases
                 if (h.getCategoria() == null || h.getUbicacion() == null)
                     throw new IllegalArgumentException("Hecho sin categoría o coordenadas");
 
+                //Si la categoria existe, usarla
                 if (h.getCategoria().getId() != null) {
                     h.setCategoria(em.getReference(Categoria.class, h.getCategoria().getId()));
                 } else {
-                    // find-or-create por clave natural (ajustá campo 'nombre')
-                    Categoria cat;
+                    Categoria cat = null;
+
+                    String nombreOriginal = h.getCategoria().getNombre();
+                    String nombreLower = nombreOriginal.toLowerCase().trim();
+
+                    // 1) Buscar la categoría tal cual viene (normalizada a lower)
                     try {
-                        cat = em.createQuery("from categoria c where lower(c.nombre)=:n", Categoria.class)
-                                .setParameter("n", h.getCategoria().getNombre().toLowerCase())
-                                .setMaxResults(1).getSingleResult();
+                        cat = em.createQuery("from categoria c where lower(c.nombre) = :n", Categoria.class)
+                                .setParameter("n", nombreLower)
+                                .setMaxResults(1)
+                                .getSingleResult();
                     } catch (NoResultException e) {
+                        // no encontrada, seguimos
+                    }
+
+                    // 2) Si no existe y termina en 's', probamos quitando la 's' (singular)
+                    if (cat == null && nombreLower.endsWith("s")) {
+                        String singularLower = nombreLower.substring(0, nombreLower.length() - 1);
+                        try {
+                            cat = em.createQuery("from categoria c where lower(c.nombre) = :n", Categoria.class)
+                                    .setParameter("n", singularLower)
+                                    .setMaxResults(1)
+                                    .getSingleResult();
+                        } catch (NoResultException e2) {
+                            // tampoco existe en singular, seguimos
+                        }
+                    }
+
+                    // 3) Si sigue sin existir, la creo "como vino"
+                    if (cat == null) {
                         em.persist(h.getCategoria());
                         em.flush();
                         cat = h.getCategoria();
                     }
+
                     h.setCategoria(cat);
                 }
 
+
+                //Si la ubicacion existe, usarla
                 if (h.getUbicacion().getId() != null) {
                     h.setUbicacion(em.getReference(Coordenadas.class, h.getUbicacion().getId()));
                 } else {
@@ -148,12 +174,35 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
                     h.setUbicacion(coord);
                 }
 
-                // Contribuyente opcional: sólo por ID; si viene nuevo, por ahora nuléalo
-                if (h.getContribuyente() != null && h.getContribuyente().getId() != null) {
-                    h.setContribuyente(em.getReference(core.models.entities.hecho.Contribuyente.class, (Object) h.getContribuyente().getId()));
+                // Contribuyente opcional: si viene, lo busco / creo; si no, lo dejo null
+                if (h.getContribuyente() != null) {
+                    core.models.entities.hecho.Contribuyente c = h.getContribuyente();
+
+                    if (c.getId() != null) {
+                        // Intento traer el existente
+                        core.models.entities.hecho.Contribuyente existente =
+                                em.find(core.models.entities.hecho.Contribuyente.class, c.getId());
+
+                        if (existente != null) {
+                            // Ya existe → uso ese
+                            h.setContribuyente(existente);
+                        } else {
+                            // No existe en BD pero viene con id → lo trato como nuevo
+                            c.setId(null); // opcional pero prolijo, así el persist no choca
+                            em.persist(c);
+                            em.flush();
+                            h.setContribuyente(c);
+                        }
+                    } else {
+                        // No tiene id → es nuevo, lo persisto
+                        em.persist(c);
+                        em.flush();
+                        h.setContribuyente(c);
+                    }
                 } else {
                     h.setContribuyente(null);
                 }
+
 
                 // Evitar duplicados por hash/título dentro de la misma TX
                 if (h.getHash() != null && !h.getHash().isBlank()) {
