@@ -1,12 +1,16 @@
 // JS para abrir/cerrar el sidebar de perfil y cargarlo por AJAX solo si el usuario está autenticado
 
 document.addEventListener('DOMContentLoaded', function() {
-    const perfilBtn = document.getElementById('btn-sidebar-perfil');
+    const perfilBtn = document.querySelector('.avatar[aria-label="Perfil"]');
     if (!perfilBtn) return;
-    perfilBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        abrirSidebarPerfil();
-    });
+
+    // Solo activar sidebar si el botón tiene href a /perfil (usuario autenticado)
+    if (perfilBtn.getAttribute('href') === '/perfil') {
+        perfilBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            abrirSidebarPerfil();
+        });
+    }
 });
 
 function abrirSidebarPerfil() {
