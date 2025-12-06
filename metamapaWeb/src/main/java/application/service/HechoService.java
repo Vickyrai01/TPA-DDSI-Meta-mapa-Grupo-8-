@@ -28,6 +28,22 @@ public class HechoService {
                 .collectList()
                 .block();
     }
+
+    // Obtener hechos por contribuyente (email)
+    public List<HechoDTO> getByContribuyente(String email) {
+        if (email == null || email.isBlank()) return List.of();
+        try {
+            return adminApi.get()
+                    .uri(uriBuilder -> uriBuilder.path("/hechos").queryParam("contribuyente", email).build())
+                    .retrieve()
+                    .bodyToFlux(HechoDTO.class)
+                    .collectList()
+                    .block();
+        } catch (Exception e) {
+            System.err.println("Error en getByContribuyente: " + e.getMessage());
+            return List.of();
+        }
+    }
     // EDITAR (admin 8082) — PATCH /core/api/hechos/{hash}
     public boolean patchByHash(String hash, String nombre, String descripcion, List<String> etiquetas) {
         if (hash == null || hash.isBlank()) return false;

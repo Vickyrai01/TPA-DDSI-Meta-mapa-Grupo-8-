@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(
+          titulo='Mis hechos',
+          linksAdicionales=~{:: #links-de-mis-hechos},
+          scriptsAdicionales=~{:: #scripts-de-mis-hechos},
+          contenido=~{:: #contenido-de-mis-hechos}
+      )}">
+<th:block id="links-de-mis-hechos">
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          crossorigin=""/>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/pages-css/verColeccion.css}">
+</th:block>
+<div id="contenido-de-mis-hechos">
+    <main class="map-layout-container">
+        <div id="mapa" class="map-panel"></div>
+        <aside class="sidebar-panel">
+            <header class="sidebar-header">MIS HECHOS</header>
+            <section class="sidebar-content">
+                <h2>Mis hechos reportados</h2>
+                <p>Solo ves los hechos que reportaste con tu cuenta.</p>
+                <h3 style="margin-top:1rem">Hechos</h3>
+                <div class="hechos-accordion">
+                    <p th:if="${#lists.isEmpty(hechos)}" class="muted">Todavía no cargaste ningún hecho.</p>
+                    <details th:each="h : ${hechos}"
+                             th:attr="data-hash=${h.hash}, data-lat=${h.latitud}, data-lon=${h.longitud}">
+                        <summary>
+                            <div class="hecho-title" th:text="${h.nombre}">Título del hecho</div>
+                            <i class="chev fa-solid fa-chevron-right" aria-hidden="true"></i>
+                        </summary>
+                        <div class="hecho-detalle">
+                            <div class="field">
+                                <span class="field-label">Descripción:</span>
+                                <span class="field-value" th:text="${h.descripcion != null ? h.descripcion : 'No indica'}"
+                                      th:classappend="${h.descripcion == null} ? 'muted' : ''"></span>
+                            </div>
+                            <div class="field">
+                                <span class="field-label">Fecha del hecho:</span>
+                                <span class="field-value"
+                                      th:text="${h.fechaSuceso != null} ? ${#temporals.format(h.fechaSuceso, 'dd/MM/yyyy')} : 'No indica'"
+                                      th:classappend="${h.fechaSuceso == null} ? 'muted' : ''"></span>
+                            </div>
+                            <div class="field">
+                                <span class="field-label">Fecha de carga:</span>
+                                <span class="field-value"
+                                      th:text="${h.fechaCarga != null} ? ${#temporals.format(h.fechaCarga, 'dd/MM/yyyy')} : 'No indica'"
+                                      th:classappend="${h.fechaCarga == null} ? 'muted' : ''"></span>
+                            </div>
+                            <div class="field">
+                                <span class="field-label">Categorias:</span>
+                                <span class="field-value" th:if="${h.categorias != null and !#lists.isEmpty(h.categorias)}">
+                                    <span class="chip" th:each="tag : ${h.categorias}" th:text="${tag}"></span>
+                                </span>
+                                <span class="field-value muted" th:if="${h.categorias == null or #lists.isEmpty(h.categorias)}">No indica</span>
+                            </div>
+                            <div class="field">
+                                <span class="field-label">Etiquetas:</span>
+                                <span class="field-value" th:if="${h.etiquetas != null and !#lists.isEmpty(h.etiquetas)}">
+                                    <span class="chip" th:each="tag : ${h.etiquetas}" th:text="${tag}"></span>
+                                </span>
+                                <span class="field-value muted" th:if="${h.etiquetas == null or #lists.isEmpty(h.etiquetas)}">No indica</span>
+                            </div>
+                            <div class="field">
+                                <span class="field-label">Multimedia:</span>
+                                <span class="field-value" th:if="${h.multimedia != null and !#lists.isEmpty(h.multimedia)}">
+                                    <a th:each="m : ${h.multimedia}" th:href="${m}" target="_blank" rel="noreferrer">
+                                         <i class="fa-solid fa-link"></i><span th:text="${#strings.abbreviate(m, 30)}">Archivo</span>
+                                    </a>
+                                </span>
+                                <span class="field-value muted" th:if="${h.multimedia == null or #lists.isEmpty(h.multimedia)}">No indica</span>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </section>
+        </aside>
+    </main>
+</div>
+<th:block id="scripts-de-mis-hechos">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        window.hechos = /*[[${hechos}]]*/ [];
+        /*]]>*/
+    </script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script>
+        const toNum = v => {
+            if (v == null) return null;
+            const n = parseFloat(String(v).replace(',', '.'));
+            return Number.isFinite(n) ? n : null;
+        };
+        const puntos = (window.hechos || [])
+            .map(h => ({
+                hash: h.hash,
+                nombre: h.nombre,
+                lat: toNum(h.latitud),
+                lon: toNum(h.longitud)
+            }))
+            .filter(p => p.lat != null && p.lon != null);
+        const defaultCenter = [-34.6037, -58.3816], defaultZoom = 11;
+        const map = L.map('mapa', { maxZoom: 19 })
+            .setView(puntos.length ? [puntos[0].lat, puntos[0].lon] : defaultCenter,
+                puntos.length ? 13 : defaultZoom);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors', maxZoom: 19
+        }).addTo(map);
+        const markersByHash = {};
+        puntos.forEach(p => {
+            const popupHtml = `
+      <div class="popup-card">
+        <div class="popup-title"><b>${p.nombre ?? '(sin título)'}</b></div>
+      </div>
+    `;
+            const m = L.marker([p.lat, p.lon]).addTo(map).bindPopup(popupHtml);
+            markersByHash[p.hash] = m;
+        });
+        map.on('popupopen', (e) => {
+            const ll = e.popup.getLatLng();
+        });
+        const sidebarPanel = document.querySelector('.sidebar-panel');
+        function focusMarker(hash, {zoom=15, openPopup=true} = {}) {
+            const m = markersByHash[hash];
+            if (!m) return;
+            const latlng = m.getLatLng();
+            map.flyTo(latlng, Math.max(map.getZoom(), zoom), { duration: .45 });
+            if (openPopup) m.openPopup();
+        }
+        function openDetails(hash, {scroll=true, highlight=true, closeOthers=true} = {}) {
+            const details = document.querySelector(`details[data-hash="${hash}"]`);
+            if (!details) return;
+            if (closeOthers) {
+                document.querySelectorAll('.hechos-accordion details[open]')
+                    .forEach(d => { if (d !== details) d.removeAttribute('open'); });
+            }
+            details.setAttribute('open', true);
+            if (highlight) {
+                document.querySelectorAll('.hechos-accordion details')
+                    .forEach(d => d.classList.remove('highlight'));
+                details.classList.add('highlight');
+            }
+            if (scroll && sidebarPanel) {
+                sidebarPanel.scrollTo({ top: details.offsetTop - 40, behavior: 'smooth' });
+            }
+        }
+        document.addEventListener('click', (e) => {
+            const link = e.target.closest('.js-ver-hecho');
+            if (!link) return;
+            const clickedAnchor = e.target.closest('a');
+            if (clickedAnchor) {
+                const href = clickedAnchor.getAttribute('href');
+                if (href && href !== '#') {
+                    return;
+                }
+            }
+            e.preventDefault();
+            const hash = link.dataset.hash;
+            focusMarker(hash, { openPopup: true });
+            openDetails(hash);
+        });
+        function fitLayout(){
+            const header = document.querySelector('header.site-header');
+            const footer = document.querySelector('footer.site-footer');
+            const cont   = document.querySelector('.map-layout-container');
+            if(!cont) return;
+            const h = window.innerHeight - (header?.offsetHeight||0) - (footer?.offsetHeight||0) - 16;
+            cont.style.minHeight = Math.max(360, h) + 'px';
+        }
+        window.addEventListener('load',  () => { fitLayout(); setTimeout(()=>map.invalidateSize(), 80); });
+        window.addEventListener('resize',() => { fitLayout(); map.invalidateSize(); });
+    </script>
+</th:block>
+</html>
