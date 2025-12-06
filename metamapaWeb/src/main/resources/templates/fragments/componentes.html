@@ -25,11 +25,11 @@
                aria-label="Perfil"
                onclick="abrirSidebarPerfil(); return false;">
                 <div class="avatar">
-                    <img th:if="${#authentication.principal.attributes['picture'] != null}"
+                    <img th:if="${#authentication.principal instanceof T(org.springframework.security.oauth2.core.user.DefaultOAuth2User) and #authentication.principal.attributes['picture'] != null}"
                          th:src="${#authentication.principal.attributes['picture']}"
                          class="avatar-img"
                          alt="Perfil">
-                    <i th:if="${#authentication.principal.attributes['picture'] == null}"
+                    <i th:if="${!(#authentication.principal instanceof T(org.springframework.security.oauth2.core.user.DefaultOAuth2User)) or #authentication.principal.attributes['picture'] == null}"
                        class="fa-regular fa-user"></i>
                 </div>
                 <span class="login-text">Mi Perfil</span>
