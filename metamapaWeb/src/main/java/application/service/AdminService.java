@@ -18,10 +18,19 @@ public class AdminService {
             return false;
         }
         Object principal = authentication.getPrincipal();
+        String email = null;
         if (principal instanceof OAuth2User oAuth2User) {
-            String email = (String) oAuth2User.getAttributes().get("email");
-            return adminEmailsConfig.getAdminEmails().contains(email);
+            email = (String) oAuth2User.getAttributes().get("email");
+        } else if (principal instanceof org.springframework.security.core.userdetails.User user) {
+            email = user.getUsername();
+        } else if (principal instanceof String str) {
+            email = str;
+        } else if (principal instanceof java.util.Map<?,?> map) {
+            Object mailObj = map.get("email");
+            if (mailObj instanceof String) {
+                email = (String) mailObj;
+            }
         }
-        return false;
+        return email != null && adminEmailsConfig.getAdminEmails().contains(email);
     }
 }
