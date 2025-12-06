@@ -166,7 +166,10 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
 
             return q;
         } finally {
-            try { em.close(); } catch (Exception ignore) {}
+            try {
+                em.close();
+            } catch (Exception ignore) {
+            }
         }
     }
 
@@ -263,7 +266,7 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                 etiquetasPorHash = new java.util.HashMap<>();
                 for (Object[] row : filas) {
                     String hash = (String) row[0];
-                    String tipo  = (String) row[1];
+                    String tipo = (String) row[1];
                     etiquetasPorHash.computeIfAbsent(hash, k -> new java.util.ArrayList<>()).add(tipo);
                 }
             }
@@ -280,13 +283,12 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                         : Collections.emptyList();
 
 
-
                 hechoDTOs.add(
                         new HechoResumenDTO(
                                 h.getHash(),
                                 h.getTitulo(),
                                 h.getDescripcion(),
-                                (h.getContribuyente()!=null ? h.getContribuyente().getNombreCompleto() : null),
+                                (h.getContribuyente() != null ? h.getContribuyente().getNombreCompleto() : null),
                                 h.getFechaSuceso(),
                                 h.getHoraSuceso(),
                                 null,
@@ -331,7 +333,10 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             return Optional.of(dto);
 
         } finally {
-            try { em.close(); } catch (Exception ignore) {}
+            try {
+                em.close();
+            } catch (Exception ignore) {
+            }
         }
     }
 
@@ -388,7 +393,7 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
 
             for (Object[] r : rowsFuentes) {
                 Integer idColeccion = (Integer) r[0];
-                Integer idFuente    = (Integer) r[1];
+                Integer idFuente = (Integer) r[1];
 
                 fuentesPorColeccion
                         .computeIfAbsent(idColeccion, k -> new ArrayList<>())
@@ -407,7 +412,7 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
 
             for (Object[] r : rowsCriterios) {
                 Integer idColeccion = (Integer) r[0];
-                Criterio crit       = (Criterio) r[1];
+                Criterio crit = (Criterio) r[1];
 
                 criteriosPorColeccion
                         .computeIfAbsent(idColeccion, k -> new ArrayList<>())
@@ -417,13 +422,13 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             // ARMAR DTOS
             List<ColeccionDTO> dtos = new ArrayList<>(bases.size());
             for (Object[] b : bases) {
-                Integer id          = (Integer) b[0];
-                String  titulo      = (String)  b[1];
-                String  descripcion = (String)  b[2];
-                String  handle      = (String)  b[3];
+                Integer id = (Integer) b[0];
+                String titulo = (String) b[1];
+                String descripcion = (String) b[2];
+                String handle = (String) b[3];
 
                 // tipos reales que vienen del JPQL
-                ModoDeNavegacion modo          = (ModoDeNavegacion) b[4];      // puede ser null
+                ModoDeNavegacion modo = (ModoDeNavegacion) b[4];      // puede ser null
                 AlgoritmoConsenso algoritmoObj = (AlgoritmoConsenso) b[5];     // puede ser null
 
                 // pasar a String para el DTO
@@ -475,7 +480,10 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             return dtos;
 
         } finally {
-            try { em.close(); } catch (Exception ignore) {}
+            try {
+                em.close();
+            } catch (Exception ignore) {
+            }
         }
     }
 
@@ -498,11 +506,11 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                     .setParameter("idColeccion", idColeccion)
                     .getSingleResult();
 
-            Integer id          = (Integer) base[0];
-            String  titulo      = (String)  base[1];
-            String  descripcion = (String)  base[2];
-            String  handle      = (String)  base[3];
-            ModoDeNavegacion modo          = (ModoDeNavegacion) base[4];  // puede ser null
+            Integer id = (Integer) base[0];
+            String titulo = (String) base[1];
+            String descripcion = (String) base[2];
+            String handle = (String) base[3];
+            ModoDeNavegacion modo = (ModoDeNavegacion) base[4];  // puede ser null
             AlgoritmoConsenso algoritmoObj = (AlgoritmoConsenso) base[5]; // puede ser null
 
             // =========================
@@ -599,7 +607,10 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             // si querés, podés devolver null o tirar una excepción custom
             return null;
         } finally {
-            try { em.close(); } catch (Exception ignore) {}
+            try {
+                em.close();
+            } catch (Exception ignore) {
+            }
         }
     }
 
@@ -619,6 +630,7 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             em.close();
         }
     }
+
     /**
      * Reemplaza completamente las fuentes de una colección por las seleccionadas (solo las tildadas quedan asociadas).
      */
@@ -653,9 +665,13 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             DBUtils.rollback(em);
             throw ex;
         } finally {
-            try { em.close(); } catch (Exception ignore) {}
+            try {
+                em.close();
+            } catch (Exception ignore) {
+            }
         }
     }
+
     public List<Hecho> obtenerHechosVisiblesDeColeccion(Integer idColeccion) {
         EntityManager em = DBUtils.getEntityManager();
         try {
@@ -671,7 +687,10 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             // Devuelvo una lista "normal", desconectada de Hibernate
             return new ArrayList<>(visibles);
         } finally {
-            try { em.close(); } catch (Exception ignore) {}
+            try {
+                em.close();
+            } catch (Exception ignore) {
+            }
         }
     }
 
@@ -718,7 +737,15 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             DBUtils.rollback(em);
             throw ex;
         } finally {
-            try { em.close(); } catch (Exception ignore) {}
+            try {
+                em.close();
+            } catch (Exception ignore) {
+            }
         }
     }
+
+    public void eliminarFuenteDeTodasLasColecciones(Integer id) {
+
+    }
+}
 

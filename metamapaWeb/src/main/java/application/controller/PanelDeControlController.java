@@ -29,9 +29,10 @@ public class PanelDeControlController {
     private final AdminService adminService;
 
     @Autowired
-    public PanelDeControlController(ColeccionService coleccionService, FuenteService fuenteService, AdminService adminService, ObjectMapper objectMapper) {
+    public PanelDeControlController(ColeccionService coleccionService, FuenteService fuenteService, ReportarService reportarService, AdminService adminService, ObjectMapper objectMapper) {
         this.coleccionService = coleccionService;
         this.fuenteService = fuenteService;
+        this.reportarService = reportarService;
         this.adminService = adminService;
         this.objectMapper = objectMapper;
     }

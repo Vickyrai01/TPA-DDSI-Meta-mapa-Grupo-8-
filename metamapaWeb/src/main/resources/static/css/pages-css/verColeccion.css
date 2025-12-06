@@ -135,12 +135,6 @@ details[open] .chev{transform:rotate(90deg)}
     font-style: italic;
 }
 
-/* =======================================
-  BLOQUE DE BOTÓN DE SOLICITUD MODIFICADO
-  =======================================
-  (Ahora tiene el mismo padding, border-radius, etc. que .btn-map,
-  pero con fondo rojo)
-*/
 .btn-solicitud {
     /* Estilos copiados de .btn-map */
     color: #fff;
@@ -181,4 +175,52 @@ details[open] .chev{transform:rotate(90deg)}
     border-radius: 6px;
     border: 1px solid #ccc;
     font-size: 14px;
+}
+.filtros-bloque{
+    margin-bottom:1.1rem;
+    margin-top: 1rem;
+    margin-right: 1rem;
+}
+.btn-toggle-filtros{
+    width: 100%;
+    background: #f3f4f6;
+    color: #222;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: .6rem;
+    font-weight: 600;
+    font-size: 1.05em;
+    display: flex;
+    align-items: center;
+    gap: .6em;
+    margin-bottom: .7em;
+    cursor:pointer;
+    transition:background .14s;
+    text-align: center;
+    justify-content: center;
+}
+.btn-toggle-filtros[aria-expanded="true"]{
+    background: #ffe4cc;
+}
+.filtros-form{
+    background: #fff;
+    padding: .85em .7em .65em .7em;
+    border-radius: 9px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 5px rgba(0,0,0,.03);
+    margin-bottom: .8em;
+}
+.filtro-item{margin-bottom:.85em;}
+.filtro-item label{font-weight:500;margin-bottom:0.25em;display:block;}
+.filtro-item input[type="text"],
+.filtro-item select,
+.filtro-item input[type="date"]{
+    width:100%;padding:.43em .48em;border:1px solid #c8ccd0;border-radius:7px;margin-top:.25em;
+    font-size:1em;
+}
+.btn-map{
+    height: 2.5em;
+    font-size: 1em;
+    font-family: 'Montserrat', sans-serif;
+
 }
