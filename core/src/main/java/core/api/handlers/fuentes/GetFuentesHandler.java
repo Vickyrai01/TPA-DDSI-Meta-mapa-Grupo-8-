@@ -17,5 +17,4 @@ public class GetFuentesHandler implements Handler {
                 .toList();
         ctx.json(dtos);
     }
-
 }

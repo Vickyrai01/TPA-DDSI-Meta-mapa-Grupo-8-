@@ -3,6 +3,7 @@ package core.api.configs;
 import core.api.handlers.colecciones.*;
 import core.api.handlers.fuentes.DeleteFuenteHandler;
 import core.api.handlers.fuentes.GetFuentesHandler;
+import core.api.handlers.fuentes.PostFuenteCSVHandler;
 import core.api.handlers.fuentes.PostFuenteHandler;
 import core.api.handlers.hechos.*;
 import core.api.handlers.solicitudesDeEliminacion.*;
@@ -26,11 +27,13 @@ public class ApiAdminMetaMapaConfig {
         app.patch("core/api/colecciones/{id}/fuentes/agregar", new PatchAgregarFuentesColeccionHandler());
         app.patch("core/api/colecciones/{id}/fuentes/eliminar", new PatchEliminarFuentesColeccionHandler());
         app.patch("core/api/colecciones/{id}/consenso/modificar", new PatchAlgoritmoDeConsenso());
-        app.post("/core/api/fuente", new PostFuenteHandler());
         app.get("/core/api/fuentes", new GetFuentesHandler());
-        app.post("core/api/fuentes/{id}/eliminar", new DeleteFuenteHandler());
 
         app.patch("/core/api/hechos/{hash}", new PatchHechoHandler());
         app.delete("/core/api/hechos/{hash}", new DeleteHechoHandler());
+
+        app.post("/core/api/fuentes", new PostFuenteHandler());
+        app.post("/core/api/fuentes/{id}/csv", new PostFuenteCSVHandler());
+        app.post("core/api/fuentes/{id}/eliminar", new DeleteFuenteHandler());
     }
 }

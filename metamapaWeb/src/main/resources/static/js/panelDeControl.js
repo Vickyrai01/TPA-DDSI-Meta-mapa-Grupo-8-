@@ -1,4 +1,3 @@
-// panelDeControl.js — versión con restauración y envío al backend
 document.addEventListener('DOMContentLoaded', () => {
   // Limitar fecha máxima al día actual en los campos de fecha del modal de crear colección
   const fechaInputs = [
@@ -18,7 +17,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const adminMainContent = document.querySelector('.admin-main-content');
   const list = document.querySelector('.collections-list');
 
-  // ===== Modal Eliminar =====
+  // =========================
+  //   HELPER: CSRF Token
+  // =========================
+  const getCsrfToken = () => {
+    const tokenInput = document.querySelector('input[name="_csrf"]');
+    return tokenInput ? tokenInput.value : null;
+  };
+
+  // =========================
+  //   MODAL ELIMINAR
+  // =========================
   const modalDelete = document.getElementById('delete-modal');
   const cancelBtnDelete = document.getElementById('cancel-delete');
   const confirmBtnDelete = document.getElementById('confirm-delete');
@@ -33,67 +42,170 @@ document.addEventListener('DOMContentLoaded', () => {
     currentCardForDelete = null;
   }
 
-  // --- CÓDIGO NUEVO CON FETCH ---
-  // Helper para leer el token CSRF del HTML (lo necesitamos)
-  const getCsrfToken = () => {
-    const tokenInput = document.querySelector('input[name="_csrf"]');
-    return tokenInput ? tokenInput.value : null;
-  };
-
   confirmBtnDelete?.addEventListener('click', (e) => {
     e.preventDefault();
     if (!currentCardForDelete) return;
 
     const form = currentCardForDelete.querySelector('form.delete-form');
-    if (!form) {
-      closeDeleteModal();
-      return;
-    }
+    if (!form) { closeDeleteModal(); return; }
 
     const url = form.getAttribute('action');
     const token = getCsrfToken();
 
-    console.log('Enviando POST para eliminar a:', url);
-
     fetch(url, {
       method: 'POST',
-      headers: {
-        'X-CSRF-TOKEN': token
-      },
-      redirect: 'manual' // <-- 1. AÑADIDO: Le decimos a fetch que NO siga la redirección
+      headers: { 'X-CSRF-TOKEN': token },
+      redirect: 'manual'
     })
         .then(resp => {
-          // 2. CAMBIADO: Aceptamos un "200 OK" O una redirección como éxito.
           if (resp.ok || resp.type === 'opaqueredirect') {
             currentCardForDelete.remove();
             console.log('Colección eliminada exitosamente.');
           } else {
-            console.error('Error del servidor al eliminar la colección.');
             alert('No se pudo eliminar la colección.');
           }
         })
         .catch(err => {
-          console.error('Error de red:', err);
-          alert('Error de conexión al intentar eliminar.');
+          console.error(err);
+          alert('Error de conexión.');
         })
-        .finally(() => {
-          closeDeleteModal();
-        });
+        .finally(() => closeDeleteModal());
   });
 
-  cancelBtnDelete?.addEventListener('click', (e) => {
-    e.preventDefault();
-    closeDeleteModal();
-  });
+  cancelBtnDelete?.addEventListener('click', (e) => { e.preventDefault(); closeDeleteModal(); });
+  modalDelete?.addEventListener('click', (e) => { if (e.target.id === 'delete-modal') closeDeleteModal(); });
 
-  modalDelete?.addEventListener('click', (e) => {
-    if (e.target.id === 'delete-modal') {
-      closeDeleteModal();
+
+  // ==========================================
+  //   LÓGICA DEL MODAL DE AGREGAR CRITERIO
+  // ==========================================
+  const modalCriteria = document.getElementById('modal-add-criteria');
+  const selectType = document.getElementById('select-criteria-type');
+  const containerInputs = document.getElementById('criteria-inputs-container');
+  const btnCancelCrit = document.getElementById('btn-cancel-criteria');
+  const btnConfirmCrit = document.getElementById('btn-confirm-criteria');
+
+  let targetUlForCriteria = null;
+
+  // Abrir Modal (Edición y Creación)
+  document.addEventListener('click', (e) => {
+    // Botón "Agregar Criterio"
+    if (e.target.closest('.btn-open-criteria-modal') || e.target.closest('#btn-add-crit-creation')) {
+      e.preventDefault();
+      // Si es desde una tarjeta (edición)
+      if (e.target.closest('.collection-card')) {
+        const card = e.target.closest('.collection-card');
+        targetUlForCriteria = card.querySelector('.criteria-list-edit');
+      }
+      // Si es desde el modal de crear nueva colección
+      else if (e.target.closest('#add-modal')) {
+        targetUlForCriteria = document.getElementById('new-collection-criteria-list');
+      }
+
+      resetCriteriaModal();
+      modalCriteria.classList.add('active');
+    }
+
+    // Botón "Eliminar Criterio" (Delegación para listas dinámicas)
+    if (e.target.classList.contains('btn-delete-crit')) {
+      e.preventDefault();
+      const li = e.target.closest('li');
+      if (li) li.remove();
     }
   });
 
+  const closeCriteriaModal = () => modalCriteria.classList.remove('active');
+  btnCancelCrit?.addEventListener('click', (e) => { e.preventDefault(); closeCriteriaModal(); });
 
-  // ===== Modal Crear =====
+  // Mostrar inputs según tipo
+  selectType?.addEventListener('change', () => {
+    const type = selectType.value;
+    containerInputs.style.display = 'block';
+    document.querySelectorAll('.dynamic-group').forEach(el => el.classList.add('hidden'));
+
+    if (type === 'nombre' || type === 'descripcion') {
+      document.getElementById('input-group-text').classList.remove('hidden');
+    } else if (type === 'categoria') {
+      document.getElementById('input-group-cat').classList.remove('hidden');
+    } else if (type === 'ubicacion') {
+      document.getElementById('input-group-geo').classList.remove('hidden');
+    } else if (type === 'fechaSuceso' || type === 'fechaCarga') {
+      document.getElementById('input-group-date').classList.remove('hidden');
+    }
+  });
+
+  // Confirmar Criterio
+  btnConfirmCrit?.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!targetUlForCriteria) return;
+    const type = selectType.value;
+    if (!type) { alert('Selecciona un tipo'); return; }
+
+    let palabra=null, cat=null, lat=null, lon=null, desde=null, hasta=null;
+    let displayText = "";
+
+    if (type === 'nombre' || type === 'descripcion') {
+      palabra = document.getElementById('crit-input-keyword').value;
+      displayText = `${type}: ${palabra}`;
+    } else if (type === 'categoria') {
+      const select = document.getElementById('crit-select-category');
+      const otra   = document.getElementById('crit-input-category-otra');
+
+      if (!select.value) {
+        alert('Elegí una categoría');
+        return;
+      }
+
+      if (select.value === 'Otro') {
+        cat = otra.value.trim();
+        if (!cat) {
+          alert('Especificá la categoría');
+          return;
+        }
+      } else {
+        cat = select.value;
+      }
+
+      displayText = `Categoría: ${cat}`;
+    } else if (type === 'ubicacion') {
+      lat = document.getElementById('crit-input-lat').value;
+      lon = document.getElementById('crit-input-lon').value;
+      displayText = `Ubicación: ${lat}, ${lon}`;
+    } else if (type.startsWith('fecha')) {
+      desde = document.getElementById('crit-input-from').value;
+      hasta = document.getElementById('crit-input-to').value;
+      displayText = `${type}: ${desde} al ${hasta}`;
+    }
+
+    const li = document.createElement('li');
+    li.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; margin-bottom:6px;";
+
+    li.dataset.type = type;
+    if(palabra) li.dataset.palabra = palabra;
+    if(cat) li.dataset.categoria = cat;
+    if(lat) li.dataset.lat = lat;
+    if(lon) li.dataset.lon = lon;
+    if(desde) li.dataset.desde = desde;
+    if(hasta) li.dataset.hasta = hasta;
+
+    li.innerHTML = `<span>${displayText}</span><button type="button" class="delete-source-btn btn-delete-crit">×</button>`;
+    targetUlForCriteria.appendChild(li);
+    closeCriteriaModal();
+  });
+
+  function resetCriteriaModal() {
+    document.getElementById('form-add-criteria').reset();
+    selectType.value = "";
+    containerInputs.style.display = 'none';
+    document.querySelectorAll('.dynamic-group').forEach(el => el.classList.add('hidden'));
+
+    if (catOtraGroup) catOtraGroup.classList.add('hidden');
+  }
+
+
+  // =========================
+  //   MODAL CREAR COLECCIÓN
+  // =========================
   const modalAdd = document.getElementById('add-modal');
   const openBtnAdd = document.querySelector('.add-btn');
   const cancelBtnAdd = document.getElementById('cancel-add');
@@ -101,364 +213,242 @@ document.addEventListener('DOMContentLoaded', () => {
 
   openBtnAdd?.addEventListener('click', (e) => { e.preventDefault(); modalAdd?.classList.add('active'); });
   cancelBtnAdd?.addEventListener('click', (e) => { e.preventDefault(); modalAdd?.classList.remove('active'); });
-  confirmBtnAdd?.addEventListener('click', (e) => {
-    e.preventDefault();
-
-    // Obtener todos los campos obligatorios
-    const nombreInput = document.getElementById('new-nombre');
-    const infoInput = document.getElementById('new-info');
-    const fuentesCheckboxes = document.querySelectorAll('input[name="fuentesSeleccionadas"]');
-    const criterioNombreInput = document.getElementById('new-criterio-nombre');
-    const criterioDescInput = document.getElementById('new-criterio-descripcion');
-    const criterioCatInput = document.getElementById('new-criterio-categoria');
-    const criterioLatInput = document.getElementById('new-criterio-lat');
-    const criterioLonInput = document.getElementById('new-criterio-lon');
-    const criterioSucesoDesdeInput = document.getElementById('new-criterio-suceso-desde');
-    const criterioSucesoHastaInput = document.getElementById('new-criterio-suceso-hasta');
-    const criterioCargaDesdeInput = document.getElementById('new-criterio-carga-desde');
-    const criterioCargaHastaInput = document.getElementById('new-criterio-carga-hasta');
-    const algoritmoSelect = document.getElementById('new-algoritmo');
-
-    // Limpiar errores previos
-    [nombreInput, infoInput, criterioNombreInput, criterioDescInput, criterioCatInput, criterioLatInput, criterioLonInput, criterioSucesoDesdeInput, criterioSucesoHastaInput, criterioCargaDesdeInput, criterioCargaHastaInput, algoritmoSelect].forEach(el => {
-      if (el) el.classList.remove('input-error');
-    });
-
-    let errorMsg = '';
-    let errorFields = [];
-
-    if (!nombreInput.value.trim()) {
-      errorMsg = 'El nombre es obligatorio.';
-      errorFields.push(nombreInput);
-    }
-    if (!infoInput.value.trim()) {
-      errorMsg = 'La descripción es obligatoria.';
-      errorFields.push(infoInput);
-    }
-    if (![...fuentesCheckboxes].some(cb => cb.checked)) {
-      errorMsg = 'Debes seleccionar al menos una fuente.';
-      errorFields.push(fuentesCheckboxes[0]);
-    }
-    if (!criterioNombreInput.value.trim()) {
-      errorMsg = 'El título es obligatorio.';
-      errorFields.push(criterioNombreInput);
-    }
-    if (!criterioDescInput.value.trim()) {
-      errorMsg = 'La descripción del criterio es obligatoria.';
-      errorFields.push(criterioDescInput);
-    }
-    if (!criterioCatInput.value.trim()) {
-      errorMsg = 'La categoría es obligatoria.';
-      errorFields.push(criterioCatInput);
-    }
-    if (!criterioLatInput.value.trim() || !criterioLonInput.value.trim()) {
-      errorMsg = 'La ubicación es obligatoria.';
-      errorFields.push(criterioLatInput);
-      errorFields.push(criterioLonInput);
-    }
-    if (!criterioSucesoDesdeInput.value || !criterioSucesoHastaInput.value) {
-      errorMsg = 'Las fechas de suceso son obligatorias.';
-      errorFields.push(criterioSucesoDesdeInput);
-      errorFields.push(criterioSucesoHastaInput);
-    } else {
-      const desdeSuceso = new Date(criterioSucesoDesdeInput.value);
-      const hastaSuceso = new Date(criterioSucesoHastaInput.value);
-      if (desdeSuceso > hastaSuceso) {
-        errorMsg = 'La fecha "Desde" de suceso no puede ser mayor que la fecha "Hasta".';
-        errorFields.push(criterioSucesoDesdeInput);
-        errorFields.push(criterioSucesoHastaInput);
-      }
-    }
-    if (!criterioCargaDesdeInput.value || !criterioCargaHastaInput.value) {
-      errorMsg = 'Las fechas de carga son obligatorias.';
-      errorFields.push(criterioCargaDesdeInput);
-      errorFields.push(criterioCargaHastaInput);
-    } else {
-      const desdeCarga = new Date(criterioCargaDesdeInput.value);
-      const hastaCarga = new Date(criterioCargaHastaInput.value);
-      if (desdeCarga > hastaCarga) {
-        errorMsg = 'La fecha "Desde" de carga no puede ser mayor que la fecha "Hasta".';
-        errorFields.push(criterioCargaDesdeInput);
-        errorFields.push(criterioCargaHastaInput);
-      }
-    }
-    if (!algoritmoSelect.value) {
-      errorMsg = 'El algoritmo de consenso es obligatorio.';
-      errorFields.push(algoritmoSelect);
-    }
-
-    if (errorFields.length > 0) {
-      errorFields.forEach(el => { if (el) el.classList.add('input-error'); });
-      alert(errorMsg || 'Completa todos los campos obligatorios.');
-      return;
-    }
-
-    // 2. Obtener los IDs de las FUENTES seleccionadas
-    const fuentesSeleccionadas = [];
-    const checkboxes = document.querySelectorAll('input[name="fuentesSeleccionadas"]:checked');
-    checkboxes.forEach((checkbox) => {
-      const id = parseInt(checkbox.value, 10);
-      if (Number.isFinite(id)) {
-        fuentesSeleccionadas.push(id);
-      }
-    });
-    // 3. Construir la lista de CRITERIOS
-    const criterios = [];
-    const criterioNombreVal = criterioNombreInput.value.trim();
-    if (criterioNombreVal) {
-      criterios.push({ "type": "nombre", "palabraClave": criterioNombreVal });
-    }
-    const criterioDescVal = criterioDescInput.value.trim();
-    if (criterioDescVal) {
-      criterios.push({ "type": "descripcion", "palabraClave": criterioDescVal });
-    }
-    const criterioCatVal = criterioCatInput.value.trim();
-    if (criterioCatVal) {
-      criterios.push({ "type": "categoria", "categoria": criterioCatVal });
-    }
-    if (criterioLatInput.value.trim() && criterioLonInput.value.trim()) {
-      criterios.push({
-        "type": "ubicacion",
-        "latitud": parseFloat(criterioLatInput.value.trim()),
-        "longitud": parseFloat(criterioLonInput.value.trim())
-      });
-    }
-    if (criterioSucesoDesdeInput.value && criterioSucesoHastaInput.value) {
-      criterios.push({
-        "type": "fechaSuceso",
-        "desde": criterioSucesoDesdeInput.value,
-        "hasta": criterioSucesoHastaInput.value
-      });
-    }
-    if (criterioCargaDesdeInput.value && criterioCargaHastaInput.value) {
-      criterios.push({
-        "type": "fechaCarga",
-        fuente: fuentesSeleccionadas,
-        "hasta": criterioCargaHastaInput.value
-      });
-    }
-
-    // 4. Preparar el 'payload' final
-    const payload = {
-      titulo: nombreInput.value.trim(),
-      descripcionColeccion: infoInput.value.trim(),
-      hechos: [],
-      fuentes: fuentesSeleccionadas,
-      criterioDePertenencia: criterios,
-      algoritmoConsenso: algoritmoSelect.value
-    };
-
-    console.log("Enviando payload:", JSON.stringify(payload));
-
-    // 5. Enviar la petición
-    const token = getCsrfToken();
-
-    fetch('/admin/colecciones/crear', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': token
-      },
-      body: JSON.stringify(payload)
-    })
-        .then(resp => {
-          if (resp.ok) {
-            location.reload();
-          } else {
-            alert('No se pudo crear la colección. Revisa la consola.');
-            console.error('Error del servidor al crear.', resp);
-          }
-        })
-        .catch(err => {
-          console.error('Error de red:', err);
-          alert('Error de conexión al intentar crear.');
-        });
-  });
 
   modalAdd?.addEventListener('click', (e) => {
     if (e.target.id === 'add-modal') modalAdd?.classList.remove('active');
   });
 
-  // ===== Edición in-place =====
-  if (!list) return;
+  confirmBtnAdd?.addEventListener('click', (e) => {
+    e.preventDefault();
 
+    const nombre = document.getElementById('new-nombre').value.trim();
+    const info = document.getElementById('new-info').value.trim();
+
+    if (!nombre) { alert('El nombre es obligatorio.'); return; }
+
+    // Fuentes
+    const fuentesSeleccionadas = [];
+    document.querySelectorAll('input[name="fuentesSeleccionadas"]:checked').forEach((cb) => {
+      fuentesSeleccionadas.push(parseInt(cb.value, 10));
+    });
+
+    // Criterios
+    const criterios = [];
+    document.querySelectorAll('#new-collection-criteria-list li').forEach(li => {
+      const d = li.dataset;
+      const c = { type: d.type };
+      if(d.palabra) c.palabraClave = d.palabra;
+      if(d.categoria) c.categoria = d.categoria;
+      if(d.lat) c.latitud = parseFloat(d.lat);
+      if(d.lon) c.longitud = parseFloat(d.lon);
+      if(d.desde) c.desde = d.desde;
+      if(d.hasta) c.hasta = d.hasta;
+      criterios.push(c);
+    });
+
+    // Algoritmo y Modo
+    const algoritmoConsenso = document.getElementById('new-algoritmo').value;
+    const modoDeNavegacion = document.getElementById('new-modoNavegacion').value;
+
+    if (modoDeNavegacion === 'CURADA' && (!algoritmoConsenso || algoritmoConsenso === 'SIN')) {
+      alert('Las colecciones CURADAS necesitan un algoritmo de consenso.');
+      return;
+    }
+
+    const payload = {
+      titulo: nombre,
+      descripcionColeccion: info,
+      fuentes: fuentesSeleccionadas,
+      criterioDePertenencia: criterios,
+      algoritmoConsenso: algoritmoConsenso,
+      modoDeNavegacion: modoDeNavegacion
+    };
+
+    fetch('/admin/colecciones/crear', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': getCsrfToken() },
+      body: JSON.stringify(payload)
+    })
+        .then(resp => {
+          if (resp.ok) location.reload();
+          else alert('No se pudo crear la colección. Revisa la consola.');
+        });
+  });
+
+
+  // =========================
+  //   EDICIÓN IN-PLACE
+  // =========================
+  if (!list) return;
   const getCard = (el) => el.closest('.collection-card');
 
+  // --- INICIAR EDICIÓN ---
   const startEdit = (card) => {
     const tituloInput = card.querySelector('.card-header .card-input.edit-mode');
-    const descInput = card.querySelector('.card-body .card-field:nth-child(1) .card-input.edit-mode');
+    const descInput = card.querySelector('.card-body input[aria-label="Editar descripción"]');
 
-    // Guardar valores originales
+    // CORREGIDO: Usar el selector por NAME, sin la clase edit-mode pegada (por si está en el padre)
+    const algoSelect = card.querySelector('select[name="algoritmoConsensoEdit"]');
+    const modoSelect = card.querySelector('select[name="modoDeNavegacionEdit"]');
+
+    // Guardar originales
     if (tituloInput) card.dataset.originalTitulo = tituloInput.value;
     if (descInput) card.dataset.originalDesc = descInput.value;
+    if (algoSelect) card.dataset.originalAlgo = algoSelect.value;
+    if (modoSelect) card.dataset.originalModo = modoSelect.value;
 
     card.classList.add('is-editing');
     adminMainContent?.classList.add('child-is-editing');
   };
 
+  // --- CANCELAR EDICIÓN ---
   const cancelEdit = (card) => {
     const tituloInput = card.querySelector('.card-header .card-input.edit-mode');
-    const tituloView  = card.querySelector('.card-header .view-mode');
-    const descInput = card.querySelector('.card-body .card-field:nth-child(1) .card-input.edit-mode');
-    const descView  = card.querySelector('.card-body .card-field:nth-child(1) .view-mode');
+    const tituloView = card.querySelector('.card-header .view-mode');
+    const descInput = card.querySelector('.card-body input[aria-label="Editar descripción"]');
+    const descView = descInput ? descInput.parentElement.querySelector('.view-mode') : null;
 
-    // Restaurar Título
-    if (tituloInput && card.dataset.originalTitulo !== undefined) {
-      tituloInput.value = card.dataset.originalTitulo;
-      if (tituloView) tituloView.textContent = card.dataset.originalTitulo;
+    const algoSelect = card.querySelector('select[name="algoritmoConsensoEdit"]');
+    const modoSelect = card.querySelector('select[name="modoDeNavegacionEdit"]');
+
+    // Restaurar
+    if (tituloInput) {
+      tituloInput.value = card.dataset.originalTitulo || "";
+      if (tituloView) tituloView.textContent = card.dataset.originalTitulo || "";
     }
-    // Restaurar Descripción
-    if (descInput && card.dataset.originalDesc !== undefined) {
-      descInput.value = card.dataset.originalDesc;
-      if (descView) descView.textContent = card.dataset.originalDesc;
+    if (descInput) {
+      descInput.value = card.dataset.originalDesc || "";
+      if (descView) descView.textContent = card.dataset.originalDesc || "";
+    }
+    if (algoSelect && card.dataset.originalAlgo !== undefined) {
+      algoSelect.value = card.dataset.originalAlgo;
+    }
+    if (modoSelect && card.dataset.originalModo !== undefined) {
+      modoSelect.value = card.dataset.originalModo;
     }
 
     card.classList.remove('is-editing');
     adminMainContent?.classList.remove('child-is-editing');
   };
 
+  // --- GUARDAR EDICIÓN ---
   const saveEdit = (card) => {
     const id = card.id?.replace('card-', '');
-    if (!id) {
-      console.error('No pude obtener el id de la card');
+    if (!id) return;
+
+    // Selectores (Usamos nombres consistentes con HTML)
+    const tituloInput = card.querySelector('.card-header .card-input.edit-mode');
+    const descInput = card.querySelector('.card-body input[aria-label="Editar descripción"]');
+    const algoSelect = card.querySelector('select[name="algoritmoConsensoEdit"]');
+    const modoSelect = card.querySelector('select[name="modoDeNavegacionEdit"]');
+
+    // Valores
+    const nuevoTitulo = tituloInput ? tituloInput.value.trim() : null;
+    const nuevaDesc = descInput ? descInput.value.trim() : null;
+    const nuevoAlgo = (algoSelect && algoSelect.value !== "") ? algoSelect.value : null;
+    const nuevoModo = modoSelect ? modoSelect.value : null;
+
+    // Validación
+    if (nuevoModo === 'CURADA' && (!nuevoAlgo || nuevoAlgo === 'SIN')) {
+      alert('Las colecciones CURADAS necesitan un algoritmo de consenso.');
       return;
     }
 
-    // --- Helper para leer el token CSRF del HTML ---
-    const getCsrfToken = () => {
-      const tokenInput = document.querySelector('input[name="_csrf"]');
-      return tokenInput ? tokenInput.value : null;
-    };
-
-    // 1. Obtener datos del TÍTULO
-    const tituloInput = card.querySelector('.card-header .card-input.edit-mode');
-    const tituloView  = card.querySelector('.card-header .view-mode');
-    const nuevoTitulo = tituloInput ? tituloInput.value.trim() : null;
-
-    // 2. Obtener datos de la DESCRIPCIÓN
-    const descInput = card.querySelector('.card-body .card-field:nth-child(1) .card-input.edit-mode');
-    const descView  = card.querySelector('.card-body .card-field:nth-child(1) .view-mode');
-    const nuevaDesc = descInput ? descInput.value.trim() : null;
-
-    // 3. Actualizar la vista (UI)
-    if (tituloView && nuevoTitulo !== null) {
-      tituloView.textContent = nuevoTitulo;
-    }
-    if (descView && nuevaDesc !== null) {
-      descView.textContent = nuevaDesc;
-    }
-
-    // 3.1. Obtener fuentes seleccionadas en edición
+    // Fuentes
     const fuentesSeleccionadas = [];
-    const checkboxes = card.querySelectorAll('input[name="fuentesSeleccionadasEdit"]:checked');
-    checkboxes.forEach((checkbox) => {
-      const idFuente = parseInt(checkbox.value, 10);
-      if (Number.isFinite(idFuente)) {
-        fuentesSeleccionadas.push(idFuente);
-      }
+    card.querySelectorAll('input[name="fuentesSeleccionadasEdit"]:checked').forEach(cb => {
+      fuentesSeleccionadas.push(parseInt(cb.value, 10));
     });
 
-    // 3.2. Obtener algoritmo de consenso seleccionado en edición
-    const algoritmoSelect = card.querySelector('select[name="algoritmoConsensoEdit"]');
-    const algoritmoConsenso = algoritmoSelect ? algoritmoSelect.value : null;
+    // Criterios
+    const criteriosFinales = [];
+    card.querySelectorAll('.criteria-list-edit li').forEach(li => {
+      const d = li.dataset;
+      const c = { type: d.type };
+      if(d.palabra) c.palabraClave = d.palabra;
+      if(d.categoria) c.categoria = d.categoria;
+      if(d.lat) c.latitud = parseFloat(d.lat);
+      if(d.lon) c.longitud = parseFloat(d.lon);
+      if(d.desde) c.desde = d.desde;
+      if(d.hasta) c.hasta = d.hasta;
+      criteriosFinales.push(c);
+    });
 
-    // 4. Mandar datos al backend (incluyendo fuentes y algoritmoConsenso)
-    console.log('enviando PATCH...', id, nuevoTitulo, nuevaDesc, fuentesSeleccionadas, algoritmoConsenso);
     fetch(`/admin/colecciones/${id}/modificar`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        // Aquí deberías incluir el token CSRF si tienes Spring Security activado
-      },
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': getCsrfToken() },
       body: JSON.stringify({
         titulo: nuevoTitulo,
         descripcionColeccion: nuevaDesc,
         fuentes: fuentesSeleccionadas,
-        algoritmoConsenso: algoritmoConsenso
+        algoritmoConsenso: nuevoAlgo,
+        modoDeNavegacion: nuevoModo,
+        criterioDePertenencia: criteriosFinales
       })
     })
         .then(resp => {
-          if (!resp.ok) {
-            console.error('No se pudo guardar la colección');
-            // Si falla, revertimos los cambios visuales (opcional pero recomendado)
-            cancelEdit(card);
-          } else {
-            console.log('Colección actualizada ok');
-            // Si tiene éxito, actualizamos los "valores originales" para el próximo "cancelar"
-            if (tituloInput) card.dataset.originalTitulo = nuevoTitulo;
-            if (descInput) card.dataset.originalDesc = nuevaDesc;
-          }
+          if (!resp.ok) throw new Error('Error en server');
+
+          // Éxito: Recargar para ver cambios reflejados (especialmente textos de selects)
+          console.log('Guardado OK');
+          location.reload();
         })
         .catch(err => {
           console.error(err);
-          cancelEdit(card); // Revertir si hay error de red
+          alert('No se pudo guardar.');
+          cancelEdit(card);
         });
-
-    card.classList.remove('is-editing');
-    adminMainContent?.classList.remove('child-is-editing');
   };
 
-  // delegación
+  // DELEGACIÓN DE CLICKS (Botones Editar, Cancelar, Guardar)
   list.addEventListener('click', (e) => {
     const btn = e.target.closest('button');
     if (!btn) return;
 
+    const card = getCard(btn);
+    if (!card) return;
+
     if (btn.classList.contains('edit-btn')) {
       e.preventDefault();
-      const card = getCard(btn);
-      if (card) startEdit(card);
-      return;
-    }
-
-    if (btn.classList.contains('cancel-btn')) {
+      startEdit(card);
+    } else if (btn.classList.contains('cancel-btn')) {
       e.preventDefault();
-      const card = getCard(btn);
-      if (card) cancelEdit(card);
-      return;
-    }
-
-    if (btn.classList.contains('save-btn')) {
+      cancelEdit(card);
+    } else if (btn.classList.contains('save-btn')) {
       e.preventDefault();
-      const card = getCard(btn);
-      if (card) saveEdit(card);
-      return;
-    }
-
-    if (btn.classList.contains('delete-btn')) {
+      saveEdit(card);
+    } else if (btn.classList.contains('delete-btn')) {
       e.preventDefault();
-      const card = getCard(btn);
-      if (card) openDeleteModal(card);
-      return;
+      openDeleteModal(card);
     }
   });
 
+  // BÚSQUEDA
   const searchInput = document.getElementById('search-input');
   const searchBtn = document.getElementById('search-btn');
-  const collectionsList = document.querySelector('.collections-list');
 
   const doSearch = () => {
     const q = searchInput?.value?.toLowerCase().trim() || '';
-    const cards = collectionsList ? collectionsList.querySelectorAll('.collection-card') : [];
-
-    cards.forEach((card) => {
-      const titulo = card.dataset.titulo?.toLowerCase() || '';
-      const descripcion = card.dataset.descripcion?.toLowerCase() || '';
-
-      const isVisible = titulo.includes(q) || descripcion.includes(q);
-
-      card.style.display = isVisible ? '' : 'none';
+    document.querySelectorAll('.collection-card').forEach(card => {
+      const t = card.dataset.titulo?.toLowerCase() || '';
+      const d = card.dataset.descripcion?.toLowerCase() || '';
+      card.style.display = (t.includes(q) || d.includes(q)) ? '' : 'none';
     });
   };
+  searchBtn?.addEventListener('click', (e) => { e.preventDefault(); doSearch(); });
+  searchInput?.addEventListener('keyup', (e) => { if (e.key === 'Enter') doSearch(); });
 
-  searchBtn?.addEventListener('click', (e) => {
-    e.preventDefault();
-    doSearch();
-  });
+});
 
-  searchInput?.addEventListener('keyup', (e) => {
-    if (e.key === 'Enter') {
-      doSearch();
-    }
-  });
+const catSelect = document.getElementById('crit-select-category');
+const catOtraGroup = document.getElementById('crit-category-otra-group');
+const catOtraInput = document.getElementById('crit-input-category-otra');
 
+catSelect?.addEventListener('change', () => {
+  if (catSelect.value === 'Otro') {
+    catOtraGroup.classList.remove('hidden');
+  } else {
+    catOtraGroup.classList.add('hidden');
+    if (catOtraInput) catOtraInput.value = '';
+  }
 });

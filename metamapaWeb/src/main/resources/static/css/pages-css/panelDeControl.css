@@ -1,5 +1,5 @@
 /* =========================
-   TOKENS (con fallbacks)
+   1. VARIABLES & BASE
    ========================= */
 :root{
   --brand-primary: var(--orange, #F47C2C);
@@ -18,9 +18,6 @@
   --home-bg-url: url("../../img/fondoHOME1.png");
 }
 
-/* =========================
-   BASE
-   ========================= */
 body{
   /*LINK que quede normal*/
   /* Eliminar pointer-events: none y cursor: default para no romper la navbar y sidebar */
@@ -74,7 +71,7 @@ body{
 }
 
 /* =========================
-   FONDO CON IMAGEN DEL HOME
+   2. LAYOUT & FONDO
    ========================= */
 .admin-page{
   position:relative;
@@ -94,10 +91,6 @@ body{
   z-index:0;
 }
 
-
-/* =========================
-   CONTENEDOR SUPERIOR (CARD)
-   ========================= */
 .admin-surface {
   position: relative;
   z-index: 1;
@@ -110,7 +103,6 @@ body{
   border: 1px solid rgba(0, 0, 0, 0.05);
   overflow: hidden;
 }
-
 
 .surface-header {
   background: linear-gradient(90deg, var(--brand-primary), var(--brand-primary-2));
@@ -127,7 +119,6 @@ body{
   text-transform: none;
 }
 
-
 .admin-container{
   display:flex;
   gap:24px;
@@ -135,9 +126,6 @@ body{
   box-sizing:border-box;
 }
 
-/* =========================
-   COLUMNA IZQUIERDA
-   ========================= */
 .admin-main-content{
   flex:3;
   display:flex;
@@ -155,7 +143,7 @@ body{
 }
 
 /* =========================
-   SEARCH BAR (redondeada)
+   3. COMPONENTES (Search, Cards, Inputs)
    ========================= */
 .search-bar {
   display: flex;
@@ -174,12 +162,10 @@ body{
   background:#fff;
   outline:none;
 }
-
 .search-bar input:focus{
   box-shadow:0 0 0 3px rgba(41,128,185,.15);
   border-color:var(--brand-blue);
 }
-
 .search-bar .search-btn{
   padding:0 16px;
   border:1px solid var(--border);
@@ -194,9 +180,7 @@ body{
 .search-bar .search-btn:hover{ filter:brightness(1.05); }
 .search-bar .search-btn:active{ transform:translateY(1px); }
 
-/* =========================
-   TARJETAS
-   ========================= */
+/* Tarjetas */
 .collection-card {
   background: #fff;
   border: 1px solid rgba(0, 0, 0, 0.05);
@@ -214,20 +198,17 @@ body{
   justify-content:space-between;
   align-items:center;
   border-bottom:1px dashed var(--border);
-
+  padding-bottom: 10px;
+  margin-bottom: 10px;
 }
-
 .card-header h2{
   margin:0;
   font-size:18px;
   font-weight:800;
   color:var(--text-strong);
 }
+.card-actions{ display:flex; gap:12px; align-items:center; }
 
-.card-actions{ display:flex; gap:12px; align-items:center;
-}
-
-/* Icon buttons */
 .icon-btn{
   background:#fff;
   border:1px solid var(--border);
@@ -252,8 +233,7 @@ body{
   display:block; margin-bottom:8px; font-weight:800; color:var(--text-strong);
 }
 
-.card-input,
-.card-select{
+.card-input, .card-select{
   font-family:'Montserrat', sans-serif;
   font-size:14px;
   padding:10px 12px;
@@ -263,37 +243,39 @@ body{
   background:#fff;
   outline:none;
   transition:box-shadow .2s ease, border-color .2s ease;
+  box-sizing: border-box; /* Agregado para que no se salgan del contenedor */
 }
-.card-input:focus,
-.card-select:focus{
+.card-input:focus, .card-select:focus{
   box-shadow:0 0 0 3px rgba(41,128,185,.15);
   border-color:var(--brand-blue);
 }
 
-/* =========================
-   BOTÓN FLOTANTE +  (AZUL)
-   ========================= */
-.add-btn{
-  position:absolute;
-  bottom:0;
-  right:0;
-  width:56px;
-  height:56px;
-  border-radius:50%;
-  background:var(--brand-blue);
-  border:1px solid var(--brand-blue);
-  color:#fff;
-  font-size:22px;
-  cursor:pointer;
-  box-shadow:var(--shadow-md);
-  transition:transform .04s ease, filter .2s ease;
+/* Botón flotante */
+.add-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 1000;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--brand-blue);
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, background-color 0.2s;
 }
-.add-btn:hover{ filter:brightness(1.05); }
-.add-btn:active{ transform:translateY(1px); }
+.add-btn:hover {
+  transform: scale(1.1);
+  filter: brightness(1.1);
+}
 
-/* =========================
-   SIDEBAR
-   ========================= */
+/* Sidebar */
 .admin-sidebar {
   flex: 1;
   min-width: 280px;
@@ -305,9 +287,7 @@ body{
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
   transition: box-shadow 0.2s ease;
 }
-.admin-sidebar:hover {
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.16);
-}
+.admin-sidebar:hover { box-shadow: 0 8px 28px rgba(0, 0, 0, 0.16); }
 
 .admin-menu{ display:flex; flex-direction:column; }
 .admin-menu-item{
@@ -325,7 +305,9 @@ body{
 .admin-menu-item:hover{ background:#f9fafb; }
 .admin-menu-item.active{ color:var(--brand-primary); }
 
-/* ===== Backdrop general ===== */
+/* =========================
+   4. MODALES
+   ========================= */
 .modal-backdrop{
   position:fixed; inset:0;
   background:rgba(17,24,39,.55);
@@ -336,8 +318,10 @@ body{
 }
 .modal-backdrop.active{ opacity:1; visibility:visible; }
 
-/* ======= MODAL: Nueva colección (más estilizada) ======= */
-#add-modal .modal{
+/* Estilo unificado para TODOS los modales (add, delete, criteria) */
+#add-modal .modal,
+#delete-modal .modal,
+#modal-add-criteria .modal {
   background:#fff;
   border:1px solid rgba(0,0,0,.05);
   border-radius:20px;
@@ -347,18 +331,22 @@ body{
   overflow:hidden;
   transform:translateY(-14px) scale(.98);
   transition:transform .25s ease;
-
   display: flex;
   flex-direction: column;
   max-height: 85vh;
 }
+
 #add-modal.active .modal,
-.modal-backdrop.active #add-modal .modal{
+#delete-modal.active .modal,
+#modal-add-criteria.active .modal,
+.modal-backdrop.active .modal{
   transform:translateY(0) scale(1);
 }
 
-
-#add-modal .modal h2{
+/* Headers de Modales */
+#add-modal .modal h2,
+#delete-modal .modal h2,
+#modal-add-criteria .modal h2 {
   margin:0;
   padding:16px 20px;
   background:linear-gradient(90deg, var(--brand-primary, #F47C2C), var(--brand-primary-2, #FF9A57));
@@ -369,82 +357,28 @@ body{
   border-bottom:1px solid rgba(255,255,255,.2);
 }
 
-#add-modal .modal .modal-form{
+/* Cuerpos de Modales */
+#add-modal .modal .modal-form,
+#modal-add-criteria .modal .modal-form {
   padding:18px 20px 8px;
   display:grid;
-  grid-template-columns: 1fr;
+  /* grid-template-columns: 1fr;  <-- Quitamos esto para que sea bloque por defecto */
   gap:14px;
   overflow-y: auto;
 }
+#delete-modal .modal p { padding:14px 18px 0; }
 
-@media (min-width: 640px){
-  #add-modal .modal .modal-form{
-    grid-template-columns: 1fr 1fr;
-  }
-  #add-modal .modal .form-group:nth-child(1){ grid-column:1 / -1; }
-}
-
-#add-modal .modal .form-group label{
-  display:block;
-  font-weight:800;
-  font-size:14px;
-  margin:0 0 6px;
-  color:var(--text-strong, #1f2937);
-}
-#add-modal .modal .card-input,
-#add-modal .modal .card-select{
-  width:100%;
-  box-sizing:border-box;
-  font-family:'Montserrat', sans-serif;
-  font-size:14px;
-  padding:10px 12px;
-  border:1px solid var(--border, #e5e7eb);
-  border-radius:12px;
-  background:#fff;
-  outline:none;
-  transition:box-shadow .2s ease, border-color .2s ease;
-}
-#add-modal .modal .card-input:focus,
-#add-modal .modal .card-select:focus{
-  box-shadow:0 0 0 3px rgba(41,128,185,.15);
-  border-color:var(--brand-blue, #2980B9);
-}
-
-#add-modal .modal .search-bar{
-  display:flex;
-  align-items:stretch;
-  border-radius:9999px;
-  box-shadow:0 6px 22px rgba(0,0,0,.12);
-}
-#add-modal .modal .search-bar input{
-  border:1px solid var(--border, #e5e7eb);
-  border-right:none;
-  border-radius:9999px 0 0 9999px;
-  padding:12px 14px;
-  font-size:14px;
-}
-#add-modal .modal .search-btn{
-  border:1px solid var(--border, #e5e7eb);
-  border-left:none;
-  background:var(--brand-blue, #2980B9);
-  color:#fff;
-  border-radius:0 9999px 9999px 0;
-  padding:0 16px;
-  font-size:16px;
-  cursor:pointer;
-  transition:filter .2s ease, transform .04s ease;
-}
-#add-modal .modal .search-btn:hover{ filter:brightness(1.05); }
-#add-modal .modal .search-btn:active{ transform:translateY(1px); }
-
-#add-modal .modal .modal-actions{
+/* Actions / Botones en el pie del modal */
+.modal-actions {
   padding:14px 20px 20px;
   display:flex;
   justify-content:flex-end;
   gap:12px;
   border-top:1px solid #f2f2f2;
 }
-#add-modal .modal .modal-btn{
+
+/* Estilos de botones dentro de modales y cards */
+.modal-btn {
   padding:10px 16px;
   border:1px solid transparent;
   border-radius:12px;
@@ -454,84 +388,32 @@ body{
   box-shadow:0 4px 14px rgba(0,0,0,.10);
   transition:filter .2s ease, transform .04s ease;
 }
-#add-modal .modal .modal-btn:active{ transform:translateY(1px); }
-#add-modal .modal .modal-btn-primary{
-  background:var(--brand-blue, #2980B9);
-  color:#fff;
-}
-#add-modal .modal .modal-btn-secondary{
-  background:#f3f4f6;
-  color:#111827;
-  border-color:var(--border, #e5e7eb);
-}
-#add-modal .modal .modal-btn-danger{
-  background:#d9534f;
-  color:#fff;
-}
-/* =========================
-   BOTONES DE EDICIÓN (Guardar / Cancelar)
-   ========================= */
-.card-actions .modal-btn {
-  padding: 8px 14px;
-  border-radius: 10px;
-  font-weight: 800;
-  font-size: 13px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.10);
-  border: none;
-  transition: filter 0.2s ease, transform 0.04s ease;
-  cursor: pointer;
-}
+.modal-btn:active{ transform:translateY(1px); }
 
-.card-actions .modal-btn-primary {
-  background: var(--brand-blue);
-  color: #fff;
-}
+.modal-btn-primary{ background:var(--brand-blue, #2980B9); color:#fff; }
+.modal-btn-secondary{ background:#f3f4f6; color:#111827; border-color:var(--border, #e5e7eb); }
+.modal-btn-danger{ background:#d9534f; color:#fff; }
 
-.card-actions .modal-btn-primary:hover {
-  filter: brightness(1.05);
-}
-
-.card-actions .modal-btn-secondary {
-  background: #e5e7eb;   /* gris suave */
-  color: #111827;
-}
-
-.card-actions .modal-btn-secondary:hover {
-  filter: brightness(0.97);
-}
-
-.card-actions .modal-btn:active {
-  transform: translateY(1px);
-}
-
-/* ======= MODAL*/
-#delete-modal .modal{
-  background:#fff;
-  border:1px solid rgba(0,0,0,.06);
-  border-radius:16px;
-  box-shadow:0 16px 48px rgba(0,0,0,.20);
-  width:92%;
-  max-width:440px;
-  transform:translateY(-12px);
-  transition:transform .25s ease;
-  border-radius:16px;
-  overflow: hidden;
-}
-.modal-backdrop.active #delete-modal .modal{ transform:translateY(0); }
-#delete-modal .modal h2{
-  margin:0; padding:14px 18px;
-  background:linear-gradient(90deg, var(--brand-primary, #F47C2C), var(--brand-primary-2, #FF9A57));
-  color:#fff; font-weight:800; font-size:18px;
-}
-#delete-modal .modal p{ padding:14px 18px 0; }
-#delete-modal .modal .modal-actions{ padding:14px 18px 18px; gap:10px; }
+/* Botones en Card Actions (más pequeños) */
+.card-actions .modal-btn { padding: 8px 14px; font-size: 13px; }
 
 /* =========================
-   LISTA DE FUENTES
+   5. UTILIDADES (Edición, Listas, Solicitudes)
    ========================= */
-.source-list{
-  list-style:none; padding:0; margin:0 0 12px 0; max-width:100%;
+.edit-mode{ display:none; }
+.is-editing .view-mode{ display:none; }
+.is-editing .edit-mode{ display:block; }
+.is-editing .card-actions{ gap:8px; }
+.is-editing .edit-mode.save-btn{ background:var(--brand-blue); color:#fff; }
+.is-editing .card-select{ display:inline-block; }
+.is-editing .search-bar.edit-mode{ display:flex; }
+
+.admin-main-content.child-is-editing > .search-bar,
+.admin-main-content.child-is-editing > .add-btn{
+  opacity:.55; pointer-events:none; user-select:none;
 }
+
+.source-list{ list-style:none; padding:0; margin:0 0 12px 0; max-width:100%; }
 .source-list li{
   display:flex; justify-content:space-between; align-items:center;
   padding:10px 12px;
@@ -548,88 +430,8 @@ body{
   transition:transform .04s ease, color .2s ease, border-color .2s ease;
 }
 .delete-source-btn:hover{ color:#b02a27; border-color:#b02a27; }
-.delete-source-btn:active{ transform:translateY(1px); }
 
-/* =========================
-   EDICIÓN IN-PLACE
-   ========================= */
-.edit-mode{ display:none; }
-.is-editing .view-mode{ display:none; }
-.is-editing .edit-mode{ display:block; }
-.is-editing .card-actions{ gap:8px; }
-.is-editing .edit-mode.save-btn{ background:var(--brand-blue); color:#fff; }
-.is-editing .card-select{ display:inline-block; }
-
-/* search-bar interna en modo edición */
-.is-editing .search-bar.edit-mode{ display:flex; }
-
-/* Deshabilitar UI externa si hay edición abierta */
-.admin-main-content.child-is-editing > .search-bar,
-.admin-main-content.child-is-editing > .add-btn{
-  opacity:.55; pointer-events:none; user-select:none;
-}
-
-/* =========================
-   BOTONES DEL MODAL DE ELIMINACIÓN
-   ========================= */
-#delete-modal .modal .modal-btn {
-  padding: 10px 16px;
-  border-radius: 10px;
-  font-weight: 800;
-  font-size: 14px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.10);
-  border: none;
-  transition: filter 0.2s ease, transform 0.04s ease;
-  cursor: pointer;
-}
-
-/* Botón CANCELAR (gris claro, sin borde negro) */
-#delete-modal .modal .modal-btn-secondary {
-  background: #e5e7eb;      /* gris suave */
-  color: #111827;           /* gris oscuro para el texto */
-}
-
-#delete-modal .modal .modal-btn-secondary:hover {
-  filter: brightness(0.97);
-}
-
-/* Botón ELIMINAR (rojo vivo con mismo estilo que los otros) */
-#delete-modal .modal .modal-btn-danger {
-  background: #d9534f;       /* rojo base */
-  color: #fff;
-}
-
-#delete-modal .modal .modal-btn-danger:hover {
-  filter: brightness(1.05);
-}
-
-/* efecto presionado */
-#delete-modal .modal .modal-btn:active {
-  transform: translateY(1px);
-}
-
-/* =========================
-   RESPONSIVE
-   ========================= */
-@media (max-width:1024px){
-  .admin-container{
-    flex-direction:column-reverse;
-    padding:20px; gap:16px;
-  }
-  .admin-sidebar{ width:100%; max-width:none; height:auto; }
-  .add-btn{
-    position:fixed; bottom:24px; right:24px; z-index:1000;
-  }
-}
-@media (max-width:768px){
-  .surface-header{ padding:14px 18px; }
-  .surface-title{ font-size:18px; }
-  .card-header{
-    flex-direction:column; align-items:flex-start; gap:12px;
-
-  }
-}
-/* ====== Solicitudes ====== */
+/* Solicitudes */
 .solicitud-card .hecho-box {
   margin-top: 14px;
   background: #f9fafb;
@@ -637,115 +439,102 @@ body{
   border-radius: 14px;
   padding: 12px 14px;
 }
-.solicitud-card .hecho-box h3 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  font-size: 14px;
-  font-weight: 800;
-  color: var(--text-strong);
-}
-.hecho-row {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 6px;
-  font-size: 13px;
-}
-.hecho-label {
-  font-weight: 700;
-  color: #6b7280;
-  min-width: 110px;
-}
-.hecho-value {
-  flex: 1;
-  word-break: break-word;
-}
-.hecho-empty {
-  font-size: 13px;
-  color: #9ca3af;
-}
+.solicitud-card .hecho-box h3 { margin-top: 0; margin-bottom: 10px; font-size: 14px; font-weight: 800; color: var(--text-strong); }
+.hecho-row { display: flex; gap: 6px; margin-bottom: 6px; font-size: 13px; }
+.hecho-label { font-weight: 700; color: #6b7280; min-width: 110px; }
+.hecho-value { flex: 1; word-break: break-word; }
+.solicitud-actions { margin-top: 16px; display: flex; justify-content: center; gap: 12px; }
+.solicitud-actions form { display: inline-block; }
 
-/* botones centrados */
-.solicitud-actions {
-  margin-top: 16px;
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-}
-.solicitud-actions form {
-  display: inline-block;
-}
 /* =========================
-   BOTONES DE SOLICITUDES (Aceptar / Rechazar)
+   6. NUEVO: UTILIDADES PARA CRITERIOS
    ========================= */
-.solicitud-actions .modal-btn {
-  padding: 10px 16px;
-  border-radius: 12px;
-  font-weight: 800;
-  font-size: 14px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.10);
-  border: none;
-  cursor: pointer;
-  transition: filter 0.2s ease, transform 0.04s ease;
-  font-family: 'Montserrat', sans-serif;
+/* IMPORTANTE: Para que funcione el ocultar/mostrar inputs */
+.hidden {
+  display: none !important;
 }
 
-.solicitud-actions .modal-btn:active {
-  transform: translateY(1px);
+/* Animación opcional para que no aparezca de golpe */
+.dynamic-group {
+  margin-top: 10px;
+  animation: fadeIn 0.3s ease-in-out;
 }
 
-/* Botón ACEPTAR  */
-.solicitud-actions .modal-btn-primary {
-  background: var(--brand-blue, #2980B9);
-  color: #fff;
-}
-.solicitud-actions .modal-btn-primary:hover {
-  filter: brightness(1.05);
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* Botón RECHAZAR  */
-.solicitud-actions .modal-btn-danger {
-  background: #d9534f;
-  color: #fff;
-}
-.solicitud-actions .modal-btn-danger:hover {
-  filter: brightness(1.05);
+/* Estilo para el contenedor gris de inputs en el modal nuevo */
+#criteria-inputs-container {
+  background-color: #f9fafb !important;
+  border: 1px solid #e5e7eb !important;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
 }
 
-
-/*LINK que quede normal*/
-a {
-  color: inherit;
-  text-decoration: none;
+/* =========================
+   7. RESPONSIVE
+   ========================= */
+@media (max-width:1024px){
+  .admin-container{ flex-direction:column-reverse; padding:20px; gap:16px; }
+  .admin-sidebar{ width:100%; max-width:none; height:auto; }
+  .add-btn{ position:fixed; bottom:24px; right:24px; z-index:1000; }
 }
-a:hover,
-a:active,
-a:visited {
-  color: inherit;
-  text-decoration: none;
-}
-
-/*BOTON SUBIR ARCHIVO*/
-.file-btn {
-  background-color: #d9d9d9;
-  color: #333;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.25s ease;
+@media (max-width:768px){
+  .surface-header{ padding:14px 18px; }
+  .surface-title{ font-size:18px; }
+  .card-header{ flex-direction:column; align-items:flex-start; gap:12px; }
 }
 
-.file-btn:hover {
-  background-color: #c9c9c9;
+/* =========================
+   8. MEJORAS DE LAYOUT (FORMULARIO)
+   ========================= */
+
+/* Contenedor de fuentes más limpio */
+.fuentes-list-container {
+  max-height: 120px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  background: #f9fafb;
+  margin-top: 5px;
 }
 
-.file-btn.loaded {
-  background-color: #4caf50 !important; /* verde */
-  color: white !important;
-}
-
-.file-name {
+/* Checkbox individual de fuente */
+.fuente-checkbox-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
   font-size: 0.9rem;
-  margin-left: 10px;
-  opacity: 0.85;
+  color: var(--text-normal);
+}
+.fuente-checkbox-item input {
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--brand-blue);
+}
+
+/* Clase para poner dos inputs/selects lado a lado */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  width: 100%;
+}
+
+/* Espaciado entre grupos del formulario */
+.form-group {
+  margin-bottom: 16px; /* Separación vertical vital */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Asegurar que las etiquetas tengan espacio */
+.form-group label {
+  margin-bottom: 6px;
+  font-weight: 700;
+  color: var(--text-strong);
+  font-size: 0.9rem;
 }

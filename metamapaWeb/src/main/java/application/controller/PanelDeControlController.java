@@ -1,7 +1,12 @@
 package application.controller;
+import application.dto.CriterioDTO;
 import application.service.FuenteService;
 import application.dto.ColeccionDTO;
 import application.service.ColeccionService;
+import application.service.ReportarService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import application.service.AdminService;
 import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,23 +24,34 @@ import java.util.Map;
 public class PanelDeControlController {
     private final ColeccionService coleccionService;
     private final FuenteService fuenteService;
+    private final ReportarService reportarService;
+    private final ObjectMapper objectMapper;  
     private final AdminService adminService;
 
     @Autowired
-    public PanelDeControlController(ColeccionService coleccionService, FuenteService fuenteService, AdminService adminService) {
+    public PanelDeControlController(ColeccionService coleccionService, FuenteService fuenteService, AdminService adminService, ObjectMapper objectMapper, ReportarService reportarService) {
         this.coleccionService = coleccionService;
         this.fuenteService = fuenteService;
         this.adminService = adminService;
+        this.objectMapper = objectMapper;
+        this.reportarService = reportarService;
     }
 
     @GetMapping("/admin/colecciones")
-    public String home(Model model, Authentication authentication, RedirectAttributes ra) {
+    public String home(Model model, Authentication authentication, RedirectAttributes ra) throws JsonProcessingException {
         if (!adminService.isAdmin(authentication)) {
             ra.addFlashAttribute("toastError", "No podes ingresar porque no sos admin :v");
             return "redirect:/";
         }
         model.addAttribute("listaDeColecciones", coleccionService.getAll());
         model.addAttribute("listaDeFuentes", fuenteService.getAll());
+        String categoriasJson = reportarService.getCategorias();
+        // lo parseamos a List<String>
+        List<String> categorias = objectMapper.readValue(
+                categoriasJson,
+                new TypeReference<List<String>>() {}
+        );
+        model.addAttribute("categorias", categorias);
         return "panelDeControl/panelDeControl";
     }
 
@@ -59,12 +75,18 @@ public class PanelDeControlController {
     ) {
         String titulo = req.get("titulo") != null ? req.get("titulo").toString() : null;
         String desc = req.get("descripcionColeccion") != null ? req.get("descripcionColeccion").toString() : null;
+
         List<Integer> fuentes = req.get("fuentes") instanceof List<?> list
                 ? ((List<?>) list).stream().map(o -> Integer.parseInt(o.toString())).toList()
-                : List.of();
-        String algoritmoConsenso = req.get("algoritmoConsenso") != null ? req.get("algoritmoConsenso").toString() : null;
+                : null; // Mejor usar null si no viene, para que el servicio decida qué hacer (o List.of() si quieres vaciarlo)
 
-        boolean ok = coleccionService.patchColeccion(id, titulo, desc, fuentes, algoritmoConsenso);  // llama al otro backend
+        String algoritmoConsenso = req.get("algoritmoConsenso") != null ? req.get("algoritmoConsenso").toString() : null;
+        String modoDeNavegacion = req.get("modoDeNavegacion") != null ? req.get("modoDeNavegacion").toString() : null;
+        List<CriterioDTO> criterios = (List<CriterioDTO>) req.get("criterioDePertenencia");
+
+        // Llamamos al servicio pasando el nuevo parámetro
+        boolean ok = coleccionService.patchColeccion(id, titulo, desc, fuentes, algoritmoConsenso, modoDeNavegacion, criterios);
+
         if (ok) {
             return ResponseEntity.ok().build();
         }

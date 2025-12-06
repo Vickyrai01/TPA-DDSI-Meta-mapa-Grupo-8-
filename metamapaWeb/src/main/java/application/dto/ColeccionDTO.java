@@ -1,12 +1,18 @@
 package application.dto;
 
+import java.util.List;
+
 public record ColeccionDTO(
         Integer id,
         String titulo,
         String descripcionColeccion,
-        Object criterioDePertenencia,
+        List<CriterioDTO> criterioDePertenencia,
         Object hechos,
+        Object hechosVisibles,
         String identificadorHandle,
-        Object fuentes,
-        Integer cantidadHechos
+        List<Integer> fuentes,
+        Integer cantidadHechos,
+        Integer cantidadHechosVisibles,
+        String algoritmoConsenso,
+        String modoDeNavegacion
 ) {}
