@@ -12,6 +12,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -28,7 +30,12 @@ public class CustomAuthProvider implements AuthenticationProvider {
             throw new BadCredentialsException("Contraseña incorrecta");
         }
         GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_USER");
-        return new UsernamePasswordAuthenticationToken(correo, contrasena, Collections.singletonList(authority));
+        Usuario usuario = usuarioOpt.get();
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("name", usuario.getNombre() + " " + usuario.getApellido());
+        attributes.put("email", usuario.getCorreo());
+        attributes.put("picture", usuario.getFoto());
+        return new UsernamePasswordAuthenticationToken(attributes, contrasena, Collections.singletonList(authority));
     }
 
     @Override
