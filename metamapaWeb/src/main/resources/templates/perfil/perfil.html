@@ -2,21 +2,13 @@
     <button onclick="cerrarSidebarPerfil()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:2rem;cursor:pointer">&times;</button>
     <aside class="sidebar-perfil">
         <div class="perfil-header">
-            <!-- Mostrar foto para principal OAuth2 o Map -->
-            <img th:if="${#authentication.principal instanceof T(org.springframework.security.oauth2.core.user.DefaultOAuth2User) and #authentication.principal.attributes['picture'] != null}"
+            <img th:if="${#authentication.principal.attributes['picture'] != null}"
                  th:src="${#authentication.principal.attributes['picture']}"
                  alt="Foto de perfil" class="perfil-foto" style="width:100px;border-radius:50%;">
-            <img th:if="${#authentication.principal instanceof T(java.util.Map) and #authentication.principal['picture'] != null}"
-                 th:src="${#authentication.principal['picture']}"
-                 alt="Foto de perfil" class="perfil-foto" style="width:100px;border-radius:50%;">
-            <i th:if="${(#authentication.principal instanceof T(org.springframework.security.oauth2.core.user.DefaultOAuth2User) and #authentication.principal.attributes['picture'] == null) or (#authentication.principal instanceof T(java.util.Map) and #authentication.principal['picture'] == null)}"
+            <i th:if="${#authentication.principal.attributes['picture'] == null}"
                class="fa-regular fa-user perfil-foto" style="font-size:100px;"></i>
-            <!-- Mostrar nombre -->
-            <h2 th:if="${#authentication.principal instanceof T(org.springframework.security.oauth2.core.user.DefaultOAuth2User)}" th:text="${#authentication.principal.attributes['name']}" style="font-weight:600;font-size:2rem;margin-bottom:0.5rem;">Nombre Apellido</h2>
-            <h2 th:if="${#authentication.principal instanceof T(java.util.Map)}" th:text="${#authentication.principal['name']}" style="font-weight:600;font-size:2rem;margin-bottom:0.5rem;">Nombre Apellido</h2>
-            <!-- Mostrar email -->
-            <p th:if="${#authentication.principal instanceof T(org.springframework.security.oauth2.core.user.DefaultOAuth2User)}" th:text="${#authentication.principal.attributes['email']}">email</p>
-            <p th:if="${#authentication.principal instanceof T(java.util.Map)}" th:text="${#authentication.principal['email']}">email</p>
+            <h2 th:text="${#authentication.principal.attributes['name']}" style="font-weight:600;font-size:2rem;margin-bottom:0.5rem;">Nombre Apellido</h2>
+            <p th:text="${#authentication.principal.attributes['email']}">email</p>
         </div>
         <div class="perfil-datos">
             <p th:if="${edad}" style="margin-bottom:0.5rem;">Edad: <span th:text="${edad}">Edad</span></p>

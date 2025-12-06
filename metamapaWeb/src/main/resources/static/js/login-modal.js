@@ -39,7 +39,7 @@ function enviarLogin(event) {
             else return res.text().then(msg => { throw new Error(msg); });
         })
         .then(usuario => {
-            //cerrarLoginModal(); // Solo para modal, no para página
+            cerrarLoginModal();
             window.location.href = '/perfil'; // Redirige al perfil, ajusta si quieres otra vista
         })
         .catch(err => {
@@ -56,24 +56,23 @@ function enviarRegistro(event) {
         nombre: form.nombre.value,
         apellido: form.apellido.value,
         correo: form.correo.value,
-        contrasena: form.contrasena.value
+        contrasena: form.contrasena.value,
+        foto: form.foto.value
     };
     fetch('/api/auth/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: `nombre=${encodeURIComponent(data.nombre)}&apellido=${encodeURIComponent(data.apellido)}&correo=${encodeURIComponent(data.correo)}&contrasena=${encodeURIComponent(data.contrasena)}`
+        body: `nombre=${encodeURIComponent(data.nombre)}&apellido=${encodeURIComponent(data.apellido)}&correo=${encodeURIComponent(data.correo)}&contrasena=${encodeURIComponent(data.contrasena)}&foto=${encodeURIComponent(data.foto)}`
     })
-        .then(async res => {
-            if (res.ok) {
-                const usuario = await res.json();
-                //cerrarLoginModal(); // Solo para modal, no para página
-                window.location.href = '/api/auth/login'; // Redirige al login propio después de registrarse
-            } else {
-                const msg = await res.text();
-                alert('Error: ' + msg);
-            }
+        .then(res => {
+            if (res.ok) return res.json();
+            else return res.text().then(msg => { throw new Error(msg); });
+        })
+        .then(usuario => {
+            cerrarLoginModal();
+            window.location.href = '/perfil'; // Redirige al perfil, ajusta si quieres otra vista
         })
         .catch(err => {
             alert('Error: ' + err.message);
