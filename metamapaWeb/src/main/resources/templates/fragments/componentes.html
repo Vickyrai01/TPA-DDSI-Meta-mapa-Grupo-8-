@@ -23,6 +23,7 @@
                href="#"
                class="login-link-container"
                aria-label="Perfil"
+               id="btn-sidebar-perfil"
                onclick="abrirSidebarPerfil(); return false;">
                 <div class="avatar">
                     <img th:if="${#authentication.principal instanceof T(org.springframework.security.oauth2.core.user.DefaultOAuth2User) and #authentication.principal.attributes['picture'] != null}"
