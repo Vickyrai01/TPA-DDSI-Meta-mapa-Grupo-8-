@@ -744,10 +744,6 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
         }
     }
 
-<<<<<<< HEAD
-    public void eliminarFuenteDeTodasLasColecciones(Integer id) {
-
-=======
     public void eliminarFuenteDeTodasLasColecciones(Integer idFuente) {
         if (idFuente == null) return;
         EntityManager em = DBUtils.getEntityManager();
@@ -765,7 +761,6 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
         } finally {
             try { em.close(); } catch (Exception ignore) {}
         }
->>>>>>> bd832eb12cf4b41a37161163382060d7e3cdbe00
     }
 }
 
