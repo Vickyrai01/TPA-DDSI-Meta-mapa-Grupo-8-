@@ -12,7 +12,7 @@ import java.util.Optional;
 public class AuthController {
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String correo, @RequestParam String contrasena) {
+    public ResponseEntity<?> login(@RequestParam("correo") String correo, @RequestParam("contrasena") String contrasena) {
         Optional<Usuario> usuarioOpt = UsuarioRepository.getInstance().findByCorreo(correo);
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();

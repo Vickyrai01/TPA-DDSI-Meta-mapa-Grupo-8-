@@ -39,7 +39,7 @@ function enviarLogin(event) {
             else return res.text().then(msg => { throw new Error(msg); });
         })
         .then(usuario => {
-            cerrarLoginModal();
+            //cerrarLoginModal(); // Solo para modal, no para página
             window.location.href = '/perfil'; // Redirige al perfil, ajusta si quieres otra vista
         })
         .catch(err => {

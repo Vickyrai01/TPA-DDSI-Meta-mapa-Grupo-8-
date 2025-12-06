@@ -46,6 +46,12 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final CustomAuthProvider customAuthProvider;
+
+    public SecurityConfig(CustomAuthProvider customAuthProvider) {
+        this.customAuthProvider = customAuthProvider;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -56,11 +62,19 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/admin/**")
                         )
                 )
+                .authenticationProvider(customAuthProvider)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/login", "/api/auth/login").permitAll()
                         .requestMatchers("/admin/**", "/panelDeControl/**").authenticated()
                         .requestMatchers("/perfil").authenticated()
                         .anyRequest().permitAll()
+                )
+                .formLogin(form -> form
+                        .loginPage("/api/auth/login")
+                        .loginProcessingUrl("/api/auth/login")
+                        .defaultSuccessUrl("/?login=success", true)
+                        .permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .defaultSuccessUrl("/", true)
