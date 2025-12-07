@@ -113,4 +113,5 @@ public class FiltroHechoDTO {
     public void setFechaHastaCarga(LocalDate fechaHastaCarga) {
         this.fechaHastaCarga = fechaHastaCarga;
     }
+
 }
