@@ -104,6 +104,7 @@ public class HechoResumenDTO {
                 h.getTitulo(),
                 h.getDescripcion(),
                 nombreContribuyente,
+                h.getFechaCarga(),
                 h.getFechaSuceso(),
                 h.getHoraSuceso(),
                 null,
