@@ -412,8 +412,7 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
             List<Hecho> hechos = em.createQuery("""
             select distinct h
             from hecho h
-            where h.fuenteDeOrigen = core.models.entities.fuentes.TipoFuente.DINAMICA
-               or h.idFuente in :idsFuentes
+            where h.idFuente in :idsFuentes
             """, Hecho.class)
                     .setParameter("idsFuentes", idsFuentes == null ? List.of(-1) : idsFuentes)
                     .getResultList();
