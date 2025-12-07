@@ -280,8 +280,9 @@
             const footer = document.querySelector('footer.site-footer');
             const cont   = document.querySelector('.map-layout-container');
             if(!cont) return;
+
             const h = window.innerHeight - (header?.offsetHeight||0) - (footer?.offsetHeight||0) - 16;
-            cont.style.minHeight = Math.max(360, h) + 'px';
+            cont.style.height = Math.max(360, h) + 'px';
         }
         window.addEventListener('load',  () => { fitLayout(); setTimeout(()=>map.invalidateSize(), 80); });
         window.addEventListener('resize',() => { fitLayout(); map.invalidateSize(); });
