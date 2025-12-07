@@ -19,7 +19,6 @@ public class GetSolicitudHandler implements Handler {
     public void handle(@NotNull Context ctx) {
         var dtos = repoSolicitudes.obtenerTodasConHechoYContribuyente()
                 .stream()
-                .filter(s -> !s.getAceptada())
                 .map(SolicitudConHechoDTO::from)
                 .toList();
 
