@@ -77,12 +77,6 @@
                                 <span class="field-label">Longitud:</span>
                                 <input class="edit-mode" name="longitud" type="text" th:value="${h.longitud}" />
                             </div>
-                            <!-- Botones -->
-                            <div class="field">
-                                <button type="button" class="edit-btn">Editar</button>
-                                <button type="button" class="save-btn" style="display:none">Guardar</button>
-                                <button type="button" class="cancel-btn" style="display:none">Cancelar</button>
-                            </div>
                             <!-- Resto de campos solo vista -->
                             <div class="field view-mode">
                                 <span class="field-label">Fecha del hecho:</span>
@@ -111,6 +105,12 @@
                                     </a>
                                 </span>
                                 <span class="field-value muted" th:if="${h.multimedia == null or #lists.isEmpty(h.multimedia)}">No indica</span>
+                            </div>
+                            <!-- Botones -->
+                            <div class="field">
+                                <button type="button" class="edit-btn">Editar</button>
+                                <button type="button" class="save-btn" style="display:none">Guardar</button>
+                                <button type="button" class="cancel-btn" style="display:none">Cancelar</button>
                             </div>
                         </div>
                     </details>
