@@ -67,7 +67,15 @@
                             </div>
                             <div class="field edit-mode" style="display:none">
                                 <span class="field-label">Categoría:</span>
-                                <input class="edit-mode" name="categoria" type="text" th:value="${#lists.isEmpty(h.categorias) ? '' : h.categorias.get(0)}" />
+                                <select class="edit-mode" name="categoria" required>
+                                    <option value="" th:selected="${#lists.isEmpty(h.categorias)}">Elegí una categoría</option>
+                                    <option th:each="c : ${categorias}"
+                                            th:value="${c}"
+                                            th:text="${c}"
+                                            th:selected="${!#lists.isEmpty(h.categorias) and c == h.categorias.get(0)}">
+                                    </option>
+                                    <option value="Otro" th:selected="${!#lists.isEmpty(h.categorias) and h.categorias.get(0) == 'Otro'}">Otro</option>
+                                </select>
                             </div>
                             <div class="field edit-mode" style="display:none">
                                 <span class="field-label">Latitud:</span>
