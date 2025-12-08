@@ -42,6 +42,16 @@ public class PatchHechoHandler implements Handler {
         String nombre = body.get("nombre") != null ? String.valueOf(body.get("nombre")).trim() : null;
         String descripcion = body.get("descripcion") != null ? String.valueOf(body.get("descripcion")).trim() : null;
 
+        // Leer coordenadas si vinieron
+        Double latitud = null;
+        Double longitud = null;
+        if (body.get("latitud") != null) {
+            try { latitud = Double.valueOf(body.get("latitud").toString()); } catch (Exception ignored) {}
+        }
+        if (body.get("longitud") != null) {
+            try { longitud = Double.valueOf(body.get("longitud").toString()); } catch (Exception ignored) {}
+        }
+
         // Leer etiquetas si vinieron
         List<String> etiquetasReq = null;
         Object et = body.get("etiquetas");
@@ -59,10 +69,11 @@ public class PatchHechoHandler implements Handler {
             etiquetasReq = new ArrayList<>(dedup.values());
         }
 
-        // Si no hay cambios y no vienen etiquetas, OK
+        // Si no hay cambios y no vienen etiquetas ni coordenadas, OK
         if ((nombre == null || nombre.isBlank())
                 && (descripcion == null || descripcion.isBlank())
-                && etiquetasReq == null) {
+                && etiquetasReq == null
+                && latitud == null && longitud == null) {
             ctx.status(204);
             return;
         }
@@ -78,8 +89,19 @@ public class PatchHechoHandler implements Handler {
                 return;
             }
 
+
             if (nombre != null && !nombre.isBlank()) hecho.setTitulo(nombre);
             if (descripcion != null && !descripcion.isBlank()) hecho.setDescripcion(descripcion);
+
+            // Actualizar coordenadas si se envían ambas
+            if (latitud != null && longitud != null) {
+                if (hecho.getUbicacion() != null) {
+                    hecho.getUbicacion().setLatitud(latitud);
+                    hecho.getUbicacion().setLongitud(longitud);
+                } else {
+                    hecho.setUbicacion(new core.models.entities.hecho.Coordenadas(latitud, longitud));
+                }
+            }
 
             if (etiquetasReq != null) {
                 List<Etiqueta> gestionadas = new ArrayList<>(etiquetasReq.size());
