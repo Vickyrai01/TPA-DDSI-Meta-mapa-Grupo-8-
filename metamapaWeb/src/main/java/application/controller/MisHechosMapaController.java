@@ -25,9 +25,9 @@ public class MisHechosMapaController {
 
     @GetMapping("/mis-hechos/mapa")
     public String verMisHechosEnMapa(Model model, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return "redirect:/";
-        }
+//        if (authentication == null || !authentication.isAuthenticated()) {
+//            return "redirect:/";
+//        }
         String nombreCompleto = null;
         Object principal = authentication.getPrincipal();
         if (principal instanceof org.springframework.security.oauth2.core.user.OAuth2User oAuth2User) {
