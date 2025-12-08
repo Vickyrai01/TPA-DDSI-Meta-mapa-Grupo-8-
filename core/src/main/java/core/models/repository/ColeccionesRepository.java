@@ -276,12 +276,32 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             // Mapear a DTOs
             List<FuenteDTO> fuenteDTOs = fuentes.stream().map(FuenteDTO::from).toList();
 
-                List<HechoResumenDTO> hechoDTOs = new java.util.ArrayList<>(hechos.size());
-                for (Hecho h : hechos) {
-                Hibernate.initialize(h.getEtiquetas());
-                Hibernate.initialize(h.getMultimedia());
-                hechoDTOs.add(HechoResumenDTO.from(h));
-                }
+            List<HechoResumenDTO> hechoDTOs = new java.util.ArrayList<>(hechos.size());
+            for (Hecho h : hechos) {
+                List<String> etiquetas = (h.getEtiquetas() != null)
+                        ? h.getEtiquetas().stream()
+                        .map(Etiqueta::getNombre)
+                        .toList()
+                        : Collections.emptyList();
+
+
+                hechoDTOs.add(
+                        new HechoResumenDTO(
+                                h.getHash(),
+                                h.getTitulo(),
+                                h.getDescripcion(),
+                                (h.getContribuyente() != null ? h.getContribuyente().getNombreCompleto() : null),
+                                h.getFechaSuceso(),
+                                h.getHoraSuceso(),
+                                h.getMultimedia(),
+                                etiquetas,
+                                h.getUbicacion() != null ? h.getUbicacion().getLatitud().toString() : null,
+                                h.getUbicacion() != null ? h.getUbicacion().getLongitud().toString() : null,
+                                Collections.singletonList(h.getCategoria().toString()),
+                                h.getEstado().toString()
+                        )
+                );
+            }
 
             List<HechoResumenDTO> hechoVisiblesDTOs = hechosVisibles.stream()
                     .map(HechoResumenDTO::from) // o fromCompleto si querés enriquecerlos también
