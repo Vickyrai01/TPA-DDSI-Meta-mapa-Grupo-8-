@@ -14,6 +14,8 @@ import javax.persistence.NoResultException;
 import java.util.*;
 import java.util.stream.Collectors;
 import core.models.entities.hecho.Coordenadas;
+import core.models.entities.hecho.Categoria;
+import core.models.repository.CategoriaRepository;
 
 public class PatchHechoHandler implements Handler {
 
@@ -85,12 +87,16 @@ public class PatchHechoHandler implements Handler {
             etiquetasReq = new ArrayList<>(dedup.values());
         }
 
-        // Si no hay cambios y no vienen etiquetas ni coordenadas, OK
+        // Leer categoría si vino
+        String categoriaStr = body.get("categoria") != null ? String.valueOf(body.get("categoria")).trim() : null;
+
+        // Si no hay cambios y no vienen etiquetas, coordenadas ni categoría, OK
         if ((nombre == null || nombre.isBlank())
                 && (descripcion == null || descripcion.isBlank())
                 && etiquetasReq == null
                 && latitud == null && longitud == null
-                && fechaSuceso == null) {
+                && fechaSuceso == null
+                && (categoriaStr == null || categoriaStr.isBlank())) {
             ctx.status(204);
             return;
         }
@@ -110,6 +116,18 @@ public class PatchHechoHandler implements Handler {
             if (nombre != null && !nombre.isBlank()) hecho.setTitulo(nombre);
             if (descripcion != null && !descripcion.isBlank()) hecho.setDescripcion(descripcion);
             if (fechaSuceso != null) hecho.setFechaSuceso(fechaSuceso);
+
+            // Actualizar categoría si corresponde
+            if (categoriaStr != null && !categoriaStr.isBlank()) {
+                CategoriaRepository repoCat = CategoriaRepository.getInstance();
+                Categoria categoria = repoCat.buscarPorNombre(categoriaStr);
+                if (categoria == null) {
+                    categoria = new Categoria(categoriaStr);
+                    em.persist(categoria);
+                    em.flush();
+                }
+                hecho.setCategoria(categoria);
+            }
 
             // Actualizar coordenadas si corresponde
             if (latitud != null || longitud != null) {
