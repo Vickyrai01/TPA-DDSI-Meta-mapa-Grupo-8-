@@ -7,14 +7,10 @@
           contenido=~{:: #contenido-de-coleccion}
       )}">
 
-<!-- ========== CSS (inline para probar) ========== -->
+<!-- ========== CSS ========== -->
 <th:block id="links-de-coleccion">
-    <link rel="stylesheet"
-          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-          crossorigin=""/>
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/pages-css/verColeccion.css}">
 </th:block>
 
@@ -22,40 +18,32 @@
 <div id="contenido-de-coleccion">
     <main class="map-layout-container">
         <div id="mapa" class="map-panel"></div>
-
         <aside class="sidebar-panel">
             <header class="sidebar-header">COLECCIÓN</header>
             <section class="sidebar-content">
                 <h2 th:text="${coleccion.titulo()}">Título colección</h2>
                 <p th:text="${coleccion.descripcionColeccion()}">Descripción</p>
 
-                <div th:if="${coleccion.modoDeNavegacion() == 'CURADA'}">
-
+                <!-- ARREGLO: poner bien data-id en el selector -->
+                <div>
                     <label for="selectorModo">Modo de navegación:</label>
-
-                    <select id="selectorModo" th:data-id="${coleccion.id()}">
+                    <select id="selectorModo" th:attr="data-id=${coleccion.id()}">
                         <option value="CURADA" th:selected="${modoActual == 'CURADA'}">Curada</option>
                         <option value="IRRESTRICTA" th:selected="${modoActual == 'IRRESTRICTA'}">Irrestricta</option>
                     </select>
-
                 </div>
 
                 <div class="filtros-bloque" style="margin-bottom:1em;">
-                    <button type="button" class="btn-toggle-filtros" aria-expanded="false">
-                        Filtros
-                    </button>
-                    <form class="filtros-form" style="display:none;" method="get" id="form-filtros">
-                        <!-- Título -->
+                    <button type="button" class="btn-toggle-filtros" aria-expanded="false">Filtros</button>
+                    <form class="filtros-form" style="display:none;" id="form-filtros" autocomplete="off">
                         <div class="filtro-item">
                             <label for="titulo">Título:</label>
                             <input type="text" name="titulo" id="titulo" placeholder="Buscar por título">
                         </div>
-                        <!-- Descripción -->
                         <div class="filtro-item">
                             <label for="descripcion">Descripción:</label>
                             <input type="text" name="descripcion" id="descripcion" placeholder="Buscar por descripción">
                         </div>
-                        <!-- Etiquetas -->
                         <div class="filtro-item">
                             <label for="etiqueta">Etiquetas:</label>
                             <select id="etiqueta" name="etiqueta">
@@ -63,10 +51,8 @@
                                 <option value="accidente">Accidente</option>
                                 <option value="fraude">Fraude</option>
                                 <option value="delito">Delito</option>
-                                <!-- Agregá más si querés -->
                             </select>
                         </div>
-                        <!-- Categoría -->
                         <div class="filtro-item">
                             <label for="categoria">Categoría:</label>
                             <select id="categoria" name="categoria">
@@ -74,10 +60,8 @@
                                 <option value="ciberestafa">Ciberestafa</option>
                                 <option value="colision-en-ruta">Colisión en la ruta</option>
                                 <option value="venta-fraudulenta">Venta fraudulenta con cheques</option>
-                                <!-- Más categorías si hace falta -->
                             </select>
                         </div>
-                        <!-- FECHA DE SUCESO -->
                         <div class="filtro-item" style="margin-bottom:.3em;">
                             <span style="font-weight: bold; color: #a8732e;">Fecha de suceso</span>
                         </div>
@@ -89,7 +73,6 @@
                             <label for="fechaHastaSuceso">Hasta:</label>
                             <input type="date" name="fechaHastaSuceso" id="fechaHastaSuceso">
                         </div>
-                        <!-- FECHA DE CARGA -->
                         <div class="filtro-item" style="margin-bottom:.3em; margin-top:.8em;">
                             <span style="font-weight: bold; color: #a8732e;">Fecha de carga</span>
                         </div>
@@ -101,7 +84,6 @@
                             <label for="fechaHastaCarga">Hasta:</label>
                             <input type="date" name="fechaHastaCarga" id="fechaHastaCarga">
                         </div>
-                        <!-- Ubicación (provincia/localidad) -->
                         <div class="filtro-item">
                             <label for="provincia">Provincia / Localidad:</label>
                             <select name="provincia" id="provincia">
@@ -110,297 +92,193 @@
                                 <option value="cordoba">Córdoba</option>
                                 <option value="buenos-aires">Buenos Aires</option>
                                 <option value="mendoza">Mendoza</option>
-                                <!-- El resto de las provincias/localidades -->
                             </select>
                         </div>
-                        <!-- Multimedia -->
                         <div class="filtro-item">
                             <label>
                                 <input type="checkbox" name="soloMultimedia"> Solo hechos con archivos/imágenes
                             </label>
                         </div>
                         <div style="margin-top:.7rem">
-                            <button type="submit" class="btn-map" style="width:100%">
-                                Filtrar
-                            </button>
+                            <button type="submit" class="btn-map" style="width:100%">Filtrar</button>
                         </div>
                     </form>
                 </div>
 
-
                 <h3 style="margin-top:1rem">Hechos</h3>
-                <div class="hechos-accordion">
-
-                    <!-- Acordeón por hecho -->
-                    <details th:each="h : ${hechos}"
-                             th:attr="data-hash=${h.hash()}, data-lat=${h.latitud()}, data-lon=${h.longitud()}">
-
-                        <!-- Solo título en el summary -->
-                        <summary>
-                            <div class="hecho-title" th:text="${h.nombre()}">Título del hecho</div>
-                            <i class="chev fa-solid fa-chevron-right" aria-hidden="true"></i>
-                        </summary>
-
-                        <!-- Todo el resto dentro del detalle -->
-                        <div class="hecho-detalle">
-
-                            <!-- Descripción -->
-                            <div class="field">
-                                <span class="field-label">Descripción:</span>
-                                <span class="field-value"
-                                      th:text="${h.descripcion()!=null ? h.descripcion() : 'No indica'}"
-                                      th:classappend="${h.descripcion()==null} ? 'muted' : ''">
-                                </span>
-                            </div>
-
-                            <!-- Fecha del hecho -->
-                            <div class="field">
-                                <span class="field-label">Fecha del hecho:</span>
-                                <span class="field-value"
-                                      th:text="${h.fechaSuceso() != null} ?
-                   ${#temporals.format(h.fechaSuceso(), 'dd/MM/yyyy')} :
-                   'No indica'"
-                                      th:classappend="${h.fechaSuceso() == null} ? 'muted' : ''">
-    </span>
-                            </div>
-
-                            <!-- Fecha de carga -->
-                            <div class="field">
-                                <span class="field-label">Fecha de carga:</span>
-                                <span class="field-value"
-                                      th:text="${h.fechaCarga() != null} ?
-                   ${#temporals.format(h.fechaCarga(), 'dd/MM/yyyy')} :
-                   'No indica'"
-                                      th:classappend="${h.fechaCarga() == null} ? 'muted' : ''">
-    </span>
-                            </div>
-
-                            <!-- Categorias -->
-                            <div class="field">
-                                <span class="field-label">Categorias:</span>
-
-                                <!-- Cuando hay Categorias -->
-                                <span class="field-value" th:if="${h.categorias()!=null and !#lists.isEmpty(h.categorias())}">
-                                    <span class="chip" th:each="tag : ${h.categorias()}" th:text="${tag}"></span>
-                                </span>
-
-                                <!-- Cuando no hay -->
-                                <span class="field-value muted" th:if="${h.categorias()==null or #lists.isEmpty(h.categorias())}">
-                                    No indica
-                                </span>
-                            </div>
-
-                            <!-- Etiquetas -->
-                            <div class="field">
-                                <span class="field-label">Etiquetas:</span>
-
-                                <!-- Cuando hay etiquetas -->
-                                <span class="field-value" th:if="${h.etiquetas()!=null and !#lists.isEmpty(h.etiquetas())}">
-                                    <span class="chip" th:each="tag : ${h.etiquetas()}" th:text="${tag}"></span>
-                                </span>
-
-                                <!-- Cuando no hay -->
-                                <span class="field-value muted" th:if="${h.etiquetas()==null or #lists.isEmpty(h.etiquetas())}">
-                                    No indica
-                                </span>
-                            </div>
-
-                            <!-- Contribuyente -->
-                            <div class="field">
-                                <span class="field-label">Contribuyente:</span>
-                                <span class="field-value"
-                                      th:text="${h.contribuyente()!=null ? h.contribuyente() : 'No indica'}"
-                                      th:classappend="${h.contribuyente()==null} ? 'muted' : ''">
-                                </span>
-                            </div>
-
-                            <!-- Multimedia -->
-                            <div class="field" th:if="${h.multimedia()!=null and !h.multimedia().isEmpty()}">
-                                <span class="field-label">Multimedia:</span>
-                                <span class="field-value">
-                                    <a th:each="m : ${h.multimedia()}" th:href="${m}" target="_blank" rel="noreferrer">
-                                         <i class="fa-solid fa-link"></i><span th:text="${#strings.abbreviate(m, 30)}">Archivo</span>
-                                    </a>
-                                </span>
-                            </div>
-
-                            <!-- Botón Ver en mapa -->
-                            <div class="field" style="margin-top:0.6rem;">
-                                <a href="#" class="btn-map js-ver-hecho" th:attr="data-hash=${h.hash()}">
-                                    <i class="fa-solid fa-location-dot"></i> Ver hecho
-                                </a>
-
-
-                            </div>
-                            <div class="field" style="margin-top:0.6rem;">
-                                <a class="btn-solicitud" th:href="@{|/solicitudEliminacion/${h.hash}|}">
-                                    Solicitar eliminación
-                                </a>
-                            </div>
-
-                        </div>
-                    </details>
-
-                    <p th:if="${#lists.isEmpty(hechos)}" class="muted">No hay hechos para esta colección.</p>
-                </div>
+                <div id="hechos-accordion" class="hechos-accordion"></div>
+                <p id="msg-sin-hechos" class="muted" style="display:none;">No hay hechos para esta colección.</p>
             </section>
         </aside>
     </main>
 </div>
 
-<!-- ========== JS (inline para probar) ========== -->
+<!-- ========== JS con AJAX ========== -->
 <th:block id="scripts-de-coleccion">
-    <!-- Datos del backend -->
-    <!-- 1) Debe estar antes para inyectar la lista de hechos -->
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        window.hechos = /*[[${hechos}]]*/ [];
-        /*]]>*/
-    </script>
-
-    <!-- 2) Leaflet -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-            crossorigin=""></script>
-
-    <!-- 3) JS principal -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // ===== Helpers menores =====
-        const toNum = v => {
-            if (v == null) return null;
-            const n = parseFloat(String(v).replace(',', '.'));
-            return Number.isFinite(n) ? n : null;
-        };
-
-        // ===== Datos para el mapa =====
-        const puntos = (window.hechos || [])
-            .map(h => ({
-                hash: h.hash,
-                nombre: h.nombre,
-                lat: toNum(h.latitud),
-                lon: toNum(h.longitud)
-            }))
-            .filter(p => p.lat != null && p.lon != null);
-
-        // ===== Mapa =====
-        const defaultCenter = [-34.6037, -58.3816], defaultZoom = 11;
-        const map = L.map('mapa', { maxZoom: 19 })
-            .setView(puntos.length ? [puntos[0].lat, puntos[0].lon] : defaultCenter,
-                puntos.length ? 13 : defaultZoom);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors', maxZoom: 19
-        }).addTo(map);
-
-        // ===== Marcadores + popup con "Ver hecho" =====
-        const markersByHash = {};
-        puntos.forEach(p => {
-            const popupHtml = `
-      <div class="popup-card">
-        <div class="popup-title"><b>${p.nombre ?? '(sin título)'}</b></div>
-        <a href="#" class="btn-map js-ver-hecho" data-hash="${p.hash}">
-          <i class="fa-solid fa-list"></i> Ver hecho
-        </a>
-      </div>
-    `;
-            const m = L.marker([p.lat, p.lon]).addTo(map).bindPopup(popupHtml);
-            markersByHash[p.hash] = m;
-        });
-
-        // Al abrir cualquier popup: solo centramos suave (NO tocamos la sidebar)
-        map.on('popupopen', (e) => {
-            const ll = e.popup.getLatLng();
-            //map.flyTo(ll, Math.max(map.getZoom(), 15), { duration: .4 });
-        });
-
-        // ===== Helpers de sincronización mapa <-> sidebar =====
-        const sidebarPanel = document.querySelector('.sidebar-panel');
-
-        function focusMarker(hash, {zoom=15, openPopup=true} = {}) {
-            const m = markersByHash[hash];
-            if (!m) return;
-            const latlng = m.getLatLng();
-            map.flyTo(latlng, Math.max(map.getZoom(), zoom), { duration: .45 });
-            if (openPopup) m.openPopup();
-        }
-
-        function openDetails(hash, {scroll=true, highlight=true, closeOthers=true} = {}) {
-            const details = document.querySelector(`details[data-hash="${hash}"]`);
-            if (!details) return;
-
-            if (closeOthers) {
-                document.querySelectorAll('.hechos-accordion details[open]')
-                    .forEach(d => { if (d !== details) d.removeAttribute('open'); });
-            }
-            details.setAttribute('open', true);
-
-            if (highlight) {
-                document.querySelectorAll('.hechos-accordion details')
-                    .forEach(d => d.classList.remove('highlight'));
-                details.classList.add('highlight');
-            }
-            if (scroll && sidebarPanel) {
-                sidebarPanel.scrollTo({ top: details.offsetTop - 40, behavior: 'smooth' });
-            }
-        }
-
-        // ===== Solo cuando tocan "Ver hecho" en el popup =====
-        document.addEventListener('click', (e) => {
-            const link = e.target.closest('.js-ver-hecho');
-            if (!link) return;
-
-            e.preventDefault();
-            const hash = link.dataset.hash;
-
-            // 1) Centrar mapa y mantener popup abierto
-            focusMarker(hash, { openPopup: true });
-
-            // 2) Abrir acordeón correspondiente, cerrar otros y scrollear
-            openDetails(hash);
-        });
-
-        // ===== Ajustes de layout/leaflet opcionales =====
-        function fitLayout(){
-            const header = document.querySelector('header.site-header');
-            const footer = document.querySelector('footer.site-footer');
-            const cont   = document.querySelector('.map-layout-container');
-            if(!cont) return;
-            const h = window.innerHeight - (header?.offsetHeight||0) - (footer?.offsetHeight||0) - 16;
-            cont.style.minHeight = Math.max(360, h) + 'px';
-        }
-        window.addEventListener('load',  () => { fitLayout(); setTimeout(()=>map.invalidateSize(), 80); });
-        window.addEventListener('resize',() => { fitLayout(); map.invalidateSize(); });
-
-        // Para que cambiar el modo de navegación recargue la pagina
-        document.addEventListener("DOMContentLoaded", () => {
-            const selector = document.getElementById("selectorModo");
-            if (!selector) return;
-
-            selector.addEventListener("change", () => {
-                const id = selector.dataset.id;
-                const modo = selector.value;
-
-                const url = `/colecciones/${id}?modo=${modo}`;
-                console.log("Navegando a:", url);
-
-                window.location.href = url;
-            });
-        });
+        const API_BASE = 'http://localhost:8081/core/api';
+        let map, markersByHash = {};
 
         document.addEventListener('DOMContentLoaded', () => {
-            const btn = document.querySelector('.btn-toggle-filtros');
-            const form = document.querySelector('.filtros-form');
-            if (btn && form) {
-                btn.addEventListener('click', () => {
-                    const open = form.style.display === 'block';
-                    form.style.display = open ? 'none' : 'block';
-                    btn.setAttribute('aria-expanded', !open);
-                });
+            const defaultCenter = [-34.6037, -58.3816], defaultZoom = 11;
+            const mapaEl = document.getElementById('mapa');
+            if (mapaEl) {
+                map = L.map(mapaEl, { maxZoom: 19 }).setView(defaultCenter, defaultZoom);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors', maxZoom: 19
+                }).addTo(map);
             }
+
+            document.querySelector('.btn-toggle-filtros')?.addEventListener('click', function(){
+                const form = document.getElementById('form-filtros');
+                if (!form) return;
+                const open = form.style.display === 'block';
+                form.style.display = open ? 'none' : 'block';
+                this.setAttribute('aria-expanded', !open);
+            });
+
+            document.getElementById('form-filtros')?.addEventListener('submit', async function(e){
+                e.preventDefault();
+                await traerYRenderizarHechos();
+            });
+
+            document.getElementById('selectorModo')?.addEventListener('change', async function(){
+                await traerYRenderizarHechos();
+            });
+
+            document.addEventListener('click', function(e){
+                const link = e.target.closest('.js-ver-hecho');
+                if (!link) return;
+                e.preventDefault();
+                const hash = link.dataset.hash;
+                if (map && markersByHash[hash]) {
+                    map.setView(markersByHash[hash].getLatLng(), Math.max(map.getZoom(), 15), { duration: .45 });
+                    markersByHash[hash].openPopup();
+                }
+                const details = document.querySelector(`details[data-hash="${hash}"]`);
+                if (details) {
+                    document.querySelectorAll('.hechos-accordion details[open]').forEach(d=>d.removeAttribute('open'));
+                    details.setAttribute('open','true');
+                }
+            });
+
+            traerYRenderizarHechos();
         });
 
+        async function traerYRenderizarHechos() {
+            const modoSel = document.getElementById('selectorModo');
+            const coleccionId = modoSel ? modoSel.dataset.id : null;
+            // DEBUG para vos: fijate si esto sale bien en consola
+            console.log("coleccionId:", coleccionId, "modoSel.value:", modoSel.value);
 
+            if (!coleccionId) {
+                // Si no hay coleccionId, no sigue
+                console.error("No se encontró data-id en el select.");
+                renderHechos([]);
+                return;
+            }
+
+            const modo = modoSel ? modoSel.value : 'CURADA';
+            const form = document.getElementById('form-filtros');
+            const params = new URLSearchParams();
+            Array.from(form.elements).forEach(el => {
+                if (!el.name) return;
+                if ((el.type === "checkbox" && el.checked) || (el.type !== "checkbox" && el.value)) {
+                    params.append(el.name, el.value);
+                }
+            });
+            const url = `${API_BASE}/colecciones/${coleccionId}/${modo}/hechos?${params.toString()}`;
+            console.log("URL de fetch:", url); // DEBUG para que lo veas
+
+            try {
+                const res = await fetch(url);
+                if (!res.ok) {
+                    console.warn("API no respondió ok:", res.status);
+                    renderHechos([]);
+                    return;
+                }
+                const hechos = await res.json();
+                renderHechos(hechos);
+            } catch (err) {
+                console.error("Error en fetch:", err);
+                renderHechos([]);
+            }
+        }
+
+        function renderHechos(hechos) {
+            const accordion = document.getElementById('hechos-accordion');
+            const msgSinHechos = document.getElementById('msg-sin-hechos');
+            if (!accordion) return;
+
+            accordion.innerHTML = '';
+            msgSinHechos.style.display = hechos.length ? 'none' : 'block';
+
+            if (map && markersByHash) {
+                Object.values(markersByHash).forEach(m => map.removeLayer(m));
+                markersByHash = {};
+            }
+
+            let p0 = null;
+            hechos.forEach(h => {
+                const detalles = document.createElement('details');
+                detalles.setAttribute('data-hash', h.hash ?? '');
+                detalles.setAttribute('data-lat', h.latitud ?? '');
+                detalles.setAttribute('data-lon', h.longitud ?? '');
+
+                const resumen = document.createElement('summary');
+                resumen.innerHTML = `<div class="hecho-title">${h.nombre ?? "(sin título)"}</div>
+                                     <i class="chev fa-solid fa-chevron-right"></i>`;
+                detalles.appendChild(resumen);
+
+                const detalle = document.createElement('div');
+                detalle.classList.add('hecho-detalle');
+                detalle.innerHTML += `<div class="field"><span class="field-label">Descripción:</span>
+                    <span class="field-value">${h.descripcion ?? 'No indica'}</span></div>`;
+                detalle.innerHTML += `<div class="field"><span class="field-label">Fecha del hecho:</span>
+                    <span class="field-value">${h.fechaSuceso ? h.fechaSuceso : 'No indica'}</span></div>`;
+                detalle.innerHTML += `<div class="field"><span class="field-label">Categorías:</span>
+                    <span class="field-value">${h.categorias && h.categorias.length ? h.categorias.map(c=>`<span class="chip">${c}</span>`).join(' ')
+                    : '<span class="muted">No indica</span>'}</span></div>`;
+                detalle.innerHTML += `<div class="field"><span class="field-label">Etiquetas:</span>
+                    <span class="field-value">${h.etiquetas && h.etiquetas.length ? h.etiquetas.map(e=>`<span class="chip">${e}</span>`).join(' ')
+                    : '<span class="muted">No indica</span>'}</span></div>`;
+                detalle.innerHTML += `<div class="field"><span class="field-label">Contribuyente:</span>
+                    <span class="field-value">${h.contribuyente ?? 'No indica'}</span></div>`;
+                if (h.multimedia && h.multimedia.length)
+                    detalle.innerHTML += `<div class="field"><span class="field-label">Multimedia:</span>
+                        <span class="field-value">${h.multimedia.map(m=>
+                        `<a href="${m}" target="_blank" rel="noreferrer"><i class="fa-solid fa-link"></i>${m}</a>`
+                    ).join('')}</span></div>`;
+                detalle.innerHTML += `<div class="field" style="margin-top:0.6rem;">
+                    <a href="#" class="btn-map js-ver-hecho" data-hash="${h.hash ?? ''}">
+                        <i class="fa-solid fa-location-dot"></i> Ver hecho
+                    </a>
+                </div>`;
+                detalle.innerHTML += `<div class="field" style="margin-top:0.6rem;">
+                    <a class="btn-solicitud" href="/solicitudEliminacion/${h.hash ?? ''}">Solicitar eliminación</a>
+                </div>`;
+
+                detalles.appendChild(detalle);
+                accordion.appendChild(detalles);
+
+                const lat = parseFloat(h.latitud), lon = parseFloat(h.longitud);
+                if (map && lat && lon) {
+                    if (!p0) p0 = [lat, lon];
+                    const popupHtml = `
+                        <div class="popup-card">
+                            <div class="popup-title"><b>${h.nombre ?? '(sin título)'}</b></div>
+                            <a href="#" class="btn-map js-ver-hecho" data-hash="${h.hash ?? ''}">
+                              <i class="fa-solid fa-list"></i> Ver hecho
+                            </a>
+                        </div>
+                    `;
+                    const m = L.marker([lat, lon]).addTo(map).bindPopup(popupHtml);
+                    markersByHash[h.hash] = m;
+                }
+            });
+            if (map && p0) map.setView(p0, 13);
+        }
     </script>
 </th:block>
-
 </html>

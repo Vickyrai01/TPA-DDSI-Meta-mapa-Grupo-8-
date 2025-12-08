@@ -55,3 +55,4 @@ async function loadColecciones() {
         if (list) list.innerHTML = '<p style="color:#c00">No se pudieron cargar las colecciones.</p>';
     }
 }
+
