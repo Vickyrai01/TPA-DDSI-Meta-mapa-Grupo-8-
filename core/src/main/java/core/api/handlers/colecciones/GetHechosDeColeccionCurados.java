@@ -5,6 +5,7 @@ import core.api.DTO.HechoResumenDTO;
 import core.api.utils.FiltroHechosMapper;
 import core.models.entities.colecciones.criterios.Criterio;
 import core.models.entities.colecciones.criterios.FiltradorColecciones;
+import core.models.entities.hecho.Etiqueta;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import core.models.entities.colecciones.Coleccion;
