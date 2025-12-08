@@ -45,13 +45,15 @@ public class HechoService {
         }
     }
     // EDITAR (admin 8082) — PATCH /core/api/hechos/{hash}
-    public boolean patchByHash(String hash, String nombre, String descripcion, List<String> etiquetas) {
+    public boolean patchByHash(String hash, String nombre, String descripcion, List<String> etiquetas, String latitud, String longitud) {
         if (hash == null || hash.isBlank()) return false;
 
         Map<String, Object> body = new HashMap<>();
         if (nombre != null) body.put("nombre", nombre);
         if (descripcion != null) body.put("descripcion", descripcion);
         if (etiquetas != null) body.put("etiquetas", etiquetas);
+        if (latitud != null) body.put("latitud", latitud);
+        if (longitud != null) body.put("longitud", longitud);
 
         // Si no hay cambios, lo consideramos OK
         if (body.isEmpty()) return true;
