@@ -8,12 +8,12 @@ import core.models.entities.hecho.Hecho;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import utils.DBUtils;
-import core.models.entities.hecho.Coordenadas;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import java.util.*;
 import java.util.stream.Collectors;
+import core.models.entities.hecho.Coordenadas;
 
 public class PatchHechoHandler implements Handler {
 
@@ -42,6 +42,16 @@ public class PatchHechoHandler implements Handler {
 
         String nombre = body.get("nombre") != null ? String.valueOf(body.get("nombre")).trim() : null;
         String descripcion = body.get("descripcion") != null ? String.valueOf(body.get("descripcion")).trim() : null;
+        String fechaSucesoStr = body.get("fecha_suceso") != null ? String.valueOf(body.get("fecha_suceso")).trim() : null;
+        java.time.LocalDate fechaSuceso = null;
+        if (fechaSucesoStr != null && !fechaSucesoStr.isBlank()) {
+            try {
+                fechaSuceso = java.time.LocalDate.parse(fechaSucesoStr);
+            } catch (Exception e) {
+                ctx.status(400).result("Fecha del suceso inválida (formato esperado: yyyy-MM-dd)");
+                return;
+            }
+        }
 
         // Leer latitud y longitud si vinieron
         Double latitud = null;
@@ -79,7 +89,8 @@ public class PatchHechoHandler implements Handler {
         if ((nombre == null || nombre.isBlank())
                 && (descripcion == null || descripcion.isBlank())
                 && etiquetasReq == null
-                && latitud == null && longitud == null) {
+                && latitud == null && longitud == null
+                && fechaSuceso == null) {
             ctx.status(204);
             return;
         }
@@ -98,6 +109,7 @@ public class PatchHechoHandler implements Handler {
 
             if (nombre != null && !nombre.isBlank()) hecho.setTitulo(nombre);
             if (descripcion != null && !descripcion.isBlank()) hecho.setDescripcion(descripcion);
+            if (fechaSuceso != null) hecho.setFechaSuceso(fechaSuceso);
 
             // Actualizar coordenadas si corresponde
             if (latitud != null || longitud != null) {

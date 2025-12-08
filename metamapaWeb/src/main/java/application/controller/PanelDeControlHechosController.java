@@ -62,6 +62,7 @@ public class PanelDeControlHechosController {
         String descripcion = req.get("descripcion") != null ? req.get("descripcion").toString() : null;
         String latitud = req.get("latitud") != null ? req.get("latitud").toString() : null;
         String longitud = req.get("longitud") != null ? req.get("longitud").toString() : null;
+        String fechaSuceso = req.get("fecha_suceso") != null ? req.get("fecha_suceso").toString() : null;
 
         List<String> etiquetas = null;
         Object et = req.get("etiquetas");
@@ -69,7 +70,7 @@ public class PanelDeControlHechosController {
             etiquetas = list.stream().map(String::valueOf).toList();
         }
 
-        boolean ok = hechoService.patchByHash(hash, nombre, descripcion, etiquetas, latitud, longitud);
+        boolean ok = hechoService.patchByHash(hash, nombre, descripcion, etiquetas, latitud, longitud, fechaSuceso);
         return ok ? ResponseEntity.ok().build()
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pudo actualizar el hecho");
     }
