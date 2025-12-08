@@ -246,13 +246,15 @@
                             return;
                         }
                     }
+                    const categoria = detalle.querySelector('select.edit-mode[name="categoria"]')?.value?.trim();
                     const payload = {
                         nombre: nombre || null,
                         descripcion: descripcion || null,
                         etiquetas: (etiquetasCsv || '').split(',').map(s => s.trim()).filter(Boolean),
                         latitud: latitud || null,
                         longitud: longitud || null,
-                        fecha_suceso: fechaSuceso || null
+                        fecha_suceso: fechaSuceso || null,
+                        categoria: categoria || null
                     };
                     try {
                         const resp = await fetch(`/admin/hechos/${encodeURIComponent(hash)}/modificar`, {

@@ -39,7 +39,7 @@ public class PanelDeControlHechosController {
     @GetMapping("/admin/hechos")
     public String administrarHechos(Model model, Authentication authentication, RedirectAttributes ra) {
         if (!adminService.isAdmin(authentication)) {
-            ra.addFlashAttribute("toastError", "No podes ingresar porque no sos admin :v");
+            ra.addFlashAttribute("toastError", "No podes ingresar porque no sos admin");
             return "redirect:/";
         }
         List<HechoDTO> hechosGlobales = hechoService.getAll();
@@ -76,6 +76,7 @@ public class PanelDeControlHechosController {
         String latitud = req.get("latitud") != null ? req.get("latitud").toString() : null;
         String longitud = req.get("longitud") != null ? req.get("longitud").toString() : null;
         String fechaSuceso = req.get("fecha_suceso") != null ? req.get("fecha_suceso").toString() : null;
+        String categoria = req.get("categoria") != null ? req.get("categoria").toString() : null;
 
         List<String> etiquetas = null;
         Object et = req.get("etiquetas");
@@ -83,7 +84,7 @@ public class PanelDeControlHechosController {
             etiquetas = list.stream().map(String::valueOf).toList();
         }
 
-        boolean ok = hechoService.patchByHash(hash, nombre, descripcion, etiquetas, latitud, longitud, fechaSuceso);
+        boolean ok = hechoService.patchByHash(hash, nombre, descripcion, etiquetas, latitud, longitud, fechaSuceso, categoria);
         return ok ? ResponseEntity.ok().build()
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pudo actualizar el hecho");
     }
