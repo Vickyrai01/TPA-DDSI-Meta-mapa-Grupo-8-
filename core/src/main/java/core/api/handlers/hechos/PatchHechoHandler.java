@@ -113,9 +113,10 @@ public class PatchHechoHandler implements Handler {
             }
 
 
-            if (nombre != null && !nombre.isBlank()) hecho.setTitulo(nombre);
-            if (descripcion != null && !descripcion.isBlank()) hecho.setDescripcion(descripcion);
-            if (fechaSuceso != null) hecho.setFechaSuceso(fechaSuceso);
+            boolean huboCambio = false;
+            if (nombre != null && !nombre.isBlank()) { hecho.setTitulo(nombre); huboCambio = true; }
+            if (descripcion != null && !descripcion.isBlank()) { hecho.setDescripcion(descripcion); huboCambio = true; }
+            if (fechaSuceso != null) { hecho.setFechaSuceso(fechaSuceso); huboCambio = true; }
 
             // Actualizar categoría si corresponde
             if (categoriaStr != null && !categoriaStr.isBlank()) {
@@ -127,6 +128,7 @@ public class PatchHechoHandler implements Handler {
                     em.flush();
                 }
                 hecho.setCategoria(categoria);
+                huboCambio = true;
             }
 
             // Actualizar coordenadas si corresponde
@@ -137,8 +139,8 @@ public class PatchHechoHandler implements Handler {
                     hecho.setUbicacion(coords);
                     em.persist(coords);
                 }
-                if (latitud != null) coords.setLatitud(latitud);
-                if (longitud != null) coords.setLongitud(longitud);
+                if (latitud != null) { coords.setLatitud(latitud); huboCambio = true; }
+                if (longitud != null) { coords.setLongitud(longitud); huboCambio = true; }
             }
 
             if (etiquetasReq != null) {
@@ -154,6 +156,12 @@ public class PatchHechoHandler implements Handler {
                 }
                 // Reemplaza el set de etiquetas completamente por lo enviado
                 hecho.setEtiquetas(gestionadas);
+                huboCambio = true;
+            }
+
+            // Si hubo algún cambio, actualiza la fecha de última modificación
+            if (huboCambio) {
+                hecho.setUltimaFechaModificacion(java.time.LocalDate.now());
             }
 
             em.merge(hecho);
