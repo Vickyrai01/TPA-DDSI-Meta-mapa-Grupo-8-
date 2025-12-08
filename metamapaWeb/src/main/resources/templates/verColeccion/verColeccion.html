@@ -44,22 +44,20 @@
                             <label for="descripcion">Descripción:</label>
                             <input type="text" name="descripcion" id="descripcion" placeholder="Buscar por descripción">
                         </div>
+                        <!--
                         <div class="filtro-item">
                             <label for="etiqueta">Etiquetas:</label>
                             <select id="etiqueta" name="etiqueta">
                                 <option value="">- Todas -</option>
-                                <option value="accidente">Accidente</option>
-                                <option value="fraude">Fraude</option>
-                                <option value="delito">Delito</option>
+                                <option th:each="tag : ${etiquetas}" th:value="${tag}" th:text="${tag}"></option>
                             </select>
                         </div>
+                        -->
                         <div class="filtro-item">
                             <label for="categoria">Categoría:</label>
                             <select id="categoria" name="categoria">
                                 <option value="">- Todas -</option>
-                                <option value="ciberestafa">Ciberestafa</option>
-                                <option value="colision-en-ruta">Colisión en la ruta</option>
-                                <option value="venta-fraudulenta">Venta fraudulenta con cheques</option>
+                                <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}"></option>
                             </select>
                         </div>
                         <div class="filtro-item" style="margin-bottom:.3em;">
@@ -236,7 +234,7 @@
                 detalle.innerHTML += `<div class="field"><span class="field-label">Descripción:</span>
                     <span class="field-value">${h.descripcion ?? 'No indica'}</span></div>`;
                 detalle.innerHTML += `<div class="field"><span class="field-label">Fecha del hecho:</span>
-                    <span class="field-value">${h.fechaSuceso ? h.fechaSuceso : 'No indica'}</span></div>`;
+                    <span class="field-value">${formatFecha(h.fechaSuceso)}</span></div>`;
                 detalle.innerHTML += `<div class="field"><span class="field-label">Categorías:</span>
                     <span class="field-value">${h.categorias && h.categorias.length ? h.categorias.map(c=>`<span class="chip">${c}</span>`).join(' ')
                     : '<span class="muted">No indica</span>'}</span></div>`;
@@ -278,6 +276,22 @@
                 }
             });
             if (map && p0) map.setView(p0, 13);
+        }
+
+        function formatFecha(fecha) {
+            if (!fecha) return 'No indica';
+            if (Array.isArray(fecha)) {
+                // Si llega como array, ej: [2025,12,3]
+                return fecha.map(n => String(n).padStart(2, '0')).join('-');
+            }
+            if (typeof fecha === 'string') {
+                // Si llega como string, ej: "2025,12,3"
+                // Lo convertimos en array y pad con 0 los numeros
+                const partes = fecha.split(',').map(n => String(n).padStart(2, '0'));
+                return partes.join('-');
+            }
+            // Si llega como otra cosa
+            return fecha;
         }
     </script>
 </th:block>

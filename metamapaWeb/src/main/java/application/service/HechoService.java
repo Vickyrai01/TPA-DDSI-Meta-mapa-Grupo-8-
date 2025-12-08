@@ -1,6 +1,8 @@
 package application.service;
 
 import application.dto.HechoDTO;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -104,35 +106,42 @@ public class HechoService {
         }
     }
 
-    // (Opcional, si implementás selects dinámicos)
     public List<String> getCategorias() {
-        // ejemplo: /categorias     (ajustá el endpoint según tu backend)
         try {
-            return metamapaApi.get()
+            // Acá tu service obtiene el JSON:
+            String categoriasJson = metamapaApi.get()
                     .uri("/categorias")
                     .retrieve()
-                    .bodyToFlux(String.class)
-                    .collectList()
+                    .bodyToMono(String.class)
                     .block();
+
+            // Parsearlo a List<String>
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(
+                    categoriasJson,
+                    new TypeReference<List<String>>() {}
+            );
         } catch (Exception e) {
+            e.printStackTrace();
             return List.of();
         }
     }
 
     public List<String> getEtiquetas() {
         try {
-            return metamapaApi.get()
+            String etiquetasJson = metamapaApi.get()
                     .uri("/etiquetas")
                     .retrieve()
-                    .bodyToFlux(String.class)
-                    .collectList()
+                    .bodyToMono(String.class)
                     .block();
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(etiquetasJson, new TypeReference<List<String>>() {});
         } catch (Exception e) {
+            e.printStackTrace();
             return List.of();
         }
     }
 
-    // (Tus métodos de patch y delete los dejé igual que antes)
     public boolean patchByHash(String hash, String nombre, String descripcion, List<String> etiquetas) {
         if (hash == null || hash.isBlank()) return false;
 

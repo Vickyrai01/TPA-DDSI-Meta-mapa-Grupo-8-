@@ -64,9 +64,8 @@ public class ColeccionesController {
         model.addAttribute("modoActual", modoParam);
         model.addAttribute("hechos", hechosFiltrados);
 
-        // Si usás selects dinámicos:
         model.addAttribute("categorias", hechosService.getCategorias());
-        model.addAttribute("etiquetas", hechosService.getEtiquetas());
+        //model.addAttribute("etiquetas", hechosService.getEtiquetas()); arreglar porque no funciona esta poronga (hay que agregar el endpoint en apiMetaMapa)
 
         return "verColeccion/verColeccion";
     }
