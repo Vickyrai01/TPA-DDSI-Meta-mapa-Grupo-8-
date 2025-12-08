@@ -210,10 +210,14 @@
                     const nombre = detalle.querySelector('input.edit-mode[name="nombre"]')?.value?.trim();
                     const descripcion = detalle.querySelector('input.edit-mode[name="descripcion"]')?.value?.trim();
                     const etiquetasCsv = detalle.querySelector('input.edit-mode[name="etiquetas"]')?.value?.trim();
+                    const latitud = detalle.querySelector('input.edit-mode[name="latitud"]')?.value?.trim();
+                    const longitud = detalle.querySelector('input.edit-mode[name="longitud"]')?.value?.trim();
                     const payload = {
                         nombre: nombre || null,
                         descripcion: descripcion || null,
-                        etiquetas: (etiquetasCsv || '').split(',').map(s => s.trim()).filter(Boolean)
+                        etiquetas: (etiquetasCsv || '').split(',').map(s => s.trim()).filter(Boolean),
+                        latitud: latitud || null,
+                        longitud: longitud || null
                     };
                     try {
                         const resp = await fetch(`/admin/hechos/${encodeURIComponent(hash)}/modificar`, {

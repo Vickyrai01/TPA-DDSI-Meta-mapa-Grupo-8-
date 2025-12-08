@@ -8,6 +8,7 @@ import core.models.entities.hecho.Hecho;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import utils.DBUtils;
+import core.models.entities.hecho.Coordenadas;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -42,14 +43,19 @@ public class PatchHechoHandler implements Handler {
         String nombre = body.get("nombre") != null ? String.valueOf(body.get("nombre")).trim() : null;
         String descripcion = body.get("descripcion") != null ? String.valueOf(body.get("descripcion")).trim() : null;
 
-        // Leer coordenadas si vinieron
+        // Leer latitud y longitud si vinieron
         Double latitud = null;
         Double longitud = null;
-        if (body.get("latitud") != null) {
-            try { latitud = Double.valueOf(body.get("latitud").toString()); } catch (Exception ignored) {}
-        }
-        if (body.get("longitud") != null) {
-            try { longitud = Double.valueOf(body.get("longitud").toString()); } catch (Exception ignored) {}
+        try {
+            if (body.get("latitud") != null && !body.get("latitud").toString().isBlank()) {
+                latitud = Double.valueOf(body.get("latitud").toString());
+            }
+            if (body.get("longitud") != null && !body.get("longitud").toString().isBlank()) {
+                longitud = Double.valueOf(body.get("longitud").toString());
+            }
+        } catch (NumberFormatException e) {
+            ctx.status(400).result("Latitud o longitud inválida");
+            return;
         }
 
         // Leer etiquetas si vinieron
@@ -93,14 +99,16 @@ public class PatchHechoHandler implements Handler {
             if (nombre != null && !nombre.isBlank()) hecho.setTitulo(nombre);
             if (descripcion != null && !descripcion.isBlank()) hecho.setDescripcion(descripcion);
 
-            // Actualizar coordenadas si se envían ambas
-            if (latitud != null && longitud != null) {
-                if (hecho.getUbicacion() != null) {
-                    hecho.getUbicacion().setLatitud(latitud);
-                    hecho.getUbicacion().setLongitud(longitud);
-                } else {
-                    hecho.setUbicacion(new core.models.entities.hecho.Coordenadas(latitud, longitud));
+            // Actualizar coordenadas si corresponde
+            if (latitud != null || longitud != null) {
+                Coordenadas coords = hecho.getUbicacion();
+                if (coords == null) {
+                    coords = new Coordenadas();
+                    hecho.setUbicacion(coords);
+                    em.persist(coords);
                 }
+                if (latitud != null) coords.setLatitud(latitud);
+                if (longitud != null) coords.setLongitud(longitud);
             }
 
             if (etiquetasReq != null) {
