@@ -91,26 +91,28 @@ public class HechoResumenDTO {
                 : null;
 
         List<String> categorias = (h.getCategoria() != null)
-            ? List.of(h.getCategoria().toString()) // o .getNombre() si corresponde
-            : List.of();
+                ? List.of(h.getCategoria().toString()) // o .getNombre() si corresponde
+                : List.of();
 
+        // Lógica de multimedia agregada
         List<String> multimedia = (h.getMultimedia() != null)
-            ? new ArrayList<>(h.getMultimedia())
-            : Collections.emptyList();
+                ? new ArrayList<>(h.getMultimedia())
+                : Collections.emptyList();
 
         return new HechoResumenDTO(
-            h.getHash(),
-            h.getTitulo(),
-            h.getDescripcion(),
-            nombreContribuyente,
-            h.getFechaSuceso(),
-            h.getHoraSuceso(),
-            multimedia,
-            etiquetas,
-            latitud,
-            longitud,
-            categorias,
-            h.getEstado().toString()
+                h.getHash(),
+                h.getTitulo(),
+                h.getDescripcion(),
+                nombreContribuyente,
+                h.getFechaCarga(),      // Se mantiene fechaCarga
+                h.getFechaSuceso(),
+                h.getHoraSuceso(),
+                multimedia,             // Se pasa la lista en lugar de null
+                etiquetas,
+                latitud,
+                longitud,
+                categorias,
+                h.getEstado().toString()
         );
     }
 
