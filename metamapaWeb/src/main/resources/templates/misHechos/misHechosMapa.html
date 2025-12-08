@@ -13,11 +13,7 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/pages-css/verColeccion.css}">
-
-
-
 </th:block>
-
 <div id="contenido-de-mis-hechos">
     <main class="map-layout-container">
         <div id="mapa" class="map-panel"></div>
@@ -26,21 +22,17 @@
             <section class="sidebar-content">
                 <h2>Mis hechos reportados</h2>
                 <p>Solo ves los hechos que reportaste con tu cuenta.</p>
-
                 <h3 style="margin-top:1rem">Hechos</h3>
                 <div class="hechos-accordion">
                     <p th:if="${#lists.isEmpty(hechos)}" class="muted">Todavía no cargaste ningún hecho.</p>
-
                     <details th:each="h : ${hechos}"
-                             th:attr="data-hash=${h.hash},
-                                      data-lat=${h.latitud},
-                                      data-lon=${h.longitud},
-                                      data-fechacarga=${h.fechaCarga}">
+                             th:attr="data-hash=${h.hash}, data-lat=${h.latitud}, data-lon=${h.longitud}">
                         <summary>
                             <div class="hecho-title" th:text="${h.nombre}">Título del hecho</div>
                             <i class="chev fa-solid fa-chevron-right" aria-hidden="true"></i>
                         </summary>
                         <div class="hecho-detalle">
+                            <!-- Modo vista -->
                             <div class="field view-mode">
                                 <span class="field-label">Título:</span>
                                 <span class="field-value" data-field="nombre" th:text="${h.nombre}"></span>
@@ -56,7 +48,7 @@
                                     <span class="chip" th:each="tag : ${h.etiquetas}" th:text="${tag}"></span>
                                 </span>
                             </div>
-
+                            <!-- Modo edición -->
                             <div class="field edit-mode" style="display:none">
                                 <span class="field-label">Título:</span>
                                 <input class="edit-mode" name="nombre" type="text" th:value="${h.nombre}" />
@@ -93,7 +85,7 @@
                                 <span class="field-label">Longitud:</span>
                                 <input class="edit-mode" name="longitud" type="text" th:value="${h.longitud}" />
                             </div>
-
+                            <!-- Resto de campos solo vista -->
                             <div class="field view-mode">
                                 <span class="field-label">Fecha del hecho:</span>
                                 <span class="field-value"
@@ -122,7 +114,7 @@
                                 </span>
                                 <span class="field-value muted" th:if="${h.multimedia == null or #lists.isEmpty(h.multimedia)}">No indica</span>
                             </div>
-
+                            <!-- Botones -->
                             <div class="field">
                                 <button type="button" class="edit-btn">Editar</button>
                                 <button type="button" class="save-btn" style="display:none">Guardar</button>
@@ -135,7 +127,6 @@
         </aside>
     </main>
 </div>
-
 <th:block id="scripts-de-mis-hechos">
     <script th:inline="javascript">
         /*<![CDATA[*/
@@ -143,61 +134,7 @@
         /*]]>*/
     </script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-
     <script>
-        // --- VALIDACION: Deshabilitar edicion si pasaron 7 días o si no hay fecha ---
-        document.addEventListener('DOMContentLoaded', () => {
-            // Seleccionamos todos los details, tengan o no fecha cargada
-            const detalles = document.querySelectorAll('details[data-hash]');
-
-            detalles.forEach(detalle => {
-                const fechaString = detalle.getAttribute('data-fechacarga');
-                let bloquearEdicion = false;
-                let mensajeError = "";
-
-                if (!fechaString || fechaString === "null" || fechaString.trim() === "") {
-                    // CASO 1: No indica fecha
-                    bloquearEdicion = true;
-                    mensajeError = " (No puede editar el hecho: Fecha no disponible)";
-                } else {
-                    // CASO 2: Tiene fecha, validamos los 7 días
-                    const fechaCarga = new Date(fechaString);
-                    const hoy = new Date();
-                    // Diferencia en días
-                    const diferenciaTiempo = hoy - fechaCarga;
-                    const diasPasados = diferenciaTiempo / (1000 * 3600 * 24);
-
-                    if (diasPasados > 7) {
-                        bloquearEdicion = true;
-                        mensajeError = " (No puede editar el hecho: Pasaron más de 7 días)";
-                    }
-                }
-
-                // Aplicar bloqueo si corresponde
-                if (bloquearEdicion) {
-                    const btnEditar = detalle.querySelector('.edit-btn');
-                    if (btnEditar) {
-                        // Deshabilitar botón
-                        btnEditar.disabled = true;
-                        btnEditar.style.opacity = "0.5";
-                        btnEditar.style.cursor = "not-allowed";
-                        btnEditar.title = "No se puede editar: " + mensajeError.trim();
-
-                        // Agregar mensaje rojo
-                        const mensaje = document.createElement('span');
-                        mensaje.innerText = mensajeError;
-                        mensaje.style.color = "#d9534f"; // Rojo
-                        mensaje.style.fontSize = "0.85em";
-                        mensaje.style.marginLeft = "10px";
-                        mensaje.style.fontWeight = "bold";
-
-                        // Insertar mensaje después del botón
-                        btnEditar.parentNode.insertBefore(mensaje, btnEditar.nextSibling);
-                    }
-                }
-            });
-        });
-
         // Set max date for fecha_suceso inputs to today
         document.addEventListener('DOMContentLoaded', () => {
             const hoy = new Date();
@@ -209,7 +146,61 @@
                 input.setAttribute('max', maxDate);
             });
         });
+        // Script para edición con modal visual personalizado
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.querySelector('.modal-editar-hecho, #modal-editar-hecho');
+            const guardarBtn = modal?.querySelector('.guardar-cambios-btn, button[type="submit"], .btn-guardar');
+            if (!modal || !guardarBtn) return;
 
+            guardarBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                guardarBtn.disabled = true;
+                // Obtener hash del hecho (puede estar en un input hidden, atributo data, etc)
+                let hash = modal.querySelector('[name="hash"]')?.value || modal.dataset.hash;
+                if (!hash) {
+                    hash = window.hashHechoActual || null;
+                }
+                if (!hash) {
+                    alert('No se encontró el identificador del hecho.');
+                    guardarBtn.disabled = false;
+                    return;
+                }
+                // Obtener datos del formulario
+                const nombre = modal.querySelector('[name="nombre"]')?.value?.trim();
+                const descripcion = modal.querySelector('[name="descripcion"]')?.value?.trim();
+                const etiquetasCsv = modal.querySelector('[name="etiquetas"]')?.value?.trim();
+                const fechaSuceso = modal.querySelector('[name="fecha_suceso"]')?.value?.trim();
+                const categoria = modal.querySelector('[name="categoria"]')?.value?.trim();
+                const latitud = modal.querySelector('[name="latitud"]')?.value?.trim();
+                const longitud = modal.querySelector('[name="longitud"]')?.value?.trim();
+                const payload = {
+                    nombre: nombre || null,
+                    descripcion: descripcion || null,
+                    etiquetas: (etiquetasCsv || '').split(',').map(s => s.trim()).filter(Boolean),
+                    fecha_suceso: fechaSuceso || null,
+                    categoria: categoria || null,
+                    latitud: latitud || null,
+                    longitud: longitud || null
+                };
+                try {
+                    const resp = await fetch(`/admin/hechos/${encodeURIComponent(hash)}/modificar`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!resp.ok) {
+                        const txt = await resp.text().catch(() => '');
+                        throw new Error(`PATCH failed: ${resp.status} ${txt}`);
+                    }
+                    alert('Hecho actualizado correctamente.');
+                } catch (err) {
+                    alert('Error guardando cambios. Revisá la consola/Network.');
+                    console.error(err);
+                } finally {
+                    guardarBtn.disabled = false;
+                }
+            });
+        });
         // Edición de hechos en "mis hechos"
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.hecho-detalle').forEach(detalle => {
@@ -227,29 +218,22 @@
                     saveBtn.style.display = editing ? '' : 'none';
                     cancelBtn.style.display = editing ? '' : 'none';
                 }
-
-                if(editBtn && !editBtn.disabled) {
-                    editBtn.addEventListener('click', () => {
-                        setEditing(true);
-                    });
-                }
-
+                editBtn?.addEventListener('click', () => {
+                    setEditing(true);
+                });
                 cancelBtn?.addEventListener('click', () => {
                     setEditing(false);
                 });
-
                 saveBtn?.addEventListener('click', async () => {
                     saveBtn.disabled = true;
-                    // Recolección de datos
                     const nombre = detalle.querySelector('input.edit-mode[name="nombre"]')?.value?.trim();
                     const descripcion = detalle.querySelector('input.edit-mode[name="descripcion"]')?.value?.trim();
                     const etiquetasCsv = detalle.querySelector('input.edit-mode[name="etiquetas"]')?.value?.trim();
                     const latitud = detalle.querySelector('input.edit-mode[name="latitud"]')?.value?.trim();
                     const longitud = detalle.querySelector('input.edit-mode[name="longitud"]')?.value?.trim();
-
                     const fechaSucesoInput = detalle.querySelector('input.edit-mode[name="fecha_suceso"]');
                     const fechaSuceso = fechaSucesoInput?.value?.trim();
-
+                    // Validación: no permitir fecha futura
                     if (fechaSuceso) {
                         const hoy = new Date();
                         const fechaIngresada = new Date(fechaSuceso);
@@ -262,9 +246,7 @@
                             return;
                         }
                     }
-
                     const categoria = detalle.querySelector('select.edit-mode[name="categoria"]')?.value?.trim();
-
                     const payload = {
                         nombre: nombre || null,
                         descripcion: descripcion || null,
@@ -274,23 +256,19 @@
                         fecha_suceso: fechaSuceso || null,
                         categoria: categoria || null
                     };
-
                     try {
                         const resp = await fetch(`/admin/hechos/${encodeURIComponent(hash)}/modificar`, {
                             method: 'PATCH',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(payload)
                         });
-
                         if (!resp.ok) {
                             const txt = await resp.text().catch(() => '');
                             throw new Error(`PATCH failed: ${resp.status} ${txt}`);
                         }
-
                         // Actualizar UI
                         detalle.querySelector('[data-field="nombre"]').textContent = nombre;
                         detalle.querySelector('[data-field="descripcion"]').textContent = descripcion;
-
                         const tagsWrap = detalle.querySelector('.tags.view-mode');
                         if (tagsWrap) {
                             tagsWrap.innerHTML = '';
@@ -301,7 +279,6 @@
                                 tagsWrap.appendChild(span);
                             });
                         }
-
                         setEditing(false);
                     } catch (err) {
                         alert('Error guardando cambios. Revisá la consola/Network.');
@@ -312,14 +289,11 @@
                 });
             });
         });
-
-        // Configuración del Mapa
         const toNum = v => {
             if (v == null) return null;
             const n = parseFloat(String(v).replace(',', '.'));
             return Number.isFinite(n) ? n : null;
         };
-
         const puntos = (window.hechos || [])
             .map(h => ({
                 hash: h.hash,
@@ -328,30 +302,27 @@
                 lon: toNum(h.longitud)
             }))
             .filter(p => p.lat != null && p.lon != null);
-
         const defaultCenter = [-34.6037, -58.3816], defaultZoom = 11;
         const map = L.map('mapa', { maxZoom: 19 })
             .setView(puntos.length ? [puntos[0].lat, puntos[0].lon] : defaultCenter,
                 puntos.length ? 13 : defaultZoom);
-
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors', maxZoom: 19
         }).addTo(map);
-
         const markersByHash = {};
         puntos.forEach(p => {
             const popupHtml = `
-              <div class="popup-card">
-                <div class="popup-title"><b>${p.nombre ?? '(sin título)'}</b></div>
-              </div>
-            `;
+      <div class="popup-card">
+        <div class="popup-title"><b>${p.nombre ?? '(sin título)'}</b></div>
+      </div>
+    `;
             const m = L.marker([p.lat, p.lon]).addTo(map).bindPopup(popupHtml);
             markersByHash[p.hash] = m;
         });
-
-        // Interacción Mapa-Sidebar
+        map.on('popupopen', (e) => {
+            const ll = e.popup.getLatLng();
+        });
         const sidebarPanel = document.querySelector('.sidebar-panel');
-
         function focusMarker(hash, {zoom=15, openPopup=true} = {}) {
             const m = markersByHash[hash];
             if (!m) return;
@@ -359,33 +330,26 @@
             map.flyTo(latlng, Math.max(map.getZoom(), zoom), { duration: .45 });
             if (openPopup) m.openPopup();
         }
-
         function openDetails(hash, {scroll=true, highlight=true, closeOthers=true} = {}) {
             const details = document.querySelector(`details[data-hash="${hash}"]`);
             if (!details) return;
-
             if (closeOthers) {
                 document.querySelectorAll('.hechos-accordion details[open]')
                     .forEach(d => { if (d !== details) d.removeAttribute('open'); });
             }
-
             details.setAttribute('open', true);
-
             if (highlight) {
                 document.querySelectorAll('.hechos-accordion details')
                     .forEach(d => d.classList.remove('highlight'));
                 details.classList.add('highlight');
             }
-
             if (scroll && sidebarPanel) {
                 sidebarPanel.scrollTo({ top: details.offsetTop - 40, behavior: 'smooth' });
             }
         }
-
         document.addEventListener('click', (e) => {
             const link = e.target.closest('.js-ver-hecho');
             if (!link) return;
-            // Si hace click en links internos, ignorar
             const clickedAnchor = e.target.closest('a');
             if (clickedAnchor) {
                 const href = clickedAnchor.getAttribute('href');
@@ -393,13 +357,11 @@
                     return;
                 }
             }
-
             e.preventDefault();
             const hash = link.dataset.hash;
             focusMarker(hash, { openPopup: true });
             openDetails(hash);
         });
-
         function fitLayout(){
             const header = document.querySelector('header.site-header');
             const footer = document.querySelector('footer.site-footer');
