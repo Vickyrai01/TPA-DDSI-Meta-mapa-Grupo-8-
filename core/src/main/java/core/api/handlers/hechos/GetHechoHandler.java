@@ -1,34 +1,41 @@
 package core.api.handlers.hechos;
 
 import core.api.DTO.HechoResumenDTO;
+import core.api.handlers.colecciones.UtilsFormatos;
 import core.models.entities.hecho.Estado;
-import core.models.entities.hecho.Hecho;
-import core.models.repository.HechosRepository;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
+import core.models.entities.colecciones.criterios.Criterio;
+import core.models.entities.colecciones.criterios.CriterioFechaCarga;
+import core.models.entities.colecciones.criterios.CriterioFechaSuceso;
+import core.models.entities.colecciones.criterios.FiltradorColecciones;
+import core.models.entities.hecho.Hecho;
+import core.models.repository.HechosRepository;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GetHechoHandler implements Handler {
-
-    // Instancia del Singleton Repository
     private final HechosRepository repoHechos = HechosRepository.getInstance();
+
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
-        /* ... (Tu código comentado de filtros se mantiene igual si quieres guardarlo) ...
-         */
+        /*
+        UtilsFormatos utilsFormatos = new UtilsFormatos();
 
-        // 1. CAMBIO CLAVE: Usamos el método optimizado con JOIN FETCH
-        // En lugar de repoHechos.obtenerTodas(), usamos findAllConMultimedia()
-        List<Hecho> hechosTotales = repoHechos.findAllConMultimedia();
+        String categoria = context.queryParam("categoria");
+        String fechaReporteDesde = context.queryParam("fecha_reporte_desde");
+        String fechaReporteHasta = context.queryParam("fecha_reporte_hasta");
+        String fechaAcontecimientoDesde = context.queryParam("fecha_acontecimiento_desde");
+        String fechaAcontecimientoHasta = context.queryParam("fecha_acontecimiento_hasta");
+        String latitud = context.queryParam("latitud");
+        String longitud = context.queryParam("longitud");
 
-        // 2. Filtrado en memoria (Java)
-        // Mantenemos tu lógica actual: filtrar solo los ACEPTADOS
-        List<Hecho> hechosAprobados = hechosTotales.stream()
-                .filter(hecho -> Estado.ACEPTADO.equals(hecho.getEstado()))
-                .toList();
+        List<Criterio> criterios = new ArrayList<>();
 
         if (categoria != null && !categoria.isBlank()) {
             criterios.add(utilsFormatos.transformarCategoriaEnCriterio(categoria));
@@ -50,10 +57,14 @@ public class GetHechoHandler implements Handler {
 
         context.json(hechosFiltrados);
         */
-        List<Hecho> hechosTotales = repoHechos.obtenerTodas();
+
+
+        //List<Hecho> hechosTotales = repoHechos.obtenerTodas();
+        List<Hecho> hechosTotales = repoHechos.findAllConMultimedia();
+
         List<Hecho> hechosAprobados = hechosTotales.stream().filter(hecho -> hecho.getEstado().equals(Estado.ACEPTADO)).toList();
 
-        // Filtrar por contribuyente si se pasa el parámetro
+        // Filtrar por contribuyente si se pasa el parÃ¡metro
         String contribuyenteParam = context.queryParam("contribuyente");
         List<Hecho> hechosFiltrados;
         if (contribuyenteParam != null && !contribuyenteParam.isBlank()) {
@@ -69,7 +80,7 @@ public class GetHechoHandler implements Handler {
     }
 
     public List<HechoResumenDTO> pasarDTO(List<Hecho> hechos){
-        // Mapeo simple usando el método estático 'from' de tu DTO
         return hechos.stream().map(HechoResumenDTO::from).toList();
     }
+
 }

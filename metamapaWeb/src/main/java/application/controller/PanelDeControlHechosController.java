@@ -35,7 +35,7 @@ public class PanelDeControlHechosController {
         this.adminService = adminService;
     }
 
-    // Renderiza Admin Hechos tomando los hechos de la colección global (criterio == null)
+    // Renderiza Admin Hechos tomando los hechos de la colecciÃ³n global (criterio == null)
     @GetMapping("/admin/hechos")
     public String administrarHechos(Model model, Authentication authentication, RedirectAttributes ra) {
         if (!adminService.isAdmin(authentication)) {
