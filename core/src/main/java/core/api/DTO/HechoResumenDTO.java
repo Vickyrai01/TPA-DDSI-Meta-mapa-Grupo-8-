@@ -5,6 +5,7 @@ import core.models.entities.hecho.Hecho;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -90,23 +91,26 @@ public class HechoResumenDTO {
                 : null;
 
         List<String> categorias = (h.getCategoria() != null)
-                ? List.of(h.getCategoria().toString()) // o .getNombre() si corresponde
-                : List.of();
+            ? List.of(h.getCategoria().toString()) // o .getNombre() si corresponde
+            : List.of();
 
+        List<String> multimedia = (h.getMultimedia() != null)
+            ? new ArrayList<>(h.getMultimedia())
+            : Collections.emptyList();
 
         return new HechoResumenDTO(
-                h.getHash(),
-                h.getTitulo(),
-                h.getDescripcion(),
-                nombreContribuyente,
-                h.getFechaSuceso(),
-                h.getHoraSuceso(),
-                null,
-                etiquetas,
-                latitud,
-                longitud,
-                categorias,
-                h.getEstado().toString()
+            h.getHash(),
+            h.getTitulo(),
+            h.getDescripcion(),
+            nombreContribuyente,
+            h.getFechaSuceso(),
+            h.getHoraSuceso(),
+            multimedia,
+            etiquetas,
+            latitud,
+            longitud,
+            categorias,
+            h.getEstado().toString()
         );
     }
 
