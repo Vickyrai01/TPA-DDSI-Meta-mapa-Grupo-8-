@@ -5,6 +5,7 @@ import application.dto.HechoDTO;
 import application.service.ColeccionService;
 import application.service.HechoService;
 import application.service.AdminService;
+import application.service.ReportarService;
 import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,8 @@ import java.util.Optional;
 
 @Controller
 public class PanelDeControlHechosController {
+    @Autowired
+    private ReportarService reportarService;
 
     private final ColeccionService coleccionService;
     private final HechoService hechoService;
@@ -40,6 +43,16 @@ public class PanelDeControlHechosController {
             return "redirect:/";
         }
         List<HechoDTO> hechosGlobales = hechoService.getAll();
+        try {
+            String categoriasJson = reportarService.getCategorias();
+            com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            List<String> categorias = objectMapper.readValue(
+                    categoriasJson,
+                    objectMapper.getTypeFactory().constructCollectionType(List.class, String.class));
+            model.addAttribute("categorias", categorias);
+        } catch (Exception e) {
+            model.addAttribute("categorias", List.of());
+        }
         model.addAttribute("listaDeHechos", Optional.ofNullable(hechosGlobales).orElse(List.of()));
         return "panelDeControl/panelDeControlHECHOS";
     }
