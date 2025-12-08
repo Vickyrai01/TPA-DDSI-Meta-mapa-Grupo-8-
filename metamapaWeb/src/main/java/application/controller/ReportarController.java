@@ -5,6 +5,7 @@ import application.service.ReportarService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import core.models.entities.usuario.Usuario;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,14 +31,15 @@ public class ReportarController {
     }
 
     @GetMapping("/reportar")
-    public String reportarSuceso(Model model, @RequestParam(value= "estado", required = false) String estado, Authentication authentication) throws JsonProcessingException {
+    public String reportarSuceso(Model model, @RequestParam(value = "estado", required = false) String estado, Authentication authentication) throws JsonProcessingException {
         // esto hoy te devuelve un String con el JSON
         String categoriasJson = reportarService.getCategorias();
 
         // lo parseamos a List<String>
         List<String> categorias = objectMapper.readValue(
                 categoriasJson,
-                new TypeReference<List<String>>() {}
+                new TypeReference<List<String>>() {
+                }
         );
 
         model.addAttribute("categorias", categorias);
@@ -47,9 +49,28 @@ public class ReportarController {
         model.addAttribute("estado", estado);
         // Obtener correo del usuario autenticado
         String email = null;
-        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof OAuth2User oAuth2User) {
-            email = oAuth2User.getAttribute("email");
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            Object principal = authentication.getPrincipal();
+
+            if (principal instanceof OAuth2User oAuth2User) {
+                // Login con Google
+                email = oAuth2User.getAttribute("email");
+            }
+            // Si usás tu entidad Usuario como principal:
+            else if (principal instanceof Usuario usuario) {
+                email = usuario.getCorreo();
+            }
+            // Si usás UserDetails estándar:
+            else if (principal instanceof org.springframework.security.core.userdetails.UserDetails userDetails) {
+                email = userDetails.getUsername(); // suele ser el correo en muchos casos
+            }
+            // Fallback genérico
+            else {
+                email = authentication.getName();
+            }
         }
+
         model.addAttribute("email", email);
         return "reportarSuceso/reportarSuceso";
     }
