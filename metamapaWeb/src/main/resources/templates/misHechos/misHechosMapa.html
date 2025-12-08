@@ -63,7 +63,7 @@
                             </div>
                             <div class="field edit-mode" style="display:none">
                                 <span class="field-label">Fecha del hecho:</span>
-                                <input class="edit-mode" name="fecha_suceso" type="date" th:value="${h.fechaSuceso}" />
+                                <input class="edit-mode" name="fecha_suceso" type="date" th:value="${h.fechaSuceso}" id="fechaSucesoInput" />
                             </div>
                             <div class="field edit-mode" style="display:none">
                                 <span class="field-label">Categoría:</span>
@@ -127,6 +127,17 @@
     </script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script>
+        // Set max date for fecha_suceso inputs to today
+        document.addEventListener('DOMContentLoaded', () => {
+            const hoy = new Date();
+            const yyyy = hoy.getFullYear();
+            const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+            const dd = String(hoy.getDate()).padStart(2, '0');
+            const maxDate = `${yyyy}-${mm}-${dd}`;
+            document.querySelectorAll('input.edit-mode[name="fecha_suceso"]').forEach(input => {
+                input.setAttribute('max', maxDate);
+            });
+        });
         // Script para edición con modal visual personalizado
         document.addEventListener('DOMContentLoaded', () => {
             const modal = document.querySelector('.modal-editar-hecho, #modal-editar-hecho');
@@ -212,12 +223,28 @@
                     const etiquetasCsv = detalle.querySelector('input.edit-mode[name="etiquetas"]')?.value?.trim();
                     const latitud = detalle.querySelector('input.edit-mode[name="latitud"]')?.value?.trim();
                     const longitud = detalle.querySelector('input.edit-mode[name="longitud"]')?.value?.trim();
+                    const fechaSucesoInput = detalle.querySelector('input.edit-mode[name="fecha_suceso"]');
+                    const fechaSuceso = fechaSucesoInput?.value?.trim();
+                    // Validación: no permitir fecha futura
+                    if (fechaSuceso) {
+                        const hoy = new Date();
+                        const fechaIngresada = new Date(fechaSuceso);
+                        hoy.setHours(0,0,0,0);
+                        fechaIngresada.setHours(0,0,0,0);
+                        if (fechaIngresada > hoy) {
+                            alert('La fecha del suceso no puede ser futura.');
+                            saveBtn.disabled = false;
+                            fechaSucesoInput.focus();
+                            return;
+                        }
+                    }
                     const payload = {
                         nombre: nombre || null,
                         descripcion: descripcion || null,
                         etiquetas: (etiquetasCsv || '').split(',').map(s => s.trim()).filter(Boolean),
                         latitud: latitud || null,
-                        longitud: longitud || null
+                        longitud: longitud || null,
+                        fecha_suceso: fechaSuceso || null
                     };
                     try {
                         const resp = await fetch(`/admin/hechos/${encodeURIComponent(hash)}/modificar`, {
