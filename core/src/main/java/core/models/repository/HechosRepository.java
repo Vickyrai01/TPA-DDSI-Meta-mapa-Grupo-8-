@@ -255,6 +255,32 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
             try { em.close(); } catch (Exception ignore) {}
         }
     }
+    /**
+     * Busca los hechos de un contribuyente por su nombre exacto.
+     * Usa DISTINCT para evitar duplicados si el hecho tiene muchas etiquetas/fotos.
+     */
+    public List<Hecho> getHechosPorContribuyente(String nombreCompleto) {
+        if (nombreCompleto == null || nombreCompleto.isBlank()) {
+            return new ArrayList<>();
+        }
 
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            // 1. JOIN h.contribuyente: Unimos con la tabla de usuarios.
+            // 2. LEFT JOIN FETCH h.etiquetas: (Opcional) Traemos las etiquetas de una vez para eficiencia.
+            // 3. DISTINCT: ¡CRUCIAL! Esto elimina las filas repetidas que genera el JOIN.
+            String jpql = "SELECT DISTINCT h " +
+                    "FROM hecho h " +
+                    "JOIN h.contribuyente c " +
+                    "LEFT JOIN FETCH h.etiquetas " +
+                    "WHERE c.nombre = :nombre";
+
+            return em.createQuery(jpql, Hecho.class)
+                    .setParameter("nombre", nombreCompleto)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
 }
 
