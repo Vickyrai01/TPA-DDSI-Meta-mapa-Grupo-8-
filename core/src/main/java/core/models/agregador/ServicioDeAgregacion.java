@@ -157,12 +157,6 @@ public class ServicioDeAgregacion {
         hechosLimpios.clear();
         colecciones.clear();
     }
-
-    public void hechoUnicoUrgente(HechoAIntegrarDTO hechoUnico) {
-        if (hechoUnico == null) return;
-        actualizarColecciones(List.of(hechoUnico));
-    }
-
 }
 
 

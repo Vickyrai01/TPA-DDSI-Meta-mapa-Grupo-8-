@@ -42,14 +42,13 @@ public class ReportarService {
                 .block();
     }
 
-    public ResponseEntity<Void> postearHecho(String hechoJson, boolean urgente){
+    public ResponseEntity<Void> postearHecho(String hechoJson){
         return metamapaApi.post()
                 .uri("/hechos/reportar")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("X-Urgente", String.valueOf(urgente)) // flag
                 .bodyValue(hechoJson)
                 .retrieve()
-                .toBodilessEntity()
+                .toBodilessEntity()  // o .bodyToMono(Void.class)
                 .block();
     }
 
