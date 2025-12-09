@@ -4,9 +4,9 @@ import core.models.agregador.normalizador.*;
 import core.models.entities.colecciones.Coleccion;
 import core.models.entities.colecciones.criterios.Criterio;
 import core.models.entities.colecciones.criterios.FiltradorCriterios;
-import core.models.entities.hecho.Categoria;
-import core.models.entities.hecho.Coordenadas;
-import core.models.entities.hecho.Hecho;
+import core.models.entities.fuentes.Fuente;
+import core.models.entities.fuentes.TipoFuente;
+import core.models.entities.hecho.*;
 import core.models.repository.ColeccionesRepository;
 import core.models.repository.HechosRepository;
 import core.models.repository.RevisionManualRepository;
@@ -27,10 +27,13 @@ public class ServicioDeAgregacion {
 
     private FiltradorCriterios filtradorCriterios = FiltradorCriterios.getInstance();
 
+    private DetectorDeSpam detectorDeSpam = DetectorDeSpam.getInstance();
     private ComparadorHechos comparadorHechos = ComparadorHechos.getInstance();
     private NormalizadorFecha normalizadorFecha = NormalizadorFecha.getInstance();
     private NormalizadorCategoria normalizadorCategoria = NormalizadorCategoria.getInstance();
     private NormalizadorCoordenada normalizadorCoordenada = NormalizadorCoordenada.getInstance();
+    private NormalizadorEtiqueta normalizadorEtiqueta = NormalizadorEtiqueta.getInstance();
+    private NormalizadorContribuyente normalizadorContribuyente = NormalizadorContribuyente.getInstance();
     private FactoryHecho factoryHecho = FactoryHecho.getInstance();
 
 
@@ -65,7 +68,7 @@ public class ServicioDeAgregacion {
     // 6. Agregar a las colecciones correspondientes (ver lo de los criterios de pertenencia)
 
     private void eliminarSpam(List <HechoAIntegrarDTO> lista){
-        lista.removeIf(h -> DetectorDeSpam.esSpam(h.getTitulo()) || DetectorDeSpam.esSpam(h.getDescripcion()));
+        lista.removeIf(h -> detectorDeSpam.esSpam(h.getTitulo()) || detectorDeSpam.esSpam(h.getDescripcion()));
         }
 
 
@@ -96,42 +99,34 @@ public class ServicioDeAgregacion {
         System.out.println("antes de normalizar hechos: " + hechosAIntegrar.size());
         for (HechoAIntegrarDTO dto : hechosAIntegrar) {
             try{
-                Categoria categoria = normalizadorCategoria.obtenerCategoria(dto.getCategoria());
-                LocalDate fecha = normalizadorFecha.normalizarFecha(dto.getFechaSuceso());
-                Coordenadas ubicacion = normalizadorCoordenada.obtenerCoordenadas(dto.getLatitud(), dto.getLongitud());
-                Hecho hecho = factoryHecho.convertirHecho(dto, fecha, categoria, ubicacion);
+                Categoria categoria = normalizadorCategoria.obtenerCategoria(dto.getCategoria()); //Solo la crea
+                LocalDate fecha = normalizadorFecha.normalizarFecha(dto.getFechaSuceso()); // hace el quilombo de fecha
+                Coordenadas ubicacion = normalizadorCoordenada.obtenerCoordenadas(dto.getLatitud(), dto.getLongitud()); // solo la crea
+                List<Etiqueta> etiquetas = normalizadorEtiqueta.obtenerEtiquetas(dto.getEtiquetas());
+                Contribuyente contribuyente = normalizadorContribuyente.obtenerContribuyente(dto.getContribuyente());
+                Hecho hecho = factoryHecho.convertirHecho(dto, fecha, categoria, ubicacion, etiquetas, contribuyente); // factory que funciona
                 hechosLimpios.add(hecho);
             } catch (NormalizadorFecha.ExcepcionRevisionManualFecha e) {
                 //Enviar a revisión manual
-                //revisionManualRepository.add(dto); <- sera este gil?
+                //revisionManualRepository.add(dto); TODO: habria que pensar esto un poco mas
                 System.out.println("A revisión manual");
              }
         }
     }
 
-    private void agregarHechosAColecciones(Coleccion coleccion)
+    private void agregarHechosAColecciones(Integer idColeccion)
     {
-            List<Criterio> criterios = coleccion.getCriterioDePertenencia();
-            System.out.println("Criterios de pertenencia: " + criterios.size());
-            /*
-            List<Integer> linkFuentesDeColeccion = coleccion.getFuentes().stream()
-                .map(f -> f.getId())
-                .toList();
-            List<Hecho> hechosFiltradosFuentes = hechosLimpios.stream().filter(h -> linkFuentesDeColeccion.contains(h.getIdFuente())).toList();
-            */
-            List<Hecho> hechosFiltradosCriterio = filtradorCriterios.filtrarHechos(hechosLimpios, criterios);
-            /*
-            for (Hecho hecho : hechosFiltradosCriterio) {
-               if(!coleccion.hechoYaExistenteEnColeccion(hecho.getHash())){
-                    hechosRepository.add(hecho);
-                    coleccion.agregarHecho(hecho);
-                   // DTOHechoAgregado hechoAgregado = new DTOHechoAgregado(hecho.getHash(), hecho.getUbicacion().toString(), hecho.getCategoria().toString(), hecho.getHoraSuceso().toString(), hecho.getFechaSuceso().toString());
-                }
-            }
-             */
-            hechosRepository.addAllEnUnaTransaccion(hechosFiltradosCriterio);
-            List<Integer> idHechos = hechosLimpios.stream().map(Hecho::getId).toList();
-            coleccionesRepository.agregarHechosAColeccion(coleccion.getId(), idHechos);
+        Coleccion coleccion = coleccionesRepository.findByIdConCriterios(idColeccion);
+        List<Criterio> criterios = coleccion.getCriterioDePertenencia();
+
+        // 2) Traigo solo los IDs de las fuentes de esa colección
+        List<Integer> idsFuentesDeColeccion = coleccionesRepository.obtenerIdsFuentesDeColeccion(idColeccion);
+
+        List<Hecho> hechosFiltradosFuentes = hechosRepository.obtenerHechosPorIdsFuente(idsFuentesDeColeccion);
+        List<Hecho> hechosFiltradosCriterio = filtradorCriterios.filtrarHechos(hechosFiltradosFuentes, criterios);
+
+        List<Integer> idHechos = hechosFiltradosCriterio.stream().map(Hecho::getId).toList();
+        coleccionesRepository.agregarHechosAColeccion(idColeccion, idHechos);
     }
 
     public void limpiarHechos() {
@@ -152,15 +147,12 @@ public class ServicioDeAgregacion {
         limpiarHechos();
         System.out.println("Cantidad de hechos limpiados: " + hechosAIntegrar.size());
         normalizarYCrearHechos();
-        System.out.println("Cantidad de hechos a agregar a coleccion: " + hechosLimpios.size());
+        hechosRepository.addAllEnUnaTransaccion(hechosLimpios);
         List<Coleccion> colecciones = coleccionesRepository.obtenerTodas();
         System.out.println("Obtuve todas las colecciones.." + " son " + colecciones.size() + " colecciones.");
         for (Coleccion coleccion : colecciones) {
-            agregarHechosAColecciones(coleccion);
-            System.out.println("Agregar a colección " + " '" + coleccion.getTitulo() + "' " + " fue exitoso, tiene " + coleccion.getHechos().size() + " hechos.");
-
+            agregarHechosAColecciones(coleccion.getId());
         }
-
         hechosAIntegrar.clear();
         hechosLimpios.clear();
         colecciones.clear();

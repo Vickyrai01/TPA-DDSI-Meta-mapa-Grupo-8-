@@ -56,6 +56,15 @@ public class Contribuyente {
         this.fechaNacimiento = fechaNacimiento;
     }
 
+    @Column(name = "mail")
+    private String mail;
+    public String getMail() {
+        return mail;
+    }
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
     public String getNombreCompleto() {
         return nombre+ " " + apellido;
     }

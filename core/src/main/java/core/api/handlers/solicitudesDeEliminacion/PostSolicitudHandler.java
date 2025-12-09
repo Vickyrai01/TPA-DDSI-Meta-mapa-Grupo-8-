@@ -1,6 +1,7 @@
 package core.api.handlers.solicitudesDeEliminacion;
 
 import core.api.DTO.SolicitudDeEliminacionDTO;
+import core.models.agregador.DetectorDeSpam;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import core.models.entities.hecho.Hecho;
@@ -11,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PostSolicitudHandler implements Handler {
     private final SolicitudEliminacionRepository repoSolicitudes = SolicitudEliminacionRepository.getInstance();
-
+    private final DetectorDeSpam detectorDeSpam = DetectorDeSpam.getInstance();
     @Override
     public void handle(@NotNull Context context) throws Exception {
         SolicitudDeEliminacionDTO dto  = context.bodyAsClass(SolicitudDeEliminacionDTO.class);
@@ -31,6 +32,8 @@ public class PostSolicitudHandler implements Handler {
 
         System.out.println("Solicitud creada para el hecho " + hecho.getTitulo() + " con la descripción " + solicitud.getDescripcion());
         validarNuevaSolicitud(solicitud);
+        if (detectorDeSpam.esSpam(solicitud.getDescripcion()))
+        {solicitud.rechazarSolicitud();}
         repoSolicitudes.add(solicitud);
         context.status(201);
     }

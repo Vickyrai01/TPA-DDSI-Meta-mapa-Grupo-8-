@@ -1,15 +1,13 @@
 package core.models.repository;
 
 import core.models.entities.fuentes.Fuente;
-import core.models.entities.hecho.Categoria;
-import core.models.entities.hecho.Coordenadas;
-import core.models.entities.hecho.Hecho;
-import core.models.entities.hecho.Contribuyente;
+import core.models.entities.hecho.*;
 import utils.DBUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
@@ -125,30 +123,55 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
                 // Si tus mapeos de etiquetas/sugerencias no están bien, pueden causar problemas.
                 // Para aislar el issue: no persistamos esas colecciones en esta pasada.
                 h.setSugerenciaDeCambio(null); // si es @OneToMany mal mapeado, evitá que Hibernate intente tocar esa tabla
-                h.setEtiquetas(null);
 
-                // ---- Resolver padres en la MISMA TX (sin hilos) ----
-                // Caso 1: ya existen por ID
+                //Asegurar las clases
                 if (h.getCategoria() == null || h.getUbicacion() == null)
                     throw new IllegalArgumentException("Hecho sin categoría o coordenadas");
 
+                //Si la categoria existe, usarla
                 if (h.getCategoria().getId() != null) {
                     h.setCategoria(em.getReference(Categoria.class, h.getCategoria().getId()));
                 } else {
-                    // find-or-create por clave natural (ajustá campo 'nombre')
-                    Categoria cat;
+                    Categoria cat = null;
+
+                    String nombreOriginal = h.getCategoria().getNombre();
+                    String nombreLower = nombreOriginal.toLowerCase().trim();
+
+                    // 1) Buscar la categoría tal cual viene (normalizada a lower)
                     try {
-                        cat = em.createQuery("from categoria c where lower(c.nombre)=:n", Categoria.class)
-                                .setParameter("n", h.getCategoria().getNombre().toLowerCase())
-                                .setMaxResults(1).getSingleResult();
+                        cat = em.createQuery("from categoria c where lower(c.nombre) = :n", Categoria.class)
+                                .setParameter("n", nombreLower)
+                                .setMaxResults(1)
+                                .getSingleResult();
                     } catch (NoResultException e) {
+                        // no encontrada, seguimos
+                    }
+
+                    // 2) Si no existe y termina en 's', probamos quitando la 's' (singular)
+                    if (cat == null && nombreLower.endsWith("s")) {
+                        String singularLower = nombreLower.substring(0, nombreLower.length() - 1);
+                        try {
+                            cat = em.createQuery("from categoria c where lower(c.nombre) = :n", Categoria.class)
+                                    .setParameter("n", singularLower)
+                                    .setMaxResults(1)
+                                    .getSingleResult();
+                        } catch (NoResultException e2) {
+                            // tampoco existe en singular, seguimos
+                        }
+                    }
+
+                    // 3) Si sigue sin existir, la creo "como vino"
+                    if (cat == null) {
                         em.persist(h.getCategoria());
                         em.flush();
                         cat = h.getCategoria();
                     }
+
                     h.setCategoria(cat);
                 }
 
+
+                //Si la ubicacion existe, usarla
                 if (h.getUbicacion().getId() != null) {
                     h.setUbicacion(em.getReference(Coordenadas.class, h.getUbicacion().getId()));
                 } else {
@@ -167,12 +190,133 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
                     h.setUbicacion(coord);
                 }
 
-                // Contribuyente opcional: sólo por ID; si viene nuevo, por ahora nuléalo
-                if (h.getContribuyente() != null && h.getContribuyente().getId() != null) {
-                    h.setContribuyente(em.getReference(core.models.entities.hecho.Contribuyente.class, (Object) h.getContribuyente().getId()));
+                if (h.getEtiquetas() != null && !h.getEtiquetas().isEmpty()) {
+                    List<Etiqueta> etiquetasOriginales = h.getEtiquetas();
+                    List<Etiqueta> etiquetasDefinitivas = new ArrayList<>();
+
+                    for (Etiqueta e : etiquetasOriginales) {
+                        if (e == null) continue;
+
+                        Etiqueta etiquetaRef = null;
+
+                        if (e.getId() != null) {
+                            // Ya tiene id → intento usar la existente
+                            etiquetaRef = em.find(Etiqueta.class, e.getId());
+                            if (etiquetaRef == null) {
+                                // Si no existe, la trato como nueva
+                                e.setId(null);
+                            }
+                        }
+
+                        if (etiquetaRef == null) {
+                            // No tiene id o el id no existe → buscar por nombre
+                            String nombreOriginal = e.getNombre();
+                            if (nombreOriginal == null || nombreOriginal.isBlank()) {
+                                continue; // etiqueta vacía, la ignoro
+                            }
+
+                            String nombreLower = nombreOriginal.toLowerCase().trim();
+
+                            try {
+                                etiquetaRef = em.createQuery(
+                                                "from etiqueta et where lower(et.nombre) = :n",
+                                                Etiqueta.class)
+                                        .setParameter("n", nombreLower)
+                                        .setMaxResults(1)
+                                        .getSingleResult();
+                            } catch (NoResultException ex) {
+                                // no existe, la creamos
+                                Etiqueta nueva = new Etiqueta();
+                                nueva.setNombre(nombreOriginal.trim());
+                                em.persist(nueva);
+                                em.flush();
+                                etiquetaRef = nueva;
+                            }
+                        }
+
+                        if (etiquetaRef != null) {
+                            etiquetasDefinitivas.add(etiquetaRef);
+                        }
+                    }
+
+                    h.setEtiquetas(etiquetasDefinitivas);
+                } else {
+                    h.setEtiquetas(Collections.emptyList());
+                }
+
+                // Contribuyente opcional: si viene, lo busco / creo; si no, lo dejo null
+                if (h.getContribuyente() != null) {
+
+                    Contribuyente c = h.getContribuyente();
+                    Contribuyente ref = null;
+
+                    // 1) Si viene id → intento por id
+                    if (c.getId() != null) {
+                        ref = em.find(Contribuyente.class, c.getId());
+                        if (ref != null) {
+                            h.setContribuyente(ref);
+                            continue;
+                        } else {
+                            c.setId(null); // tratar como nuevo
+                        }
+                    }
+
+                    // 2) Si tiene mail → buscar por mail
+                    if (ref == null && c.getMail() != null && !c.getMail().isBlank()) {
+
+                        String mailLower = c.getMail().toLowerCase().trim();
+
+                        try {
+                            ref = em.createQuery(
+                                            "from contribuyente ct where lower(ct.mail) = :m",
+                                            Contribuyente.class)
+                                    .setParameter("m", mailLower)
+                                    .setMaxResults(1)
+                                    .getSingleResult();
+                        } catch (NoResultException ex) {
+                            // Crear nuevo contribuyente
+                            Contribuyente nuevo = new Contribuyente();
+                            nuevo.setMail(c.getMail().trim());
+
+                            em.persist(nuevo);
+                            em.flush();
+
+                            ref = nuevo;
+                        }
+                    }
+
+                    // 3) Si no tiene mail pero sí apellido → buscar por apellido
+                    if (ref == null && c.getApellido() != null && !c.getApellido().isBlank()) {
+
+                        String apeLower = c.getApellido().toLowerCase().trim();
+
+                        try {
+                            ref = em.createQuery(
+                                            "from contribuyente ct where lower(ct.apellido) = :a",
+                                            Contribuyente.class)
+                                    .setParameter("a", apeLower)
+                                    .setMaxResults(1)
+                                    .getSingleResult();
+
+                        } catch (NoResultException ex) {
+                            // Crear nuevo contribuyente
+                            Contribuyente nuevo = new Contribuyente();
+                            nuevo.setApellido(c.getApellido().trim());
+
+                            em.persist(nuevo);
+                            em.flush();
+
+                            ref = nuevo;
+                        }
+                    }
+
+                    // 4) Si no hubo match en nada → dejar null
+                    h.setContribuyente(ref);
+
                 } else {
                     h.setContribuyente(null);
                 }
+
 
                 // Evitar duplicados por hash/título dentro de la misma TX
                 if (h.getHash() != null && !h.getHash().isBlank()) {
@@ -275,5 +419,38 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
         }
     }
 
+    public List<Hecho> obtenerHechosPorIdsFuente(List<Integer> idsFuentes) {
+        if (idsFuentes == null || idsFuentes.isEmpty()) {
+            return List.of();
+        }
+
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            // 1) Traemos hechos que cumplan:
+            //   (idFuente IN lista) OR (fuenteDeOrigen = DINAMICA)
+            List<Hecho> hechos = em.createQuery("""
+            select distinct h
+            from hecho h
+            where h.idFuente in :idsFuentes
+            """, Hecho.class)
+                    .setParameter("idsFuentes", idsFuentes == null ? List.of(-1) : idsFuentes)
+                    .getResultList();
+
+            // 2) Inicializamos colecciones lazy (evita LazyInitializationException)
+            for (Hecho h : hechos) {
+                if (h.getEtiquetas() != null) {
+                    h.getEtiquetas().size();
+                }
+                if (h.getMultimedia() != null) {
+                    h.getMultimedia().size();
+                }
+            }
+
+            return hechos;
+            }
+        finally {
+            em.close();
+        }
+    }
 }
 
