@@ -1,13 +1,14 @@
 package cargadorDinamica.model;
 
 import cargadorDinamica.repository.DinamicaRepository;
+import cargadorDinamica.repository.RepositoryFuentes;
 
 import java.util.List;
 
 public class CargadorDinamico {
 
     private static CargadorDinamico instance;
-    private final DinamicaRepository dinamicaRepository = DinamicaRepository.getInstance(); //despues se va
+    private RepositoryFuentes repositoryFuentes = RepositoryFuentes.getInstance();
 
     public static CargadorDinamico getInstance() {
         if (instance == null) {
@@ -20,10 +21,9 @@ public class CargadorDinamico {
         return instance;
     }
 
-    public List<HechoAIntegrarDTO> extraerHechosAIntegrar(){ //se cambia
-        List<HechoAIntegrarDTO> hechos =dinamicaRepository.getHechosNoProcesados();
-        hechos.forEach(h -> h.setTipoFuente("DINAMICA"));
-        return hechos;
+    public List<HechoAIntegrarDTO> extraerHechosAIntegrar(){
+        Fuente fuente = repositoryFuentes.findAll().getFirst();
+        return fuente.extraerHechos();
     }
 }
 

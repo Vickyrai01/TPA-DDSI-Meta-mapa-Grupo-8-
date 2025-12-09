@@ -10,7 +10,7 @@ import core.models.repository.seeders.SolicitudEliminacioRepositorySeeder;
 public class ApiAdminMetaMapa {
 
     public static void main(String[] args) {
-
+        /*
         HechosRepositorySeeder hechosRepositorySeeder = HechosRepositorySeeder.getInstance();
         hechosRepositorySeeder.cargarHechosSeeder();
 
@@ -22,6 +22,10 @@ public class ApiAdminMetaMapa {
 
         ColeccionesRepositorySeeder coleccionesRepositorySeeder = ColeccionesRepositorySeeder.getInstance();
         coleccionesRepositorySeeder.cargarColeccionesRepositorySeeder();
+
+         */
+        FuentesRepositorySeeder fuentesRepositorySeeder = FuentesRepositorySeeder.getInstance();
+        fuentesRepositorySeeder.cargarFuentesSeeder();
 
         Javalin app = Javalin.create()
                 .get("/", ctx -> ctx.result("API ADMINISTRATIVA MetaMapa ACTIVA"))

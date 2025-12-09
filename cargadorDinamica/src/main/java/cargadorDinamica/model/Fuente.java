@@ -1,5 +1,4 @@
-package cargadorProxy.model;
-
+package cargadorDinamica.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -89,12 +88,8 @@ public class Fuente {
     }
 
     public List<HechoAIntegrarDTO> extraerHechos(){
-
         List<HechoAIntegrarDTO> hechos = strategyManeraDeObtenerHechos.extraerHechosRecientes(link, codigoFuente);
-        hechos.forEach(h -> h.setTipoFuente("PROXY"));
-        hechos.forEach(h -> h.setLinkFuente(this.getLink()));
         hechos.forEach(h -> h.setIdFuente(this.getId()));
-        System.out.println("El id de la fuente es: " + this.getId());
         return hechos;
     }
 }
