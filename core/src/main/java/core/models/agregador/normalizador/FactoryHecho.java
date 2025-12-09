@@ -9,27 +9,30 @@ import java.util.List;
 
 //Esto va a pasar un hecho DTO a un hecho
 public class FactoryHecho {
-     private static volatile FactoryHecho instance;
+    private static volatile FactoryHecho instance;
 
-        public FactoryHecho() {
-            if (instance != null) {
-                throw new RuntimeException("Usa getInstance() para obtener el Singleton");
-            }
+    public FactoryHecho() {
+        if (instance != null) {
+            throw new RuntimeException("Usa getInstance() para obtener el Singleton");
         }
+    }
 
-        public static FactoryHecho getInstance() {
-            if (instance == null) {
-                synchronized (FactoryHecho.class) {
-                    if (instance == null) {
-                        instance = new FactoryHecho();
-                    }
+    public static FactoryHecho getInstance() {
+        if (instance == null) {
+            synchronized (FactoryHecho.class) {
+                if (instance == null) {
+                    instance = new FactoryHecho();
                 }
             }
-            return instance;
         }
+        return instance;
+    }
 
     public Hecho convertirHecho(HechoAIntegrarDTO hecho, LocalDate fecha, Categoria categoria, Coordenadas ubicacion, List<Etiqueta> etiquetas, Contribuyente contribuyente){
         TipoFuente tipoFuente = TipoFuente.valueOf(hecho.getTipoFuente());
+
+        // Si el DTO trae multimedia, la usamos; si no, dejamos null para que el flujo de agregación la complete con la de la base
+        List<String> multimedia = hecho.getMultimedia();
 
         return new Hecho(
                 null, //Analizar como asignar el ID
@@ -37,7 +40,7 @@ public class FactoryHecho {
                 categoria,
                 null,
                 LocalDate.now(),
-                null,
+                (multimedia != null && !multimedia.isEmpty()) ? multimedia : null,
                 Estado.ACEPTADO,
                 contribuyente,
                 LocalDate.now(),
