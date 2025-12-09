@@ -127,6 +127,7 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             q.ifPresent(c -> {
                 for (Hecho h : c.getHechos()) {
                     Hibernate.initialize(h.getEtiquetas());
+                    Hibernate.initialize(h.getMultimedia());
                 }
             });
             return q;
@@ -156,6 +157,7 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                 // Inicializo etiquetas de los hechos visibles
                 for (Hecho hv : c.getHechosVisibles()) {
                     Hibernate.initialize(hv.getEtiquetas());
+                    Hibernate.initialize(hv.getMultimedia());
                 }
 
                 // Inicializo algoritmoConsenso si existe

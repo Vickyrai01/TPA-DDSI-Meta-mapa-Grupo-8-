@@ -57,9 +57,25 @@ public class GetHechoHandler implements Handler {
 
         context.json(hechosFiltrados);
         */
-        List<Hecho> hechosTotales = repoHechos.obtenerTodas();
+
+
+        //List<Hecho> hechosTotales = repoHechos.obtenerTodas();
+        List<Hecho> hechosTotales = repoHechos.findAllConMultimedia();
+
         List<Hecho> hechosAprobados = hechosTotales.stream().filter(hecho -> hecho.getEstado().equals(Estado.ACEPTADO)).toList();
-        List<HechoResumenDTO> hechosDevolver = pasarDTO(hechosAprobados);
+
+        // Filtrar por contribuyente si se pasa el parÃ¡metro
+        String contribuyenteParam = context.queryParam("contribuyente");
+        List<Hecho> hechosFiltrados;
+        if (contribuyenteParam != null && !contribuyenteParam.isBlank()) {
+            hechosFiltrados = hechosAprobados.stream()
+                    .filter(h -> h.getContribuyente() != null && contribuyenteParam.equalsIgnoreCase(h.getContribuyente().getNombreCompleto()))
+                    .toList();
+        } else {
+            hechosFiltrados = hechosAprobados;
+        }
+
+        List<HechoResumenDTO> hechosDevolver = pasarDTO(hechosFiltrados);
         context.json(hechosDevolver);
     }
 

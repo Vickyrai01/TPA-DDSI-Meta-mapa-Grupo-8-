@@ -7,8 +7,9 @@ import java.io.IOException;
 
 public class HandlerSolicitudDeEliminacion {
 
+    private DetectorDeSpam detectorDeSpam = DetectorDeSpam.getInstance();
+
     SolicitudEliminacionRepository solicitudEliminacionRepository = SolicitudEliminacionRepository.getInstance();
-    DetectorDeSpam detectorDeSpam = DetectorDeSpam.getInstance();
 
     public void eliminarSolicitud(Integer codigoSolicitud){
     SolicitudDeEliminacion solicitud = solicitudEliminacionRepository.findById(codigoSolicitud);
@@ -22,7 +23,7 @@ public class HandlerSolicitudDeEliminacion {
 
     public void detectarSpam(Integer codigoSolicitud) throws IOException, InterruptedException {
         SolicitudDeEliminacion solicitudDeEliminacion = solicitudEliminacionRepository.findById(codigoSolicitud);
-        Boolean esSpam = DetectorDeSpam.esSpam(solicitudDeEliminacion);
+        Boolean esSpam = detectorDeSpam.esSpam(String.valueOf(solicitudDeEliminacion));
     }
 
 }
