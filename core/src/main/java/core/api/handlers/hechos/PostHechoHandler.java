@@ -37,7 +37,6 @@ public class PostHechoHandler implements Handler {
             HechoAIntegrarDINAMICO dto = context.bodyAsClass(HechoAIntegrarDINAMICO.class);
             log.info("Creando hecho: {}", context.body());
 
-            // DTO limpio para validar / enviar
             HechoAIntegrarDINAMICO hechoDTO = new HechoAIntegrarDINAMICO(
                     dto.getTitulo(),
                     dto.getDescripcion(),
@@ -53,17 +52,16 @@ public class PostHechoHandler implements Handler {
             validarNuevoHecho(hechoDTO);
 
             if (urgente) {
-                // 1) Ejecutar agregación directa
+                //Ejecutar agregación directa
                 HechoAIntegrarDTO hechoUrgente = mapearADTOAgregacion(hechoDTO);
                 ServicioDeAgregacion.getInstance().hechoUnicoUrgente(hechoUrgente);
 
-                // 2) NO mandarlo al cargador dinámico
                 log.info("Hecho marcado como URGENTE: se agrega directo, no se envía al cargador dinámico");
                 context.status(201).result("Hecho urgente agregado directamente");
                 return;
             }
 
-            // Si NO es urgente => flujo normal: mandarlo al cargador dinámico
+            // Si NO es urgente. flujo normal: mandarlo al cargador dinámico
             HttpResponse<String> responseCargador = enviarHechoAlCargador(hechoDTO);
             int statusCargador = responseCargador.statusCode();
             String bodyCargador = responseCargador.body();
