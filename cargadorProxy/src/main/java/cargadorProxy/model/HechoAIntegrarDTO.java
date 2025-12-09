@@ -16,6 +16,8 @@ public class HechoAIntegrarDTO {
     public Integer idFuente;
     private String linkFuente;
 
+    public HechoAIntegrarDTO() {}
+
     public String getTitulo() {
         return titulo;
     }
