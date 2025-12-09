@@ -46,20 +46,35 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final CustomAuthProvider customAuthProvider;
+
+    public SecurityConfig(CustomAuthProvider customAuthProvider) {
+        this.customAuthProvider = customAuthProvider;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // --- INICIO DE LA CORRECCIÓN ---
-                // Deshabilitamos CSRF específicamente para las rutas /admin/**
-                // Esto permitirá que tu JavaScript haga POST, PATCH y DELETE.
+                // Deshabilitamos CSRF para /api/auth/** y /admin/**
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers(new AntPathRequestMatcher("/admin/**"))
+                        .ignoringRequestMatchers(
+                                new AntPathRequestMatcher("/api/auth/**"),
+                                new AntPathRequestMatcher("/admin/**")
+                        )
                 )
-                // --- FIN DE LA CORRECCIÓN ---
+                .authenticationProvider(customAuthProvider)
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/login", "/api/auth/login").permitAll()
                         .requestMatchers("/admin/**", "/panelDeControl/**").authenticated()
                         .requestMatchers("/perfil").authenticated()
                         .anyRequest().permitAll()
+                )
+                .formLogin(form -> form
+                        .loginPage("/api/auth/login")
+                        .loginProcessingUrl("/api/auth/login")
+                        .defaultSuccessUrl("/?login=success", true)
+                        .permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .defaultSuccessUrl("/", true)

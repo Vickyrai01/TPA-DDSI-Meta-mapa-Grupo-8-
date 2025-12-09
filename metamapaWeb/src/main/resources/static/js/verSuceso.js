@@ -14,23 +14,35 @@ const puntos = hechos
         fecha: h.fechaSuceso,
         hora: h.horaSuceso,
         descripcion: h.descripcion,
-        etiquetas: h.etiquetas,       // ya estaba
-        categorias: h.categorias      // NUEVO: mapeamos categorías desde el DTO
+        etiquetas: h.etiquetas,
+        categorias: h.categorias
     }))
     .filter(p => p.lat != null && p.lon != null);
 
 // Iniciar mapa: default CABA si no hay puntos
 const defaultCenter = [-34.6037, -58.3816], defaultZoom = 11;
 const map = L.map('mapa', { maxZoom: 19 })
-    .setView(puntos.length ? [puntos[0].lat, puntos[0].lon] : defaultCenter,
-        puntos.length ? 13 : defaultZoom);
+    .setView(
+        puntos.length ? [puntos[0].lat, puntos[0].lon] : defaultCenter,
+        puntos.length ? 13 : defaultZoom
+    );
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors', maxZoom: 19
+    attribution: '&copy; OpenStreetMap contributors',
+    maxZoom: 19
 }).addTo(map);
 
-// --- BUCLE MODIFICADO ---
+// === NUEVO: grupo de clusters ===
+const markerCluster = L.markerClusterGroup({
+    // radio de agrupación en px (podés tunearlo)
+    maxClusterRadius: 40,
+    // si querés que siempre "abra" los puntos cuando hacés zoom
+    spiderfyOnEveryZoom: true,
+    showCoverageOnHover: false
+});
+
 const markers = [];
+
 for (const p of puntos) {
     // Categorías
     let categoriasHtml = '';
@@ -68,13 +80,20 @@ for (const p of puntos) {
       </div>
     `;
 
-    markers.push(L.marker([p.lat, p.lon]).addTo(map).bindPopup(html));
-}
-// --- FIN BUCLE MODIFICADO ---
+    const marker = L.marker([p.lat, p.lon]).bindPopup(html);
 
+    markers.push(marker);
+    markerCluster.addLayer(marker); // 👈 en vez de addTo(map)
+}
+
+// Agregamos el grupo al mapa
+map.addLayer(markerCluster);
+
+// Ajustar el mapa a todos los puntos
 if (markers.length > 1) {
     const group = L.featureGroup(markers);
     map.fitBounds(group.getBounds().pad(0.15));
 }
+
 window.addEventListener('load', () => map.invalidateSize());
 window.addEventListener('resize', () => map.invalidateSize());

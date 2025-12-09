@@ -28,14 +28,34 @@ public class HechoService {
                 .collectList()
                 .block();
     }
+
+    // Obtener hechos por contribuyente (email)
+    public List<HechoDTO> getByContribuyente(String email) {
+        if (email == null || email.isBlank()) return List.of();
+        try {
+            return adminApi.get()
+                    .uri(uriBuilder -> uriBuilder.path("/hechos").queryParam("contribuyente", email).build())
+                    .retrieve()
+                    .bodyToFlux(HechoDTO.class)
+                    .collectList()
+                    .block();
+        } catch (Exception e) {
+            System.err.println("Error en getByContribuyente: " + e.getMessage());
+            return List.of();
+        }
+    }
     // EDITAR (admin 8082) — PATCH /core/api/hechos/{hash}
-    public boolean patchByHash(String hash, String nombre, String descripcion, List<String> etiquetas) {
+    public boolean patchByHash(String hash, String nombre, String descripcion, List<String> etiquetas, String latitud, String longitud, String fechaSuceso, String categoria) {
         if (hash == null || hash.isBlank()) return false;
 
         Map<String, Object> body = new HashMap<>();
         if (nombre != null) body.put("nombre", nombre);
         if (descripcion != null) body.put("descripcion", descripcion);
         if (etiquetas != null) body.put("etiquetas", etiquetas);
+        if (latitud != null) body.put("latitud", latitud);
+        if (longitud != null) body.put("longitud", longitud);
+        if (fechaSuceso != null) body.put("fecha_suceso", fechaSuceso);
+        if (categoria != null) body.put("categoria", categoria);
 
         // Si no hay cambios, lo consideramos OK
         if (body.isEmpty()) return true;

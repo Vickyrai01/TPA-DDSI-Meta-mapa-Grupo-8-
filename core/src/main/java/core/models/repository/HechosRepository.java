@@ -29,6 +29,25 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
         return instance;
     }
 
+    // En HechoRepository.java
+
+    public List<Hecho> findAllConMultimedia() {
+        // 1. Obtenemos la instancia del EntityManager
+        EntityManager em = DBUtils.getEntityManager();
+
+        try {
+            // 2. Usamos JPQL con JOIN FETCH
+            // Usamos 'em' (la variable) en lugar de 'entityManager'
+            String jpql = "SELECT DISTINCT h FROM hecho h LEFT JOIN FETCH h.multimedia";
+
+            return em.createQuery(jpql, Hecho.class).getResultList();
+
+        } finally {
+            // 3. Cerramos la conexión para evitar fugas de memoria
+            em.close();
+        }
+    }
+
     public boolean esHechoDuplicado(Hecho hecho) {
         if (hecho == null || hecho.getTitulo() == null) return false;
 
