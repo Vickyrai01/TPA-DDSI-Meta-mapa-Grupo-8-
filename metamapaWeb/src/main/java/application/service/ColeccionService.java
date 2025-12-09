@@ -32,10 +32,15 @@ public class ColeccionService {
     }
     public List<HechoDTO> getHechosDeColeccion(Integer id) {
         return metamapaApi.get()
-                .uri(uri -> uri.path("/colecciones/{id}/hechos")
-                        .build(id))
-                .retrieve()
-                .bodyToFlux(HechoDTO.class)
+                .uri(uri -> uri.path("/colecciones/{id}/hechos").build(id))
+                .exchangeToFlux(response -> {
+                    if (response.statusCode().is2xxSuccessful() && response.headers().contentType().isPresent() &&
+                            response.headers().contentType().get().toString().contains("json")) {
+                        return response.bodyToFlux(HechoDTO.class);
+                    } else {
+                        return response.bodyToFlux(HechoDTO.class);
+                    }
+                })
                 .filter(h -> {
                     String estado = h.estado();
                     return estado == null || !estado.trim().equals("INACTIVO");
@@ -46,10 +51,15 @@ public class ColeccionService {
 
     public List<HechoDTO> getHechosVisibles(Integer id, String modoDeNavegacion) {
         return metamapaApi.get()
-                .uri(uri -> uri.path("/colecciones/{id}/{modoDeNavegacion}/hechos")
-                        .build(id, modoDeNavegacion))
-                .retrieve()
-                .bodyToFlux(HechoDTO.class)
+                .uri(uri -> uri.path("/colecciones/{id}/{modoDeNavegacion}/hechos").build(id, modoDeNavegacion))
+                .exchangeToFlux(response -> {
+                    if (response.statusCode().is2xxSuccessful() && response.headers().contentType().isPresent() &&
+                            response.headers().contentType().get().toString().contains("json")) {
+                        return response.bodyToFlux(HechoDTO.class);
+                    } else {
+                        return response.bodyToFlux(HechoDTO.class);
+                    }
+                })
                 .filter(h -> {
                     String estado = h.estado();
                     return estado == null || !estado.trim().equals("INACTIVO");

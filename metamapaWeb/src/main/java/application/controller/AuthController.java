@@ -39,14 +39,19 @@ public class AuthController {
         com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
         return coreApiClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/buscar").queryParam("correo", correo).build())
-                .retrieve()
-                .bodyToMono(UsuarioDTO.class)
-                .flatMap(usuario -> Mono.just(ResponseEntity.status(409).body("El correo ya está registrado")))
-                .switchIfEmpty(
-                        coreApiClient.post()
+                .exchangeToMono(response -> {
+                    if (response.statusCode().is2xxSuccessful() && response.headers().contentType().isPresent() &&
+                            response.headers().contentType().get().toString().contains("json")) {
+                        return response.bodyToMono(UsuarioDTO.class)
+                                .flatMap(usuario -> Mono.just(ResponseEntity.status(409).body("El correo ya está registrado")));
+                    } else {
+                        // Si es 404, 400, 500, o text/plain, continuar con el registro
+                        return coreApiClient.post()
                                 .uri("/registrar")
                                 .bodyValue(new UsuarioDTO(nombre, apellido, correo, "USER", contrasena))
                                 .retrieve()
+                                .onStatus(status -> status.value() == 400 || status.value() == 500,
+                                        resp -> resp.bodyToMono(String.class).map(msg -> new RuntimeException(msg)))
                                 .bodyToMono(UsuarioDTO.class)
                                 .map(nuevo -> {
                                     try {
@@ -55,8 +60,9 @@ public class AuthController {
                                     } catch (Exception e) {
                                         return ResponseEntity.status(500).body("Error serializando usuario");
                                     }
-                                })
-                );
+                                });
+                    }
+                });
     }
 
     // DTO para desacoplar del core
