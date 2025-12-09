@@ -8,7 +8,6 @@
       )}">
 
 <th:block id="links-reportar">
-  <!-- Leaflet -->
   <link rel="stylesheet"
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
@@ -38,7 +37,6 @@
       border-radius: 24px;
       box-shadow: 0 10px 30px rgba(15, 23, 42, .06);
       width: min(1080px, 100%);
-      /* para que no quede pegado */
       min-height: 280px;
     }
     .report-header{
@@ -86,18 +84,68 @@
       min-height: 90px;
       resize: vertical;
     }
+
+    /* ESTILO BOTÓN ADJUNTAR */
     .attach-btn{
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: .4rem;
       background: #f3f4f6;
-      border: 1px solid #e5e7eb;
+      border: 1px dashed #9ca3af; /* Borde punteado para indicar acción */
       border-radius: .75rem;
-      padding: .55rem .8rem;
+      padding: .7rem .8rem;
       cursor: pointer;
       width: 100%;
+      color: var(--text);
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .attach-btn:hover {
+      background: #e5e7eb;
+      border-color: var(--orange);
+      color: var(--orange);
     }
     .attach-btn i{color:var(--orange);}
+
+    /* ESTILO VISUALIZACIÓN ARCHIVO (CHIP) */
+    .file-chip {
+      display: inline-flex;
+      align-items: center;
+      background-color: #fff7ed; /* Fondo naranjita muy suave */
+      border: 1px solid #fed7aa;
+      color: #9a3412;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      margin-top: 8px;
+      max-width: 100%;
+      width: fit-content;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .file-chip span {
+      margin-right: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 250px;
+    }
+    .remove-file-btn {
+      background: none;
+      border: none;
+      color: #9a3412;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      padding: 0;
+      opacity: 0.7;
+    }
+    .remove-file-btn:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
     .report-actions{
       display:flex;
       justify-content:center;
@@ -130,134 +178,23 @@
       color: var(--muted);
       margin-top: .25rem;
     }
-    @media (max-width: 768px){
-      .report-card{
-        border-radius: 0;
-        box-shadow: none;
-      }
-      .success-state{
-        padding: 2rem 1rem 2.5rem;
-      }
-      .success-state h2{
-        font-size: 1.4rem;
-      }
-      .success-actions{
-        flex-direction: column;
-        gap: .6rem;
-      }
-      .success-actions a{
-        text-align: center;
-        width: 100%;
-      }
-    }
-    @media (max-width: 850px){
-      .form-grid{grid-template-columns: 1fr;}
-      .report-body{padding: 1.25rem 1rem 1.5rem;}
-    }
-    .success-state{
-      padding: 2.5rem 2rem 2.8rem;
-      text-align: center;
-    }
-    .success-icon{
-      width: 70px;
-      height: 70px;
-      margin: 0 auto 1rem;
-      border-radius: 999px;
-      background: rgba(27, 197, 102, 0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.2rem;
-      color: #1BC566;
-    }
-    .success-state h2{
-      font-size: 1.7rem;
-      margin-bottom: .35rem;
-    }
-
-    .success-state p{
-      color: #6b7280;
-      margin-bottom: 1.5rem;
-    }
-
-    .success-actions{
-      display: flex;
-      justify-content: center;
-      gap: .75rem;
-      flex-wrap: wrap;
-    }
-
-    .success-actions .btn-primary{
-      background: #F47C2C;
-      color: #fff;
-      border: none;
-      border-radius: 999px;
-      padding: .7rem 2.4rem;
-      font-weight: 600;
-      text-decoration: none;
-    }
-
-    .success-actions .btn-secondary{
-      background: #edf0f4;
-      border: none;
-      border-radius: 999px;
-      padding: .7rem 1.95rem;
-      font-weight: 500;
-      text-decoration: none;
-      color: #1f2937;
-    }
-    .btn-secondary{
-      margin-top:6px;
-      background: #f3f4f6;
-      border: 1px solid #e5e7eb;
-      color: #1f2937;
-      border-radius: 999px;
-      padding: .55rem 1.5rem;
-      font-weight: 500;
-      text-decoration: none;
-    }
-    .btn-secondary:hover{
-      background: #e5e7eb;
-    }
-    .tag-input {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: .4rem;
-      border: 1px solid #ddd;
-      border-radius: .75rem;
-      padding: .4rem .6rem;
-    }
-    .tag-input input {
-      border: none;
-      flex: 1;
-      outline: none;
-      padding: .4rem;
-      font-size: .95rem;
-    }
-    .tag {
-      background: #f3f4f6;
-      border: 1px solid #e5e7eb;
-      border-radius: 999px;
-      padding: .2rem .6rem;
-      display: flex;
-      align-items: center;
-      gap: .3rem;
-      font-size: .85rem;
-    }
-    .remove-tag {
-      background: none;
-      border: none;
-      color: #6b7280;
-      font-size: 1rem;
-      cursor: pointer;
-      padding: 0;
-      margin: 0;
-      line-height: 1;
-    }
-    .remove-tag:hover {
-      color: #1f2937;
-    }
+    /* Estilos responsive y de éxito... (Mantenemos los tuyos) */
+    @media (max-width: 768px){ .report-card{ border-radius: 0; box-shadow: none; } .success-state{ padding: 2rem 1rem 2.5rem; } .success-state h2{ font-size: 1.4rem; } .success-actions{ flex-direction: column; gap: .6rem; } .success-actions a{ text-align: center; width: 100%; } }
+    @media (max-width: 850px){ .form-grid{grid-template-columns: 1fr;} .report-body{padding: 1.25rem 1rem 1.5rem;} }
+    .success-state{ padding: 2.5rem 2rem 2.8rem; text-align: center; }
+    .success-icon{ width: 70px; height: 70px; margin: 0 auto 1rem; border-radius: 999px; background: rgba(27, 197, 102, 0.1); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; color: #1BC566; }
+    .success-state h2{ font-size: 1.7rem; margin-bottom: .35rem; }
+    .success-state p{ color: #6b7280; margin-bottom: 1.5rem; }
+    .success-actions{ display: flex; justify-content: center; gap: .75rem; flex-wrap: wrap; }
+    .success-actions .btn-primary{ background: #F47C2C; color: #fff; border: none; border-radius: 999px; padding: .7rem 2.4rem; font-weight: 600; text-decoration: none; }
+    .success-actions .btn-secondary{ background: #edf0f4; border: none; border-radius: 999px; padding: .7rem 1.95rem; font-weight: 500; text-decoration: none; color: #1f2937; }
+    .btn-secondary{ margin-top:6px; background: #f3f4f6; border: 1px solid #e5e7eb; color: #1f2937; border-radius: 999px; padding: .55rem 1.5rem; font-weight: 500; text-decoration: none; }
+    .btn-secondary:hover{ background: #e5e7eb; }
+    .tag-input { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; border: 1px solid #ddd; border-radius: .75rem; padding: .4rem .6rem; }
+    .tag-input input { border: none; flex: 1; outline: none; padding: .4rem; font-size: .95rem; }
+    .tag { background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 999px; padding: .2rem .6rem; display: flex; align-items: center; gap: .3rem; font-size: .85rem; }
+    .remove-tag { background: none; border: none; color: #6b7280; font-size: 1rem; cursor: pointer; padding: 0; margin: 0; line-height: 1; }
+    .remove-tag:hover { color: #1f2937; }
   </style>
 </th:block>
 
@@ -265,7 +202,6 @@
   <div class="report-wrapper">
     <div class="report-card" th:switch="${estado}">
 
-      <!-- VISTA DE ÉXITO -->
       <div th:case="'ok'" class="success-state">
         <div class="success-icon">
           <i class="fa-solid fa-circle-check"></i>
@@ -273,14 +209,11 @@
         <h2>Hecho enviado</h2>
         <p>Tu reporte se envió correctamente al sistema.</p>
         <div class="success-actions">
-          <!-- volver a cargar otro -->
           <a th:href="@{/reportar}" class="btn-primary">Cargar otro hecho</a>
-          <!-- opcional: ir al home -->
           <a th:href="@{/}" class="btn-secondary">Volver al inicio</a>
         </div>
       </div>
 
-      <!-- VISTA DE ERROR -->
       <div th:case="'error'" class="success-state">
         <div class="success-icon" style="background: rgba(239,68,68,0.1); color:#ef4444;">
           <i class="fa-solid fa-triangle-exclamation"></i>
@@ -295,11 +228,9 @@
         </div>
       </div>
 
-      <!-- FORMULARIO (solo si NO hay ok) -->
       <form th:case="*" th:action="@{/reportar}" method="post" id="form-reportar" >
         <div class="report-header">REPORTAR SUCESO</div>
         <div class="report-body">
-          <!-- fila 1: titulo / categoria -->
           <div class="form-grid">
             <div class="form-group">
               <label for="titulo">Título suceso <span style="color:#F47C2C;">*</span></label>
@@ -310,29 +241,21 @@
               <label for="categoria">Categoría <span style="color:#F47C2C;">*</span></label>
               <select id="categoria" name="categoria" required>
                 <option value="">Elegí una categoría</option>
-                <option th:each="c : ${categorias}"
-                        th:value="${c}"
-                        th:text="${c}">
-                </option>
-                <!-- si querés asegurarte que exista 'Otro': -->
+                <option th:each="c : ${categorias}" th:value="${c}" th:text="${c}"></option>
                 <option value="Otro">Otro</option>
               </select>
             </div>
 
             <div class="form-group">
               <label for="fechaSuceso">Fecha de suceso <span style="color:#F47C2C;">*</span></label>
-              <input type="date" id="fechaSuceso" name="fechaSuceso"
-                     placeholder="dd/mm/aaaa" required>
+              <input type="date" id="fechaSuceso" name="fechaSuceso" required>
             </div>
 
-            <!-- input que aparece solo si se elige "Otro" -->
             <div class="form-group hidden" id="categoria-otra-group">
               <label for="categoriaOtra">Especificá la categoría <span style="color:#F47C2C;">*</span></label>
-              <input type="text" id="categoriaOtra" name="categoriaOtra"
-                     placeholder="Describí la categoría">
+              <input type="text" id="categoriaOtra" name="categoriaOtra" placeholder="Describí la categoría">
             </div>
 
-            <!-- descripción ocupa todo -->
             <div class="form-group" style="grid-column: 1 / -1;">
               <label for="descripcion">Descripción <span style="color:#F47C2C;">*</span></label>
               <textarea id="descripcion" name="descripcion" placeholder="Contanos qué pasó..." required></textarea>
@@ -343,39 +266,37 @@
               <div class="tag-input" id="tagInput">
                 <input type="text" id="inputEtiqueta" placeholder="Escribí y presioná espacio...">
               </div>
-              <!-- Campo oculto para enviar todas las etiquetas concatenadas -->
               <input type="hidden" name="etiquetas" id="etiquetasHidden">
             </div>
 
-            <!-- adjuntar -->
             <div class="form-group" style="grid-column: 1 / -1;">
-              <label for="multimedia">Adjuntar evidencias</label>
-              <label class="attach-btn">
+              <label>Adjuntar evidencias</label>
+
+              <input type="file" id="fileInputSelect" style="display: none;" accept="image/*,video/*">
+
+              <input type="hidden" id="multimediaHidden" name="multimedia">
+
+              <label for="fileInputSelect" class="attach-btn" id="btnAdjuntar">
                 <i class="fa-solid fa-paperclip"></i>
-                <span id="archivoLabel">Adjuntar</span>
-                <input type="file" id="multimedia" name="multimedia" accept="image/*,video/*" style="display:none">
+                <span>Seleccionar archivo...</span>
               </label>
+
+              <div id="filePreviewContainer" class="file-chip" style="display: none;">
+                <span id="fileNameDisplay">nombre_del_archivo.jpg</span>
+                <button type="button" id="removeFileBtn" class="remove-file-btn" title="Quitar archivo">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
             </div>
+
           </div>
 
-          <!-- mapa -->
           <div class="form-group" style="margin-top:.25rem;">
             <label>Ubicación <span style="color:#F47C2C;">*</span></label>
             <div id="mapa-reportar"></div>
             <p class="map-help">Hacé clic en el mapa para marcar la ubicación del suceso.</p>
-            <!-- campos ocultos donde se guarda la posición -->
             <input type="hidden" id="latitud" name="latitud" required>
             <input type="hidden" id="longitud" name="longitud" required>
-          </div>
-
-          <div class="form-group" th:if="${email != null}">
-            <label style="font-weight: 500; display:flex; align-items:center; gap:.4rem;">
-              <input type="checkbox" id="noPublicarDatos" name="noPublicarDatos" style="width:auto;">
-              No publicar mis datos como contribuyente
-            </label>
-            <p class="map-help">
-              Si marcás esta opción, tu correo NO será enviado con el reporte.
-            </p>
           </div>
 
           <div style="color: #F47C2C; font-size: 0.98rem;">
@@ -386,43 +307,68 @@
             <button type="submit" class="btn-primary">Reportar</button>
           </div>
         </div>
-    </form>
+      </form>
       <button id="btn-ejecutar-agregacion"
-              style="padding:0.4rem 1rem;
-               border:none;
-               border-radius:8px;
-               background:#F47C2C;
-               color:white;
-               cursor:pointer;
-               font-weight:bold;">
+              style="padding:0.4rem 1rem; border:none; border-radius:8px; background:#F47C2C; color:white; cursor:pointer; font-weight:bold; margin-top: 15px;">
         Ejecutar Servicio de Agregación
       </button>
-
       <input type="hidden" id="csrf-token" th:value="${_csrf.token}">
-
     </div>
-</div>
+  </div>
 </div>
 
 <th:block id="scripts-reportar">
-  <!-- leaflet -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-          crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function () {
-      // Limitar fecha máxima al día actual
+      // --- LOGICA DE ARCHIVOS (SIMULACIÓN) ---
+      const fileInput = document.getElementById('fileInputSelect');
+      const hiddenInput = document.getElementById('multimediaHidden');
+      const previewContainer = document.getElementById('filePreviewContainer');
+      const nameDisplay = document.getElementById('fileNameDisplay');
+      const removeBtn = document.getElementById('removeFileBtn');
+      const btnLabel = document.getElementById('btnAdjuntar');
+
+      // Cuando el usuario elige un archivo
+      fileInput.addEventListener('change', function() {
+        if (this.files && this.files.length > 0) {
+          const file = this.files[0];
+
+          // 1. Mostrar el nombre en el chip
+          nameDisplay.textContent = file.name;
+          previewContainer.style.display = 'inline-flex';
+
+          // 2. Guardar el nombre en el input que viaja al backend
+          hiddenInput.value = file.name;
+
+          // 3. Ocultar el botón de adjuntar para que no ocupe espacio (opcional)
+          btnLabel.style.display = 'none';
+        }
+      });
+
+      // Cuando el usuario toca la cruz (X)
+      removeBtn.addEventListener('click', function() {
+        // 1. Limpiar inputs
+        fileInput.value = '';
+        hiddenInput.value = '';
+
+        // 2. Ocultar preview y mostrar botón de nuevo
+        previewContainer.style.display = 'none';
+        btnLabel.style.display = 'inline-flex';
+      });
+
+      // --- VALIDACIONES DE FECHA ---
       const fechaInput = document.getElementById('fechaSuceso');
       if (fechaInput) {
         const hoy = new Date();
         const yyyy = hoy.getFullYear();
         const mm = String(hoy.getMonth() + 1).padStart(2, '0');
         const dd = String(hoy.getDate()).padStart(2, '0');
-        const maxDate = `${yyyy}-${mm}-${dd}`;
-        fechaInput.setAttribute('max', maxDate);
+        fechaInput.setAttribute('max', `${yyyy}-${mm}-${dd}`);
       }
-      // Validación para obligar a seleccionar ubicación en el mapa
+
+      // --- VALIDACIÓN MAPA ---
       const form = document.getElementById('form-reportar');
       if (form) {
         form.addEventListener('submit', function(e) {
@@ -434,15 +380,15 @@
           }
         });
       }
-      // ====== mostrar/ocultar "Otro" ======
+
+      // --- CATEGORIA OTRO ---
       const categoriaSelect = document.getElementById('categoria');
       const categoriaOtraGroup = document.getElementById('categoria-otra-group');
       const categoriaOtraInput = document.getElementById('categoriaOtra');
 
       if (categoriaSelect) {
         categoriaSelect.addEventListener('change', () => {
-          const v = categoriaSelect.value;
-          if (v && v.toLowerCase() === 'otro') {
+          if (categoriaSelect.value.toLowerCase() === 'otro') {
             categoriaOtraGroup.classList.remove('hidden');
             categoriaOtraInput.required = true;
           } else {
@@ -453,54 +399,40 @@
         });
       }
 
-      // ====== MAPA ======
+      // --- MAPA ---
       const mapDiv = document.getElementById('mapa-reportar');
       if (mapDiv) {
         const map = L.map('mapa-reportar').setView([-34.6037, -58.3816], 11);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 19,
-          attribution: '&copy; OpenStreetMap'
-        }).addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(map);
 
         let marker = null;
         const latInput = document.getElementById('latitud');
         const lonInput = document.getElementById('longitud');
 
         function setMarker(latlng) {
-          if (marker) {
-            marker.setLatLng(latlng);
-          } else {
+          if (marker) marker.setLatLng(latlng);
+          else {
             marker = L.marker(latlng, { draggable: true }).addTo(map);
             marker.on('dragend', (e) => {
               const { lat, lng } = e.target.getLatLng();
-              latInput.value = lat;
-              lonInput.value = lng;
+              latInput.value = lat; lonInput.value = lng;
             });
           }
-          latInput.value = latlng.lat;
-          lonInput.value = latlng.lng;
+          latInput.value = latlng.lat; lonInput.value = latlng.lng;
         }
 
-        map.on('click', (e) => {
-          setMarker(e.latlng);
-        });
+        map.on('click', (e) => setMarker(e.latlng));
 
-        // opcional: centrar en ubicación real
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(pos => {
-            const lat = pos.coords.latitude;
-            const lon = pos.coords.longitude;
-            map.setView([lat, lon], 14);
+            map.setView([pos.coords.latitude, pos.coords.longitude], 14);
           });
         }
-
-        // por si el contenedor estaba oculto al inicio
-        setTimeout(() => {
-          map.invalidateSize();
-        }, 200);
+        setTimeout(() => map.invalidateSize(), 200);
       }
     });
+
+    // Etiquetas
     document.addEventListener('DOMContentLoaded', () => {
       const input = document.getElementById('inputEtiqueta');
       const container = document.getElementById('tagInput');
@@ -516,10 +448,7 @@
           const remove = document.createElement('button');
           remove.innerHTML = '&times;';
           remove.className = 'remove-tag';
-          remove.onclick = () => {
-            tags.splice(i, 1);
-            renderTags();
-          };
+          remove.onclick = (e) => { e.preventDefault(); tags.splice(i, 1); renderTags(); };
           span.appendChild(remove);
           container.insertBefore(span, input);
         });
@@ -539,32 +468,27 @@
       });
     });
 
+    // Boton Agregación
     document.addEventListener("DOMContentLoaded", () => {
-
       const btn = document.getElementById("btn-ejecutar-agregacion");
       const csrf = document.getElementById("csrf-token")?.value;
-
-      btn.addEventListener("click", async () => {
-
-        try {
-          const resp = await fetch("/ejecutar-agregacion", {
-            method: "POST",
-            headers: { "X-CSRF-TOKEN": csrf }
-          });
-
-          if (resp.ok) {
-            alert("Servicio ejecutado correctamente");
-          } else {
-            alert("Error ejecutando servicio: " + resp.status);
+      if(btn){
+        btn.addEventListener("click", async (e) => {
+          e.preventDefault();
+          try {
+            const resp = await fetch("/ejecutar-agregacion", {
+              method: "POST",
+              headers: { "X-CSRF-TOKEN": csrf }
+            });
+            if (resp.ok) alert("Servicio ejecutado correctamente");
+            else alert("Error ejecutando servicio: " + resp.status);
+          } catch (e) {
+            console.error(e);
+            alert("Error de red ejecutando servicio");
           }
-        } catch (e) {
-          console.error(e);
-          alert("Error de red ejecutando servicio");
-        }
-      });
+        });
+      }
     });
   </script>
 </th:block>
-
-
 </html>
