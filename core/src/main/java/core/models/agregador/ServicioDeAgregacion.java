@@ -27,6 +27,7 @@ public class ServicioDeAgregacion {
 
     private FiltradorCriterios filtradorCriterios = FiltradorCriterios.getInstance();
 
+    private DetectorDeSpam detectorDeSpam = DetectorDeSpam.getInstance();
     private ComparadorHechos comparadorHechos = ComparadorHechos.getInstance();
     private NormalizadorFecha normalizadorFecha = NormalizadorFecha.getInstance();
     private NormalizadorCategoria normalizadorCategoria = NormalizadorCategoria.getInstance();
@@ -65,7 +66,7 @@ public class ServicioDeAgregacion {
     // 6. Agregar a las colecciones correspondientes (ver lo de los criterios de pertenencia)
 
     private void eliminarSpam(List <HechoAIntegrarDTO> lista){
-        lista.removeIf(h -> DetectorDeSpam.esSpam(h.getTitulo()) || DetectorDeSpam.esSpam(h.getDescripcion()));
+        lista.removeIf(h -> detectorDeSpam.esSpam(h.getTitulo()) || detectorDeSpam.esSpam(h.getDescripcion()));
         }
 
 

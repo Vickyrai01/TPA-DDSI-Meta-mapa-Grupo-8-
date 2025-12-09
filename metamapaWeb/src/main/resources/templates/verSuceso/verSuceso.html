@@ -19,23 +19,27 @@
     <div class="map-section">
         <div class="map-panel" id="mapa"></div>
 
+        <!-- Leaflet -->
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+        <!-- MarkerCluster CSS -->
+        <link rel="stylesheet"
+              href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+        <link rel="stylesheet"
+              href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+
+        <!-- MarkerCluster JS -->
+        <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
     </div>
 </div>
 
-
-
 <th:block id="scripts-de-mapa">
-
     <script th:inline="javascript">
         /*<![CDATA[*/
         const hechos = /*[[${hechos}]]*/ [];
-
-        // Obtenemos el ID de la colección que nos pasó el controlador
         const coleccionId = /*[[${coleccionId}]]*/ null;
-
-        console.log("Datos para el mapa:", hechos); // (Para verificar en la consola F12)
+        console.log("Datos para el mapa:", hechos);
         /*]]>*/
     </script>
 

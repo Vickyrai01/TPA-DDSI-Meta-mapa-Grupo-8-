@@ -7,7 +7,7 @@
           contenido=~{:: #contenido-de-coleccion}
       )}">
 
-<!-- ========== CSS (inline para probar) ========== -->
+<!-- ========== CSS ========== -->
 <th:block id="links-de-coleccion">
     <link rel="stylesheet"
           href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -16,6 +16,11 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/pages-css/verColeccion.css}">
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 </th:block>
 
 <!-- ========== CONTENIDO ========== -->
@@ -30,18 +35,13 @@
                 <p th:text="${coleccion.descripcionColeccion()}">Descripción</p>
 
                 <div th:if="${coleccion.modoDeNavegacion() == 'CURADA'}">
-
                     <label for="selectorModo">Modo de navegación:</label>
 
                     <select id="selectorModo" th:data-id="${coleccion.id()}">
                         <option value="CURADA" th:selected="${modoActual == 'CURADA'}">Curada</option>
                         <option value="IRRESTRICTA" th:selected="${modoActual == 'IRRESTRICTA'}">Irrestricta</option>
                     </select>
-
                 </div>
-
-
-
 
                 <h3 style="margin-top:1rem">Hechos</h3>
                 <div class="hechos-accordion">
@@ -50,16 +50,13 @@
                     <details th:each="h : ${hechos}"
                              th:attr="data-hash=${h.hash()}, data-lat=${h.latitud()}, data-lon=${h.longitud()}">
 
-                        <!-- Solo título en el summary -->
                         <summary>
                             <div class="hecho-title" th:text="${h.nombre()}">Título del hecho</div>
                             <i class="chev fa-solid fa-chevron-right" aria-hidden="true"></i>
                         </summary>
 
-                        <!-- Todo el resto dentro del detalle -->
                         <div class="hecho-detalle">
 
-                            <!-- Descripción -->
                             <div class="field">
                                 <span class="field-label">Descripción:</span>
                                 <span class="field-value"
@@ -68,59 +65,58 @@
                                 </span>
                             </div>
 
-                            <!-- Fecha del hecho -->
                             <div class="field">
                                 <span class="field-label">Fecha del hecho:</span>
                                 <span class="field-value"
                                       th:text="${h.fechaSuceso() != null} ?
-                   ${#temporals.format(h.fechaSuceso(), 'dd/MM/yyyy')} :
-                   'No indica'"
+                                               ${#temporals.format(h.fechaSuceso(), 'dd/MM/yyyy')} :
+                                               'No indica'"
                                       th:classappend="${h.fechaSuceso() == null} ? 'muted' : ''">
-    </span>
+                                </span>
                             </div>
 
-                            <!-- Fecha de carga -->
                             <div class="field">
                                 <span class="field-label">Fecha de carga:</span>
                                 <span class="field-value"
                                       th:text="${h.fechaCarga() != null} ?
-                   ${#temporals.format(h.fechaCarga(), 'dd/MM/yyyy')} :
-                   'No indica'"
+                                               ${#temporals.format(h.fechaCarga(), 'dd/MM/yyyy')} :
+                                               'No indica'"
                                       th:classappend="${h.fechaCarga() == null} ? 'muted' : ''">
-    </span>
+                                </span>
                             </div>
 
-                            <!-- Categorias -->
                             <div class="field">
                                 <span class="field-label">Categorias:</span>
 
-                                <!-- Cuando hay Categorias -->
-                                <span class="field-value" th:if="${h.categorias()!=null and !#lists.isEmpty(h.categorias())}">
-                                    <span class="chip" th:each="tag : ${h.categorias()}" th:text="${tag}"></span>
+                                <span class="field-value"
+                                      th:if="${h.categorias()!=null and !#lists.isEmpty(h.categorias())}">
+                                    <span class="chip"
+                                          th:each="tag : ${h.categorias()}"
+                                          th:text="${tag}"></span>
                                 </span>
 
-                                <!-- Cuando no hay -->
-                                <span class="field-value muted" th:if="${h.categorias()==null or #lists.isEmpty(h.categorias())}">
+                                <span class="field-value muted"
+                                      th:if="${h.categorias()==null or #lists.isEmpty(h.categorias())}">
                                     No indica
                                 </span>
                             </div>
 
-                            <!-- Etiquetas -->
                             <div class="field">
                                 <span class="field-label">Etiquetas:</span>
 
-                                <!-- Cuando hay etiquetas -->
-                                <span class="field-value" th:if="${h.etiquetas()!=null and !#lists.isEmpty(h.etiquetas())}">
-                                    <span class="chip" th:each="tag : ${h.etiquetas()}" th:text="${tag}"></span>
+                                <span class="field-value"
+                                      th:if="${h.etiquetas()!=null and !#lists.isEmpty(h.etiquetas())}">
+                                    <span class="chip"
+                                          th:each="tag : ${h.etiquetas()}"
+                                          th:text="${tag}"></span>
                                 </span>
 
-                                <!-- Cuando no hay -->
-                                <span class="field-value muted" th:if="${h.etiquetas()==null or #lists.isEmpty(h.etiquetas())}">
+                                <span class="field-value muted"
+                                      th:if="${h.etiquetas()==null or #lists.isEmpty(h.etiquetas())}">
                                     No indica
                                 </span>
                             </div>
 
-                            <!-- Contribuyente -->
                             <div class="field">
                                 <span class="field-label">Contribuyente:</span>
                                 <span class="field-value"
@@ -140,16 +136,16 @@
                                 </span>
                             </div>
 
-                            <!-- Botón Ver en mapa -->
+                            <!-- Botón Ver -->
                             <div class="field" style="margin-top:0.6rem;">
-                                <a href="#" class="btn-map js-ver-hecho" th:attr="data-hash=${h.hash()}">
+                                <a href="#" class="btn-map js-ver-hecho" th:attr="data-hash=${h.hash}">
                                     <i class="fa-solid fa-location-dot"></i> Ver hecho
                                 </a>
-
-
                             </div>
+
                             <div class="field" style="margin-top:0.6rem;">
-                                <a class="btn-solicitud" th:href="@{|/solicitudEliminacion/${h.hash}|}">
+                                <a class="btn-solicitud"
+                                   th:href="@{|/solicitudEliminacion/${h.hash}|}">
                                     Solicitar eliminación
                                 </a>
                             </div>
@@ -157,29 +153,33 @@
                         </div>
                     </details>
 
-                    <p th:if="${#lists.isEmpty(hechos)}" class="muted">No hay hechos para esta colección.</p>
+                    <p th:if="${#lists.isEmpty(hechos)}" class="muted">
+                        No hay hechos para esta colección.
+                    </p>
                 </div>
             </section>
         </aside>
     </main>
 </div>
 
-<!-- ========== JS (inline para probar) ========== -->
+<!-- ========== JS ========== -->
 <th:block id="scripts-de-coleccion">
     <!-- Datos del backend -->
-    <!-- 1) Debe estar antes para inyectar la lista de hechos -->
     <script th:inline="javascript">
         /*<![CDATA[*/
         window.hechos = /*[[${hechos}]]*/ [];
         /*]]>*/
     </script>
 
-    <!-- 2) Leaflet -->
+    <!-- Leaflet -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             crossorigin=""></script>
 
-    <!-- 3) JS principal -->
+    <!-- MarkerCluster JS -->
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+    <!-- JS principal -->
     <script>
         // ===== Helpers menores =====
         const toNum = v => {
@@ -201,38 +201,58 @@
         // ===== Mapa =====
         const defaultCenter = [-34.6037, -58.3816], defaultZoom = 11;
         const map = L.map('mapa', { maxZoom: 19 })
-            .setView(puntos.length ? [puntos[0].lat, puntos[0].lon] : defaultCenter,
-                puntos.length ? 13 : defaultZoom);
+            .setView(
+                puntos.length ? [puntos[0].lat, puntos[0].lon] : defaultCenter,
+                puntos.length ? 13 : defaultZoom
+            );
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors', maxZoom: 19
+            attribution: '&copy; OpenStreetMap contributors',
+            maxZoom: 19
         }).addTo(map);
 
-        // ===== Marcadores + popup con "Ver hecho" =====
+        // CLUSTERING
         const markersByHash = {};
-        puntos.forEach(p => {
-            const popupHtml = `
-      <div class="popup-card">
-        <div class="popup-title"><b>${p.nombre ?? '(sin título)'}</b></div>
-        <a href="#" class="btn-map js-ver-hecho" data-hash="${p.hash}">
-          <i class="fa-solid fa-list"></i> Ver hecho
-        </a>
-      </div>
-    `;
-            const m = L.marker([p.lat, p.lon]).addTo(map).bindPopup(popupHtml);
-            markersByHash[p.hash] = m;
+
+        const markerCluster = L.markerClusterGroup({
+            maxClusterRadius: 40,
+            spiderfyOnEveryZoom: true,
+            showCoverageOnHover: false
         });
 
-        // Al abrir cualquier popup: solo centramos suave (NO tocamos la sidebar)
+        puntos.forEach(p => {
+            const popupHtml = `
+              <div class="popup-card">
+                <div class="popup-title"><b>${p.nombre ?? '(sin título)'}</b></div>
+                <a href="#" class="btn-map js-ver-hecho" data-hash="${p.hash}">
+                  <i class="fa-solid fa-list"></i> Ver hecho
+                </a>
+              </div>
+            `;
+
+            const m = L.marker([p.lat, p.lon]).bindPopup(popupHtml);
+
+            markersByHash[p.hash] = m;
+            markerCluster.addLayer(m);
+        });
+
+        map.addLayer(markerCluster);
+
+        if (puntos.length > 1) {
+            const bounds = L.latLngBounds(puntos.map(p => [p.lat, p.lon]));
+            map.fitBounds(bounds.pad(0.15));
+        }
+
+        // Al abrir cualquier popup: solo centramos suave (si quisieras)
         map.on('popupopen', (e) => {
             const ll = e.popup.getLatLng();
-            //map.flyTo(ll, Math.max(map.getZoom(), 15), { duration: .4 });
+            // map.flyTo(ll, Math.max(map.getZoom(), 15), { duration: .4 });
         });
 
         // ===== Helpers de sincronización mapa <-> sidebar =====
         const sidebarPanel = document.querySelector('.sidebar-panel');
 
-        function focusMarker(hash, {zoom=15, openPopup=true} = {}) {
+        function focusMarker(hash, { zoom = 15, openPopup = true } = {}) {
             const m = markersByHash[hash];
             if (!m) return;
             const latlng = m.getLatLng();
@@ -240,7 +260,7 @@
             if (openPopup) m.openPopup();
         }
 
-        function openDetails(hash, {scroll=true, highlight=true, closeOthers=true} = {}) {
+        function openDetails(hash, { scroll = true, highlight = true, closeOthers = true } = {}) {
             const details = document.querySelector(`details[data-hash="${hash}"]`);
             if (!details) return;
 
@@ -255,67 +275,65 @@
                     .forEach(d => d.classList.remove('highlight'));
                 details.classList.add('highlight');
             }
+
             if (scroll && sidebarPanel) {
-                sidebarPanel.scrollTo({ top: details.offsetTop - 40, behavior: 'smooth' });
+                sidebarPanel.scrollTo({
+                    top: details.offsetTop - 40,
+                    behavior: 'smooth'
+                });
             }
         }
 
-        // ===== Solo cuando tocan "Ver hecho" en el popup =====
-        // Nota: evitamos bloquear la navegación si el click se produce sobre
-        // un <a> con un href real (por ejemplo los links de "Solicitar eliminación").
+        // ===== Click en "Ver hecho" (popup o sidebar) =====
         document.addEventListener('click', (e) => {
             const link = e.target.closest('.js-ver-hecho');
             if (!link) return;
 
-            // Si el elemento clickeado es un <a> con href distinto de '#', dejamos
-            // que el navegador maneje la navegación (no hacemos preventDefault).
             const clickedAnchor = e.target.closest('a');
             if (clickedAnchor) {
                 const href = clickedAnchor.getAttribute('href');
-                if (href && href !== '#') {
-                    // permitir navegación normal
-                    return;
-                }
+                if (href && href !== '#') return; // dejar navegar normal
             }
 
             e.preventDefault();
             const hash = link.dataset.hash;
 
-            // 1) Centrar mapa y mantener popup abierto
             focusMarker(hash, { openPopup: true });
-
-            // 2) Abrir acordeón correspondiente, cerrar otros y scrollear
             openDetails(hash);
         });
 
-        // ===== Ajustes de layout/leaflet opcionales =====
-        function fitLayout(){
+        function fitLayout() {
             const header = document.querySelector('header.site-header');
             const footer = document.querySelector('footer.site-footer');
-            const cont   = document.querySelector('.map-layout-container');
-            if(!cont) return;
-            const h = window.innerHeight - (header?.offsetHeight||0) - (footer?.offsetHeight||0) - 16;
+            const cont = document.querySelector('.map-layout-container');
+            if (!cont) return;
+            const h = window.innerHeight - (header?.offsetHeight || 0) - (footer?.offsetHeight || 0) - 16;
             cont.style.minHeight = Math.max(360, h) + 'px';
         }
-        window.addEventListener('load',  () => { fitLayout(); setTimeout(()=>map.invalidateSize(), 80); });
-        window.addEventListener('resize',() => { fitLayout(); map.invalidateSize(); });
 
-        // Para que cambiar el modo de navegación recargue la pagina
-        document.addEventListener("DOMContentLoaded", () => {
-            const selector = document.getElementById("selectorModo");
+        window.addEventListener('load', () => {
+            fitLayout();
+            setTimeout(() => map.invalidateSize(), 80);
+        });
+
+        window.addEventListener('resize', () => {
+            fitLayout();
+            map.invalidateSize();
+        });
+
+        // Cambiar modo de navegación recargando la página
+        document.addEventListener('DOMContentLoaded', () => {
+            const selector = document.getElementById('selectorModo');
             if (!selector) return;
 
-            selector.addEventListener("change", () => {
+            selector.addEventListener('change', () => {
                 const id = selector.dataset.id;
                 const modo = selector.value;
-
                 const url = `/colecciones/${id}?modo=${modo}`;
-                console.log("Navegando a:", url);
-
+                console.log('Navegando a:', url);
                 window.location.href = url;
             });
         });
-
     </script>
 </th:block>
 
