@@ -1,0 +1,90 @@
+<!-- Panel lateral de edición de hecho -->
+<div id="panel-editar-hecho" class="panel-editar-hecho" style="display:none; position:fixed; top:0; right:0; width:400px; height:100%; background:#fff; box-shadow:-2px 0 8px rgba(0,0,0,0.1); z-index:1000; overflow-y:auto;">
+    <div style="padding:1.5rem 1rem 1rem 1rem; border-bottom:1px solid #eee; display:flex; align-items:center; justify-content:space-between;">
+        <h2 style="margin:0; font-size:1.3em;">Editar hecho</h2>
+        <button id="cerrar-panel-editar-hecho" style="background:none; border:none; font-size:1.5em; cursor:pointer; color:#888;">&times;</button>
+    </div>
+    <form id="form-editar-hecho" style="padding:1rem;">
+        <input type="hidden" id="editar-hash" name="hash" />
+        <div style="margin-bottom:1rem;">
+            <label for="editar-nombre">Título:</label>
+            <input type="text" id="editar-nombre" name="nombre" class="form-control" required />
+        </div>
+        <div style="margin-bottom:1rem;">
+            <label for="editar-descripcion">Descripción:</label>
+            <textarea id="editar-descripcion" name="descripcion" class="form-control" required></textarea>
+        </div>
+        <div style="margin-bottom:1rem;">
+            <label for="editar-fechaSuceso">Fecha del hecho:</label>
+            <input type="date" id="editar-fechaSuceso" name="fechaSuceso" class="form-control" />
+        </div>
+        <div style="margin-bottom:1rem;">
+            <label for="editar-categorias">Categoría:</label>
+            <select id="editar-categorias" name="categorias" class="form-control">
+                <option value="">Elegí una categoría</option>
+                <option th:each="c : ${categorias}" th:value="${c}" th:text="${c}"></option>
+            </select>
+        </div>
+        <div style="margin-bottom:1rem;">
+            <label for="editar-etiquetas">Etiquetas (separadas por coma):</label>
+            <input type="text" id="editar-etiquetas" name="etiquetas" class="form-control" placeholder="Ej: urgente, zona norte" />
+        </div>
+        <div style="margin-bottom:1rem;">
+            <label for="editar-latitud">Latitud:</label>
+            <input type="text" id="editar-latitud" name="latitud" class="form-control" />
+        </div>
+        <div style="margin-bottom:1rem;">
+            <label for="editar-longitud">Longitud:</label>
+            <input type="text" id="editar-longitud" name="longitud" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    </form>
+</div>
+<script>
+    // Abrir panel lateral al hacer clic en lápiz
+    function abrirPanelEditarHecho(hecho) {
+        document.getElementById('panel-editar-hecho').style.display = 'block';
+        document.getElementById('editar-hash').value = hecho.hash;
+        document.getElementById('editar-nombre').value = hecho.nombre;
+        document.getElementById('editar-descripcion').value = hecho.descripcion || '';
+        document.getElementById('editar-fechaSuceso').value = hecho.fechaSuceso || '';
+        document.getElementById('editar-categorias').value = (hecho.categorias && hecho.categorias.length) ? hecho.categorias.join(', ') : '';
+        document.getElementById('editar-etiquetas').value = (hecho.etiquetas && hecho.etiquetas.length) ? hecho.etiquetas.join(', ') : '';
+        document.getElementById('editar-latitud').value = hecho.latitud || '';
+        document.getElementById('editar-longitud').value = hecho.longitud || '';
+    }
+    document.querySelectorAll('.btn-editar').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const hash = this.getAttribute('href').split('/').pop();
+            const hecho = (window.hechos || []).find(h => h.hash == hash);
+            if (hecho) abrirPanelEditarHecho(hecho);
+        });
+    });
+    document.getElementById('cerrar-panel-editar-hecho').onclick = function() {
+        document.getElementById('panel-editar-hecho').style.display = 'none';
+    };
+    // Enviar cambios al backend (AJAX)
+    document.getElementById('form-editar-hecho').onsubmit = function(e) {
+        e.preventDefault();
+        const hash = document.getElementById('editar-hash').value;
+        const nombre = document.getElementById('editar-nombre').value;
+        const descripcion = document.getElementById('editar-descripcion').value;
+        const fechaSuceso = document.getElementById('editar-fechaSuceso').value;
+        const categorias = document.getElementById('editar-categorias').value;
+        const etiquetas = document.getElementById('editar-etiquetas').value;
+        const latitud = document.getElementById('editar-latitud').value;
+        const longitud = document.getElementById('editar-longitud').value;
+        fetch(`/misHechos/editar/${hash}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `nombre=${encodeURIComponent(nombre)}&descripcion=${encodeURIComponent(descripcion)}&fechaSuceso=${encodeURIComponent(fechaSuceso)}&categorias=${encodeURIComponent(categorias)}&etiquetas=${encodeURIComponent(etiquetas)}&latitud=${encodeURIComponent(latitud)}&longitud=${encodeURIComponent(longitud)}`
+        }).then(res => {
+            if (res.ok) {
+                location.reload();
+            } else {
+                alert('Error al guardar los cambios');
+            }
+        });
+    };
+</script>

@@ -254,7 +254,7 @@ public class Hecho {
             joinColumns = @JoinColumn(name = "hecho_id",
                     foreignKey = @ForeignKey(name = "hecho_multimedia_hecho"))
     )
-    private List<String> multimedia;
+    private List<String> multimedia = new ArrayList<>();
     public List<String> getMultimedia() {
         return multimedia;
     }

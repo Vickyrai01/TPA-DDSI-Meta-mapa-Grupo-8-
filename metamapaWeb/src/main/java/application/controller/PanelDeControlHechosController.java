@@ -5,6 +5,7 @@ import application.dto.HechoDTO;
 import application.service.ColeccionService;
 import application.service.HechoService;
 import application.service.AdminService;
+import application.service.ReportarService;
 import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,8 @@ import java.util.Optional;
 
 @Controller
 public class PanelDeControlHechosController {
+    @Autowired
+    private ReportarService reportarService;
 
     private final ColeccionService coleccionService;
     private final HechoService hechoService;
@@ -32,14 +35,24 @@ public class PanelDeControlHechosController {
         this.adminService = adminService;
     }
 
-    // Renderiza Admin Hechos tomando los hechos de la colección global (criterio == null)
+    // Renderiza Admin Hechos tomando los hechos de la colecciÃ³n global (criterio == null)
     @GetMapping("/admin/hechos")
     public String administrarHechos(Model model, Authentication authentication, RedirectAttributes ra) {
         if (!adminService.isAdmin(authentication)) {
-            ra.addFlashAttribute("toastError", "No podes ingresar porque no sos admin :v");
+            ra.addFlashAttribute("toastError", "No podes ingresar porque no sos admin");
             return "redirect:/";
         }
         List<HechoDTO> hechosGlobales = hechoService.getAll();
+        try {
+            String categoriasJson = reportarService.getCategorias();
+            com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            List<String> categorias = objectMapper.readValue(
+                    categoriasJson,
+                    objectMapper.getTypeFactory().constructCollectionType(List.class, String.class));
+            model.addAttribute("categorias", categorias);
+        } catch (Exception e) {
+            model.addAttribute("categorias", List.of());
+        }
         model.addAttribute("listaDeHechos", Optional.ofNullable(hechosGlobales).orElse(List.of()));
         return "panelDeControl/panelDeControlHECHOS";
     }
@@ -60,6 +73,10 @@ public class PanelDeControlHechosController {
                                             @RequestBody Map<String, Object> req) {
         String nombre = req.get("nombre") != null ? req.get("nombre").toString() : null;
         String descripcion = req.get("descripcion") != null ? req.get("descripcion").toString() : null;
+        String latitud = req.get("latitud") != null ? req.get("latitud").toString() : null;
+        String longitud = req.get("longitud") != null ? req.get("longitud").toString() : null;
+        String fechaSuceso = req.get("fecha_suceso") != null ? req.get("fecha_suceso").toString() : null;
+        String categoria = req.get("categoria") != null ? req.get("categoria").toString() : null;
 
         List<String> etiquetas = null;
         Object et = req.get("etiquetas");
@@ -67,7 +84,7 @@ public class PanelDeControlHechosController {
             etiquetas = list.stream().map(String::valueOf).toList();
         }
 
-        boolean ok = hechoService.patchByHash(hash, nombre, descripcion, etiquetas);
+        boolean ok = hechoService.patchByHash(hash, nombre, descripcion, etiquetas, latitud, longitud, fechaSuceso, categoria);
         return ok ? ResponseEntity.ok().build()
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pudo actualizar el hecho");
     }

@@ -126,17 +126,13 @@
                             </div>
 
                             <!-- Multimedia -->
-                            <div class="field"
-                                 th:if="${h.multimedia()!=null and !h.multimedia().isEmpty()}">
+                            <div class="field">
                                 <span class="field-label">Multimedia:</span>
-                                <span class="field-value">
-                                    <a th:each="m : ${h.multimedia()}"
-                                       th:href="${m}"
-                                       target="_blank"
-                                       rel="noreferrer">
-                                        <i class="fa-solid fa-link"></i>
-                                        <span th:text="${#strings.abbreviate(m, 30)}">Archivo</span>
-                                    </a>
+                                <span class="field-value" th:if="${h.multimedia()!=null and !h.multimedia().isEmpty()}">
+                                    <a th:each="m : ${h.multimedia()}" th:href="@{'/uploads/' + ${m}}" th:text="${m}" target="_self" style="display:block; margin: 5px 0; color: #ff6600; text-decoration: underline;"/>
+                                </span>
+                                <span class="field-value muted" th:if="${h.multimedia()==null or h.multimedia().isEmpty()}">
+                                    No tiene fotos adjuntas.
                                 </span>
                             </div>
 
