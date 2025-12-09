@@ -42,6 +42,28 @@ public abstract class JpaRepositoryBase<T, ID> {
         }
     }
 
+    public T save(T entity) {
+        EntityManager em = emSupplier.get();
+        try {
+            DBUtils.comenzarTransaccion(em);
+            ID id = idGetter.apply(entity);
+            T managed;
+            if (id == null) {
+                em.persist(entity);
+                managed = entity; // ya es managed
+            } else {
+                managed = em.merge(entity); // devuelve la instancia managed
+            }
+            DBUtils.commit(em);
+            return managed;
+        } catch (RuntimeException ex) {
+            DBUtils.rollback(em);
+            throw ex;
+        } finally {
+            em.close();
+        }
+    }
+
 
     public long count() {
         EntityManager em = emSupplier.get();

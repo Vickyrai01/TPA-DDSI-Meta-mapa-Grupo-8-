@@ -305,10 +305,11 @@
         function fitLayout() {
             const header = document.querySelector('header.site-header');
             const footer = document.querySelector('footer.site-footer');
-            const cont = document.querySelector('.map-layout-container');
-            if (!cont) return;
-            const h = window.innerHeight - (header?.offsetHeight || 0) - (footer?.offsetHeight || 0) - 16;
-            cont.style.minHeight = Math.max(360, h) + 'px';
+            const cont   = document.querySelector('.map-layout-container');
+            if(!cont) return;
+
+            const h = window.innerHeight - (header?.offsetHeight||0) - (footer?.offsetHeight||0) - 16;
+            cont.style.height = Math.max(360, h) + 'px';
         }
 
         window.addEventListener('load', () => {
