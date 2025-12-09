@@ -94,7 +94,7 @@ public class HandlerCargadores {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(fuente))
-                .timeout(Duration.ofSeconds(20))
+                .timeout(Duration.ofSeconds(10))
                 .header("Accept", "application/json")
                 .GET()
                 .build();

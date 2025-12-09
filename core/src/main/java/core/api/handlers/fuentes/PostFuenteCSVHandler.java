@@ -15,6 +15,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
+import java.time.Duration;
 
 public class PostFuenteCSVHandler implements Handler{
 
@@ -51,6 +52,7 @@ public class PostFuenteCSVHandler implements Handler{
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(CARGADOR_ESTATICO_BASE_URL + "/fuentes/" + idFuenteCargador + "/csv"))
                 .header("Content-Type", "multipart/form-data; boundary=" + multipart.getBoundary())
+                .timeout(Duration.ofSeconds(10))
                 .POST(multipart.build())
                 .build();
 

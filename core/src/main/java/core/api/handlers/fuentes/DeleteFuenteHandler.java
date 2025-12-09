@@ -12,6 +12,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 
 public class DeleteFuenteHandler implements Handler {
 
@@ -50,6 +51,7 @@ public class DeleteFuenteHandler implements Handler {
         try {
             HttpRequest req = HttpRequest.newBuilder()
                     .uri(URI.create(url))
+                    .timeout(Duration.ofSeconds(10))
                     .POST(HttpRequest.BodyPublishers.noBody())
                     .build();
 

@@ -7,6 +7,8 @@ public class FuenteDTO {
     private String tipoFuente;
     private String strategyTipoConexion;
 
+    public FuenteDTO(){}
+
     public FuenteDTO(Integer id, String nombre, String link, String tipoFuente, String strategyTipoConexion) {
         this.id = id;
         this.nombre = nombre;

@@ -6,15 +6,13 @@
 
     <!-- Parent del módulo Boot -->
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.3</version>
-        <relativePath/>
+        <groupId>org.example</groupId>
+        <artifactId>MetaMapa</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.example</groupId>
     <artifactId>cargadorEstatica</artifactId>
-    <version>1.0-SNAPSHOT</version>
     <name>cargadorEstatica</name>
     <packaging>jar</packaging>
 
@@ -56,13 +54,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Reutilizar código de MetaMapa -->
-        <dependency>
-            <groupId>org.example</groupId>
-            <artifactId>MetaMapa</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
         <!-- Persistencia -->
         <dependency>
             <groupId>mysql</groupId>
@@ -82,7 +73,16 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.2.5</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
+
 </project>

@@ -103,9 +103,8 @@ public class PatchAgregarFuentesColeccionHandler implements Handler
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
-                .timeout(Duration.ofSeconds(20))
-                .header("Content-Type", "application/json; charset=utf-8"
-                )
+                .timeout(Duration.ofSeconds(10))
+                .header("Content-Type", "application/json; charset=utf-8")
                 .POST(HttpRequest.BodyPublishers.ofString(jsonFuente))
                 .build();
 

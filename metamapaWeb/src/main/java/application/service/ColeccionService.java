@@ -15,8 +15,13 @@ import java.util.Map;
 
 @Service
 public class ColeccionService {
-    private final WebClient metamapaApi = WebClient.create("http://localhost:8081/core/api");
-    private final WebClient metamapaApiADMIN = WebClient.create("http://localhost:8082/core/api");
+    private final WebClient metamapaApi;
+    private final WebClient metamapaApiADMIN;
+
+    public ColeccionService(RutasProperties props) {
+        this.metamapaApi = WebClient.create(props.getBaseUrl());
+        this.metamapaApiADMIN = WebClient.create(props.getAdminBaseUrl());
+    }
 
     @Autowired
     private ObjectMapper objectMapper;

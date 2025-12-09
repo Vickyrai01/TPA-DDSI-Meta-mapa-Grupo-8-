@@ -9,28 +9,12 @@ import core.models.repository.seeders.SolicitudEliminacioRepositorySeeder;
 
 public class ApiAdminMetaMapa {
 
-    public static void main(String[] args) {
-        /*
-        HechosRepositorySeeder hechosRepositorySeeder = HechosRepositorySeeder.getInstance();
-        hechosRepositorySeeder.cargarHechosSeeder();
+    public static void configurar(Javalin app) {
 
-        FuentesRepositorySeeder fuentesRepositorySeeder = FuentesRepositorySeeder.getInstance();
-        fuentesRepositorySeeder.cargarFuentesSeeder();
+        // Root "admin" para chequear rápido desde el navegador
+        app.get("/admin", ctx -> ctx.result("API ADMINISTRATIVA MetaMapa ACTIVA"));
 
-        SolicitudEliminacioRepositorySeeder solicitudEliminacioRepositorySeeder = SolicitudEliminacioRepositorySeeder.getInstance();
-        solicitudEliminacioRepositorySeeder.cargarSolicitudDeEliminacionSeeder();
-
-        ColeccionesRepositorySeeder coleccionesRepositorySeeder = ColeccionesRepositorySeeder.getInstance();
-        coleccionesRepositorySeeder.cargarColeccionesRepositorySeeder();
-
-         */
-        FuentesRepositorySeeder fuentesRepositorySeeder = FuentesRepositorySeeder.getInstance();
-        fuentesRepositorySeeder.cargarFuentesSeeder();
-
-        Javalin app = Javalin.create()
-                .get("/", ctx -> ctx.result("API ADMINISTRATIVA MetaMapa ACTIVA"))
-                .start(8082);
-
+        // Endpoints administrativos (antes en el server de 8082)
         ApiAdminMetaMapaConfig.configurarEndpoints(app);
     }
 }

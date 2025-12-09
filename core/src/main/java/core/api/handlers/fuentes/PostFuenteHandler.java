@@ -19,6 +19,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -88,6 +89,7 @@ public class PostFuenteHandler implements Handler {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(urlCargador))
                 .header("Content-Type", "application/json")
+                .timeout(Duration.ofSeconds(10))
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
 

@@ -109,8 +109,8 @@ filtroSel.addEventListener('change', function() {
     const cat = filtroSel.value;
     if (!cat) return;
     // Links de descarga (estos pueden ir directo al backend de estadísticas si no hacés proxy para descargas)
-    document.getElementById('csv-prov-categ').href = `http://localhost:8090/servicioEstadisticas/export/csv/provincia-por-categoria/${encodeURIComponent(cat)}`;
-    document.getElementById('csv-hora-categ').href = `http://localhost:8090/servicioEstadisticas/export/csv/horario-por-categoria/${encodeURIComponent(cat)}`;
+    document.getElementById('csv-prov-categ').href = `http://host.docker.internal:8090/servicioEstadisticas/export/csv/provincia-por-categoria/${encodeURIComponent(cat)}`;
+    document.getElementById('csv-hora-categ').href = `http://host.docker.internal:8090/servicioEstadisticas/export/csv/horario-por-categoria/${encodeURIComponent(cat)}`;
     // Gráficos por categoría seleccionada
     fetch(`${API_BASE}/provincia-con-mas-hechos-por-categoria?categoria=${encodeURIComponent(cat)}`)
         .then(r=>r.json()).then(data => {

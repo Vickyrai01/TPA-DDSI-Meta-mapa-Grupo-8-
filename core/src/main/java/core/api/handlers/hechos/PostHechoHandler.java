@@ -97,9 +97,8 @@ public class PostHechoHandler implements Handler {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
-                .timeout(Duration.ofSeconds(20))
-                .header("Content-Type", "application/json; charset=utf-8"
-                )
+                .header("Content-Type", "application/json; charset=utf-8")
+                .timeout(Duration.ofSeconds(10))
                 .POST(HttpRequest.BodyPublishers.ofString(jsonHecho))
                 .build();
         return client.send(request, HttpResponse.BodyHandlers.ofString());

@@ -13,15 +13,14 @@ import java.util.Map;
 
 @Service
 public class HechoService {
-    private final WebClient metamapaApi = WebClient.create("http://localhost:8081/core/api");
+    private final WebClient metamapaApiADMIN;
 
-    // API administrativa (edición/borrado)
-    private final WebClient adminApi = WebClient.builder()
-            .baseUrl("http://localhost:8082/core/api")
-            .build();
+    public HechoService(RutasProperties props) {
+        this.metamapaApiADMIN = WebClient.create(props.getAdminBaseUrl());
+    }
 
     public List<HechoDTO> getAll() {
-        return adminApi.get()
+        return metamapaApiADMIN.get()
                 .uri("/hechos")
                 .retrieve()
                 .bodyToFlux(HechoDTO.class)
@@ -41,7 +40,7 @@ public class HechoService {
         if (body.isEmpty()) return true;
 
         try {
-            adminApi.patch()
+            metamapaApiADMIN.patch()
                     .uri("/hechos/{hash}", hash)
                     .bodyValue(body)
                     .retrieve()
@@ -61,7 +60,7 @@ public class HechoService {
         if (hash == null || hash.isBlank()) return false;
 
         try {
-            adminApi.delete()
+            metamapaApiADMIN.delete()
                     .uri("/hechos/{hash}", hash)
                     .retrieve()
                     .toBodilessEntity()

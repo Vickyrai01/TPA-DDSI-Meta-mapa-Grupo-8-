@@ -1,0 +1,129 @@
+services:
+  mysql:
+    image: mysql:8
+    container_name: metamapa-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: Root123456
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    networks:
+      - metamapa-net
+
+  core:
+    build: ./core          # 👈 usa Dockerfile de ./core
+    image: metamapa-core
+    container_name: metamapa-core
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/core?serverTimezone=America/Argentina/Buenos_Aires
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Root123456
+    ports:
+      - "8081:8081"
+    networks:
+      - metamapa-net
+
+  cargador-dinamico:
+    build: ./cargadorDinamica   # 👈 carpeta del módulo
+    image: cargador-dinamica
+    container_name: cargador-dinamica
+    restart: unless-stopped
+    depends_on:
+      - mysql
+      - core
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/cargador_dinamica?serverTimezone=America/Argentina/Buenos_Aires
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Root123456
+
+      METAMAPA_API_BASE_URL: http://core:8081/public/core/api
+      METAMAPA_API_ADMIN_BASE_URL: http://core:8081/admin/core/api
+    ports:
+      - "8083:8083"
+    networks:
+      - metamapa-net
+
+  cargador-estatica:
+    build: ./cargadorEstatica
+    image: cargador-estatica
+    container_name: cargador-estatica
+    restart: unless-stopped
+    depends_on:
+      - mysql
+      - core
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/cargador_estatica?serverTimezone=America/Argentina/Buenos_Aires
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Root123456
+
+      METAMAPA_API_BASE_URL: http://core:8081/public/core/api
+    ports:
+      - "8085:8085"
+    networks:
+      - metamapa-net
+
+  cargador-proxy:
+    build: ./cargadorProxy
+    image: cargador-proxy
+    container_name: cargador-proxy
+    restart: unless-stopped
+    depends_on:
+      - mysql
+      - core
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/cargador_proxy?serverTimezone=America/Argentina/Buenos_Aires
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Root123456
+
+      METAMAPA_API_BASE_URL: http://core:8081/public/core/api
+    ports:
+      - "8084:8084"
+    networks:
+      - metamapa-net
+
+  servicio-estadisticas:
+    build: ./servicioEstadisticas
+    image: servicio-estadisticas
+    container_name: servicio-estadisticas
+    restart: unless-stopped
+    depends_on:
+      - mysql
+      - core
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/servicioestadisticas?serverTimezone=America/Argentina/Buenos_Aires
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Root123456
+
+      METAMAPA_API_BASE_URL: http://core:8081/public/core/api
+    ports:
+      - "8090:8090"
+    networks:
+      - metamapa-net
+
+  metamapa-web:
+    build: ./metamapaWeb
+    image: metamapa-web
+    container_name: metamapa-web
+    restart: unless-stopped
+    depends_on:
+      - core
+    environment:
+      METAMAPA_API_BASE_URL: http://core:8081/public/core/api
+      METAMAPA_API_ADMIN_BASE_URL: http://core:8081/admin/core/api
+      METAMAPA_API_ESTADISTICAS_BASE_URL: http://servicio-estadisticas:8090/servicioEstadisticas
+    ports:
+      - "8080:8080"
+    networks:
+      - metamapa-net
+
+networks:
+  metamapa-net:
+
+volumes:
+  mysql_data:

@@ -12,34 +12,12 @@ import javax.persistence.EntityManager;
 
 public class ApiMetaMapa {
 
-    public static void main(String[] args) {
-        /*
-        HechosRepositorySeeder hechosRepositorySeeder = HechosRepositorySeeder.getInstance();
-        hechosRepositorySeeder.cargarHechosSeeder();
+    public static void configurar(Javalin app) {
 
-        FuentesRepositorySeeder fuentesRepositorySeeder = FuentesRepositorySeeder.getInstance();
-        fuentesRepositorySeeder.cargarFuentesSeeder();
+        // Podés dejar un root específico para la parte pública
+        app.get("/public", ctx -> ctx.result("API MetaMapa PÚBLICA ACTIVA"));
 
-        SolicitudEliminacioRepositorySeeder solicitudEliminacioRepositorySeeder = SolicitudEliminacioRepositorySeeder.getInstance();
-        solicitudEliminacioRepositorySeeder.cargarSolicitudDeEliminacionSeeder();
-
-        ColeccionesRepositorySeeder coleccionesRepositorySeeder = ColeccionesRepositorySeeder.getInstance();
-        coleccionesRepositorySeeder.cargarColeccionesRepositorySeeder();
-         */
-        FuentesRepositorySeeder fuentesRepositorySeeder = FuentesRepositorySeeder.getInstance();
-        fuentesRepositorySeeder.cargarFuentesSeeder();
-
-        Javalin app = Javalin.create()
-                .get("/", ctx -> ctx.result("API MetaMapa ACTIVA"))
-                .start(8081);
-
+        // Todo lo que antes configurabas en 8081, ahora sobre la misma app
         ApiMetaMapaConfig.configurarEndpoints(app);
-
-        EntityManager em = DBUtils.getEntityManager();
-        DBUtils.comenzarTransaccion(em);
-
-        //em.persist();
-        DBUtils.commit(em);
-
     }
 }
