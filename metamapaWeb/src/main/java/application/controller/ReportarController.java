@@ -68,6 +68,7 @@ public class ReportarController {
             @RequestParam("longitud") Double longitud,
             @RequestParam("multimedia") String multimedia,
             @RequestParam(value = "etiquetas", required = false) String etiquetas,
+            @RequestParam(value = "urgente", defaultValue = "false") boolean urgente,
             org.springframework.security.core.Authentication authentication,
             RedirectAttributes ra
     ) {
@@ -117,7 +118,7 @@ public class ReportarController {
             jsonMap.put("etiquetas", etiquetasList);
 
             String json = mapper.writeValueAsString(jsonMap);
-            ResponseEntity<Void> response = reportarService.postearHecho(json);
+            ResponseEntity<Void> response = reportarService.postearHecho(json, urgente);
             if (response.getStatusCode().is2xxSuccessful()) {
                 return "redirect:/reportar?estado=ok";
             } else {
