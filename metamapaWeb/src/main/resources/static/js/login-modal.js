@@ -1,3 +1,30 @@
+// Toast visual reutilizable
+function mostrarToastExito(mensaje) {
+    let toast = document.getElementById('popup-toast-success');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'popup-toast-success';
+        toast.style.position = 'fixed';
+        toast.style.top = '30px';
+        toast.style.left = '50%';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.zIndex = '9999';
+        toast.style.background = '#4BB543';
+        toast.style.color = '#fff';
+        toast.style.padding = '1rem 2rem';
+        toast.style.borderRadius = '12px';
+        toast.style.boxShadow = '0 4px 16px rgba(0,0,0,0.15)';
+        toast.style.fontSize = '1.15rem';
+        toast.style.display = 'flex';
+        toast.style.alignItems = 'center';
+        toast.style.gap = '0.75rem';
+        toast.innerHTML = `<svg style="width: 24px; height: 24px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#fff"/><polyline points="8 12 11 15 16 10" style="fill:none;stroke:#fff;stroke-width:2"/></svg><span></span><button onclick="this.parentNode.style.display='none'" style="background: none; border: none; color: #fff; font-size: 1.5rem; margin-left: 1rem; cursor: pointer;">&times;</button>`;
+        document.body.appendChild(toast);
+    }
+    toast.querySelector('span').textContent = mensaje;
+    toast.style.display = 'flex';
+    setTimeout(() => { toast.style.display = 'none'; }, 4000);
+}
 // Mostrar el modal
 function abrirLoginModal() {
     document.getElementById('loginModal').style.display = 'flex';
@@ -67,9 +94,37 @@ function enviarRegistro(event) {
     })
         .then(async res => {
             if (res.ok) {
-                const usuario = await res.json();
-                //cerrarLoginModal(); // Solo para modal, no para página
-                window.location.href = '/api/auth/login'; // Redirige al login propio después de registrarse
+                // Confirmar que el usuario fue persistido realmente
+                fetch(`/api/auth/login?correo=${encodeURIComponent(data.correo)}&contrasena=${encodeURIComponent(data.contrasena)}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                })
+                    .then(loginRes => {
+                        if (loginRes.ok) {
+                            mostrarToastExito('Usuario registrado correctamente');
+                            setTimeout(() => {
+                                window.location.href = '/api/auth/login';
+                            }, 1200);
+                        } else {
+                            // Si no se puede loguear, esperar y reintentar una vez
+                            setTimeout(() => {
+                                fetch(`/api/auth/login?correo=${encodeURIComponent(data.correo)}&contrasena=${encodeURIComponent(data.contrasena)}`, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                                })
+                                    .then(loginRes2 => {
+                                        if (loginRes2.ok) {
+                                            mostrarToastExito('Usuario registrado correctamente');
+                                            setTimeout(() => {
+                                                window.location.href = '/api/auth/login';
+                                            }, 1200);
+                                        } else {
+                                            alert('Error: El usuario no se pudo verificar tras el registro. Intenta nuevamente.');
+                                        }
+                                    });
+                            }, 800);
+                        }
+                    });
             } else {
                 const msg = await res.text();
                 alert('Error: ' + msg);

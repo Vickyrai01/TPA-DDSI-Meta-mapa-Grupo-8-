@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import core.api.DTO.HechoAIntegrarDINAMICO;
 import core.api.handlers.colecciones.PatchAgregarFuentesColeccionHandler;
 import core.models.agregador.ConfigLoader;
+import core.models.agregador.HechoAIntegrarDTO;
+import core.models.agregador.ServicioDeAgregacion;
+import core.models.entities.fuentes.TipoFuente;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import org.jetbrains.annotations.NotNull;
@@ -26,9 +29,13 @@ public class PostHechoHandler implements Handler {
     @Override
     public void handle(@NotNull Context context) throws Exception {
         try {
-            HechoAIntegrarDINAMICO dto = context.bodyAsClass(HechoAIntegrarDINAMICO.class);
-            System.out.println("Creando hecho: " + context.body());
+            String urgenteHeader = context.header("X-Urgente");
+            boolean urgente = Boolean.parseBoolean(urgenteHeader);
+            System.out.println("Urgente: " + urgente);
+            log.info("Header X-Urgente='{}' => urgente={}", urgenteHeader, urgente);
 
+            HechoAIntegrarDINAMICO dto = context.bodyAsClass(HechoAIntegrarDINAMICO.class);
+            log.info("Creando hecho: {}", context.body());
 
             HechoAIntegrarDINAMICO hechoDTO = new HechoAIntegrarDINAMICO(
                     dto.getTitulo(),
@@ -41,8 +48,20 @@ public class PostHechoHandler implements Handler {
                     dto.getContribuyente(),
                     dto.getMultimedia()
             );
+
             validarNuevoHecho(hechoDTO);
 
+            if (urgente) {
+                //Ejecutar agregación directa
+                HechoAIntegrarDTO hechoUrgente = mapearADTOAgregacion(hechoDTO);
+                ServicioDeAgregacion.getInstance().hechoUnicoUrgente(hechoUrgente);
+
+                log.info("Hecho marcado como URGENTE: se agrega directo, no se envía al cargador dinámico");
+                context.status(201).result("Hecho urgente agregado directamente");
+                return;
+            }
+
+            // Si NO es urgente. flujo normal: mandarlo al cargador dinámico
             HttpResponse<String> responseCargador = enviarHechoAlCargador(hechoDTO);
             int statusCargador = responseCargador.statusCode();
             String bodyCargador = responseCargador.body();
@@ -51,24 +70,20 @@ public class PostHechoHandler implements Handler {
                 log.info("Hecho enviado correctamente al cargador");
                 context.status(201);
             } else if (statusCargador >= 400 && statusCargador < 500) {
-                // Error “del cliente” que mandó el hecho
-               log.warn("Error 4xx del cargador: {} - {}", statusCargador, bodyCargador);
-               context.status(statusCargador).result(bodyCargador);
+                log.warn("Error 4xx del cargador: {} - {}", statusCargador, bodyCargador);
+                context.status(statusCargador).result(bodyCargador);
             } else {
-                // Error servidor cargador
                 log.error("Error del cargador: {} - {}", statusCargador, bodyCargador);
                 context.status(502).result("Error al registrar el hecho en el cargador");
             }
+
         } catch (IllegalArgumentException e) {
-            // Validación del propio core
             log.warn("Validación fallida al crear hecho: {}", e.getMessage());
             context.status(400).result(e.getMessage());
         } catch (IOException | InterruptedException e) {
-            // Problemas de red / HTTP client
             log.error("Error de comunicación con el cargador", e);
             context.status(502).result("Error de comunicación con el cargador de hechos");
         } catch (Exception e) {
-            // Cualquier otra cosa
             log.error("Error inesperado al crear hecho", e);
             context.status(500).result("Error interno del servidor");
         }
@@ -125,4 +140,20 @@ public class PostHechoHandler implements Handler {
             return "{}";
         }
     }
+
+    private HechoAIntegrarDTO mapearADTOAgregacion(HechoAIntegrarDINAMICO d) {
+        HechoAIntegrarDTO dto = new HechoAIntegrarDTO();
+        dto.setTitulo(d.getTitulo());
+        dto.setDescripcion(d.getDescripcion());
+        dto.setCategoria(d.getCategoria());
+        dto.setLatitud(d.getLatitud());
+        dto.setLongitud(d.getLongitud());
+        dto.setFechaSuceso(d.getFechaSuceso());
+        dto.setEtiquetas(d.getEtiquetas());
+        dto.setContribuyente(d.getContribuyente());
+        dto.setMultimedia(d.getMultimedia());
+        dto.setTipoFuente(String.valueOf(TipoFuente.DINAMICA));
+        return dto;
+    }
+
 }
