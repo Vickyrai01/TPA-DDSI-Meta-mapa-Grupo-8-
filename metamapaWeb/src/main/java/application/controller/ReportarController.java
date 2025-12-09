@@ -110,12 +110,12 @@ public class ReportarController {
         // ===========================================
         if (multimediaFile != null && !multimediaFile.isEmpty()) {
             try {
-                // Usamos la ruta resuelta en el constructor
-                Path uploadPath = Paths.get(this.resolvedUploadPath);
+                // Guardar siempre en la subcarpeta 'hechos' dentro de uploads
+                Path hechosUploadPath = Paths.get(this.resolvedUploadPath, "hechos");
 
                 // Crear el directorio si no existe (portable)
-                if (!Files.exists(uploadPath)) {
-                    Files.createDirectories(uploadPath);
+                if (!Files.exists(hechosUploadPath)) {
+                    Files.createDirectories(hechosUploadPath);
                 }
 
                 // Generar nombre de archivo único para evitar conflictos
@@ -127,7 +127,7 @@ public class ReportarController {
                 fileNameToSave = UUID.randomUUID().toString() + fileExtension;
 
                 // Guardar el archivo físicamente
-                Path filePath = Paths.get(uploadPath.toString(), fileNameToSave);
+                Path filePath = hechosUploadPath.resolve(fileNameToSave);
                 Files.copy(multimediaFile.getInputStream(), filePath);
 
             } catch (IOException e) {
@@ -172,12 +172,11 @@ public class ReportarController {
             jsonMap.put("longitud", lon);
             jsonMap.put("fechaSuceso", fechaSuceso);
 
-            // Mandamos el nombre del archivo guardado
-            if (fileNameToSave != null) {
+            // Mandamos el nombre del archivo guardado (si existe) como lista, nunca null
+            if (fileNameToSave != null && !fileNameToSave.isBlank()) {
                 jsonMap.put("multimedia", List.of(fileNameToSave));
             } else {
-                // Si no se subió ningún archivo
-                jsonMap.put("multimedia", new ArrayList<>());
+                jsonMap.put("multimedia", List.of());
             }
 
             // Procesar etiquetas
