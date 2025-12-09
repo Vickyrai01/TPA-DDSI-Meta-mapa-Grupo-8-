@@ -53,11 +53,4 @@ public class ReportarService {
                 .block();
     }
 
-    public ResponseEntity<Void> ejecutarAgregacion(){
-        return metamapaApiADMIN.post()
-                .uri("/ejecutarServicio")
-                .retrieve()
-                .toBodilessEntity()
-                .block();
-    }
 }

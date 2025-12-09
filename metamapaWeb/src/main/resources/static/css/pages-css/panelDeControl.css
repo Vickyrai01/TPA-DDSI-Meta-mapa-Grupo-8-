@@ -79,17 +79,22 @@ body{
   display:flex;
   align-items:stretch;
 }
-
 .admin-bg{
-  position:absolute;
-  inset:0;
-  background-image: var(--home-bg-url);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  filter:saturate(1.05) contrast(1.02);
-  z-index:0;
+  position: absolute;
+  inset: 0;
+  background-image:
+          linear-gradient(rgba(255,255,255,0.65), rgba(255,255,255,0.65)),
+          var(--home-bg-url);
+  background-repeat: no-repeat, repeat-y;
+  background-size: cover, auto;
+  background-position: center top, center top;
+  background-blend-mode: soft-light;
+
+  filter: saturate(1.05) contrast(1.02);
+  z-index: 0;
 }
+
+
 
 .admin-surface {
   position: relative;
@@ -253,8 +258,8 @@ body{
 /* Botón flotante */
 .add-btn {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
+  bottom: 180px;
+  right: 490px;
   z-index: 1000;
   width: 60px;
   height: 60px;
@@ -537,4 +542,64 @@ body{
   font-weight: 700;
   color: var(--text-strong);
   font-size: 0.9rem;
+}
+
+
+/* Botón servicio de agregación */
+.aggregation-actions {
+  padding: 10px 10px 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.aggregation-btn {
+  padding: 10px 10px 10px;
+  border: none;
+  border-radius: 999px;
+  background: var(--brand-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,.18);
+  transition: transform .08s ease, filter .18s ease;
+}
+
+.aggregation-btn:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.aggregation-btn:active {
+  transform: translateY(0);
+  filter: brightness(0.98);
+}
+
+/* Botón debajo del panel  */
+.aggregation-actions-side {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.aggregation-btn-side {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: none;
+  border-radius: 12px;
+  background: var(--brand-primary);
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  transition: 0.15s ease;
+}
+
+.aggregation-btn-side:hover {
+  filter: brightness(1.05);
+}
+
+.aggregation-btn-side:active {
+  filter: brightness(0.95);
 }
