@@ -49,26 +49,8 @@ public class ReportarController {
         model.addAttribute("estado", estado);
         // Obtener correo del usuario autenticado
         String email = null;
-
-        if (authentication != null && authentication.isAuthenticated()) {
-            Object principal = authentication.getPrincipal();
-
-            if (principal instanceof OAuth2User oAuth2User) {
-                // Login con Google
-                email = oAuth2User.getAttribute("email");
-            }
-            // Si usás tu entidad Usuario como principal:
-            else if (principal instanceof Usuario usuario) {
-                email = usuario.getCorreo();
-            }
-            // Si usás UserDetails estándar:
-            else if (principal instanceof org.springframework.security.core.userdetails.UserDetails userDetails) {
-                email = userDetails.getUsername(); // suele ser el correo en muchos casos
-            }
-            // Fallback genérico
-            else {
-                email = authentication.getName();
-            }
+ if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof OAuth2User oAuth2User) {
+            email = oAuth2User.getAttribute("email");
         }
 
         model.addAttribute("email", email);
