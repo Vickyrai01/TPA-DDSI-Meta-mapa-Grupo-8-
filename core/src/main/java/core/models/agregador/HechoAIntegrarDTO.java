@@ -114,7 +114,33 @@ public class HechoAIntegrarDTO {
     public void setIdFuente(Integer idFuente) {this.idFuente = idFuente;};
     public String getLinkFuente() {return linkFuente;}
     public void setLinkFuente(String linkFuente){this.linkFuente = linkFuente;}
-
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
+    public List<String> getEtiquetas() {
+        return etiquetas;
+    }
+    public void setEtiquetas(List<String> etiquetas) {
+        this.etiquetas = etiquetas;
+    }
+    public String getContribuyente() {
+        return contribuyente;
+    }
+    public void setContribuyente(String contribuyente) {
+        this.contribuyente = contribuyente;
+    }
+    public List<String> getMultimedia() {
+        return multimedia;
+    }
+    public void setMultimedia(List<String> multimedia) {
+        this.multimedia = multimedia;
+    }
+    public Boolean getFueExtraido() {
+        return fueExtraido;
+    }
+    public void setFueExtraido(Boolean fueExtraido) {
+        this.fueExtraido = fueExtraido;
+    }
 
     public Boolean tieneMismoTitulo(String tituloExterno){
         String tituloPropioLimpio = this.getTitulo().toLowerCase().replace(" ","");

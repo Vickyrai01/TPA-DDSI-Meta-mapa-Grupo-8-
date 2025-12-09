@@ -11,6 +11,7 @@ import java.util.List;
 @Service
 public class ReportarService {
     private final WebClient metamapaApi = WebClient.create("http://localhost:8081/core/api");
+    private final WebClient metamapaApiADMIN = WebClient.create("http://localhost:8082/core/api");
 
     public String getCategorias(){
         return metamapaApi.get()
@@ -48,6 +49,14 @@ public class ReportarService {
                 .bodyValue(hechoJson)
                 .retrieve()
                 .toBodilessEntity()  // o .bodyToMono(Void.class)
+                .block();
+    }
+
+    public ResponseEntity<Void> ejecutarAgregacion(){
+        return metamapaApiADMIN.post()
+                .uri("/ejecutarServicio")
+                .retrieve()
+                .toBodilessEntity()
                 .block();
     }
 }

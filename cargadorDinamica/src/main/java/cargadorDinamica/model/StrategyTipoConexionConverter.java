@@ -1,4 +1,4 @@
-package core.models.entities.fuentes;
+package cargadorDinamica.model;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
@@ -19,11 +19,9 @@ public class StrategyTipoConexionConverter implements AttributeConverter<Strateg
             return null;
         }
         return switch (dbData) {
-            case "APIREST" -> new StrategyAPIREST();
-            case "BIBLIOTECA" -> new StrategyBibliotecaCliente();
-            case "CSV" -> new StrategyCSV();
             case "DINAMICA" -> new StrategyDinamica();
             default -> throw new IllegalArgumentException("Tipo de estrategia desconocido: " + dbData);
         };
     }
 }
+

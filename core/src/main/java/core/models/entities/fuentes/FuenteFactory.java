@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class FuenteFactory {
     private static AtomicInteger contadorCSV= new AtomicInteger(0);
     private static AtomicInteger contadorAPI= new AtomicInteger(0);
+    private static AtomicInteger contadorDINAMICA= new AtomicInteger(0);
     private static AtomicInteger idContador = new AtomicInteger(1);
 
     public static Fuente crearFuente(String nombre, String link, TipoFuente tipo, TipoConexion strategy){
@@ -43,6 +44,8 @@ public class FuenteFactory {
                 return new StrategyCSV();
             case APIREST:
                 return new StrategyAPIREST();
+            case DINAMICA:
+                return new StrategyDinamica();
             default:
                 throw new IllegalArgumentException("Tipo de conexión no soportada: " + tipoConexion);
         }
@@ -52,6 +55,7 @@ public class FuenteFactory {
         switch (tipoConexion) {
             case CSV: return "C" + contadorCSV.incrementAndGet();
             case APIREST: return "A" + contadorAPI.incrementAndGet();
+            case DINAMICA: return "D" + contadorDINAMICA.incrementAndGet();
             default:
                 throw new IllegalArgumentException("Tipo de conexión no soportada: " + tipoConexion);
     }

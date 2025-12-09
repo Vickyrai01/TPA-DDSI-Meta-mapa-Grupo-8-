@@ -2,19 +2,20 @@ package core.models.agregador;
 
 import core.models.entities.solicitud.SolicitudDeEliminacion;
 
+import java.text.Normalizer;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 public class DetectorDeSpam {
 
     private static volatile DetectorDeSpam instance;
-
-    public static boolean esSpam(String solicitud) {return false;}
 
     public DetectorDeSpam() {
         if (instance != null) {
             throw new RuntimeException("Usa getInstance() para obtener el Singleton");
         }
     }
-
-    public static boolean esSpam(SolicitudDeEliminacion solicitud) {return false;}
 
 
     public static DetectorDeSpam getInstance() {
@@ -26,5 +27,104 @@ public class DetectorDeSpam {
             }
         }
         return instance;
+    }
+
+    // Palabras típicas de spam con un peso
+    private static final Map<String, Double> PESOS_SPAM = new HashMap<>();
+
+    //Umbral para decidir si es spam
+    private static final double UMBRAL_SPAM = 3.0;
+
+    static {
+        // Publicidad "ambiguas" (pueden aparecer en un contexto legítimo)
+        PESOS_SPAM.put("oferta", 0.7);
+        PESOS_SPAM.put("promocion", 1.0);
+        PESOS_SPAM.put("promo", 1.0);
+        PESOS_SPAM.put("gratis", 0.7);
+
+        // Publicidad / marketing típico, muy raro en una solicitud seria
+        PESOS_SPAM.put("suscribite", 2.5);
+        PESOS_SPAM.put("seguinos", 2.3);
+        PESOS_SPAM.put("click", 2.0);
+        PESOS_SPAM.put("comprar", 2.2);
+        PESOS_SPAM.put("venta", 1.8);
+
+        // Estafas / casinos / plata fácil: casi imposible que sean legítimas acá
+        PESOS_SPAM.put("casino", 3.0);
+        PESOS_SPAM.put("bono", 2.4);
+        PESOS_SPAM.put("cripto", 2.8);
+        PESOS_SPAM.put("inverti", 2.8);
+
+        // Palabras irrelevantes / bots / texto basura
+        PESOS_SPAM.put("asdf", 3.0);
+        PESOS_SPAM.put("lorem", 2.5);
+        PESOS_SPAM.put("ipsum", 2.5);
+        PESOS_SPAM.put("prueba", 2.0);
+        PESOS_SPAM.put("xxxx", 3.0);
+        PESOS_SPAM.put("zzzz", 3.0);
+
+        // URLs: fuertísimo indicador de spam en solicitudes de eliminación
+        PESOS_SPAM.put("http", 3.5);
+        PESOS_SPAM.put("https", 3.5);
+        PESOS_SPAM.put("www", 3.5);
+    }
+
+    public  boolean esSpam(String texto) {
+       if (contieneChocloSinEspacios(texto))
+       {return true;}
+       if (texto.length()<3)
+       {return true;}
+
+        if (texto == null || texto.isBlank()) {
+            // si viene vacío,lo consideramos inválido / spam
+            return true;
+        }
+
+        String normalizado = normalizar(texto);
+        String[] palabras = normalizado.split("\\s+");
+
+        // TF-IDF súper simplificado: sumo tf * peso
+        double score = 0.0;
+
+        for (String palabra : palabras) {
+            Double peso = PESOS_SPAM.get(palabra);
+            if (peso != null) {
+                // cada aparición suma TF * IDF (acá TF = 1 por aparición)
+                score += peso;
+            }
+        }
+        System.out.println("DEBUG SPAM => score=" + score + ", umbral=" + UMBRAL_SPAM);
+        return score >= UMBRAL_SPAM;
+    }
+
+    // Normaliza: minúsculas, sin acentos, solo letras/espacios
+    private String normalizar(String texto) {
+        String t = texto.toLowerCase(Locale.ROOT);
+
+        t = Normalizer.normalize(t, Normalizer.Form.NFD);
+        t = t.replaceAll("\\p{M}", ""); // elimina acentos
+
+        // dejar solo letras, números básicos y espacios
+        t = t.replaceAll("[^a-z0-9ñáéíóúü ]", " ");
+
+        return t;
+    }
+
+    private boolean contieneChocloSinEspacios(String texto) {
+        if (texto == null) return false;
+
+        String limpio = texto.replace("\n", " ").replace("\r", " ").trim();
+
+        int UMBRAL_CHOCLO = 30;
+
+        String[] palabras = limpio.split("\\s+");
+
+        for (String p : palabras) {
+            if (p.length() > UMBRAL_CHOCLO) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -1,8 +1,8 @@
-package cargadorEstatica.repository;
+package cargadorDinamica.repository;
 
-import cargadorEstatica.model.Fuente;
-import cargadorEstatica.model.StrategyCSV;
-import cargadorEstatica.model.StrategyTipoConexion;
+import cargadorDinamica.model.Fuente;
+import cargadorDinamica.model.StrategyDinamica;
+import cargadorDinamica.model.StrategyTipoConexion;
 
 public class RepositoryFuentesSeeder {
 
@@ -20,14 +20,12 @@ public class RepositoryFuentesSeeder {
         return instance;
     }
 
-    StrategyTipoConexion StrategyCSV = new StrategyCSV();
+    StrategyTipoConexion StrategyDinamica = new StrategyDinamica();
 
-    Fuente fuente1 = new Fuente(2,"Accidentes en AMBA", "eventosSanitariosPrueba1.csv",  StrategyCSV, "CSV");
-    Fuente fuente4 = new Fuente(3,"CSV Incendio", null,  StrategyCSV, "CSV");
+    Fuente fuente1 = new Fuente(1,"Hechos Reportados", null,  StrategyDinamica, "DINAMICA");
 
     public void cargarRepos() {
         repositoryFuentes.save(fuente1);
-        repositoryFuentes.save(fuente4);
     }
 
 }

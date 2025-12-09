@@ -19,7 +19,7 @@ public class GetSolicitudHandler implements Handler {
     public void handle(@NotNull Context ctx) {
         var dtos = repoSolicitudes.obtenerTodasConHechoYContribuyente()
                 .stream()
-                .map(SolicitudConHechoDTO::from)   // 👈 usamos el nuevo DTO
+                .map(SolicitudConHechoDTO::from)
                 .toList();
 
         ctx.json(dtos);

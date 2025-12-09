@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 public class ApiMetaMapa {
 
     public static void main(String[] args) {
+        /*
         HechosRepositorySeeder hechosRepositorySeeder = HechosRepositorySeeder.getInstance();
         hechosRepositorySeeder.cargarHechosSeeder();
 
@@ -24,6 +25,9 @@ public class ApiMetaMapa {
 
         ColeccionesRepositorySeeder coleccionesRepositorySeeder = ColeccionesRepositorySeeder.getInstance();
         coleccionesRepositorySeeder.cargarColeccionesRepositorySeeder();
+         */
+        FuentesRepositorySeeder fuentesRepositorySeeder = FuentesRepositorySeeder.getInstance();
+        fuentesRepositorySeeder.cargarFuentesSeeder();
 
         Javalin app = Javalin.create()
                 .get("/", ctx -> ctx.result("API MetaMapa ACTIVA"))

@@ -35,5 +35,7 @@ public class ApiAdminMetaMapaConfig {
         app.post("/core/api/fuentes", new PostFuenteHandler());
         app.post("/core/api/fuentes/{id}/csv", new PostFuenteCSVHandler());
         app.post("core/api/fuentes/{id}/eliminar", new DeleteFuenteHandler());
+
+        app.post("core/api/ejecutarServicio", new EjecutarServicioHandler());
     }
 }
