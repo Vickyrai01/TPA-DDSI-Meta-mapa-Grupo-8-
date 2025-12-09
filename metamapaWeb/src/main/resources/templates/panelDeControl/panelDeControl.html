@@ -16,6 +16,7 @@
 <!-- ========== CONTENIDO PRINCIPAL (se inyecta dentro de <main>) ========== -->
 <main id="contenido-panel" class="admin-page">
 
+
     <div class="admin-bg"></div>
 
     <section class="admin-surface">
@@ -36,13 +37,12 @@
                     <article th:each="c : ${listaDeColecciones}"
                              class="collection-card"
                              th:id="${'card-' + c.id()}"
-                             th:attr="data-titulo=${c.titulo()}, data-descripcion=${c.descripcionColeccion()}"
-                    >
+                             th:attr="data-titulo=${c.titulo()}, data-descripcion=${c.descripcionColeccion()}">
                         <div class="card-header">
                             <!-- Título SOLO texto (sin link) -->
                             <h2 class="view-mode" th:text="${c.titulo()}">Título de la colección</h2>
 
-                            <!-- Campo editable (queda para cuando actives la edición) -->
+                            <!-- Campo editable -->
                             <input type="text" class="card-input edit-mode"
                                    th:value="${c.titulo()}" aria-label="Editar título">
 
@@ -63,18 +63,22 @@
                                 <button type="button" class="icon-btn view-mode edit-btn" aria-label="Editar">
                                     <i class="fa-solid fa-pencil"></i>
                                 </button>
-                                <button type="button" class="modal-btn modal-btn-secondary edit-mode cancel-btn">Cancelar</button>
-                                <button type="button" class="modal-btn modal-btn-primary edit-mode save-btn">Guardar</button>
+                                <button type="button" class="modal-btn modal-btn-secondary edit-mode cancel-btn">
+                                    Cancelar
+                                </button>
+                                <button type="button" class="modal-btn modal-btn-primary edit-mode save-btn">
+                                    Guardar
+                                </button>
                             </div>
                         </div>
-
 
                         <div class="card-body">
 
                             <div class="card-field">
                                 <strong style="color: var(--brand-primary);">Identificador:</strong>
                                 <p class="view-mode" th:text="${c.id()}">*IDENTIFICADOR*</p>
-                                <p class="card-input edit-mode" style="background: #f3f4f6; color: #6b7280; cursor: not-allowed;"
+                                <p class="card-input edit-mode"
+                                   style="background: #f3f4f6; color: #6b7280; cursor: not-allowed;"
                                    th:text="${c.id()}"></p>
                             </div>
 
@@ -88,7 +92,8 @@
                             <!-- Selector de fuentes en modo edición -->
                             <div class="card-field edit-mode">
                                 <strong>Fuentes:</strong>
-                                <div class="fuentes-list-container" style="max-height: 150px; overflow-y: auto; border: 1px solid var(--border, #e5e7eb); border-radius: 12px; padding: 10px; background: #f9fafb;">
+                                <div class="fuentes-list-container"
+                                     style="max-height: 150px; overflow-y: auto; border: 1px solid var(--border, #e5e7eb); border-radius: 12px; padding: 10px; background: #f9fafb;">
                                     <p th:if="${listaDeFuentes == null or #lists.isEmpty(listaDeFuentes)}"
                                        style="font-size: 0.9rem; color: var(--text-muted, #6b7280); margin: 0;">
                                         No hay fuentes disponibles para agregar.
@@ -114,13 +119,15 @@
 
                                 <select name="modoDeNavegacionEdit" class="card-select edit-mode">
                                     <option value="IRRESTRICTA"
-                                            th:selected="${c.modoDeNavegacion() == 'IRRESTRICTA'}">Irrestricta</option>
+                                            th:selected="${c.modoDeNavegacion() == 'IRRESTRICTA'}">Irrestricta
+                                    </option>
                                     <option value="CURADA"
-                                            th:selected="${c.modoDeNavegacion() == 'CURADA'}">Curada</option>
+                                            th:selected="${c.modoDeNavegacion() == 'CURADA'}">Curada
+                                    </option>
                                 </select>
                             </div>
 
-                            <!-- Selector de algoritmo de consenso en modo edición (igual que creación) -->
+                            <!-- Selector de algoritmo de consenso en modo edición -->
                             <div class="card-field">
                                 <strong>Algoritmo de consenso:</strong>
 
@@ -130,36 +137,33 @@
                                 </p>
 
                                 <select class="card-input edit-mode" name="algoritmoConsensoEdit">
-
                                     <option value="SIN"
                                             th:selected="${c.algoritmoConsenso() == null}">
                                         Ninguno
                                     </option>
-
                                     <option value="ABSOLUTO"
                                             th:selected="${c.algoritmoConsenso() == 'ABSOLUTO'}">
                                         Absoluto
                                     </option>
-
                                     <option value="MAYORIA_SIMPLE"
                                             th:selected="${c.algoritmoConsenso() == 'MAYORIA_SIMPLE'}">
                                         Mayoría Simple
                                     </option>
-
                                     <option value="MULTIPLES_MENCIONES"
                                             th:selected="${c.algoritmoConsenso() == 'MULTIPLES_MENCIONES'}">
                                         Múltiples Menciones
                                     </option>
                                 </select>
                             </div>
+
                             <div class="card-field">
                                 <strong>Criterios de Pertenencia:</strong>
 
                                 <ul class="view-mode source-list" style="margin-top: 5px;">
                                     <li th:each="crit : ${c.criterioDePertenencia}">
-            <span th:text="|${crit.type}: ${crit.palabraClave ?: ''} ${crit.categoria ?: ''} ${crit.latitud != null ? (crit.latitud + ', ' + crit.longitud) : ''} ${crit.desde != null ? (crit.desde + ' al ' + crit.hasta) : ''}|">
-                Criterio
-            </span>
+                                        <span th:text="|${crit.type}: ${crit.palabraClave ?: ''} ${crit.categoria ?: ''} ${crit.latitud != null ? (crit.latitud + ', ' + crit.longitud) : ''} ${crit.desde != null ? (crit.desde + ' al ' + crit.hasta) : ''}|">
+                                            Criterio
+                                        </span>
                                     </li>
                                     <li th:if="${#lists.isEmpty(c.criterioDePertenencia)}" style="color: #999;">Ninguno</li>
                                 </ul>
@@ -171,20 +175,22 @@
                                         <li th:each="crit : ${c.criterioDePertenencia}"
                                             class="criteria-item"
                                             th:attr="data-type=${crit.type},
-                                             data-palabra=${crit.palabraClave},
-                                             data-categoria=${crit.categoria},
-                                             data-lat=${crit.latitud},
-                                             data-lon=${crit.longitud},
-                                             data-desde=${crit.desde},
-                                             data-hasta=${crit.hasta}">
-
-                                            <span th:text="|${crit.type}: ${crit.palabraClave ?: ''}${crit.categoria ?: ''}${crit.latitud != null ? (' Ubicación') : ''}${crit.desde != null ? (' Rango fechas') : ''}|">Info</span>
+                                                     data-palabra=${crit.palabraClave},
+                                                     data-categoria=${crit.categoria},
+                                                     data-lat=${crit.latitud},
+                                                     data-lon=${crit.longitud},
+                                                     data-desde=${crit.desde},
+                                                     data-hasta=${crit.hasta}">
+                                            <span th:text="|${crit.type}: ${crit.palabraClave ?: ''}${crit.categoria ?: ''}${crit.latitud != null ? (' Ubicación') : ''}${crit.desde != null ? (' Rango fechas') : ''}|">
+                                                Info
+                                            </span>
 
                                             <button type="button" class="delete-source-btn btn-delete-crit">×</button>
                                         </li>
                                     </ul>
 
-                                    <button type="button" class="modal-btn modal-btn-secondary btn-open-criteria-modal"
+                                    <button type="button"
+                                            class="modal-btn modal-btn-secondary btn-open-criteria-modal"
                                             style="width: 100%; margin-top: 10px; border: 1px dashed #ccc;">
                                         <i class="fa-solid fa-plus"></i> Agregar nuevo criterio
                                     </button>
@@ -194,7 +200,8 @@
                             <div class="card-field">
                                 <strong>Cantidad de hechos:</strong>
                                 <p class="view-mode"><span th:text="${c.cantidadHechos()}">0</span></p>
-                                <p class="card-input edit-mode" style="background: #f3f4f6; color: #6b7280; cursor: not-allowed;"
+                                <p class="card-input edit-mode"
+                                   style="background: #f3f4f6; color: #6b7280; cursor: not-allowed;"
                                    th:text="${c.cantidadHechos()}"></p>
                             </div>
 
@@ -202,13 +209,13 @@
                                 <strong>Cantidad de hechos visibles:</strong>
                                 (Modo de navegación curado, puede estar desactualizado)
                                 <p class="view-mode"><span th:text="${c.cantidadHechosVisibles()}">0</span></p>
-                                <p class="card-input edit-mode" style="background: #f3f4f6; color: #6b7280; cursor: not-allowed;"
+                                <p class="card-input edit-mode"
+                                   style="background: #f3f4f6; color: #6b7280; cursor: not-allowed;"
                                    th:text="${c.cantidadHechosVisibles()}"></p>
                             </div>
                         </div>
                     </article>
                 </div>
-
 
                 <button class="add-btn" aria-label="Añadir colección">
                     <i class="fa-solid fa-plus"></i>
@@ -220,10 +227,28 @@
                     <a th:href="@{/admin/colecciones}" class="admin-menu-item active">ADMINISTRAR COLECCIONES</a>
                     <a th:href="@{/admin/hechos}" class="admin-menu-item">ADMINISTRAR HECHOS</a>
                     <a th:href="@{/admin/fuentes}" class="admin-menu-item">ADMINISTRAR FUENTES</a>
-                    <a th:href="@{/admin/solicitudesEliminacion}" class="admin-menu-item">ADMINISTRAR SOLICITUDES DE ELIMINACIÓN</a>
+                    <a th:href="@{/admin/solicitudesEliminacion}" class="admin-menu-item">
+                        ADMINISTRAR SOLICITUDES DE ELIMINACIÓN
+                    </a>
                 </nav>
+
+                <form th:action="@{/ejecutar-agregacion}"
+                      method="post"
+                      class="aggregation-actions">
+
+                    <input type="hidden" name="_csrf"
+                           th:if="${_csrf}"
+                           th:value="${_csrf.token}"/>
+
+                    <button type="submit" class="aggregation-btn">
+                        Ejecutar Servicio de Agregación
+                    </button>
+                </form>
+
+
             </aside>
         </div>
+
     </section>
 
     <!-- ========== MODALES ========== -->
@@ -240,12 +265,9 @@
 
     <div id="add-modal" class="modal-backdrop">
         <div class="modal">
-            <!-- 🔸 Se eliminó la X de cierre -->
             <h2>Crear Nueva Colección</h2>
 
             <form class="modal-form">
-
-
                 <div class="form-group">
                     <label for="new-nombre">Nombre de la Colección</label>
                     <input type="text" id="new-nombre" class="card-input" placeholder="Ej: Robos en Palermo">
@@ -293,7 +315,8 @@
                     </div>
                 </div>
 
-                <div class="form-group" style="border-top: 1px dashed var(--border); padding-top: 15px; margin-top: 5px;">
+                <div class="form-group"
+                     style="border-top: 1px dashed var(--border); padding-top: 15px; margin-top: 5px;">
                     <label>Criterios de Pertenencia</label>
                     <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">
                         Define reglas automáticas para esta colección.
@@ -301,7 +324,9 @@
 
                     <ul id="new-collection-criteria-list" class="source-list" style="margin-bottom: 10px;"></ul>
 
-                    <button type="button" id="btn-add-crit-creation" class="modal-btn modal-btn-secondary" style="width: 100%; border: 1px dashed #ccc; background: #fff;">
+                    <button type="button" id="btn-add-crit-creation"
+                            class="modal-btn modal-btn-secondary"
+                            style="width: 100%; border: 1px dashed #ccc; background: #fff;">
                         <i class="fa-solid fa-plus"></i> Agregar nuevo criterio
                     </button>
                 </div>
@@ -313,12 +338,14 @@
             </div>
         </div>
     </div>
+
     <!-- Modal para criterios -->
     <div id="modal-add-criteria" class="modal-backdrop">
         <div class="modal" style="max-width: 500px;">
             <h2>Agregar Criterio</h2>
 
-            <form id="form-add-criteria" class="modal-form" style="display: flex; flex-direction: column; gap: 15px;">
+            <form id="form-add-criteria" class="modal-form"
+                  style="display: flex; flex-direction: column; gap: 15px;">
 
                 <div class="form-group">
                     <label for="select-criteria-type">Seleccionar criterio</label>
@@ -333,7 +360,8 @@
                     </select>
                 </div>
 
-                <div id="criteria-inputs-container" style="background: #f9f9f9; padding: 15px; border-radius: 8px; display:none;">
+                <div id="criteria-inputs-container"
+                     style="background: #f9f9f9; padding: 15px; border-radius: 8px; display:none;">
 
                     <div id="input-group-text" class="dynamic-group hidden">
                         <label>Palabra Clave:</label>
@@ -351,14 +379,12 @@
                             <option value="Otro">Otro</option>
                         </select>
 
-                        <!-- Input que aparece solo si se elige "Otro" -->
                         <div class="form-group hidden" id="crit-category-otra-group" style="margin-top: 8px;">
                             <label for="crit-input-category-otra">Especificá la categoría</label>
                             <input type="text" id="crit-input-category-otra" class="card-input"
                                    placeholder="Describí la categoría">
                         </div>
                     </div>
-
 
                     <div id="input-group-geo" class="dynamic-group hidden">
                         <label>Coordenadas:</label>
@@ -388,8 +414,10 @@
 
 </main>
 
+<!-- ========== SCRIPTS ESPECÍFICOS ========== -->
 <th:block id="scripts-panel">
     <script th:src="@{/js/panelDeControl.js}" defer></script>
+
 </th:block>
 
 </html>

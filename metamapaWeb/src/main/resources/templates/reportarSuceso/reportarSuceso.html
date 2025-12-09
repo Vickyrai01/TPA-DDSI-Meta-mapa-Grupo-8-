@@ -387,18 +387,6 @@
           </div>
         </div>
     </form>
-      <button id="btn-ejecutar-agregacion"
-              style="padding:0.4rem 1rem;
-               border:none;
-               border-radius:8px;
-               background:#F47C2C;
-               color:white;
-               cursor:pointer;
-               font-weight:bold;">
-        Ejecutar Servicio de Agregación
-      </button>
-
-      <input type="hidden" id="csrf-token" th:value="${_csrf.token}">
 
     </div>
 </div>
@@ -539,30 +527,6 @@
       });
     });
 
-    document.addEventListener("DOMContentLoaded", () => {
-
-      const btn = document.getElementById("btn-ejecutar-agregacion");
-      const csrf = document.getElementById("csrf-token")?.value;
-
-      btn.addEventListener("click", async () => {
-
-        try {
-          const resp = await fetch("/ejecutar-agregacion", {
-            method: "POST",
-            headers: { "X-CSRF-TOKEN": csrf }
-          });
-
-          if (resp.ok) {
-            alert("Servicio ejecutado correctamente");
-          } else {
-            alert("Error ejecutando servicio: " + resp.status);
-          }
-        } catch (e) {
-          console.error(e);
-          alert("Error de red ejecutando servicio");
-        }
-      });
-    });
   </script>
 </th:block>
 
