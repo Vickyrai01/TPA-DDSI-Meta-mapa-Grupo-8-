@@ -79,17 +79,22 @@ body{
   display:flex;
   align-items:stretch;
 }
-
 .admin-bg{
-  position:absolute;
-  inset:0;
-  background-image: var(--home-bg-url);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  filter:saturate(1.05) contrast(1.02);
-  z-index:0;
+  position: absolute;
+  inset: 0;
+  background-image:
+          linear-gradient(rgba(255,255,255,0.65), rgba(255,255,255,0.65)),
+          var(--home-bg-url);
+  background-repeat: no-repeat, repeat-y;
+  background-size: cover, auto;
+  background-position: center top, center top;
+  background-blend-mode: soft-light;
+
+  filter: saturate(1.05) contrast(1.02);
+  z-index: 0;
 }
+
+
 
 .admin-surface {
   position: relative;
@@ -570,7 +575,7 @@ body{
   filter: brightness(0.98);
 }
 
-/* Botón debajo del panel */
+/* Botón debajo del panel  */
 .aggregation-actions-side {
   margin-top: 40px;
   display: flex;
