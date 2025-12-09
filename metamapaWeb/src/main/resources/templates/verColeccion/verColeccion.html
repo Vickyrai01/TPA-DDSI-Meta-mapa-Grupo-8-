@@ -129,7 +129,7 @@
                             <div class="field">
                                 <span class="field-label">Multimedia:</span>
                                 <span class="field-value" th:if="${h.multimedia()!=null and !h.multimedia().isEmpty()}">
-                                    <a th:each="m : ${h.multimedia()}" th:href="@{'/uploads/hechos/' + ${m}}" th:text="${m}" target="_self" style="display:block; margin: 5px 0; color: #ff6600; text-decoration: underline;"/>
+                                    <a th:each="m : ${h.multimedia()}" th:href="@{'/uploads/hechos/' + ${m}}" th:text="${m}" target="_blank" style="display:block; margin: 5px 0; color: #ff6600; text-decoration: underline;"/>
                                 </span>
                                 <span class="field-value muted" th:if="${h.multimedia()==null or h.multimedia().isEmpty()}">
                                     No tiene fotos adjuntas.
