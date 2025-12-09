@@ -25,7 +25,7 @@ public class RepositoryFuentesSeeder {
 
     StrategyTipoConexion strategyAPIREST = new StrategyAPIREST();
 
-    Fuente fuente = new Fuente(3,"API Choque", "https://choques.com",  strategyAPIREST, "API REST");
+    Fuente fuente = new Fuente(4,"API Choque", "https://choques.com",  strategyAPIREST, "API REST");
 
     public void cargarRepos() {
         repositoryFuentes.save(fuente);
