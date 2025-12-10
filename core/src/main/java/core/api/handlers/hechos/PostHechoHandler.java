@@ -30,26 +30,47 @@ public class PostHechoHandler implements Handler {
     private static final Logger log = LoggerFactory.getLogger(PatchAgregarFuentesColeccionHandler.class);
     private final UsuarioRepository usuarioRepository = UsuarioRepository.getInstance();
     private final ContribuyentesRepository contribuyentesRepository = ContribuyentesRepository.getInstance();
+
     @Override
     public void handle(@NotNull Context context) throws Exception {
         try {
             String urgenteHeader = context.header("X-Urgente");
             boolean urgente = Boolean.parseBoolean(urgenteHeader);
-            System.out.println("Urgente: " + urgente);
             log.info("Header X-Urgente='{}' => urgente={}", urgenteHeader, urgente);
+
+            String anonimoHeader = context.header("X-Anonimo");
+            boolean anonimo = Boolean.parseBoolean(anonimoHeader);
+            log.info("Header X-Anonimo='{}' => anonimo={}", anonimoHeader, anonimo);
 
             HechoAIntegrarDINAMICO dto = context.bodyAsClass(HechoAIntegrarDINAMICO.class);
             log.info("Creando hecho: {}", context.body());
 
-            //Tomamos el correo que viene como contribuyente desde web
+            // Tomamos el correo que viene como contribuyente desde web
             String correoContribuyente = dto.getContribuyente();
 
-            //nombre a mostrar a partir de la tabla USUARIO
-            String nombreContribuyente = resolverNombreContribuyente(correoContribuyente);
+            boolean tratarComoAnonimo = anonimo
+                    || correoContribuyente == null
+                    || "anonimo".equalsIgnoreCase(correoContribuyente.trim());
 
-            //Registrar contribuyente si corresponde
-            registrarContribuyenteDesdeUsuario(correoContribuyente);
+            String nombreContribuyente;
 
+            if (tratarComoAnonimo) {
+                // Modo totalmente anónimo: no persistimos
+                nombreContribuyente = "anonimo";
+                log.info("Reporte tratado como ANONIMO. No se persiste contribuyente en la base.");
+            } else {
+                //No anónimo
+                nombreContribuyente = resolverNombreContribuyente(correoContribuyente);
+
+                // Si no pudimos armar un nombre legible, usamos el correo como fallback
+                if (nombreContribuyente == null || nombreContribuyente.isBlank()) {
+                    nombreContribuyente = "No se pudo obtener";
+                }
+
+                registrarContribuyenteDesdeUsuario(correoContribuyente);
+            }
+
+            // Construimos el DTO que va al cargador / servicio de agregación
             HechoAIntegrarDINAMICO hechoDTO = new HechoAIntegrarDINAMICO(
                     dto.getTitulo(),
                     dto.getDescripcion(),
@@ -68,18 +89,18 @@ public class PostHechoHandler implements Handler {
                 HechoAIntegrarDTO hechoUrgente = mapearADTOAgregacion(hechoDTO);
                 ServicioDeAgregacion.getInstance().hechoUnicoUrgente(hechoUrgente);
 
-                log.info("Hecho marcado como URGENTE: se agrega directo, no se envía al cargador dinámico");
+                log.info("Hecho marcado como URGENTE (anonimo={}): se agrega directo, no se envía al cargador dinámico",
+                        tratarComoAnonimo);
                 context.status(201).result("Hecho urgente agregado directamente");
                 return;
             }
 
-            // Si NO es urgente. flujo normal: mandarlo al cargador dinámico
             HttpResponse<String> responseCargador = enviarHechoAlCargador(hechoDTO);
             int statusCargador = responseCargador.statusCode();
             String bodyCargador = responseCargador.body();
 
             if (statusCargador == 201) {
-                log.info("Hecho enviado correctamente al cargador");
+                log.info("Hecho enviado correctamente al cargador (anonimo={})", tratarComoAnonimo);
                 context.status(201);
             } else if (statusCargador >= 400 && statusCargador < 500) {
                 log.warn("Error 4xx del cargador: {} - {}", statusCargador, bodyCargador);
@@ -139,8 +160,6 @@ public class PostHechoHandler implements Handler {
     }
 
     private HttpResponse<String> enviarHechoAlCargador(HechoAIntegrarDINAMICO hecho) throws IOException, InterruptedException {
-        ObjectMapper objectMapper = new ObjectMapper();
-
         String jsonHecho = this.hechoAJson(hecho);
         log.info("Hecho a enviar al cargador dinamico: " + jsonHecho);
 
@@ -156,8 +175,7 @@ public class PostHechoHandler implements Handler {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .timeout(Duration.ofSeconds(20))
-                .header("Content-Type", "application/json; charset=utf-8"
-                )
+                .header("Content-Type", "application/json; charset=utf-8")
                 .POST(HttpRequest.BodyPublishers.ofString(jsonHecho))
                 .build();
         return client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -209,7 +227,6 @@ public class PostHechoHandler implements Handler {
             return;
         }
 
-        // Busco el usuario por correo
         usuarioRepository.findByCorreo(normalizado).ifPresent(usuario -> {
             boolean yaExiste = contribuyentesRepository
                     .findByMail(normalizado)

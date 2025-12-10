@@ -368,7 +368,7 @@
             <input type="hidden" id="longitud" name="longitud" required>
           </div>
 
-          <div class="form-group" th:if="${email != null}">
+          <div class="form-group" th:if="${#authorization.expression('isAuthenticated()')}">
             <label style="font-weight: 500; display:flex; align-items:center; gap:.4rem;">
               <input type="checkbox" id="noPublicarDatos" name="noPublicarDatos" style="width:auto;">
               No publicar mis datos como contribuyente
@@ -387,7 +387,6 @@
               Si marcás esta opción, el suceso se enviará marcado como urgente.
             </p>
           </div>
-
 
           <div style="color: #F47C2C; font-size: 0.98rem;">
             <span style="font-weight: bold;">*</span> Campos obligatorios
