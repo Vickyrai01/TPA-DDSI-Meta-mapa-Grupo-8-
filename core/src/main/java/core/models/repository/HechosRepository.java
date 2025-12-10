@@ -452,5 +452,27 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
             em.close();
         }
     }
+
+    public List<Hecho> listarHechosParaGraphQL() {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            List<Hecho> hechos = em.createQuery("select h from hecho h where h.estado = 'ACEPTADO'", Hecho.class)
+                    .getResultList();
+
+            // Inicializo lo que sé que GraphQL puede necesitar
+            hechos.forEach(h -> {
+                h.getCategoria();               // toca el proxy
+                h.getUbicacion();
+                h.getContribuyente();
+                h.getEtiquetas().size();        // inicializa la colección
+                h.getMultimedia().size();       // idem
+            });
+
+            return hechos;
+        } finally {
+            em.close();
+        }
+    }
+
 }
 

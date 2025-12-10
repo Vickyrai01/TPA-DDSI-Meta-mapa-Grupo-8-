@@ -664,6 +664,120 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
         }
     }
 
+    public List<Coleccion> listarColeccionesParaGraphQL() {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            List<Coleccion> colecciones = em
+                    .createQuery("select c from coleccion c", Coleccion.class)
+                    .getResultList();
+
+            colecciones.forEach(c -> {
+                // Forzamos inicialización de fuentes
+                if (c.getFuentes() != null) {
+                    c.getFuentes().forEach(f -> {
+                        f.getNombre();          // toca el proxy
+                        f.getId();  // por las dudas
+                        f.getTipoFuente();      // si lo usás en el schema
+                        f.getLink();
+                    });
+                }
+
+                // Inicializar criterioDePertenencia (por ahora solo size())
+                if (c.getCriterioDePertenencia() != null) {
+                    c.getCriterioDePertenencia().size();
+                }
+
+                // Inicializar hechos (lista completa)
+                if (c.getHechos() != null) {
+                    c.getHechos().forEach(this::inicializarHechoParaGraphQL);
+                }
+
+                // Inicializar hechosVisibles (la que te está explotando ahora)
+                if (c.getHechosVisibles() != null) {
+                    c.getHechosVisibles().forEach(this::inicializarHechoParaGraphQL);
+                }
+
+                // Campo simple, por si acaso
+                c.getModoDeNavegacion();
+            });
+
+            return colecciones;
+        } finally {
+            em.close();
+        }
+    }
+
+    private void inicializarHechoParaGraphQL(Hecho h) {
+        if (h == null) return;
+
+        h.getTitulo();
+        h.getDescripcion();
+        h.getEstado();
+
+        if (h.getCategoria() != null) {
+            h.getCategoria().getNombre();
+        }
+        if (h.getUbicacion() != null) {
+            h.getUbicacion().getLatitud();
+            h.getUbicacion().getLongitud();
+        }
+        if (h.getContribuyente() != null) {
+            h.getContribuyente().getNombre();
+            h.getContribuyente().getApellido();
+            h.getContribuyente().getMail();
+        }
+
+        h.getEtiquetas().size();    // inicializa colección
+        h.getMultimedia().size();   // idem
+
+        h.getFechaSuceso();
+        h.getFechaCarga();
+        h.getHoraSuceso();
+        h.getUltimaFechaModificacion();
+        h.getCodigoDeFuente();
+        h.getHash();
+        h.getIdFuente();
+        h.getLinkFuente();
+    }
+
+    public Coleccion buscarColeccionParaGraphQL(Integer id) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            Coleccion c = em.find(Coleccion.class, id);
+            if (c == null) return null;
+
+            // Mismo patrón de inicialización:
+            if (c.getFuentes() != null) {
+                c.getFuentes().forEach(f -> {
+                    f.getNombre();
+                    f.getId();
+                    f.getTipoFuente();
+                    f.getLink();
+                });
+            }
+
+            if (c.getCriterioDePertenencia() != null) {
+                c.getCriterioDePertenencia().size();
+            }
+
+            if (c.getHechos() != null) {
+                c.getHechos().forEach(this::inicializarHechoParaGraphQL);
+            }
+
+            if (c.getHechosVisibles() != null) {
+                c.getHechosVisibles().forEach(this::inicializarHechoParaGraphQL);
+            }
+
+            c.getModoDeNavegacion();
+            c.getDescripcionColeccion();
+            c.getTitulo();
+
+            return c;
+        } finally {
+            em.close();
+        }
+    }
+
 
 }
 
