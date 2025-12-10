@@ -8,6 +8,8 @@ import core.models.agregador.ConfigLoader;
 import core.models.agregador.HechoAIntegrarDTO;
 import core.models.agregador.ServicioDeAgregacion;
 import core.models.entities.fuentes.TipoFuente;
+import core.models.entities.hecho.Contribuyente;
+import core.models.repository.ContribuyentesRepository;
 import core.models.repository.UsuarioRepository;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -27,7 +29,7 @@ import java.util.Map;
 public class PostHechoHandler implements Handler {
     private static final Logger log = LoggerFactory.getLogger(PatchAgregarFuentesColeccionHandler.class);
     private final UsuarioRepository usuarioRepository = UsuarioRepository.getInstance();
-
+    private final ContribuyentesRepository contribuyentesRepository = ContribuyentesRepository.getInstance();
     @Override
     public void handle(@NotNull Context context) throws Exception {
         try {
@@ -45,6 +47,8 @@ public class PostHechoHandler implements Handler {
             //nombre a mostrar a partir de la tabla USUARIO
             String nombreContribuyente = resolverNombreContribuyente(correoContribuyente);
 
+            //Registrar contribuyente si corresponde
+            registrarContribuyenteDesdeUsuario(correoContribuyente);
 
             HechoAIntegrarDINAMICO hechoDTO = new HechoAIntegrarDINAMICO(
                     dto.getTitulo(),
@@ -193,6 +197,37 @@ public class PostHechoHandler implements Handler {
         dto.setMultimedia(d.getMultimedia());
         dto.setTipoFuente(String.valueOf(TipoFuente.DINAMICA));
         return dto;
+    }
+
+    private void registrarContribuyenteDesdeUsuario(String correo) {
+        if (correo == null) {
+            return;
+        }
+
+        String normalizado = correo.trim().toLowerCase();
+        if (normalizado.isBlank()) {
+            return;
+        }
+
+        // Busco el usuario por correo
+        usuarioRepository.findByCorreo(normalizado).ifPresent(usuario -> {
+            boolean yaExiste = contribuyentesRepository
+                    .findByMail(normalizado)
+                    .isPresent();
+
+            if (yaExiste) {
+                log.debug("Contribuyente ya existe para el mail {}", normalizado);
+                return;
+            }
+
+            Contribuyente c = new Contribuyente();
+            c.setNombre(usuario.getNombre());
+            c.setApellido(usuario.getApellido());
+            c.setMail(usuario.getCorreo().toLowerCase());
+
+            contribuyentesRepository.add(c);
+            log.info("Contribuyente creado para el mail {}", normalizado);
+        });
     }
 
 }
