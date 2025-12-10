@@ -16,7 +16,6 @@ public class Fuente {
         this.link = link;
         this.tipoFuente = tipoFuente;
         this.strategyTipoConexion = strategyTipoConexion;
-        this.ultimoProcesado = null;
     }
 
     public Fuente(Integer id, String nombre, String link, TipoFuente tipoFuente, StrategyTipoConexion strategyTipoConexion) {
@@ -24,13 +23,10 @@ public class Fuente {
         this.link = link;
         this.tipoFuente = tipoFuente;
         this.strategyTipoConexion = strategyTipoConexion;
-        this.ultimoProcesado = null;
         this.id = id;
     }
 
-
     public  Fuente(){}
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +39,6 @@ public class Fuente {
         this.id = id;
     }
 
-
     @Column(name = "nombre")
     private String nombre;
     public String getNombre() {
@@ -52,7 +47,6 @@ public class Fuente {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-
 
     @Column(name = "link")
     private String link;
@@ -71,24 +65,6 @@ public class Fuente {
         this.tipoFuente = tipoFuente;
     }
 
-    @Column(name = "codigo_de_fuente")
-    private String codigoDeFuente;
-    public String getCodigoDeFuente() {
-        return codigoDeFuente;
-    }
-    public String setCodigoDeFuente(String codigoDeFuente) {
-        return this.codigoDeFuente = codigoDeFuente;
-    }
-
-    @Column(name = "ultimo_procesado")
-    private LocalDateTime ultimoProcesado;
-    public LocalDateTime getUltimoProcesado() {
-        return ultimoProcesado;
-    }
-    public void actualizarUltimoProcesado() {
-        this.ultimoProcesado = LocalDateTime.now();
-    }
-
     @JsonIgnore
     @Convert(converter = StrategyTipoConexionConverter.class)
     @Column(name = "strategy_tipo_conexion")
@@ -101,7 +77,7 @@ public class Fuente {
     }
 
     public List<HechoAIntegrarDTO> extraerHechos(){
-        return strategyTipoConexion.extraerHecho(link, codigoDeFuente);
+        return strategyTipoConexion.extraerHecho(link);
     };
 }
 

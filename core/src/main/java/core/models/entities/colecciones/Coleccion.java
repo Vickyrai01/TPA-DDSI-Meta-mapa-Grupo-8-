@@ -62,8 +62,6 @@ public class Coleccion {
     public void agregarFuentes (List<Fuente> listaFuentes){fuentes.addAll(listaFuentes);}
     public void eliminarFuente (Fuente f) {fuentes.remove(f);}
 
-    public List<String> extraerCodigosDeFuentes(List<Fuente> fuentes){return fuentes.stream().map(Fuente::getCodigoDeFuente).toList();}
-
     @ManyToMany
     @JoinTable(
             name = "hechos_visibles", // nombre de la tabla intermedia
@@ -139,7 +137,6 @@ public class Coleccion {
     private List<Hecho> hechos;
     public List<Hecho> getHechos() {return hechos;}
     public void setHechos(List<Hecho> hechos) {this.hechos = hechos;}
-    public void agregarHechosDeFuentes(List<Hecho> hechos){this.hechos.addAll(hechos.stream().filter(unHecho -> unHecho.perteneceAFuente(extraerCodigosDeFuentes(this.fuentes))).toList());}
     public void agregarHecho(Hecho hecho){this.hechos.add(hecho);}
 
 
