@@ -1,4 +1,5 @@
 package cargadorProxy.application;
+import cargadorProxy.observabilidad.MetricasCargadorProxy;
 import utils.DBUtils;
 import javax.persistence.EntityManager;
 
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "cargadorProxy")
 @RestController
 @RequestMapping("/cargadorProxy")
 public class Application {
@@ -74,6 +75,11 @@ public class Application {
         if(fuente == null) return ResponseEntity.status(404).build();
         repoFuentes.deleteById(id);
         return ResponseEntity.status(204).build();
+    }
+
+    @GetMapping("/metricas")
+    public ResponseEntity<?> metrics() {
+        return ResponseEntity.ok(MetricasCargadorProxy.snapshot());
     }
 
 }

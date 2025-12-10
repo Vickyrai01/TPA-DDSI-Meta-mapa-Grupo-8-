@@ -80,7 +80,7 @@ public class Application {
         });
 
         // Endpoint de métricas
-        app.get("/observabilidad/metrics", ctx -> {
+        app.get("/metricas", ctx -> {
             ctx.json(RegistroMetricas.snapshot());
         });
 

@@ -3,6 +3,10 @@ package core.models.agregador;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import core.observabilidad.RegistroMetricas;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -12,8 +16,12 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public class HandlerCargadores {
+
+    private static final Logger log = LoggerFactory.getLogger(ServicioDeAgregacion.class);
+
 
     private static volatile HandlerCargadores instance;
     List<HechoAIntegrarDTO> resultado = new ArrayList<>();
@@ -46,7 +54,7 @@ public class HandlerCargadores {
         List<HechoAIntegrarDTO> resultado = new ArrayList<>();
 
         try {
-            List<HechoAIntegrarDTO> d = extraerHecho(dinamico);
+            List<HechoAIntegrarDTO> d = extraerHechoConMetricas(dinamico, TipoCargador.DINAMICO);
             if (d != null) resultado.addAll(d);
             System.out.println("[DINAMICO] items: " + (d == null ? 0 : d.size()));
         } catch (Exception e) {
@@ -54,7 +62,7 @@ public class HandlerCargadores {
         }
 
         try {
-            List<HechoAIntegrarDTO> p = extraerHecho(proxy);
+            List<HechoAIntegrarDTO> p = extraerHechoConMetricas(proxy, TipoCargador.PROXY);
             if (p != null) resultado.addAll(p);
             System.out.println("[PROXY] items: " + (p == null ? 0 : p.size()));
         } catch (Exception e) {
@@ -62,7 +70,7 @@ public class HandlerCargadores {
         }
 
         try {
-            List<HechoAIntegrarDTO> eList = extraerHecho(estatico);
+            List<HechoAIntegrarDTO> eList = extraerHechoConMetricas(estatico, TipoCargador.ESTATICO);
             if (eList != null) resultado.addAll(eList);
             System.out.println("[ESTATICO] items: " + (eList == null ? 0 : eList.size()));
         } catch (Exception e) {
@@ -88,6 +96,14 @@ public class HandlerCargadores {
                 .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
                 .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 
+        // 1) correlationId del MDC (lo setea el before de Javalin)
+        String correlationId = MDC.get("correlationId");
+        if (correlationId == null || correlationId.isBlank()) {
+            correlationId = UUID.randomUUID().toString();
+            MDC.put("correlationId", correlationId);
+        }
+
+
         HttpClient client = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(10))
                 .build();
@@ -96,6 +112,7 @@ public class HandlerCargadores {
                 .uri(URI.create(fuente))
                 .timeout(Duration.ofSeconds(10))
                 .header("Accept", "application/json")
+                .header("X-Correlation-Id", correlationId)
                 .GET()
                 .build();
 
@@ -115,6 +132,50 @@ public class HandlerCargadores {
         } catch (Exception e) {
             System.out.println("Error al extraer hechos desde " + fuente + ": " + e.getMessage());
             return List.of(); // inmutable y segura
+        }
+    }
+
+    // ==== NUEVO: enum interno para identificar cargador ====
+    private enum TipoCargador { DINAMICO, PROXY, ESTATICO }
+
+    private void registrarRequest(TipoCargador tipo) {
+        switch (tipo) {
+            case DINAMICO -> RegistroMetricas.incReqDinamico();
+            case PROXY    -> RegistroMetricas.incReqProxy();
+            case ESTATICO -> RegistroMetricas.incReqEstatico();
+        }
+    }
+
+    private void registrarError(TipoCargador tipo) {
+        switch (tipo) {
+            case DINAMICO -> RegistroMetricas.incErrDinamico();
+            case PROXY    -> RegistroMetricas.incErrProxy();
+            case ESTATICO -> RegistroMetricas.incErrEstatico();
+        }
+    }
+
+    private void registrarTiempo(TipoCargador tipo, long ms) {
+        switch (tipo) {
+            case DINAMICO -> RegistroMetricas.addTimeDinamico(ms);
+            case PROXY    -> RegistroMetricas.addTimeProxy(ms);
+            case ESTATICO -> RegistroMetricas.addTimeEstatico(ms);
+        }
+    }
+
+    // ==== NUEVO: wrapper con métricas por cargador ====
+    private List<HechoAIntegrarDTO> extraerHechoConMetricas(String fuente, TipoCargador tipo) {
+        registrarRequest(tipo);
+        long start = System.nanoTime();
+        try {
+            List<HechoAIntegrarDTO> res = extraerHecho(fuente);
+            long durMs = (System.nanoTime() - start) / 1_000_000;
+            registrarTiempo(tipo, durMs);
+            return res;
+        } catch (Exception e) {
+            long durMs = (System.nanoTime() - start) / 1_000_000;
+            registrarTiempo(tipo, durMs);
+            registrarError(tipo);
+            throw e;
         }
     }
 }
