@@ -12,9 +12,6 @@ public class Usuario {
     @Column(nullable = false)
     private String nombre;
 
-    @Column(nullable = false)
-    private String apellido;
-
     @Column(nullable = false, unique = true)
     private String correo;
 
@@ -34,9 +31,6 @@ public class Usuario {
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String getApellido() { return apellido; }
-    public void setApellido(String apellido) { this.apellido = apellido; }
-
 
     public String getCorreo() { return correo; }
     public void setCorreo(String correo) { this.correo = correo; }
@@ -54,9 +48,8 @@ public class Usuario {
     public Usuario() {}
 
     // Constructor útil
-    public Usuario(String nombre, String apellido, String correo, String rol, String foto, String contrasena) {
+    public Usuario(String nombre, String correo, String rol, String foto, String contrasena) {
         this.nombre = nombre;
-        this.apellido = apellido;
         this.correo = correo;
         this.rol = rol;
         this.foto = foto;

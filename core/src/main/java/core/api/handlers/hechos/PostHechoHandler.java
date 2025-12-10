@@ -82,7 +82,7 @@ public class PostHechoHandler implements Handler {
             if (urgente) {
                 HechoAIntegrarDTO hechoUrgente = mapearADTOAgregacion(hechoDTO);
                 hechoUrgente.setIdFuente(1);
-                hechoUrgente.setLinkFuente("Cargado por la web");
+                System.out.println(hechoUrgente.getHash());
                 ServicioDeAgregacion.getInstance().hechoUnicoUrgente(hechoUrgente);
 
                 log.info("Hecho marcado como URGENTE (anonimo={}): se agrega directo, no se envía al cargador dinámico",
@@ -130,21 +130,10 @@ public class PostHechoHandler implements Handler {
 
         return usuarioRepository.findByCorreo(normalizado)
                 .map(u -> {
-                    String nombre = u.getNombre() != null ? u.getNombre().trim() : "";
-                    String apellido = u.getApellido() != null ? u.getApellido().trim() : "";
-
-                    boolean tieneNombre = !nombre.isEmpty();
-                    boolean tieneApellido = !apellido.isEmpty();
-
-                    if (tieneNombre && tieneApellido) {
-                        return nombre + " " + apellido;
-                    } else if (tieneNombre) {
-                        return nombre;
-                    } else if (tieneApellido) {
-                        return apellido;
-                    } else {
-                        return null;
-                    }
+                    String nombre = u.getNombre();
+                    return (nombre != null && !nombre.trim().isEmpty())
+                            ? nombre.trim()
+                            : null;
                 })
                 .orElse(null);
     }
@@ -199,16 +188,8 @@ public class PostHechoHandler implements Handler {
     }
 
     private HechoAIntegrarDTO mapearADTOAgregacion(HechoAIntegrarDINAMICO d) {
-        HechoAIntegrarDTO dto = new HechoAIntegrarDTO();
-        dto.setTitulo(d.getTitulo());
-        dto.setDescripcion(d.getDescripcion());
-        dto.setCategoria(d.getCategoria());
-        dto.setLatitud(d.getLatitud());
-        dto.setLongitud(d.getLongitud());
-        dto.setFechaSuceso(d.getFechaSuceso());
-        dto.setEtiquetas(d.getEtiquetas());
-        dto.setContribuyente(d.getContribuyente());
-        dto.setMultimedia(d.getMultimedia());
+        HechoAIntegrarDTO dto = new HechoAIntegrarDTO(d.getTitulo(), d.getDescripcion(),d.getCategoria(), d.getLatitud(), d.getLongitud(), d.getFechaSuceso(),
+                d.getEtiquetas(), d.getContribuyente(), d.getMultimedia(), "Cargado por la web");
         dto.setTipoFuente(String.valueOf(TipoFuente.DINAMICA));
         return dto;
     }
@@ -240,7 +221,6 @@ public class PostHechoHandler implements Handler {
         // 3) Crear nuevo
         Contribuyente nuevo = new Contribuyente();
         nuevo.setNombre(usuario.getNombre());
-        nuevo.setApellido(usuario.getApellido());
         nuevo.setMail(normalizado);
 
         contribuyentesRepository.add(nuevo);

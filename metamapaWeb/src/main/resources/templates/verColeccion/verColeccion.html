@@ -120,8 +120,9 @@
                             <div class="field">
                                 <span class="field-label">Contribuyente:</span>
                                 <span class="field-value"
-                                      th:text="${h.contribuyente()!=null ? h.contribuyente() : 'No indica'}"
+                                      th:text="${h.contribuyente()!=null ? h.contribuyente() : 'No indica/Anónimo'}"
                                       th:classappend="${h.contribuyente()==null} ? 'muted' : ''">
+
                                 </span>
                             </div>
 

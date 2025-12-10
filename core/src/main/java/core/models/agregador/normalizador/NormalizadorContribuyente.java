@@ -38,8 +38,8 @@ public class NormalizadorContribuyente {
             // Es un mail
             c.setMail(trimmed);
         } else {
-            // Es un apellido
-            c.setApellido(trimmed);
+            // Es un nombre
+            c.setNombre(trimmed);
         }
 
         return c;

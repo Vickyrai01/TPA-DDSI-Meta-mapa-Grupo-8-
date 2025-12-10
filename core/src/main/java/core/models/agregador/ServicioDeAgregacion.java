@@ -107,8 +107,6 @@ public class ServicioDeAgregacion {
                 Hecho hecho = factoryHecho.convertirHecho(dto, fecha, categoria, ubicacion, etiquetas, contribuyente); // factory que funciona
                 hechosLimpios.add(hecho);
             } catch (NormalizadorFecha.ExcepcionRevisionManualFecha e) {
-                //Enviar a revisión manual
-                //revisionManualRepository.add(dto); TODO: habria que pensar esto un poco mas
                 System.out.println("A revisión manual");
              }
         }
@@ -160,6 +158,7 @@ public class ServicioDeAgregacion {
 
     public void hechoUnicoUrgente(HechoAIntegrarDTO hechoUnico) {
         if (hechoUnico == null) return;
+        System.out.println(hechoUnico.getHash());
         actualizarColecciones(List.of(hechoUnico));
     }
 
