@@ -56,7 +56,7 @@ public class PostHechoHandler implements Handler {
 
             if (tratarComoAnonimo) {
                 // Modo totalmente anónimo: no persistimos
-                nombreContribuyente = "anonimo";
+                nombreContribuyente = "Anónimo";
                 log.info("Reporte tratado como ANONIMO. No se persiste contribuyente en la base.");
             } else {
                 //No anónimo
@@ -64,7 +64,7 @@ public class PostHechoHandler implements Handler {
 
                 // Si no pudimos armar un nombre legible, usamos el correo como fallback
                 if (nombreContribuyente == null || nombreContribuyente.isBlank()) {
-                    nombreContribuyente = "No se pudo obtener";
+                    nombreContribuyente = "Anónimo";
                 }
 
                 registrarContribuyenteDesdeUsuario(correoContribuyente);
@@ -87,6 +87,8 @@ public class PostHechoHandler implements Handler {
 
             if (urgente) {
                 HechoAIntegrarDTO hechoUrgente = mapearADTOAgregacion(hechoDTO);
+                hechoUrgente.setIdFuente(1);
+                hechoUrgente.setLinkFuente("Cargado por la web");
                 ServicioDeAgregacion.getInstance().hechoUnicoUrgente(hechoUrgente);
 
                 log.info("Hecho marcado como URGENTE (anonimo={}): se agrega directo, no se envía al cargador dinámico",
