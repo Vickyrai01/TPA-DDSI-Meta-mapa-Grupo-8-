@@ -255,7 +255,7 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
                         ref = em.find(Contribuyente.class, c.getId());
                         if (ref != null) {
                             h.setContribuyente(ref);
-                            continue;
+                            //continue;
                         } else {
                             c.setId(null); // tratar como nuevo
                         }
