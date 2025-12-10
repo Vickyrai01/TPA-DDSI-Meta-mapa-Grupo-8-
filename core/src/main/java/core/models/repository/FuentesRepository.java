@@ -50,4 +50,42 @@ public class FuentesRepository extends JpaRepositoryBase<Fuente, Integer> {
 
     public Fuente getFuente(int id)
     {return findById(id);}
+
+    public List<Fuente> listarFuentesParaGraphQL() {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            List<Fuente> fuentes = em
+                    .createQuery("select f from fuente f", Fuente.class)
+                    .getResultList();
+
+            // Inicializo lo que el schema GraphQL puede necesitar
+            fuentes.forEach(f -> {
+                f.getNombre();
+                f.getLink();
+                f.getTipoFuente();
+            });
+
+            return fuentes;
+        } finally {
+            em.close();
+        }
+    }
+
+    public Fuente buscarFuenteParaGraphQL(Integer id) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            Fuente f = em.find(Fuente.class, id);
+            if (f == null) return null;
+
+            f.getNombre();
+            f.getLink();
+            f.getTipoFuente();
+
+            return f;
+        } finally {
+            em.close();
+        }
+    }
+
+
 }

@@ -153,6 +153,19 @@
             <version>5.4.18.Final</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>graphql-java</artifactId>
+            <version>22.0</version> <!-- o la versión estable que uses -->
+        </dependency>
+        <dependency>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>graphql-java-extended-scalars</artifactId>
+            <version>22.0</version>
+        </dependency>
+
+
+
     </dependencies>
 
     <build>
