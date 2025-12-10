@@ -2,6 +2,7 @@ package core.api.handlers.hechos;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import core.api.DTO.FuenteDTO;
 import core.api.DTO.HechoAIntegrarDINAMICO;
 import core.api.handlers.colecciones.PatchAgregarFuentesColeccionHandler;
 import core.models.agregador.ConfigLoader;
@@ -9,6 +10,7 @@ import core.models.agregador.HechoAIntegrarDTO;
 import core.models.agregador.ServicioDeAgregacion;
 import core.models.entities.fuentes.TipoFuente;
 import core.models.entities.hecho.Contribuyente;
+import core.models.entities.usuario.Usuario;
 import core.models.repository.ContribuyentesRepository;
 import core.models.repository.UsuarioRepository;
 import io.javalin.http.Context;
@@ -25,6 +27,7 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class PostHechoHandler implements Handler {
     private static final Logger log = LoggerFactory.getLogger(PatchAgregarFuentesColeccionHandler.class);
@@ -52,23 +55,14 @@ public class PostHechoHandler implements Handler {
                     || correoContribuyente == null
                     || "anonimo".equalsIgnoreCase(correoContribuyente.trim());
 
-            String nombreContribuyente;
+            String idContribuyente = null;
 
             if (tratarComoAnonimo) {
-                // Modo totalmente anónimo: no persistimos
-                nombreContribuyente = "Anónimo";
                 log.info("Reporte tratado como ANONIMO. No se persiste contribuyente en la base.");
             } else {
-                //No anónimo
-                nombreContribuyente = resolverNombreContribuyente(correoContribuyente);
-
-                // Si no pudimos armar un nombre legible, usamos el correo como fallback
-                if (nombreContribuyente == null || nombreContribuyente.isBlank()) {
-                    nombreContribuyente = "Anónimo";
-                }
-
-                registrarContribuyenteDesdeUsuario(correoContribuyente);
+                idContribuyente =  registrarContribuyenteDesdeUsuario(correoContribuyente);
             }
+
 
             // Construimos el DTO que va al cargador / servicio de agregación
             HechoAIntegrarDINAMICO hechoDTO = new HechoAIntegrarDINAMICO(
@@ -79,7 +73,7 @@ public class PostHechoHandler implements Handler {
                     dto.getLongitud(),
                     dto.getFechaSuceso(),
                     dto.getEtiquetas(),
-                    nombreContribuyente,
+                    idContribuyente,
                     dto.getMultimedia()
             );
 
@@ -219,34 +213,40 @@ public class PostHechoHandler implements Handler {
         return dto;
     }
 
-    private void registrarContribuyenteDesdeUsuario(String correo) {
-        if (correo == null) {
-            return;
+
+    private String registrarContribuyenteDesdeUsuario(String correo) {
+
+        if (correo == null || correo.trim().isBlank()) {
+            return null;
         }
 
         String normalizado = correo.trim().toLowerCase();
-        if (normalizado.isBlank()) {
-            return;
+
+
+        // 1) Ver si el usuario existe
+        Optional<Usuario> maybeUsuario = usuarioRepository.findByCorreo(normalizado);
+        if (maybeUsuario.isEmpty()) {
+            return null; // no hay usuario, no hay contribuyente
+        }
+        Usuario usuario = maybeUsuario.get();
+
+        // 2) Ver si ya existe un contribuyente con ese mail
+        Optional<Contribuyente> existente = contribuyentesRepository.findByMail(normalizado);
+        if (existente.isPresent()) {
+            log.debug("Contribuyente ya existe para el mail {}", normalizado);
+            return String.valueOf(existente.get().getId());
         }
 
-        usuarioRepository.findByCorreo(normalizado).ifPresent(usuario -> {
-            boolean yaExiste = contribuyentesRepository
-                    .findByMail(normalizado)
-                    .isPresent();
+        // 3) Crear nuevo
+        Contribuyente nuevo = new Contribuyente();
+        nuevo.setNombre(usuario.getNombre());
+        nuevo.setApellido(usuario.getApellido());
+        nuevo.setMail(normalizado);
 
-            if (yaExiste) {
-                log.debug("Contribuyente ya existe para el mail {}", normalizado);
-                return;
-            }
+        contribuyentesRepository.add(nuevo);
 
-            Contribuyente c = new Contribuyente();
-            c.setNombre(usuario.getNombre());
-            c.setApellido(usuario.getApellido());
-            c.setMail(usuario.getCorreo().toLowerCase());
-
-            contribuyentesRepository.add(c);
-            log.info("Contribuyente creado para el mail {}", normalizado);
-        });
+        log.info("Contribuyente creado para el mail {}", normalizado);
+        return String.valueOf(nuevo.getId());
     }
 
 }
