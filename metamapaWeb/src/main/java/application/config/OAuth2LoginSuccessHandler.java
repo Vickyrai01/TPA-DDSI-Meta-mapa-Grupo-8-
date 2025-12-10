@@ -62,17 +62,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                     if (existing == null) {
                         System.out.println("[SSO] Creando usuario en CORE para: " + email);
 
-                        String nombre = name;
-                        String apellido = "";
-                        if (name != null && name.contains(" ")) {
-                            int idx = name.lastIndexOf(" ");
-                            nombre = name.substring(0, idx);
-                            apellido = name.substring(idx + 1);
-                        }
-
                         UsuarioDTO nuevo = new UsuarioDTO(
-                                nombre,
-                                apellido,
+                                name,
                                 email,
                                 "USER",
                                 null  // contraseña null: tu CORE puede ignorarla si viene de SSO
@@ -110,16 +101,14 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     // DTO interno solo para hablar con el CORE
     public static class UsuarioDTO {
         private String nombre;
-        private String apellido;
         private String correo;
         private String rol;
         private String contrasena;
 
         public UsuarioDTO() {}
 
-        public UsuarioDTO(String nombre, String apellido, String correo, String rol, String contrasena) {
+        public UsuarioDTO(String nombre, String correo, String rol, String contrasena) {
             this.nombre = nombre;
-            this.apellido = apellido;
             this.correo = correo;
             this.rol = rol;
             this.contrasena = contrasena;
@@ -127,9 +116,6 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         public String getNombre() { return nombre; }
         public void setNombre(String nombre) { this.nombre = nombre; }
-
-        public String getApellido() { return apellido; }
-        public void setApellido(String apellido) { this.apellido = apellido; }
 
         public String getCorreo() { return correo; }
         public void setCorreo(String correo) { this.correo = correo; }

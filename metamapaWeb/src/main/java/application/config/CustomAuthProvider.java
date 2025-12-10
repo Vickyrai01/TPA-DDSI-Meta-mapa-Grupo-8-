@@ -78,10 +78,7 @@ import java.util.Optional;
             GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + rol.toUpperCase());
 
             Map<String, Object> attributes = new HashMap<>();
-            String nombreCompleto =
-                    (usuario.getNombre() != null ? usuario.getNombre() : "") + " " +
-                            (usuario.getApellido() != null ? usuario.getApellido() : "");
-            attributes.put("name", nombreCompleto.trim());
+            attributes.put("name", usuario.getNombre());
             attributes.put("email", usuario.getCorreo());
             attributes.put("picture", usuario.getFoto());
 
@@ -103,7 +100,6 @@ import java.util.Optional;
         public static class UsuarioDTO {
             private Integer id;
             private String nombre;
-            private String apellido;
             private String correo;
             private String rol;
             private String foto;
@@ -123,14 +119,6 @@ import java.util.Optional;
 
             public void setNombre(String nombre) {
                 this.nombre = nombre;
-            }
-
-            public String getApellido() {
-                return apellido;
-            }
-
-            public void setApellido(String apellido) {
-                this.apellido = apellido;
             }
 
             public String getCorreo() {
