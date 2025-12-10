@@ -12,7 +12,7 @@ public class StrategyAPIREST implements StrategyTipoConexion {
     HechosRepository hechosRepository = HechosRepository.getInstance();
 
     @Override
-    public List<HechoAIntegrarDTO> extraerHecho(String fuente, String codigoFuente){
+    public List<HechoAIntegrarDTO> extraerHecho(String fuente){
         /*
         List<HechoAIntegrarDTO> hechosExtraidos = new ArrayList<>();
         WebClient clientUsers = WebClient.create(fuente);
