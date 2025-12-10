@@ -16,6 +16,9 @@ public class PostRegistrarUsuarioHandler implements Handler {
         System.out.println("[DEBUG] Intentando registrar usuario: " +
                 (usuario != null ? usuario.getCorreo() : "null"));
 
+        System.out.println("[CORE] Cantidad total de usuarios en repo: "
+                + usuarioRepository.obtenerTodas().size());
+
         if (usuario == null || usuario.getCorreo() == null) {
             System.out.println("[ERROR] Datos de usuario inválidos");
             ctx.status(400).result("Datos de usuario inválidos");
