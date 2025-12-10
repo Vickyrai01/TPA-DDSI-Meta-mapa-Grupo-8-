@@ -24,7 +24,7 @@ public class Usuario {
     @Column(nullable = true)
     private String foto;
 
-    @Column(nullable = false)
+    @Column()
     private String contrasena;
 
     // Getters y setters

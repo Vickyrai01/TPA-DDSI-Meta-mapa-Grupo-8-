@@ -29,14 +29,23 @@ public class UsuarioRepository extends JpaRepositoryBase<Usuario, Integer> {
     public Optional<Usuario> findByCorreo(String correo) {
         EntityManager em = DBUtils.getEntityManager();
         try {
-            Usuario usuario = em.createQuery("SELECT u FROM Usuario u WHERE u.correo = :correo", Usuario.class)
-                    .setParameter("correo", correo)
+            if (correo == null) return Optional.empty();
+
+            String normalizado = correo.trim().toLowerCase();
+            System.out.println("[CORE] Buscando usuario por correo normalizado: '" + normalizado + "'");
+
+            Usuario usuario = em.createQuery(
+                            "SELECT u FROM Usuario u WHERE LOWER(u.correo) = :correo", Usuario.class)
+                    .setParameter("correo", normalizado)
                     .getSingleResult();
+
             return Optional.of(usuario);
         } catch (NoResultException e) {
+            System.out.println("[CORE] No se encontró usuario para correo: '" + correo + "'");
             return Optional.empty();
         } finally {
             em.close();
         }
     }
+
 }
