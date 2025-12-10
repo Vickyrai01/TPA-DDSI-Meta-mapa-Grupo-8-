@@ -18,7 +18,7 @@ public class StrategyCSV implements StrategyTipoConexion {
     int i = 5; // A SOLUCIONAR DSP!!
 
     @Override
-    public List<HechoAIntegrarDTO> extraerHecho(String fuenteBase, String codigoFuente) {
+    public List<HechoAIntegrarDTO> extraerHecho(String fuenteBase) {
         List<HechoAIntegrarDTO> hechos = new ArrayList<>();
 
         try (CSVReader reader = new CSVReader(new FileReader(fuenteBase))) {

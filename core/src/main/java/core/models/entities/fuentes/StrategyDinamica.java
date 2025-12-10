@@ -7,7 +7,7 @@ import java.util.List;
 public class StrategyDinamica implements StrategyTipoConexion {
 
     @Override
-    public List<HechoAIntegrarDTO> extraerHecho(String fuente, String codigoFuente){return null;}
+    public List<HechoAIntegrarDTO> extraerHecho(String fuente){return null;}
 
     @Override
     public String devolverTipoDeConexion() {return "DINAMICA";};
