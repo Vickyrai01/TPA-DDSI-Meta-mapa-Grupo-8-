@@ -125,13 +125,12 @@ public abstract class JpaRepositoryBase<T, ID> {
         }
     }
 
-    public T update(T entity) {
+    public void update(T entity) {
         EntityManager em = emSupplier.get();
         try {
             DBUtils.comenzarTransaccion(em);
             T managed = em.merge(entity); // une el objeto detached con el contexto
             DBUtils.commit(em);
-            return managed;
         } catch (RuntimeException ex) {
             DBUtils.rollback(em);
             throw ex;
