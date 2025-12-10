@@ -8,6 +8,7 @@ import core.models.agregador.ConfigLoader;
 import core.models.agregador.HechoAIntegrarDTO;
 import core.models.agregador.ServicioDeAgregacion;
 import core.models.entities.fuentes.TipoFuente;
+import core.models.repository.UsuarioRepository;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +26,7 @@ import java.util.Map;
 
 public class PostHechoHandler implements Handler {
     private static final Logger log = LoggerFactory.getLogger(PatchAgregarFuentesColeccionHandler.class);
+    private final UsuarioRepository usuarioRepository = UsuarioRepository.getInstance();
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
@@ -37,6 +39,13 @@ public class PostHechoHandler implements Handler {
             HechoAIntegrarDINAMICO dto = context.bodyAsClass(HechoAIntegrarDINAMICO.class);
             log.info("Creando hecho: {}", context.body());
 
+            //Tomamos el correo que viene como contribuyente desde web
+            String correoContribuyente = dto.getContribuyente();
+
+            //nombre a mostrar a partir de la tabla USUARIO
+            String nombreContribuyente = resolverNombreContribuyente(correoContribuyente);
+
+
             HechoAIntegrarDINAMICO hechoDTO = new HechoAIntegrarDINAMICO(
                     dto.getTitulo(),
                     dto.getDescripcion(),
@@ -45,14 +54,13 @@ public class PostHechoHandler implements Handler {
                     dto.getLongitud(),
                     dto.getFechaSuceso(),
                     dto.getEtiquetas(),
-                    dto.getContribuyente(),
+                    nombreContribuyente,
                     dto.getMultimedia()
             );
 
             validarNuevoHecho(hechoDTO);
 
             if (urgente) {
-                //Ejecutar agregación directa
                 HechoAIntegrarDTO hechoUrgente = mapearADTOAgregacion(hechoDTO);
                 ServicioDeAgregacion.getInstance().hechoUnicoUrgente(hechoUrgente);
 
@@ -87,6 +95,37 @@ public class PostHechoHandler implements Handler {
             log.error("Error inesperado al crear hecho", e);
             context.status(500).result("Error interno del servidor");
         }
+    }
+
+    private String resolverNombreContribuyente(String correo) {
+        if (correo == null) {
+            return null;
+        }
+
+        String normalizado = correo.trim().toLowerCase();
+        if (normalizado.isBlank()) {
+            return null;
+        }
+
+        return usuarioRepository.findByCorreo(normalizado)
+                .map(u -> {
+                    String nombre = u.getNombre() != null ? u.getNombre().trim() : "";
+                    String apellido = u.getApellido() != null ? u.getApellido().trim() : "";
+
+                    boolean tieneNombre = !nombre.isEmpty();
+                    boolean tieneApellido = !apellido.isEmpty();
+
+                    if (tieneNombre && tieneApellido) {
+                        return nombre + " " + apellido;
+                    } else if (tieneNombre) {
+                        return nombre;
+                    } else if (tieneApellido) {
+                        return apellido;
+                    } else {
+                        return null;
+                    }
+                })
+                .orElse(null);
     }
 
     private void validarNuevoHecho(HechoAIntegrarDINAMICO hecho) {

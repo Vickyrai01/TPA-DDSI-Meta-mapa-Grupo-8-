@@ -24,4 +24,5 @@ public class ContribuyentesRepository extends JpaRepositoryBase<Contribuyente, I
         return findById(idContribuyente);
     }
 
+    
 }
