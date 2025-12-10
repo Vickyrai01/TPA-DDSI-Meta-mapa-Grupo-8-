@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import core.observabilidad.RegistroMetricas;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import java.net.URI;
@@ -19,9 +17,6 @@ import java.util.List;
 import java.util.UUID;
 
 public class HandlerCargadores {
-
-    private static final Logger log = LoggerFactory.getLogger(ServicioDeAgregacion.class);
-
 
     private static volatile HandlerCargadores instance;
     List<HechoAIntegrarDTO> resultado = new ArrayList<>();
