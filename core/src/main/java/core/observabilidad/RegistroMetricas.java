@@ -8,7 +8,7 @@ public class RegistroMetricas {
 
     private static final AtomicLong peticionesTotales = new AtomicLong(0);
     private static final AtomicLong erroresTotales   = new AtomicLong(0);
-    private static final AtomicLong hechosCreadosTotales = new AtomicLong(0);
+    private static final AtomicLong hechosProcesadosTotales = new AtomicLong(0);
     private static final AtomicLong tiempoMsPeticionesTotal = new AtomicLong(0);
 
     private static final AtomicLong reqsCargadorDinamico  = new AtomicLong(0);
@@ -36,12 +36,12 @@ public class RegistroMetricas {
     }
 
     public static void sumHechosCreados() {
-        hechosCreadosTotales.incrementAndGet();
+        hechosProcesadosTotales.incrementAndGet();
     }
 
     public static void addHechosCreados(long cantidad) {
         if (cantidad <= 0) return;
-        hechosCreadosTotales.addAndGet(cantidad);
+        hechosProcesadosTotales.addAndGet(cantidad);
     }
 
 
@@ -77,10 +77,13 @@ public class RegistroMetricas {
         long avg = (reqs > 0) ? (totalTime / reqs) : 0;
         long errors = erroresTotales.get();
         double errorRate = (reqs > 0) ? (errors * 1.0 / reqs) : 0.0;
+        double porcentajeReqsDinamico = (reqsCargadorDinamico.get() * 1.0 / reqs);
+        double porcentajeReqsProxy = (reqsCargadorProxy.get() * 1.0 / reqs);
+        double porcentajeReqsEstatico = (reqsCargadorEstatico.get() * 1.0 / reqs);
 
         m.put("totalRequests", reqs);
         m.put("totalErrors", errors);
-        m.put("totalHechosCreados", hechosCreadosTotales.get());
+        m.put("totalHechosProcesados", hechosProcesadosTotales.get());
         m.put("totalRequestTimeMs", totalTime);
         m.put("avgResponseTimeMs", avg);
         m.put("errorRate", errorRate);
@@ -90,14 +93,18 @@ public class RegistroMetricas {
         m.put("reqsHechosCargadorDinamico",  reqsCargadorDinamico.get());
         m.put("errsCargadorDinamico",  errsCargadorDinamico.get());
         m.put("timeCargadorDinamicoMs", timeCargadorDinamicoMs.get());
+        m.put("porcentajeReqsDinamico", porcentajeReqsDinamico);
 
         m.put("reqsHechosCargadorProxy",  reqsCargadorProxy.get());
         m.put("errsCargadorProxy",  errsCargadorProxy.get());
         m.put("timeCargadorProxyMs", timeCargadorProxyMs.get());
+        m.put("porcentajeReqsProxy", porcentajeReqsProxy);
 
         m.put("reqsHechosCargadorEstatico",  reqsCargadorEstatico.get());
         m.put("errsCargadorEstatico",  errsCargadorEstatico.get());
         m.put("timeCargadorEstaticoMs", timeCargadorEstaticoMs.get());
+        m.put("porcentajeReqsEstatico", porcentajeReqsEstatico);
+
         return m;
     }
 }
