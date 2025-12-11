@@ -8,6 +8,7 @@ import core.models.repository.seeders.ColeccionesRepositorySeeder;
 import core.models.repository.seeders.FuentesRepositorySeeder;
 import core.models.repository.seeders.HechosRepositorySeeder;
 import core.models.repository.seeders.SolicitudEliminacioRepositorySeeder;
+import core.observabilidad.PrometheusExporter;
 import core.observabilidad.RegistroMetricas;
 import io.javalin.Javalin;
 import org.slf4j.Logger;
@@ -110,6 +111,12 @@ public class Application {
 
         // Endpoint de métricas
         app.get("/metricas", ctx -> ctx.json(RegistroMetricas.snapshot()));
+        app.get("/metrics", ctx -> {
+            String body = PrometheusExporter.export(RegistroMetricas.snapshot());
+            ctx.contentType("text/plain; charset=utf-8");
+            ctx.result(body);
+        });
+
 
         app.post("/graphql", ctx -> {
             System.out.println("BODY RECIBIDO: " + ctx.body());
