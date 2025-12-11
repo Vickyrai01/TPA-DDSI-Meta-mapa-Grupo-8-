@@ -11,8 +11,11 @@ import java.util.List;
 
 @Service
 public class FuenteService {
-    private final WebClient metamapaApi = WebClient.create("http://localhost:8081/core/api");
-    private final WebClient metamapaApiADMIN = WebClient.create("http://localhost:8082/core/api");
+    private final WebClient metamapaApiADMIN;
+
+    public FuenteService(RutasProperties props) {
+        this.metamapaApiADMIN = WebClient.create(props.getAdminBaseUrl());
+    }
 
     // Obtener todas las colecciones del core
     public List<FuenteDTO> getAll() {

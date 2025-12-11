@@ -10,8 +10,11 @@ import java.util.List;
 
 @Service
 public class ReportarService {
-    private final WebClient metamapaApi = WebClient.create("http://localhost:8081/core/api");
-    private final WebClient metamapaApiADMIN = WebClient.create("http://localhost:8082/core/api");
+    private final WebClient metamapaApi;
+
+    public ReportarService(RutasProperties props) {
+        this.metamapaApi = WebClient.create(props.getBaseUrl());
+    }
 
     public String getCategorias(){
         return metamapaApi.get()

@@ -88,6 +88,7 @@ public class PostFuenteHandler implements Handler {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(urlCargador))
                 .header("Content-Type", "application/json")
+                .timeout(java.time.Duration.ofSeconds(10))
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
 

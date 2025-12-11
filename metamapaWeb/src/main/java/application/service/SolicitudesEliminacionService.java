@@ -11,8 +11,13 @@ import java.util.Map;
 
 @Service
 public class SolicitudesEliminacionService {
-    private final WebClient metamapaApi = WebClient.create("http://localhost:8081/core/api");
-    private final WebClient metamapaApiADMIN = WebClient.create("http://localhost:8082/core/api");
+    private final WebClient metamapaApi;
+    private final WebClient metamapaApiADMIN;
+
+    public SolicitudesEliminacionService(RutasProperties props) {
+        this.metamapaApi = WebClient.create(props.getBaseUrl());
+        this.metamapaApiADMIN = WebClient.create(props.getAdminBaseUrl());
+    }
 
 
     public List<SolicitudDeEliminacionDTO> getAll() {

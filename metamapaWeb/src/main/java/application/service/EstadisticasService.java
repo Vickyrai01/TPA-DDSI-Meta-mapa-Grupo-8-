@@ -8,7 +8,11 @@ import java.util.Map;
 
 @Service
 public class EstadisticasService {
-    private final WebClient estadisticasApi = WebClient.create("http://localhost:8090/servicioEstadisticas");
+    private final WebClient estadisticasApi;
+
+    public EstadisticasService(RutasProperties props) {
+        this.estadisticasApi = WebClient.create(props.getEstadisticasBaseUrl());
+    }
 
     public List<Map> provinciaConMasHechos() {
         return estadisticasApi.get()
