@@ -1,4 +1,5 @@
 package cargadorEstatica.application;
+import cargadorEstatica.observabilidad.MetricasCargadorEstatica;
 import org.springframework.web.multipart.MultipartFile;
 
 import cargadorEstatica.model.*;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.nio.file.*;
 import java.util.List;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "cargadorEstatica")
 @RestController
 @RequestMapping("/cargadorEstatico")
 public class Application {
@@ -117,6 +118,11 @@ public class Application {
         e.printStackTrace();
         return ResponseEntity.status(500).body("Error al eliminar fuente estática");
         }
+    }
+
+    @GetMapping("/metricas")
+    public ResponseEntity<?> metrics() {
+        return ResponseEntity.ok(MetricasCargadorEstatica.snapshot());
     }
 }
 
