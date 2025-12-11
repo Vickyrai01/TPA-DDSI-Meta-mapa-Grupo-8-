@@ -616,6 +616,7 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             try { em.close(); } catch (Exception ignore) {}
         }
     }
+}
 
     public Coleccion findByIdConCriteriosYFuentes(Integer id) {
         EntityManager em = DBUtils.getEntityManager();

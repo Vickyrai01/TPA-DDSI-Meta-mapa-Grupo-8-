@@ -32,6 +32,7 @@ public class PanelDeControlController {
     public PanelDeControlController(ColeccionService coleccionService, FuenteService fuenteService, AdminService adminService, ObjectMapper objectMapper, ReportarService reportarService) {
         this.coleccionService = coleccionService;
         this.fuenteService = fuenteService;
+        this.reportarService = reportarService;
         this.adminService = adminService;
         this.objectMapper = objectMapper;
         this.reportarService = reportarService;

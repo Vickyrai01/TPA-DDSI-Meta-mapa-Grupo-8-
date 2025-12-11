@@ -152,6 +152,18 @@
             <artifactId>hibernate-entitymanager</artifactId>
             <version>5.4.18.Final</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.13</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.13</version>
+            <scope>compile</scope>
+        </dependency>
 
         <dependency>
             <groupId>com.graphql-java</groupId>

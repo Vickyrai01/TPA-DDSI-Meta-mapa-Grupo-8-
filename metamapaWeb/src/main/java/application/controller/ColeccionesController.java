@@ -1,6 +1,9 @@
 package application.controller;
 
 import application.dto.ColeccionDTO;
+import application.dto.HechoDTO;
+import application.service.HechoService;
+import core.api.DTO.HechoResumenDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,14 +11,17 @@ import application.service.ColeccionService;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
 import java.util.Objects;
 
 @Controller
 public class ColeccionesController {
     private final ColeccionService coleccionService;
+    private final HechoService hechosService;
 
-    public ColeccionesController(ColeccionService coleccionService) {
+    public ColeccionesController(ColeccionService coleccionService, HechoService hechosService) {
         this.coleccionService = coleccionService;
+        this.hechosService = hechosService;
     }
 
     @GetMapping("/colecciones") // Esta es la URL que usará el botón
@@ -32,35 +38,34 @@ public class ColeccionesController {
     @GetMapping("/colecciones/{id}")
     public String detalle(
             @PathVariable("id") Integer id,
-            @RequestParam(value = "modo", required = false) String modoParam,
+            @RequestParam(value = "modo", required = false, defaultValue = "CURADA") String modoParam,
+            @RequestParam(value = "titulo", required = false) String titulo,
+            @RequestParam(value = "descripcion", required = false) String descripcion,
+            @RequestParam(value = "etiqueta", required = false) String etiqueta,
+            @RequestParam(value = "categoria", required = false) String categoria,
+            @RequestParam(value = "fechaDesdeSuceso", required = false) String fechaDesdeSuceso,
+            @RequestParam(value = "fechaHastaSuceso", required = false) String fechaHastaSuceso,
+            @RequestParam(value = "fechaDesdeCarga", required = false) String fechaDesdeCarga,
+            @RequestParam(value = "fechaHastaCarga", required = false) String fechaHastaCarga,
+            @RequestParam(value = "provincia", required = false) String provincia,
+            @RequestParam(value = "soloMultimedia", required = false) Boolean soloMultimedia,
             Model model
     ) {
-
-        // 1. Buscamos la colección primero para saber su configuración
+        // Obtenés la colección
         ColeccionDTO coleccion = coleccionService.getById(id);
 
-        // 2. Obtenemos el modo de navegación predeterminado de la colección
-        String modoPredeterminado = coleccion.modoDeNavegacion();
+        // Acá llamás a un método de tu service que filtre por todos los parámetros
+        List<HechoDTO> hechosFiltrados = hechosService.filtrarHechosDeColeccion(
+                id, modoParam, titulo, descripcion, etiqueta, categoria,
+                fechaDesdeSuceso, fechaHastaSuceso, fechaDesdeCarga, fechaHastaCarga, provincia, soloMultimedia
+        );
 
-        String modoActual = (modoParam != null) ? modoParam : modoPredeterminado;
-
-        if(modoParam != null) {
-            if (Objects.equals(modoPredeterminado, "IRRESTRICTA") && Objects.equals(modoParam, "CURADA")) {
-                modoActual = "IRRESTRICTA";
-            }
-            if (!(modoParam.equals("CURADA") || modoParam.equals("IRRESTRICTA"))) {
-                modoActual = modoPredeterminado;
-            }
-        }
-
-        // 3. Buscamos los hechos usando ESE modo específico
-        model.addAttribute("hechos", coleccionService.getHechosVisibles(id, modoActual));
-
-        // 4. Agregamos la colección y el dato del modo actual al modelo
         model.addAttribute("coleccion", coleccion);
+        model.addAttribute("modoActual", modoParam);
+        model.addAttribute("hechos", hechosFiltrados);
 
-        // Es importante pasar esto por si tu vista usa esta variable para resaltar botones o títulos
-        model.addAttribute("modoActual", modoActual);
+        model.addAttribute("categorias", hechosService.getCategorias());
+        //model.addAttribute("etiquetas", hechosService.getEtiquetas()); arreglar porque no funciona esta poronga (hay que agregar el endpoint en apiMetaMapa)
 
         return "verColeccion/verColeccion";
     }

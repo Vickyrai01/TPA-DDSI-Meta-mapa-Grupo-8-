@@ -22,8 +22,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     });
 });
 
-// Micro-animación al enviar (demo)
-// Esto solo se activará en la página que tenga un .report-card
 document.querySelector('.report-card')?.addEventListener('submit', e => {
     e.preventDefault();
     const btn = e.currentTarget.querySelector('.btn-primary');
@@ -33,7 +31,6 @@ document.querySelector('.report-card')?.addEventListener('submit', e => {
     setTimeout(() => { btn.disabled = false; btn.textContent = original; e.target.reset(); }, 2200);
 });
 
-// Utilidad para fetch con manejo simple de errores
 async function fetchJSON(url) {
     const res = await fetch(url);
     if (!res.ok) {
@@ -43,7 +40,6 @@ async function fetchJSON(url) {
     return res.json();
 }
 
-// Cargar todas las colecciones y pintarlas en la sidebar
 async function loadColecciones() {
     try {
         const colecciones = await fetchJSON(`${API_BASE}/colecciones`);

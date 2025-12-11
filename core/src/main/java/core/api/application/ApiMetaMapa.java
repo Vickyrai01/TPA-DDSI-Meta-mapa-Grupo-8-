@@ -15,6 +15,31 @@ public class ApiMetaMapa {
     public static void configurar(Javalin app) {
 
         app.get("/public", ctx -> ctx.result("API MetaMapa PÚBLICA ACTIVA"));
+        FuentesRepositorySeeder fuentesRepositorySeeder = FuentesRepositorySeeder.getInstance();
+        fuentesRepositorySeeder.cargarFuentesSeeder();
+
+        SolicitudEliminacioRepositorySeeder solicitudEliminacioRepositorySeeder = SolicitudEliminacioRepositorySeeder.getInstance();
+        solicitudEliminacioRepositorySeeder.cargarSolicitudDeEliminacionSeeder();
+
+        ColeccionesRepositorySeeder coleccionesRepositorySeeder = ColeccionesRepositorySeeder.getInstance();
+        coleccionesRepositorySeeder.cargarColeccionesRepositorySeeder();
+
+
+        Javalin app = Javalin.create()
+                .get("/", ctx -> ctx.result("API MetaMapa ACTIVA"))
+                .start(8081);
+
+        app.before(ctx -> {
+            ctx.header("Access-Control-Allow-Origin", "http://localhost:8080");
+            ctx.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+            ctx.header("Access-Control-Allow-Headers", "Content-Type");
+        });
+        app.options("/*", ctx -> {
+            ctx.header("Access-Control-Allow-Origin", "http://localhost:8080");
+            ctx.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+            ctx.header("Access-Control-Allow-Headers", "Content-Type");
+            ctx.status(204);
+        });
 
         ApiMetaMapaConfig.configurarEndpoints(app);
     }
