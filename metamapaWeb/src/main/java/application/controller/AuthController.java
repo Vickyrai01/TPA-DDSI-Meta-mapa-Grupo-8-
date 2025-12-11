@@ -1,6 +1,7 @@
 
 package application.controller;
 
+import application.service.RutasProperties;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -10,12 +11,16 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final WebClient coreApiClient = WebClient.create("http://localhost:8081/core/api/usuarios");
+    private final WebClient metamapaApi;
+
+    public AuthController(RutasProperties props) {
+        this.metamapaApi = WebClient.create(props.getBaseUrl());
+    }
 
     @PostMapping("/login")
     public Mono<ResponseEntity<?>> login(@RequestParam("correo") String correo, @RequestParam("contrasena") String contrasena) {
         // Consumir API del core para buscar usuario por correo
-        return coreApiClient.get()
+        return metamapaApi.get()
                 .uri(uriBuilder -> uriBuilder.path("/buscar").queryParam("correo", correo).build())
                 .retrieve()
                 .bodyToMono(UsuarioDTO.class)
@@ -37,7 +42,7 @@ public class AuthController {
                                                  @RequestParam("contrasena") String contrasena) {
         // Consumir API del core para verificar si el usuario existe
         com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-        return coreApiClient.get()
+        return metamapaApi.get()
                 .uri(uriBuilder -> uriBuilder.path("/buscar").queryParam("correo", correo).build())
                 .exchangeToMono(response -> {
                     if (response.statusCode().is2xxSuccessful() && response.headers().contentType().isPresent() &&
@@ -46,7 +51,7 @@ public class AuthController {
                                 .flatMap(usuario -> Mono.just(ResponseEntity.status(409).body("El correo ya está registrado")));
                     } else {
                         // Si es 404, 400, 500, o text/plain, continuar con el registro
-                        return coreApiClient.post()
+                        return metamapaApi.post()
                                 .uri("/registrar")
                                 .bodyValue(new UsuarioDTO(nombre, apellido, correo, "USER", contrasena))
                                 .retrieve()

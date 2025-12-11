@@ -1,8 +1,8 @@
 package application.config;
 
+import application.service.RutasProperties;
 import core.models.entities.usuario.Usuario;
 import core.models.repository.UsuarioRepository;
-import org.apache.cxf.jaxrs.client.WebClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.Collections;
@@ -27,7 +28,11 @@ import java.util.Optional;
     public class CustomAuthProvider implements AuthenticationProvider {
 
         private final RestTemplate restTemplate = new RestTemplate();
-        private final String coreBaseUrl = "http://localhost:8081/core/api/usuarios";
+        private final String metamapaApi;
+
+        public CustomAuthProvider(RutasProperties props) {
+            this.metamapaApi = props.getBaseUrl() + "/usuarios";
+        }
 
         @Override
         public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -45,7 +50,7 @@ import java.util.Optional;
 
             // ============ 1) BUSCAR USUARIO EN EL CORE ============
             try {
-                String url = coreBaseUrl + "/buscar?correo={correo}";
+                String url = metamapaApi + "/buscar?correo={correo}";
                 ResponseEntity<UsuarioDTO> resp =
                         restTemplate.getForEntity(url, UsuarioDTO.class, correo);
 
