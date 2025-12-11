@@ -255,7 +255,7 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
                         ref = em.find(Contribuyente.class, c.getId());
                         if (ref != null) {
                             h.setContribuyente(ref);
-                            continue;
+                            //continue;
                         } else {
                             c.setId(null); // tratar como nuevo
                         }
@@ -286,13 +286,13 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
                     }
 
                     // 3) Si no tiene mail pero sí apellido → buscar por apellido
-                    if (ref == null && c.getApellido() != null && !c.getApellido().isBlank()) {
+                    if (ref == null && c.getNombre() != null && !c.getNombre().isBlank()) {
 
-                        String apeLower = c.getApellido().toLowerCase().trim();
+                        String apeLower = c.getNombre().toLowerCase().trim();
 
                         try {
                             ref = em.createQuery(
-                                            "from contribuyente ct where lower(ct.apellido) = :a",
+                                            "from contribuyente ct where lower(ct.nombre) = :a",
                                             Contribuyente.class)
                                     .setParameter("a", apeLower)
                                     .setMaxResults(1)
@@ -301,7 +301,7 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
                         } catch (NoResultException ex) {
                             // Crear nuevo contribuyente
                             Contribuyente nuevo = new Contribuyente();
-                            nuevo.setApellido(c.getApellido().trim());
+                            nuevo.setNombre(c.getNombre().trim());
 
                             em.persist(nuevo);
                             em.flush();

@@ -41,21 +41,22 @@ import static org.springframework.security.config.Customizer.withDefaults;
 //    }
 //}
 
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final CustomAuthProvider customAuthProvider;
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
-    public SecurityConfig(CustomAuthProvider customAuthProvider) {
+    public SecurityConfig(CustomAuthProvider customAuthProvider,
+                          OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler) {
         this.customAuthProvider = customAuthProvider;
+        this.oAuth2LoginSuccessHandler = oAuth2LoginSuccessHandler;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Deshabilitamos CSRF para /api/auth/** y /admin/**
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers(
                                 new AntPathRequestMatcher("/api/auth/**"),
@@ -77,7 +78,8 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl("/", true)
+                        .loginPage("/login")              // tu página de login con botón de Google
+                        .successHandler(oAuth2LoginSuccessHandler) // acá se engancha el POST al CORE
                 )
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))

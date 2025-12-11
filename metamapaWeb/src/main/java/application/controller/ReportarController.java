@@ -69,6 +69,7 @@ public class ReportarController {
             @RequestParam("multimedia") String multimedia,
             @RequestParam(value = "etiquetas", required = false) String etiquetas,
             @RequestParam(value = "urgente", defaultValue = "false") boolean urgente,
+            @RequestParam(value = "noPublicarDatos", defaultValue = "false") boolean noPublicarDatos,
             org.springframework.security.core.Authentication authentication,
             RedirectAttributes ra
     ) {
@@ -77,8 +78,10 @@ public class ReportarController {
             Map<String, Object> jsonMap = new HashMap<>();
             String lat = latitud.toString();
             String lon = longitud.toString();
+
             jsonMap.put("titulo", titulo);
             jsonMap.put("descripcion", descripcion);
+
             // Obtener el correo del usuario autenticado para el campo contribuyente
             String contribuyente = null;
             if (authentication != null && authentication.isAuthenticated()) {
@@ -92,7 +95,15 @@ public class ReportarController {
                     }
                 }
             }
-            jsonMap.put("contribuyente", contribuyente);
+
+            String contribuyenteFinal;
+            if (noPublicarDatos || contribuyente == null || contribuyente.isBlank()) {
+                contribuyenteFinal = "Anónimo";
+            } else {
+                contribuyenteFinal = contribuyente;
+            }
+            jsonMap.put("contribuyente", contribuyenteFinal);
+
             if (categoria.equals("Otro")) {
                 jsonMap.put("categoria", categoriaOtra);
             } else {
@@ -118,7 +129,7 @@ public class ReportarController {
             jsonMap.put("etiquetas", etiquetasList);
 
             String json = mapper.writeValueAsString(jsonMap);
-            ResponseEntity<Void> response = reportarService.postearHecho(json, urgente);
+            ResponseEntity<Void> response = reportarService.postearHecho(json, urgente, noPublicarDatos);
             if (response.getStatusCode().is2xxSuccessful()) {
                 return "redirect:/reportar?estado=ok";
             } else {

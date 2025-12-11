@@ -76,10 +76,10 @@ public class HechoResumenDTO {
 
         String nombreContribuyente =
                 (c == null) ? null :
-                        (c.getMail() != null && !c.getMail().isBlank()) ? c.getMail() :
-                                (c.getApellido() != null && !c.getApellido().isBlank()) ? c.getApellido() :
-                                        (c.getNombre() != null && c.getApellido() != null) ? c.getNombreCompleto() :
-                                                null;
+                        (c.getNombre() != null && !c.getNombre().isBlank()) ? c.getNombre() :
+                                (c.getMail() != null && !c.getMail().isBlank()) ? c.getMail() :
+                                        null;
+
 
         List<String> etiquetas = (h.getEtiquetas() != null)
                 ? h.getEtiquetas().stream()

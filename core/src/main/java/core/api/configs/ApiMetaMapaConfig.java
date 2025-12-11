@@ -9,6 +9,8 @@ import core.api.handlers.hechos.GetHechoIdHandler;
 import core.api.handlers.hechos.PostHechoHandler;
 import core.api.handlers.solicitudesDeEliminacion.GetSolicitudHandler;
 import core.api.handlers.solicitudesDeEliminacion.PostSolicitudHandler;
+import core.api.handlers.usuario.GetUsuarioPorCorreoHandler;
+import core.api.handlers.usuario.PostRegistrarUsuarioHandler;
 import io.javalin.Javalin;
 
 public class ApiMetaMapaConfig {
@@ -23,7 +25,7 @@ public class ApiMetaMapaConfig {
         app.get("/core/api/categorias", new GetCategoriasHandler());
 
         // Endpoints de usuario para login y registro
-        app.get("/core/api/usuarios/buscar", core.api.handlers.usuario.UsuarioApiHandler.buscarPorCorreo);
-        app.post("/core/api/usuarios/registrar", core.api.handlers.usuario.UsuarioApiHandler.registrar);
+        app.get("/core/api/usuarios/buscar", new GetUsuarioPorCorreoHandler());
+        app.post("/core/api/usuarios/registrar", new PostRegistrarUsuarioHandler());
     }
 }

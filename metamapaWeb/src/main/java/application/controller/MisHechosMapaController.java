@@ -28,20 +28,31 @@ public class MisHechosMapaController {
         if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/";
         }
-        String nombreCompleto = null;
+
         Object principal = authentication.getPrincipal();
+
+        String email = null;
+        String nombreCompleto = null;
+
         if (principal instanceof org.springframework.security.oauth2.core.user.OAuth2User oAuth2User) {
-            String nombre = oAuth2User.getAttribute("name");
-            nombreCompleto = nombre;
+            nombreCompleto = oAuth2User.getAttribute("name");
+            email = oAuth2User.getAttribute("email");
         } else if (principal instanceof java.util.Map attributes) {
             nombreCompleto = (String) attributes.get("name");
+            email = (String) attributes.get("email");
         }
-        if (nombreCompleto == null) {
-            return "redirect:/";
+
+        // Si no tenemos mail no podemos pedir los hechos filtrados por contribuyente!!!
+        if (email == null || email.isBlank()) {
+            System.out.println("[MIS-HECHOS] No se encontró email del usuario autenticado");
+            model.addAttribute("hechos", java.util.List.of());
+        } else {
+            List<HechoDTO> hechos = hechoService.getByContribuyente(email);
+            model.addAttribute("hechos", hechos);
         }
-        List<HechoDTO> hechos = hechoService.getByContribuyente(nombreCompleto);
-        model.addAttribute("hechos", hechos);
-        // Obtener categorías igual que en reportar suceso
+
+        model.addAttribute("nombreUsuario", nombreCompleto);
+
         try {
             String categoriasJson = reportarService.getCategorias();
             java.util.List<String> categorias = objectMapper.readValue(
@@ -52,6 +63,7 @@ public class MisHechosMapaController {
         } catch (Exception e) {
             model.addAttribute("categorias", java.util.List.of());
         }
+
         return "misHechos/misHechosMapa";
     }
 }

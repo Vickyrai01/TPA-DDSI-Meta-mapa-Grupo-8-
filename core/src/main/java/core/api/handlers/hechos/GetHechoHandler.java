@@ -2,7 +2,9 @@ package core.api.handlers.hechos;
 
 import core.api.DTO.HechoResumenDTO;
 import core.api.handlers.colecciones.UtilsFormatos;
+import core.models.entities.hecho.Contribuyente;
 import core.models.entities.hecho.Estado;
+import core.models.repository.ContribuyentesRepository;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import core.models.entities.colecciones.criterios.Criterio;
@@ -15,11 +17,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class GetHechoHandler implements Handler {
     private final HechosRepository repoHechos = HechosRepository.getInstance();
+    private final ContribuyentesRepository repoContribuyentes = ContribuyentesRepository.getInstance();
 
 
     @Override
@@ -59,22 +61,43 @@ public class GetHechoHandler implements Handler {
         */
 
 
-        //List<Hecho> hechosTotales = repoHechos.obtenerTodas();
+        // 1) Traigo todos los hechos (con multimedia) y me quedo solo con los ACEPTADOS
         List<Hecho> hechosTotales = repoHechos.findAllConMultimedia();
 
-        List<Hecho> hechosAprobados = hechosTotales.stream().filter(hecho -> hecho.getEstado().equals(Estado.ACEPTADO)).toList();
+        List<Hecho> hechosAprobados = hechosTotales.stream()
+                .filter(hecho -> Estado.ACEPTADO.equals(hecho.getEstado()))
+                .toList();
 
-        // Filtrar por contribuyente si se pasa el parÃ¡metro
-        String contribuyenteParam = context.queryParam("contribuyente");
-        List<Hecho> hechosFiltrados;
-        if (contribuyenteParam != null && !contribuyenteParam.isBlank()) {
+        // 2) Leo el parámetro "contribuyente" que ahora es el MAIL del contribuyente
+        String mailContribuyente = context.queryParam("contribuyente");
+
+        List<Hecho> hechosFiltrados = hechosAprobados;
+
+        if (mailContribuyente != null && !mailContribuyente.isBlank()) {
+
+            // 3) Busco el contribuyente por mail en el repo
+            Optional<Contribuyente> contribOpt = repoContribuyentes.findByMail(mailContribuyente);
+
+            // 3.a) Si no existe → error
+            if (contribOpt.isEmpty()) {
+                context.status(404).json(Map.of(
+                        "error", "Contribuyente no existe",
+                        "mail", mailContribuyente
+                ));
+                return; // corto acá, no sigo
+            }
+
+            // 3.b) Si existe → obtengo su id
+            Integer idContribuyente = contribOpt.get().getId();
+
+            // 4) Filtro los hechos aprobados por ese id de contribuyente
             hechosFiltrados = hechosAprobados.stream()
-                    .filter(h -> h.getContribuyente() != null && contribuyenteParam.equalsIgnoreCase(h.getContribuyente().getNombreCompleto()))
+                    .filter(h -> h.getContribuyente() != null
+                            && Objects.equals(h.getContribuyente().getId(), idContribuyente))
                     .toList();
-        } else {
-            hechosFiltrados = hechosAprobados;
         }
 
+        // 5) Paso a DTO y devuelvo JSON
         List<HechoResumenDTO> hechosDevolver = pasarDTO(hechosFiltrados);
         context.json(hechosDevolver);
     }
