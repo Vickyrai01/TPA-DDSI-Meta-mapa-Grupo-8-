@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -15,8 +16,13 @@ import java.util.Map;
 
 @Service
 public class ColeccionService {
-    private final WebClient metamapaApi = WebClient.create("http://localhost:8081/core/api");
-    private final WebClient metamapaApiADMIN = WebClient.create("http://localhost:8082/core/api");
+    private final WebClient metamapaApi;
+    private final WebClient metamapaApiADMIN;
+
+    public ColeccionService(RutasProperties props) {
+        this.metamapaApi = WebClient.create(props.getBaseUrl());
+        this.metamapaApiADMIN = WebClient.create(props.getAdminBaseUrl());
+    }
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -32,10 +38,15 @@ public class ColeccionService {
     }
     public List<HechoDTO> getHechosDeColeccion(Integer id) {
         return metamapaApi.get()
-                .uri(uri -> uri.path("/colecciones/{id}/hechos")
-                        .build(id))
-                .retrieve()
-                .bodyToFlux(HechoDTO.class)
+                .uri(uri -> uri.path("/colecciones/{id}/hechos").build(id))
+                .exchangeToFlux(response -> {
+                    if (response.statusCode().is2xxSuccessful() && response.headers().contentType().isPresent() &&
+                            response.headers().contentType().get().toString().contains("json")) {
+                        return response.bodyToFlux(HechoDTO.class);
+                    } else {
+                        return response.bodyToFlux(HechoDTO.class);
+                    }
+                })
                 .filter(h -> {
                     String estado = h.estado();
                     return estado == null || !estado.trim().equals("INACTIVO");
@@ -46,10 +57,15 @@ public class ColeccionService {
 
     public List<HechoDTO> getHechosVisibles(Integer id, String modoDeNavegacion) {
         return metamapaApi.get()
-                .uri(uri -> uri.path("/colecciones/{id}/{modoDeNavegacion}/hechos")
-                        .build(id, modoDeNavegacion))
-                .retrieve()
-                .bodyToFlux(HechoDTO.class)
+                .uri(uri -> uri.path("/colecciones/{id}/{modoDeNavegacion}/hechos").build(id, modoDeNavegacion))
+                .exchangeToFlux(response -> {
+                    if (response.statusCode().is2xxSuccessful() && response.headers().contentType().isPresent() &&
+                            response.headers().contentType().get().toString().contains("json")) {
+                        return response.bodyToFlux(HechoDTO.class);
+                    } else {
+                        return response.bodyToFlux(HechoDTO.class);
+                    }
+                })
                 .filter(h -> {
                     String estado = h.estado();
                     return estado == null || !estado.trim().equals("INACTIVO");
@@ -149,6 +165,14 @@ public class ColeccionService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public ResponseEntity<Void> ejecutarAgregacion(){
+        return metamapaApiADMIN.post()
+                .uri("/ejecutarServicio")
+                .retrieve()
+                .toBodilessEntity()
+                .block();
     }
 }
 

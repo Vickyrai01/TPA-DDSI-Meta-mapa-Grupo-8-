@@ -12,7 +12,7 @@
     grid-template-columns:minmax(0,1fr) 380px;
     gap:1.25rem;
     width:100%;
-    min-height: calc(100vh - 160px); /* ocupa toda la pantalla menos navbar+footer */
+    overflow: hidden
 }
 .map-panel{
     height:100%;
@@ -23,7 +23,9 @@
 }
 .sidebar-panel{
     height: 100%;
-    overflow: auto;
+    max-height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 .sidebar-header{font-weight:800;letter-spacing:.06em;color:var(--brand);margin-bottom:.25rem;margin-top: .75rem;}
 .sidebar-content h2{margin:.25rem 0 .5rem 0}
@@ -32,10 +34,20 @@
     .map-layout-container{grid-template-columns:minmax(0,1fr) 320px}
 }
 @media (max-width: 900px){
-    .map-layout-container{grid-template-columns:1fr}
-    .sidebar-panel{max-height:unset}
-    .map-panel{height:clamp(360px, 50vh, 600px)}
+    .map-layout-container{
+        grid-template-columns:1fr;
+        height: auto;
+        overflow: visible;
+    }
+    .map-panel{
+        height:clamp(360px, 50vh, 600px);
+    }
+    .sidebar-panel{
+        max-height: unset;
+        overflow: visible;
+    }
 }
+
 
 /* ---- Acordeón ---- */
 .hechos-accordion details{

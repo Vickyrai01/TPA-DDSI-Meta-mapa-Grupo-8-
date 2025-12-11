@@ -9,10 +9,10 @@ public class Categoria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_categoria")
-    Integer id;
+    private Integer id;
 
     @Column(name = "nombre")
-    String nombre;
+    private String nombre;
 
     public String getNombre() {
         return nombre;
@@ -22,7 +22,7 @@ public class Categoria {
     }
 
     public Integer getId() {
-            return id;
+        return id;
     }
 
     public void setId(Integer id) {

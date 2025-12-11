@@ -15,20 +15,36 @@ import java.util.stream.Stream;
 
 @Service
 public class HechoService {
-    private final WebClient metamapaApi = WebClient.create("http://localhost:8081/core/api");
-    private final WebClient adminApi = WebClient.builder()
-            .baseUrl("http://localhost:8082/core/api")
-            .build();
+    private final WebClient metamapaApiADMIN;
+
+    public HechoService(RutasProperties props) {
+        this.metamapaApiADMIN = WebClient.create(props.getAdminBaseUrl());
+    }
 
     public List<HechoDTO> getAll() {
-        return adminApi.get()
+        return metamapaApiADMIN.get()
                 .uri("/hechos")
-                .retrieve()
-                .bodyToFlux(HechoDTO.class)
+                .exchangeToFlux(response -> {
+                    if (response.statusCode().is2xxSuccessful() && response.headers().contentType().isPresent() &&
+                            response.headers().contentType().get().toString().contains("json")) {
+                        return response.bodyToFlux(HechoDTO.class);
+                    } else {
+                        return response.bodyToFlux(HechoDTO.class);
+                    }
+                })
                 .collectList()
                 .block();
     }
 
+    //PARA EL MAPITA DE MIS HECHOS
+    public List<HechoDTO> getByContribuyente(String email) {
+        if (email == null || email.isBlank()) return List.of();
+        try {
+            return metamapaApiADMIN.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/hechos")
+                            .queryParam("contribuyente", email)
+                            .build())
     // NEW: Filtra hechos por coleccion y parámetros
     public List<HechoDTO> filtrarHechosDeColeccion(
             Integer coleccionId,
@@ -97,6 +113,8 @@ public class HechoService {
                     .bodyToFlux(HechoDTO.class)
                     .collectList()
                     .block();
+        } catch (Exception e) {
+            System.err.println("Error en getByContribuyente: " + e.getMessage());
         } catch (WebClientResponseException e) {
             System.err.println("API hechos coleccion error " + e.getStatusCode() + ": " + e.getResponseBodyAsString());
             return List.of();
@@ -142,18 +160,23 @@ public class HechoService {
         }
     }
 
-    public boolean patchByHash(String hash, String nombre, String descripcion, List<String> etiquetas) {
+    // EDITAR (admin 8082) — PATCH /core/api/hechos/{hash}
+    public boolean patchByHash(String hash, String nombre, String descripcion, List<String> etiquetas, String latitud, String longitud, String fechaSuceso, String categoria) {
         if (hash == null || hash.isBlank()) return false;
 
         Map<String, Object> body = new HashMap<>();
         if (nombre != null) body.put("nombre", nombre);
         if (descripcion != null) body.put("descripcion", descripcion);
         if (etiquetas != null) body.put("etiquetas", etiquetas);
+        if (latitud != null) body.put("latitud", latitud);
+        if (longitud != null) body.put("longitud", longitud);
+        if (fechaSuceso != null) body.put("fecha_suceso", fechaSuceso);
+        if (categoria != null) body.put("categoria", categoria);
 
         if (body.isEmpty()) return true;
 
         try {
-            adminApi.patch()
+            metamapaApiADMIN.patch()
                     .uri("/hechos/{hash}", hash)
                     .bodyValue(body)
                     .retrieve()
@@ -173,7 +196,7 @@ public class HechoService {
         if (hash == null || hash.isBlank()) return false;
 
         try {
-            adminApi.delete()
+            metamapaApiADMIN.delete()
                     .uri("/hechos/{hash}", hash)
                     .retrieve()
                     .toBodilessEntity()

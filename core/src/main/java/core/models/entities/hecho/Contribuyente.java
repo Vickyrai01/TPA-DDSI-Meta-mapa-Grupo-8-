@@ -18,7 +18,6 @@ public class Contribuyente {
 
     public Contribuyente(String nombre, String apellido, LocalDate fechaNacimiento) {
         this.nombre = nombre;
-        this.apellido = apellido;
         this.fechaNacimiento = fechaNacimiento;
     }
 
@@ -38,15 +37,6 @@ public class Contribuyente {
         this.nombre = nombre;
     }
 
-    @Column(name = "apellido")
-    private String apellido;
-    public String getApellido() {
-        return apellido;
-    }
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
     @Column(name = "fecha_nacimiento")
     private LocalDate fechaNacimiento;
     public LocalDate getFechaNacimiento() {
@@ -56,8 +46,17 @@ public class Contribuyente {
         this.fechaNacimiento = fechaNacimiento;
     }
 
+    @Column(name = "mail")
+    private String mail;
+    public String getMail() {
+        return mail;
+    }
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
     public String getNombreCompleto() {
-        return nombre+ " " + apellido;
+        return nombre;
     }
     public Contribuyente(){}
 

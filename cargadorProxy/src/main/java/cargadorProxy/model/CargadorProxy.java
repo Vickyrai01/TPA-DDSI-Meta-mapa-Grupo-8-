@@ -38,6 +38,7 @@ public class CargadorProxy {
                     hechos.addAll(lote);
                 }
                 f.setUltimoProcesamiento(Instant.now());
+                repositoryFuentes.update(f);
             } catch (Exception e) { System.err.println("Error procesando fuente " + f.getId() + ": " + e.getMessage());}
 
         }

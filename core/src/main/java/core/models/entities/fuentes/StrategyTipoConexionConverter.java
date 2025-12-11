@@ -22,6 +22,7 @@ public class StrategyTipoConexionConverter implements AttributeConverter<Strateg
             case "APIREST" -> new StrategyAPIREST();
             case "BIBLIOTECA" -> new StrategyBibliotecaCliente();
             case "CSV" -> new StrategyCSV();
+            case "DINAMICA" -> new StrategyDinamica();
             default -> throw new IllegalArgumentException("Tipo de estrategia desconocido: " + dbData);
         };
     }

@@ -3,6 +3,7 @@ package core.models.agregador.normalizador;
 import java.time.*;
 import java.time.format.*;
 import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 
 public class NormalizadorFecha {
 
@@ -67,7 +68,6 @@ public class NormalizadorFecha {
             .appendValueReduced(ChronoField.YEAR, 2, 2, ANIO_BASE_DOS_DIGITOS)
             .toFormatter().withResolverStyle(ResolverStyle.STRICT);
 
-    //EVALUAR LO DEL LOCALDATETIME
     public static String normalizarAIso(String raw) {
         LocalDate fechaActual = LocalDate.now(ZoneId.systemDefault());
         if (raw == null) throw new IllegalArgumentException("Fecha nula");
@@ -95,7 +95,6 @@ public class NormalizadorFecha {
             s = iso.substring(0, tIdx); // "2001-01-01"
         }
 
-        // A partir de acá, tu flujo original (pero usando 's')
         String fechaNormalizada = s.replace('-', '/');
         String[] partesFecha = fechaNormalizada.split("/");
         if (partesFecha.length != 3) throw new IllegalArgumentException("Formato no reconocido: " + raw);
@@ -129,6 +128,9 @@ public class NormalizadorFecha {
     }
 
 
+    private static final boolean PREFERIR_DIA_MES = true;   // LatAm
+    private static final int MAX_ANIOS_PASADO = 10;
+
     private static String resolverFechaAmbigua(String fecha, boolean anio2digitos,
                                                LocalDate fechaActual, String raw) {
         LocalDate fechaDiaMesAnio = null;
@@ -159,23 +161,50 @@ public class NormalizadorFecha {
             throw new IllegalArgumentException("Fecha inválida: " + raw);
         }
 
-        // Ambas interpretaciones son válidas, usar lógica de fecha futura/pasada
+        // 1) Lógica futuro/pasado
         boolean esFechaDiaMesFutura = fechaDiaMesAnio.isAfter(fechaActual);
         boolean esFechaMesDiaFutura = fechaMesDiaAnio.isAfter(fechaActual);
 
         if (esFechaDiaMesFutura && !esFechaMesDiaFutura) {
-            return FORMATO_ISO_SALIDA.format(fechaMesDiaAnio); // DMY es futura → probablemente es MDY
+            return FORMATO_ISO_SALIDA.format(fechaMesDiaAnio); // DMY futura, MDY no →  MDY
         }
         if (esFechaMesDiaFutura && !esFechaDiaMesFutura) {
-            return FORMATO_ISO_SALIDA.format(fechaDiaMesAnio); // MDY es futura → probablemente es DMY
+            return FORMATO_ISO_SALIDA.format(fechaDiaMesAnio); // MDY futura, DMY no →  DMY
         }
 
-        //Ambas son futuras o ambas son pasadas → no se puede determinar automáticamente
-        throw new ExcepcionFechaAmbigua(
-                "Fecha ambigua: \"" + raw + "\" puede ser " +
-                        fechaDiaMesAnio + " (DD/MM/YYYY) o " + fechaMesDiaAnio + " (MM/DD/YYYY). " +
-                        "Se requiere revisión manual."
-        );
+        // 2) Plausibilidad temporal (rango pasado/futuro)
+        long diffDMY = Math.abs(ChronoUnit.DAYS.between(fechaActual, fechaDiaMesAnio));
+        long diffMDY = Math.abs(ChronoUnit.DAYS.between(fechaActual, fechaMesDiaAnio));
+
+        boolean dmyEnRango = estaEnRangoRazonable(fechaDiaMesAnio, fechaActual);
+        boolean mdyEnRango = estaEnRangoRazonable(fechaMesDiaAnio, fechaActual);
+
+        if (dmyEnRango && !mdyEnRango) {
+            return FORMATO_ISO_SALIDA.format(fechaDiaMesAnio);
+        }
+        if (mdyEnRango && !dmyEnRango) {
+            return FORMATO_ISO_SALIDA.format(fechaMesDiaAnio);
+        }
+
+        // Preferencia formato local
+        if (PREFERIR_DIA_MES) {
+            return FORMATO_ISO_SALIDA.format(fechaDiaMesAnio);
+        } else {
+            return FORMATO_ISO_SALIDA.format(fechaMesDiaAnio);
+        }
+
+    }
+
+    private static boolean estaEnRangoRazonable(LocalDate fecha, LocalDate hoy) {
+        long aniosPasados = ChronoUnit.YEARS.between(fecha, hoy);
+
+        // Si fecha está en el futuro → NO razonable
+        if (fecha.isAfter(hoy)) return false;
+
+        // Si está demasiado atrás → NO razonable
+        if (Math.abs(aniosPasados) > MAX_ANIOS_PASADO) return false;
+
+        return true;
     }
 
     public LocalDate normalizarFecha(String fecha) throws ExcepcionRevisionManualFecha {

@@ -12,10 +12,9 @@ import javax.persistence.EntityManager;
 
 public class ApiMetaMapa {
 
-    public static void main(String[] args) {
-        HechosRepositorySeeder hechosRepositorySeeder = HechosRepositorySeeder.getInstance();
-        hechosRepositorySeeder.cargarHechosSeeder();
+    public static void configurar(Javalin app) {
 
+        app.get("/public", ctx -> ctx.result("API MetaMapa PÚBLICA ACTIVA"));
         FuentesRepositorySeeder fuentesRepositorySeeder = FuentesRepositorySeeder.getInstance();
         fuentesRepositorySeeder.cargarFuentesSeeder();
 
@@ -43,12 +42,5 @@ public class ApiMetaMapa {
         });
 
         ApiMetaMapaConfig.configurarEndpoints(app);
-
-        EntityManager em = DBUtils.getEntityManager();
-        DBUtils.comenzarTransaccion(em);
-
-        //em.persist();
-        DBUtils.commit(em);
-
     }
 }

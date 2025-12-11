@@ -12,9 +12,10 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/pages-css/verColeccion.css}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 </th:block>
 
-<!-- ========== CONTENIDO ========== -->
 <div id="contenido-de-coleccion">
     <main class="map-layout-container">
         <div id="mapa" class="map-panel"></div>
@@ -24,7 +25,7 @@
                 <h2 th:text="${coleccion.titulo()}">Título colección</h2>
                 <p th:text="${coleccion.descripcionColeccion()}">Descripción</p>
 
-                <!-- ARREGLO: poner bien data-id en el selector -->
+                <!-- Mantener el selector de modo con filtro AJAX -->
                 <div>
                     <label for="selectorModo">Modo de navegación:</label>
                     <select id="selectorModo" th:attr="data-id=${coleccion.id()}">
@@ -33,6 +34,7 @@
                     </select>
                 </div>
 
+                <!-- Filtros SPA -->
                 <div class="filtros-bloque" style="margin-bottom:1em;">
                     <button type="button" class="btn-toggle-filtros" aria-expanded="false">Filtros</button>
                     <form class="filtros-form" style="display:none;" id="form-filtros" autocomplete="off">
@@ -44,15 +46,6 @@
                             <label for="descripcion">Descripción:</label>
                             <input type="text" name="descripcion" id="descripcion" placeholder="Buscar por descripción">
                         </div>
-                        <!--
-                        <div class="filtro-item">
-                            <label for="etiqueta">Etiquetas:</label>
-                            <select id="etiqueta" name="etiqueta">
-                                <option value="">- Todas -</option>
-                                <option th:each="tag : ${etiquetas}" th:value="${tag}" th:text="${tag}"></option>
-                            </select>
-                        </div>
-                        -->
                         <div class="filtro-item">
                             <label for="categoria">Categoría:</label>
                             <select id="categoria" name="categoria">
@@ -60,6 +53,7 @@
                                 <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}"></option>
                             </select>
                         </div>
+                        <!-- ...otros filtros igual a lo que tenías... -->
                         <div class="filtro-item" style="margin-bottom:.3em;">
                             <span style="font-weight: bold; color: #a8732e;">Fecha de suceso</span>
                         </div>
@@ -111,12 +105,24 @@
     </main>
 </div>
 
-<!-- ========== JS con AJAX ========== -->
+<!-- ========== JS con AJAX SPA para hechos ========== -->
 <th:block id="scripts-de-coleccion">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         const API_BASE = 'http://localhost:8081/core/api';
         let map, markersByHash = {};
+
+        function formatFecha(fecha) {
+            if (!fecha) return 'No indica';
+            if (Array.isArray(fecha)) {
+                return fecha.map(n => String(n).padStart(2, '0')).join('-');
+            }
+            if (typeof fecha === 'string') {
+                const partes = fecha.split(',').map(n => String(n).padStart(2, '0'));
+                return partes.join('-');
+            }
+            return fecha;
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             const defaultCenter = [-34.6037, -58.3816], defaultZoom = 11;
@@ -167,16 +173,6 @@
         async function traerYRenderizarHechos() {
             const modoSel = document.getElementById('selectorModo');
             const coleccionId = modoSel ? modoSel.dataset.id : null;
-            // DEBUG para vos: fijate si esto sale bien en consola
-            console.log("coleccionId:", coleccionId, "modoSel.value:", modoSel.value);
-
-            if (!coleccionId) {
-                // Si no hay coleccionId, no sigue
-                console.error("No se encontró data-id en el select.");
-                renderHechos([]);
-                return;
-            }
-
             const modo = modoSel ? modoSel.value : 'CURADA';
             const form = document.getElementById('form-filtros');
             const params = new URLSearchParams();
@@ -187,19 +183,15 @@
                 }
             });
             const url = `${API_BASE}/colecciones/${coleccionId}/${modo}/hechos?${params.toString()}`;
-            console.log("URL de fetch:", url); // DEBUG para que lo veas
-
             try {
                 const res = await fetch(url);
                 if (!res.ok) {
-                    console.warn("API no respondió ok:", res.status);
                     renderHechos([]);
                     return;
                 }
                 const hechos = await res.json();
                 renderHechos(hechos);
             } catch (err) {
-                console.error("Error en fetch:", err);
                 renderHechos([]);
             }
         }
@@ -276,22 +268,6 @@
                 }
             });
             if (map && p0) map.setView(p0, 13);
-        }
-
-        function formatFecha(fecha) {
-            if (!fecha) return 'No indica';
-            if (Array.isArray(fecha)) {
-                // Si llega como array, ej: [2025,12,3]
-                return fecha.map(n => String(n).padStart(2, '0')).join('-');
-            }
-            if (typeof fecha === 'string') {
-                // Si llega como string, ej: "2025,12,3"
-                // Lo convertimos en array y pad con 0 los numeros
-                const partes = fecha.split(',').map(n => String(n).padStart(2, '0'));
-                return partes.join('-');
-            }
-            // Si llega como otra cosa
-            return fecha;
         }
     </script>
 </th:block>

@@ -50,6 +50,7 @@ public class DeleteFuenteHandler implements Handler {
         try {
             HttpRequest req = HttpRequest.newBuilder()
                     .uri(URI.create(url))
+                    .timeout(java.time.Duration.ofSeconds(10))
                     .POST(HttpRequest.BodyPublishers.noBody())
                     .build();
 

@@ -35,6 +35,7 @@ public class PanelDeControlController {
         this.reportarService = reportarService;
         this.adminService = adminService;
         this.objectMapper = objectMapper;
+        this.reportarService = reportarService;
     }
 
     @GetMapping("/admin/colecciones")
@@ -108,6 +109,19 @@ public class PanelDeControlController {
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pudo crear la colección en el servicio core.");
         }
+    }
+
+    @PostMapping("/ejecutar-agregacion")
+    public String ejecutarAgregacion(RedirectAttributes ra) {
+
+        try {
+            coleccionService.ejecutarAgregacion();
+            ra.addFlashAttribute("popupSuccess", "Servicio de agregación ejecutado correctamente.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("popupError", "Error al ejecutar el servicio de agregación.");
+        }
+
+        return "redirect:/mapa";
     }
 }
 

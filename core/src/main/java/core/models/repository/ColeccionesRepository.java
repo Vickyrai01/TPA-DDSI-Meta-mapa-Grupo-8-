@@ -127,6 +127,7 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             q.ifPresent(c -> {
                 for (Hecho h : c.getHechos()) {
                     Hibernate.initialize(h.getEtiquetas());
+                    Hibernate.initialize(h.getMultimedia());
                 }
             });
             return q;
@@ -156,6 +157,7 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
                 // Inicializo etiquetas de los hechos visibles
                 for (Hecho hv : c.getHechosVisibles()) {
                     Hibernate.initialize(hv.getEtiquetas());
+                    Hibernate.initialize(hv.getMultimedia());
                 }
 
                 // Inicializo algoritmoConsenso si existe
@@ -192,154 +194,6 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             }
         }
     }
-
-
-    public Optional<ColeccionConTodoDTO> findColeccionCompletaDTO(Integer idColeccion) {
-        EntityManager em = DBUtils.getEntityManager();
-        try {
-            //Traer colección base
-            Coleccion c = em.createQuery("""
-            SELECT c
-            FROM coleccion c
-            WHERE c.id = :id
-        """, Coleccion.class)
-                    .setParameter("id", idColeccion)
-                    .getResultStream().findFirst().orElse(null);
-
-            if (c == null) return Optional.empty();
-
-            //Traer fuentes
-            List<Fuente> fuentes = em.createQuery("""
-            SELECT f
-            FROM coleccion c
-            JOIN c.fuentes f
-            WHERE c.id = :id
-        """, Fuente.class)
-                    .setParameter("id", idColeccion)
-                    .getResultList();
-
-            //Traer hechos
-            List<Hecho> hechos = em.createQuery("""
-            SELECT DISTINCT h
-            FROM coleccion c
-            JOIN c.hechos h
-            LEFT JOIN FETCH h.contribuyente
-            LEFT JOIN FETCH h.ubicacion
-            WHERE c.id = :id
-        """, Hecho.class)
-                    .setParameter("id", idColeccion)
-                    .getResultList();
-
-            //TRAER HECHOS VISIBLES???
-            List<Hecho> hechosVisibles = em.createQuery("""
-            SELECT h
-            FROM coleccion c
-            JOIN c.hechosVisibles h
-            WHERE c.id = :id
-        """, Hecho.class)
-                    .setParameter("id", idColeccion)
-                    .getResultList();
-
-            //traer criterios
-            List<Criterio> criterios = em.createQuery("""
-            SELECT cr
-            FROM coleccion c
-            JOIN c.criterioDePertenencia cr
-            WHERE c.id = :id
-        """, Criterio.class)
-                    .setParameter("id", idColeccion)
-                    .getResultList();
-
-            // traer etiquetas
-            java.util.Map<String, List<String>> etiquetasPorHash = java.util.Collections.emptyMap();
-            if (!hechos.isEmpty()) {
-                List<String> hashes = hechos.stream().map(Hecho::getHash).toList();
-                List<Object[]> filas = em.createQuery("""
-                SELECT h.hash, e.nombre
-                FROM hecho h
-                JOIN h.etiquetas e
-                WHERE h.hash IN :hashes
-            """, Object[].class)
-                        .setParameter("hashes", hashes)
-                        .getResultList();
-
-                etiquetasPorHash = new java.util.HashMap<>();
-                for (Object[] row : filas) {
-                    String hash = (String) row[0];
-                    String tipo = (String) row[1];
-                    etiquetasPorHash.computeIfAbsent(hash, k -> new java.util.ArrayList<>()).add(tipo);
-                }
-            }
-
-            // Mapear a DTOs
-            List<FuenteDTO> fuenteDTOs = fuentes.stream().map(FuenteDTO::from).toList();
-
-            List<HechoResumenDTO> hechoDTOs = new java.util.ArrayList<>(hechos.size());
-            for (Hecho h : hechos) {
-                List<String> etiquetas = (h.getEtiquetas() != null)
-                        ? h.getEtiquetas().stream()
-                        .map(Etiqueta::getNombre)
-                        .toList()
-                        : Collections.emptyList();
-
-
-                hechoDTOs.add(
-                        new HechoResumenDTO(
-                                h.getHash(),
-                                h.getTitulo(),
-                                h.getDescripcion(),
-                                (h.getContribuyente() != null ? h.getContribuyente().getNombreCompleto() : null),
-                                h.getFechaSuceso(),
-                                h.getHoraSuceso(),
-                                null,
-                                etiquetas,
-                                h.getUbicacion() != null ? h.getUbicacion().getLatitud().toString() : null,
-                                h.getUbicacion() != null ? h.getUbicacion().getLongitud().toString() : null,
-                                Collections.singletonList(h.getCategoria().toString()),
-                                h.getEstado().toString()
-                        )
-                );
-            }
-
-            List<HechoResumenDTO> hechoVisiblesDTOs = hechosVisibles.stream()
-                    .map(HechoResumenDTO::from) // o fromCompleto si querés enriquecerlos también
-                    .toList();
-
-            List<CriterioDTO> criterioDTOs = criterios.stream()
-                    .map(CriterioDTO::from)
-                    .toList();
-
-            String modoNavStr = c.getModoDeNavegacion() != null
-                    ? c.getModoDeNavegacion().name()
-                    : null;
-
-            String algoritmoStr = c.getAlgoritmoConsenso() != null
-                    ? c.getAlgoritmoConsenso().devolverTipoDeConsenso()
-                    : null;
-
-
-            ColeccionConTodoDTO dto = new ColeccionConTodoDTO(
-                    c.getId(),
-                    c.getTitulo(),
-                    c.getDescripcionColeccion(),
-                    fuenteDTOs,
-                    hechoDTOs,
-                    hechoVisiblesDTOs,
-                    criterioDTOs,
-                    modoNavStr,
-                    algoritmoStr
-            );
-
-            return Optional.of(dto);
-
-        } finally {
-            try {
-                em.close();
-            } catch (Exception ignore) {
-            }
-        }
-    }
-
 
     public List<ColeccionDTO> listarColeccionesDTOConCantidadHechos() {
         EntityManager em = DBUtils.getEntityManager();
@@ -762,5 +616,168 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             try { em.close(); } catch (Exception ignore) {}
         }
     }
+}
+
+    public Coleccion findByIdConCriteriosYFuentes(Integer id) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            return em.createQuery("""
+            select distinct c from coleccion c
+            left join fetch c.criterioDePertenencia
+            left join fetch c.fuentes
+            where c.id = :id
+        """, Coleccion.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+        } finally {
+            em.close();
+        }
+    }
+
+    // Solo criterios, sin fuentes
+    public Coleccion findByIdConCriterios(Integer id) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            return em.createQuery("""
+            select distinct c from coleccion c
+            left join fetch c.criterioDePertenencia
+            where c.id = :id
+        """, Coleccion.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<Integer> obtenerIdsFuentesDeColeccion(Integer idColeccion) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            return em.createQuery("""
+            select f.id from coleccion c
+            join c.fuentes f
+            where c.id = :id
+        """, Integer.class)
+                    .setParameter("id", idColeccion)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<Coleccion> listarColeccionesParaGraphQL() {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            List<Coleccion> colecciones = em
+                    .createQuery("select c from coleccion c", Coleccion.class)
+                    .getResultList();
+
+            colecciones.forEach(c -> {
+                // Forzamos inicialización de fuentes
+                if (c.getFuentes() != null) {
+                    c.getFuentes().forEach(f -> {
+                        f.getNombre();          // toca el proxy
+                        f.getId();  // por las dudas
+                        f.getTipoFuente();      // si lo usás en el schema
+                        f.getLink();
+                    });
+                }
+
+                // Inicializar criterioDePertenencia (por ahora solo size())
+                if (c.getCriterioDePertenencia() != null) {
+                    c.getCriterioDePertenencia().size();
+                }
+
+                // Inicializar hechos (lista completa)
+                if (c.getHechos() != null) {
+                    c.getHechos().forEach(this::inicializarHechoParaGraphQL);
+                }
+
+                // Inicializar hechosVisibles (la que te está explotando ahora)
+                if (c.getHechosVisibles() != null) {
+                    c.getHechosVisibles().forEach(this::inicializarHechoParaGraphQL);
+                }
+
+                // Campo simple, por si acaso
+                c.getModoDeNavegacion();
+            });
+
+            return colecciones;
+        } finally {
+            em.close();
+        }
+    }
+
+    private void inicializarHechoParaGraphQL(Hecho h) {
+        if (h == null) return;
+
+        h.getTitulo();
+        h.getDescripcion();
+        h.getEstado();
+
+        if (h.getCategoria() != null) {
+            h.getCategoria().getNombre();
+        }
+        if (h.getUbicacion() != null) {
+            h.getUbicacion().getLatitud();
+            h.getUbicacion().getLongitud();
+        }
+        if (h.getContribuyente() != null) {
+            h.getContribuyente().getNombre();
+            h.getContribuyente().getMail();
+        }
+
+        h.getEtiquetas().size();    // inicializa colección
+        h.getMultimedia().size();   // idem
+
+        h.getFechaSuceso();
+        h.getFechaCarga();
+        h.getHoraSuceso();
+        h.getUltimaFechaModificacion();
+        h.getCodigoDeFuente();
+        h.getHash();
+        h.getIdFuente();
+        h.getLinkFuente();
+    }
+
+    public Coleccion buscarColeccionParaGraphQL(Integer id) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            Coleccion c = em.find(Coleccion.class, id);
+            if (c == null) return null;
+
+            // Mismo patrón de inicialización:
+            if (c.getFuentes() != null) {
+                c.getFuentes().forEach(f -> {
+                    f.getNombre();
+                    f.getId();
+                    f.getTipoFuente();
+                    f.getLink();
+                });
+            }
+
+            if (c.getCriterioDePertenencia() != null) {
+                c.getCriterioDePertenencia().size();
+            }
+
+            if (c.getHechos() != null) {
+                c.getHechos().forEach(this::inicializarHechoParaGraphQL);
+            }
+
+            if (c.getHechosVisibles() != null) {
+                c.getHechosVisibles().forEach(this::inicializarHechoParaGraphQL);
+            }
+
+            c.getModoDeNavegacion();
+            c.getDescripcionColeccion();
+            c.getTitulo();
+
+            return c;
+        } finally {
+            em.close();
+        }
+    }
+
+
 }
 

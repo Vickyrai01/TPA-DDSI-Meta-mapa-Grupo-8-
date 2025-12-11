@@ -23,7 +23,7 @@ import java.util.List;
 })
 public interface StrategyTipoConexion {
 
-    public List<HechoAIntegrarDTO> extraerHecho(String fuente, String codigoFuente);
+    public List<HechoAIntegrarDTO> extraerHecho(String fuente);
     public String devolverTipoDeConexion();
 
 

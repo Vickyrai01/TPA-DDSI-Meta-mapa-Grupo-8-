@@ -32,12 +32,22 @@ public class DinamicaRepository extends JpaRepositoryBase<HechoAIntegrarDTO, Str
         try {
             // Traer los hechos no procesados (null o false)
             hechos = em.createQuery(
-                            "SELECT h FROM HechoAIntegrarDTO h WHERE h.fueExtraido IS NULL OR h.fueExtraido = false",
+                            "SELECT h FROM HechoAIntegrarDTO h", //WHERE h.fueExtraido IS NULL OR h.fueExtraido = false",
                             HechoAIntegrarDTO.class)
                     .getResultList();
 
             if (hechos.isEmpty()) {
                 return hechos; // nada que hacer
+            }
+
+            // Inicializar colecciones LAZY mientras la sesión sigue abierta
+            for (HechoAIntegrarDTO h : hechos) {
+                if (h.getEtiquetas() != null) {
+                    h.getEtiquetas().size();   // fuerza el load
+                }
+                if (h.getMultimedia() != null) {
+                    h.getMultimedia().size();  // fuerza el load
+                }
             }
 
             // Marcar como procesados
@@ -59,6 +69,7 @@ public class DinamicaRepository extends JpaRepositoryBase<HechoAIntegrarDTO, Str
         }
     }
 
+    @Override
     public HechoAIntegrarDTO save(HechoAIntegrarDTO hecho) {
         EntityManager em = DBUtils.getEntityManager();
         try {

@@ -2,7 +2,9 @@ package cargadorDinamica.application;
 
 import cargadorDinamica.model.CargadorDinamico;
 import cargadorDinamica.model.HechoAIntegrarDTO;
+import cargadorDinamica.observabilidad.MetricasCargadorDinamico;
 import cargadorDinamica.repository.DinamicaRepository;
+import cargadorDinamica.repository.RepositoryFuentesSeeder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
@@ -10,14 +12,16 @@ import org.springframework.web.bind.annotation.*;
 import utils.DBUtils;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
 import java.util.List;
 
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "cargadorDinamica")
 @RestController
 @RequestMapping("/cargadorDinamico")
 public class Application {
 
+    private static RepositoryFuentesSeeder repoFuentesSeeder = RepositoryFuentesSeeder.getInstance();
     private final CargadorDinamico cargadorDinamico;
     private final DinamicaRepository dinamicaRepository;
 
@@ -28,21 +32,8 @@ public class Application {
     }
 
     public static void main(String[] args) {
-
+        repoFuentesSeeder.cargarRepos();
         SpringApplication.run(Application.class, args);
-
-        EntityManager em = DBUtils.getEntityManager();
-        DBUtils.comenzarTransaccion(em);
-
-        HechoAIntegrarDTO hecho1 = new HechoAIntegrarDTO();
-        hecho1.setHash("shfkjdshgjkhdfkjghdfkgh");
-        hecho1.setDescripcion("de pruebaaaaa");
-        hecho1.setTitulo("hecho 1");
-        em.persist(hecho1);
-
-        DBUtils.commit(em);
-
-
     }
 
     @GetMapping("/health")
@@ -72,8 +63,18 @@ public class Application {
                 hecho.getMultimedia()
         );
 
+        hechoDTO.setTipoFuente("DINAMICA");
+        hechoDTO.setLinkFuente("Cargado por la web");
+        LocalDate fechaHoy = LocalDate.now();
+        hechoDTO.setFechaCarga(String.valueOf(fechaHoy));
+
         dinamicaRepository.save(hechoDTO);
         return ResponseEntity.status(201).body("Hecho agregado correctamente");
+    }
+
+    @GetMapping("/metricas")
+    public ResponseEntity<?> metrics() {
+        return ResponseEntity.ok(MetricasCargadorDinamico.snapshot());
     }
 
 }

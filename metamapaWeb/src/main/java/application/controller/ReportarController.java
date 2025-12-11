@@ -5,6 +5,7 @@ import application.service.ReportarService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import core.models.entities.usuario.Usuario;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,14 +31,15 @@ public class ReportarController {
     }
 
     @GetMapping("/reportar")
-    public String reportarSuceso(Model model, @RequestParam(value= "estado", required = false) String estado, Authentication authentication) throws JsonProcessingException {
+    public String reportarSuceso(Model model, @RequestParam(value = "estado", required = false) String estado, Authentication authentication) throws JsonProcessingException {
         // esto hoy te devuelve un String con el JSON
         String categoriasJson = reportarService.getCategorias();
 
         // lo parseamos a List<String>
         List<String> categorias = objectMapper.readValue(
                 categoriasJson,
-                new TypeReference<List<String>>() {}
+                new TypeReference<List<String>>() {
+                }
         );
 
         model.addAttribute("categorias", categorias);
@@ -47,9 +49,10 @@ public class ReportarController {
         model.addAttribute("estado", estado);
         // Obtener correo del usuario autenticado
         String email = null;
-        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof OAuth2User oAuth2User) {
+ if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof OAuth2User oAuth2User) {
             email = oAuth2User.getAttribute("email");
         }
+
         model.addAttribute("email", email);
         return "reportarSuceso/reportarSuceso";
     }
@@ -65,6 +68,8 @@ public class ReportarController {
             @RequestParam("longitud") Double longitud,
             @RequestParam("multimedia") String multimedia,
             @RequestParam(value = "etiquetas", required = false) String etiquetas,
+            @RequestParam(value = "urgente", defaultValue = "false") boolean urgente,
+            @RequestParam(value = "noPublicarDatos", defaultValue = "false") boolean noPublicarDatos,
             org.springframework.security.core.Authentication authentication,
             RedirectAttributes ra
     ) {
@@ -73,14 +78,32 @@ public class ReportarController {
             Map<String, Object> jsonMap = new HashMap<>();
             String lat = latitud.toString();
             String lon = longitud.toString();
+
             jsonMap.put("titulo", titulo);
             jsonMap.put("descripcion", descripcion);
+
             // Obtener el correo del usuario autenticado para el campo contribuyente
             String contribuyente = null;
-            if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof org.springframework.security.oauth2.core.user.OAuth2User oAuth2User) {
-                contribuyente = oAuth2User.getAttribute("email");
+            if (authentication != null && authentication.isAuthenticated()) {
+                Object principal = authentication.getPrincipal();
+                if (principal instanceof org.springframework.security.oauth2.core.user.OAuth2User oAuth2User) {
+                    contribuyente = oAuth2User.getAttribute("email");
+                } else if (principal instanceof java.util.Map<?,?> map) {
+                    Object mailObj = map.get("email");
+                    if (mailObj instanceof String) {
+                        contribuyente = (String) mailObj;
+                    }
+                }
             }
-            jsonMap.put("contribuyente", contribuyente);
+
+            String contribuyenteFinal;
+            if (noPublicarDatos || contribuyente == null || contribuyente.isBlank()) {
+                contribuyenteFinal = "Anónimo";
+            } else {
+                contribuyenteFinal = contribuyente;
+            }
+            jsonMap.put("contribuyente", contribuyenteFinal);
+
             if (categoria.equals("Otro")) {
                 jsonMap.put("categoria", categoriaOtra);
             } else {
@@ -106,7 +129,7 @@ public class ReportarController {
             jsonMap.put("etiquetas", etiquetasList);
 
             String json = mapper.writeValueAsString(jsonMap);
-            ResponseEntity<Void> response = reportarService.postearHecho(json);
+            ResponseEntity<Void> response = reportarService.postearHecho(json, urgente, noPublicarDatos);
             if (response.getStatusCode().is2xxSuccessful()) {
                 return "redirect:/reportar?estado=ok";
             } else {
@@ -127,4 +150,6 @@ public class ReportarController {
             return "redirect:/reportar?estado=error";
         }
     }
+
+
 }

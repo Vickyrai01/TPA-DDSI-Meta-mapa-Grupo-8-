@@ -1,10 +1,12 @@
 package core.api.DTO;
 
+import core.models.entities.hecho.Contribuyente;
 import core.models.entities.hecho.Etiqueta;
 import core.models.entities.hecho.Hecho;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,18 +28,18 @@ public class HechoResumenDTO {
 
 
     public HechoResumenDTO(String hash, String titulo, String descripcion, String nombreContribuyente, LocalDate fechaSuceso, LocalTime horaSuceso, List<String> multimedia, List<String> etiquetas, String latitud, String longitud, List<String> categorias, String estado) {
-    this.hash = hash;
-    this.nombre = titulo;
-    this.descripcion = descripcion;
-    this.contribuyente = nombreContribuyente;
-    this.fechaSuceso = fechaSuceso;
-    this.horaSuceso = horaSuceso;
-    this.multimedia = multimedia;
-    this.etiquetas = etiquetas;
-    this.latitud = latitud;
-    this.longitud = longitud;
-    this.categorias = categorias;
-    this.estado = estado;
+        this.hash = hash;
+        this.nombre = titulo;
+        this.descripcion = descripcion;
+        this.contribuyente = nombreContribuyente;
+        this.fechaSuceso = fechaSuceso;
+        this.horaSuceso = horaSuceso;
+        this.multimedia = multimedia;
+        this.etiquetas = etiquetas;
+        this.latitud = latitud;
+        this.longitud = longitud;
+        this.categorias = categorias;
+        this.estado = estado;
     }
 
     public HechoResumenDTO(String hash, String nombre, String descripcion, String contribuyente, LocalDate fechaSuceso, LocalTime horaSuceso, List<String> multimedia, String latitud, String longitud) {
@@ -70,10 +72,14 @@ public class HechoResumenDTO {
     }
 
     public static HechoResumenDTO from(Hecho h) {
+        Contribuyente c = h.getContribuyente();
 
-        String nombreContribuyente = (h.getContribuyente() != null)
-                ? h.getContribuyente().getNombreCompleto()
-                : null;
+        String nombreContribuyente =
+                (c == null) ? null :
+                        (c.getNombre() != null && !c.getNombre().isBlank()) ? c.getNombre() :
+                                (c.getMail() != null && !c.getMail().isBlank()) ? c.getMail() :
+                                        null;
+
 
         List<String> etiquetas = (h.getEtiquetas() != null)
                 ? h.getEtiquetas().stream()
@@ -93,15 +99,20 @@ public class HechoResumenDTO {
                 ? List.of(h.getCategoria().toString()) // o .getNombre() si corresponde
                 : List.of();
 
+        // Lógica de multimedia agregada
+        List<String> multimedia = (h.getMultimedia() != null)
+                ? new ArrayList<>(h.getMultimedia())
+                : Collections.emptyList();
 
         return new HechoResumenDTO(
                 h.getHash(),
                 h.getTitulo(),
                 h.getDescripcion(),
                 nombreContribuyente,
+                h.getFechaCarga(),
                 h.getFechaSuceso(),
                 h.getHoraSuceso(),
-                null,
+                multimedia,             // Se pasa la lista en lugar de null
                 etiquetas,
                 latitud,
                 longitud,

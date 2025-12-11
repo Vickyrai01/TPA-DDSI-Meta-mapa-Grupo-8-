@@ -11,29 +11,31 @@ import io.javalin.Javalin;
 
 public class ApiAdminMetaMapaConfig {
     public static void configurarEndpoints(Javalin app) {
-        app.get("/core/api/hechos", new GetHechoHandler());
-        app.get("/core/api/hechos/{id}", new GetHechoIdHandler());
-        app.post("/core/api/hechos", new PostHechoHandler());
-        app.get("core/api/solicitudes", new GetSolicitudHandler());
-        app.post("core/api/solicitudes", new PostSolicitudHandler());
-        app.get("core/api/colecciones", new GetColeccionHandler());
-        app.post("core/api/colecciones", new PostColeccionHandler());
-        app.get("core/api/colecciones/{id}", new GetColeccionIdHandler());
-        app.delete("core/api/colecciones/{id}", new DeleteColeccionHandler());
-        app.patch("core/api/colecciones/{id}", new PatchColeccionHandler());
-        app.post("/core/api/solicitudes/{id}/aceptar", new PostAceptarSolicitudHandler());
-        app.post("/core/api/solicitudes/{id}/rechazar", new PostRechazarSolicitudHandler());
-        app.get("/core/api/solicitudes/{id}", new GetSolicitudIdHandler());
-        app.patch("core/api/colecciones/{id}/fuentes/agregar", new PatchAgregarFuentesColeccionHandler());
-        app.patch("core/api/colecciones/{id}/fuentes/eliminar", new PatchEliminarFuentesColeccionHandler());
-        app.patch("core/api/colecciones/{id}/consenso/modificar", new PatchAlgoritmoDeConsenso());
-        app.get("/core/api/fuentes", new GetFuentesHandler());
+        app.get("/core/api/admin/hechos", new GetHechoHandler());
+        app.get("/core/api/admin/hechos/{id}", new GetHechoIdHandler());
+        app.post("/core/api/admin/hechos", new PostHechoHandler());
+        app.get("core/api/admin/solicitudes", new GetSolicitudHandler());
+        app.post("core/api/admin/solicitudes", new PostSolicitudHandler());
+        app.get("core/api/admin/colecciones", new GetColeccionHandler());
+        app.post("core/api/admin/colecciones", new PostColeccionHandler());
+        app.get("core/api/admin/colecciones/{id}", new GetColeccionIdHandler());
+        app.delete("core/api/admin/colecciones/{id}", new DeleteColeccionHandler());
+        app.patch("core/api/admin/colecciones/{id}", new PatchColeccionHandler());
+        app.post("/core/api/admin/solicitudes/{id}/aceptar", new PostAceptarSolicitudHandler());
+        app.post("/core/api/admin/solicitudes/{id}/rechazar", new PostRechazarSolicitudHandler());
+        app.get("/core/api/admin/solicitudes/{id}", new GetSolicitudIdHandler());
+        app.patch("core/api/admin/colecciones/{id}/fuentes/agregar", new PatchAgregarFuentesColeccionHandler());
+        app.patch("core/api/admin/colecciones/{id}/fuentes/eliminar", new PatchEliminarFuentesColeccionHandler());
+        app.patch("core/api/admin/colecciones/{id}/consenso/modificar", new PatchAlgoritmoDeConsenso());
+        app.get("/core/api/admin/fuentes", new GetFuentesHandler());
 
-        app.patch("/core/api/hechos/{hash}", new PatchHechoHandler());
-        app.delete("/core/api/hechos/{hash}", new DeleteHechoHandler());
+        app.patch("/core/api/admin/hechos/{hash}", new PatchHechoHandler());
+        app.delete("/core/api/admin/hechos/{hash}", new DeleteHechoHandler());
 
-        app.post("/core/api/fuentes", new PostFuenteHandler());
-        app.post("/core/api/fuentes/{id}/csv", new PostFuenteCSVHandler());
-        app.post("core/api/fuentes/{id}/eliminar", new DeleteFuenteHandler());
+        app.post("/core/api/admin/fuentes", new PostFuenteHandler());
+        app.post("/core/api/admin/fuentes/{id}/csv", new PostFuenteCSVHandler());
+        app.post("core/api/admin/fuentes/{id}/eliminar", new DeleteFuenteHandler());
+
+        app.post("core/api/admin/ejecutarServicio", new EjecutarServicioHandler());
     }
 }

@@ -13,6 +13,9 @@ public class FuenteDTO {
         this.tipoFuente = tipoFuente;
     }
 
+    public FuenteDTO() {
+    }
+
     public String getNombre() {
         return nombre;
     }

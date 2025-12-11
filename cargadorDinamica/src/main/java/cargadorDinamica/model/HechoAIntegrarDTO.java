@@ -37,7 +37,13 @@ public class HechoAIntegrarDTO {
     @Column(name= "fecha_suceso")
     public String fechaSuceso;
 
-@ElementCollection
+    @Column(name= "fecha_carga")
+    public String fechaCarga;
+
+    @Column(name = "link_fuente")
+    public String linkFuente;
+
+    @ElementCollection
     @CollectionTable(
             name = "hecho_etiqueta",
             joinColumns = @JoinColumn(name = "hash", foreignKey = @ForeignKey(name = "hecho_etiqueta_hecho"))
@@ -93,6 +99,7 @@ public class HechoAIntegrarDTO {
         this.contribuyente = null;
         this.multimedia = null;
         this.tipoFuente = null;
+        this.linkFuente = null;
 
         this.fueExtraido = Boolean.FALSE; // default interno
     }
@@ -162,6 +169,20 @@ public class HechoAIntegrarDTO {
 
     public void setMultimedia(List<String> multimedia) {
         this.multimedia = multimedia;
+    }
+
+    public String getLinkFuente() {
+        return linkFuente;
+    }
+    public void setLinkFuente(String linkFuente) {
+        this.linkFuente = linkFuente;
+    }
+
+    public void setFechaCarga(String fechaCarga) {
+        this.fechaCarga = fechaCarga;
+    }
+    public String getFechaCarga() {
+        return fechaCarga;
     }
 
 

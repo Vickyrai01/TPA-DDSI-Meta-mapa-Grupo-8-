@@ -2,12 +2,10 @@ package core.models.agregador.normalizador;
 
 import core.models.agregador.HechoAIntegrarDTO;
 import core.models.entities.fuentes.TipoFuente;
-import core.models.entities.hecho.Categoria;
-import core.models.entities.hecho.Coordenadas;
-import core.models.entities.hecho.Estado;
-import core.models.entities.hecho.Hecho;
+import core.models.entities.hecho.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 //Esto va a pasar un hecho DTO a un hecho
 public class FactoryHecho {
@@ -30,22 +28,22 @@ public class FactoryHecho {
             return instance;
         }
 
-    public Hecho convertirHecho(HechoAIntegrarDTO hecho, LocalDate fecha, Categoria categoria, Coordenadas ubicacion){
+    public Hecho convertirHecho(HechoAIntegrarDTO hecho, LocalDate fecha, Categoria categoria, Coordenadas ubicacion, List<Etiqueta> etiquetas, Contribuyente contribuyente){
         TipoFuente tipoFuente = TipoFuente.valueOf(hecho.getTipoFuente());
 
         return new Hecho(
-                null, //Analizar como asignar el ID
+                null,
                 ubicacion,
                 categoria,
                 null,
                 LocalDate.now(),
                 null,
                 Estado.ACEPTADO,
-                null,
+                contribuyente,
                 LocalDate.now(),
                 fecha,
                 tipoFuente,
-                null,
+                etiquetas,
                 hecho.getDescripcion(),
                 hecho.getTitulo(),
                 null,
