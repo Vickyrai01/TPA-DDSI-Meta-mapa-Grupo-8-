@@ -10,6 +10,7 @@ import core.models.entities.hecho.*;
 import core.models.repository.ColeccionesRepository;
 import core.models.repository.HechosRepository;
 import core.models.repository.RevisionManualRepository;
+import core.observabilidad.RegistroMetricas;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -143,6 +144,8 @@ public class ServicioDeAgregacion {
         List<Hecho> hechosFiltradosCriterio = filtradorCriterios.filtrarHechos(hechosFiltradosFuentes, criterios);
 
         List<Integer> idHechos = hechosFiltradosCriterio.stream().map(Hecho::getId).toList();
+        Integer cantidadHechosAInsertar = idHechos.size();
+        RegistroMetricas.addHechosCreados(cantidadHechosAInsertar);
         coleccionesRepository.agregarHechosAColeccion(idColeccion, idHechos);
     }
 

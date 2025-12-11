@@ -2,6 +2,7 @@ package cargadorDinamica.application;
 
 import cargadorDinamica.model.CargadorDinamico;
 import cargadorDinamica.model.HechoAIntegrarDTO;
+import cargadorDinamica.observabilidad.MetricasCargadorDinamico;
 import cargadorDinamica.repository.DinamicaRepository;
 import cargadorDinamica.repository.RepositoryFuentesSeeder;
 import org.springframework.boot.SpringApplication;
@@ -15,7 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "cargadorDinamica")
 @RestController
 @RequestMapping("/cargadorDinamico")
 public class Application {
@@ -69,6 +70,11 @@ public class Application {
 
         dinamicaRepository.save(hechoDTO);
         return ResponseEntity.status(201).body("Hecho agregado correctamente");
+    }
+
+    @GetMapping("/metricas")
+    public ResponseEntity<?> metrics() {
+        return ResponseEntity.ok(MetricasCargadorDinamico.snapshot());
     }
 
 }
