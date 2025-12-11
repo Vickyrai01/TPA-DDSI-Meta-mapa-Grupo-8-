@@ -32,7 +32,7 @@ public class FactoryHecho {
         TipoFuente tipoFuente = TipoFuente.valueOf(hecho.getTipoFuente());
 
         return new Hecho(
-                null, //Analizar como asignar el ID
+                null,
                 ubicacion,
                 categoria,
                 null,

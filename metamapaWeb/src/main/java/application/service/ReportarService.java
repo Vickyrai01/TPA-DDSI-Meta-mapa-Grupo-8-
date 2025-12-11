@@ -42,11 +42,12 @@ public class ReportarService {
                 .block();
     }
 
-    public ResponseEntity<Void> postearHecho(String hechoJson, boolean urgente){
+    public ResponseEntity<Void> postearHecho(String hechoJson, boolean urgente, boolean anonimo){
         return metamapaApi.post()
                 .uri("/hechos/reportar")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("X-Urgente", String.valueOf(urgente)) // flag
+                .header("X-Urgente", String.valueOf(urgente))
+                .header("X-Anonimo", String.valueOf(anonimo)) // NUEVO
                 .bodyValue(hechoJson)
                 .retrieve()
                 .toBodilessEntity()
