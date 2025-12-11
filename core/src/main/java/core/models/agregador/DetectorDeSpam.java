@@ -83,6 +83,10 @@ public class DetectorDeSpam {
         String normalizado = normalizar(texto);
         String[] palabras = normalizado.split("\\s+");
 
+        if (contienePalabrasRaras(normalizado)) {
+            return true;
+        }
+
         // TF-IDF súper simplificado: sumo tf * peso
         double score = 0.0;
 
@@ -126,5 +130,44 @@ public class DetectorDeSpam {
         }
 
         return false;
+    }
+
+    private boolean contienePalabrasRaras(String textoNormalizado) {
+        if (textoNormalizado == null || textoNormalizado.isBlank()) return false;
+
+        // dejamos solo letras y espacios
+        String soloLetras = textoNormalizado.replaceAll("[^a-zñáéíóúü ]", " ");
+        String[] palabras = soloLetras.split("\\s+");
+
+        int raras = 0;
+
+        for (String p : palabras) {
+            if (p.length() >= 5) {
+                int vocales = contarVocales(p);
+                double ratioVocales = (double) vocales / p.length();
+
+                // pocas vocales en palabras relativamente largas → pinta de teclado smash
+                if (ratioVocales < 0.25) {
+                    raras++;
+                }
+            }
+        }
+
+        //sensibilidad:
+        // - 2 agresiva
+        // - 3 permisiva
+        return raras >= 2;
+    }
+
+    private int contarVocales(String palabra) {
+        int count = 0;
+        String vocales = "aeiouáéíóúü";
+        for (int i = 0; i < palabra.length(); i++) {
+            char c = palabra.charAt(i);
+            if (vocales.indexOf(c) >= 0) {
+                count++;
+            }
+        }
+        return count;
     }
 }
