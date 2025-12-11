@@ -723,7 +723,6 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
         }
         if (h.getContribuyente() != null) {
             h.getContribuyente().getNombre();
-            h.getContribuyente().getApellido();
             h.getContribuyente().getMail();
         }
 
