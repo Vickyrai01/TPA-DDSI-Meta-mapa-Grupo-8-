@@ -6,17 +6,131 @@
           scriptsAdicionales=~{:: #scripts-de-mis-hechos},
           contenido=~{:: #contenido-de-mis-hechos}
       )}">
-<th:block id="links-de-mis-hechos">
-    <link rel="stylesheet"
-          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          crossorigin=""/>
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" th:href="@{/css/pages-css/verColeccion.css}">
 
 
+    <th:block id="links-de-mis-hechos">
+        <link rel="stylesheet"
+              href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+              crossorigin=""/>
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        <link rel="stylesheet" th:href="@{/css/pages-css/verColeccion.css}">
+        <link rel="stylesheet"
+              href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+        <link rel="stylesheet"
+              href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
 
-</th:block>
+        <style>
+            /* Contenedor principal: mapa + sidebar */
+            .map-layout-container {
+                display: grid !important;
+                grid-template-columns: minmax(0, 2fr) minmax(0, 380px) !important; /* mapa | sidebar */
+                gap: 0 !important;
+                width: 100% !important;
+            }
+
+            /* Mapa ocupa toda su columna */
+            .map-panel {
+                width: 100% !important;
+                height: 100% !important;
+            }
+
+            /* Sidebar: columna, padding y sin que nada la haga crecer */
+            .sidebar-panel {
+                display: flex !important;
+                flex-direction: column !important;
+                height: 100% !important;
+                overflow: hidden !important;
+                padding: 1rem 1rem 1rem 1.25rem;
+            }
+
+            .sidebar-header {
+                flex: 0 0 auto !important;
+                font-weight: 700;
+                font-size: 1.1rem;
+                margin-bottom: .5rem;
+            }
+
+            .sidebar-content {
+                flex: 1 1 auto !important;
+                min-height: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+
+            .sidebar-content > h2,
+            .sidebar-content > p,
+            .sidebar-content > h3 {
+                flex: 0 0 auto !important;
+            }
+
+            .hechos-accordion {
+                flex: 1 1 auto !important;
+                min-height: 0 !important;
+                overflow-y: auto !important;
+                padding-right: .25rem;
+            }
+
+            .hechos-accordion details {
+                margin-bottom: .5rem;
+            }
+
+            .hecho-title {
+                font-weight: 600;
+            }
+
+            /* Botones de acción dentro de cada hecho */
+            .field .edit-btn,
+            .field .save-btn,
+            .field .cancel-btn {
+                padding: 0.35rem 0.9rem;
+                border-radius: 999px;
+                font-size: 0.85rem;
+                border: none;
+                cursor: pointer;
+                font-weight: 600;
+                transition: background-color .15s ease, opacity .15s ease, transform .05s ease;
+            }
+
+            .field .edit-btn {
+                background: #F47C2C;
+                color: #fff;
+                margin-right: .5rem;
+            }
+
+            .field .save-btn {
+                background: #2980B9;
+                color: #fff;
+                margin-right: .5rem;
+            }
+
+            .field .cancel-btn {
+                background: #f3f4f6;
+                color: #111827;
+                border: 1px solid #d1d5db;
+            }
+
+            .field .edit-btn:hover,
+            .field .save-btn:hover,
+            .field .cancel-btn:hover {
+                opacity: .9;
+                transform: translateY(-1px);
+            }
+
+            .field .edit-btn:active,
+            .field .save-btn:active,
+            .field .cancel-btn:active {
+                transform: translateY(0);
+            }
+
+            .hechos-accordion details.highlight {
+                outline: 2px solid #3498db;
+                border-radius: 6px;
+                background: #f0f6ff;
+            }
+        </style>
+    </th:block>
+
 
 <div id="contenido-de-mis-hechos">
     <main class="map-layout-container">
@@ -143,11 +257,11 @@
         /*]]>*/
     </script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
     <script>
         // --- VALIDACION: Deshabilitar edicion si pasaron 7 días o si no hay fecha ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Seleccionamos todos los details, tengan o no fecha cargada
             const detalles = document.querySelectorAll('details[data-hash]');
 
             detalles.forEach(detalle => {
@@ -156,14 +270,11 @@
                 let mensajeError = "";
 
                 if (!fechaString || fechaString === "null" || fechaString.trim() === "") {
-                    // CASO 1: No indica fecha
                     bloquearEdicion = true;
                     mensajeError = " (No puede editar el hecho: Fecha no disponible)";
                 } else {
-                    // CASO 2: Tiene fecha, validamos los 7 días
                     const fechaCarga = new Date(fechaString);
                     const hoy = new Date();
-                    // Diferencia en días
                     const diferenciaTiempo = hoy - fechaCarga;
                     const diasPasados = diferenciaTiempo / (1000 * 3600 * 24);
 
@@ -173,25 +284,21 @@
                     }
                 }
 
-                // Aplicar bloqueo si corresponde
                 if (bloquearEdicion) {
                     const btnEditar = detalle.querySelector('.edit-btn');
                     if (btnEditar) {
-                        // Deshabilitar botón
                         btnEditar.disabled = true;
                         btnEditar.style.opacity = "0.5";
                         btnEditar.style.cursor = "not-allowed";
                         btnEditar.title = "No se puede editar: " + mensajeError.trim();
 
-                        // Agregar mensaje rojo
                         const mensaje = document.createElement('span');
                         mensaje.innerText = mensajeError;
-                        mensaje.style.color = "#d9534f"; // Rojo
+                        mensaje.style.color = "#d9534f";
                         mensaje.style.fontSize = "0.85em";
                         mensaje.style.marginLeft = "10px";
                         mensaje.style.fontWeight = "bold";
 
-                        // Insertar mensaje después del botón
                         btnEditar.parentNode.insertBefore(mensaje, btnEditar.nextSibling);
                     }
                 }
@@ -240,7 +347,7 @@
 
                 saveBtn?.addEventListener('click', async () => {
                     saveBtn.disabled = true;
-                    // Recolección de datos
+
                     const nombre = detalle.querySelector('input.edit-mode[name="nombre"]')?.value?.trim();
                     const descripcion = detalle.querySelector('input.edit-mode[name="descripcion"]')?.value?.trim();
                     const etiquetasCsv = detalle.querySelector('input.edit-mode[name="etiquetas"]')?.value?.trim();
@@ -287,7 +394,6 @@
                             throw new Error(`PATCH failed: ${resp.status} ${txt}`);
                         }
 
-                        // Actualizar UI
                         detalle.querySelector('[data-field="nombre"]').textContent = nombre;
                         detalle.querySelector('[data-field="descripcion"]').textContent = descripcion;
 
@@ -339,17 +445,24 @@
         }).addTo(map);
 
         const markersByHash = {};
+        const clusterGroup = L.markerClusterGroup({
+            showCoverageOnHover: false,
+            maxClusterRadius: 60
+        });
+
         puntos.forEach(p => {
             const popupHtml = `
               <div class="popup-card">
                 <div class="popup-title"><b>${p.nombre ?? '(sin título)'}</b></div>
               </div>
             `;
-            const m = L.marker([p.lat, p.lon]).addTo(map).bindPopup(popupHtml);
+            const m = L.marker([p.lat, p.lon]).bindPopup(popupHtml);
+            clusterGroup.addLayer(m);
             markersByHash[p.hash] = m;
         });
 
-        // Interacción Mapa-Sidebar
+        clusterGroup.addTo(map);
+
         const sidebarPanel = document.querySelector('.sidebar-panel');
 
         function focusMarker(hash, {zoom=15, openPopup=true} = {}) {
@@ -385,7 +498,6 @@
         document.addEventListener('click', (e) => {
             const link = e.target.closest('.js-ver-hecho');
             if (!link) return;
-            // Si hace click en links internos, ignorar
             const clickedAnchor = e.target.closest('a');
             if (clickedAnchor) {
                 const href = clickedAnchor.getAttribute('href');
@@ -400,14 +512,16 @@
             openDetails(hash);
         });
 
+        
         function fitLayout(){
             const header = document.querySelector('header.site-header');
             const footer = document.querySelector('footer.site-footer');
             const cont   = document.querySelector('.map-layout-container');
             if(!cont) return;
             const h = window.innerHeight - (header?.offsetHeight||0) - (footer?.offsetHeight||0) - 16;
-            cont.style.minHeight = Math.max(360, h) + 'px';
+            cont.style.height = Math.max(360, h) + 'px'; // ⬅️ antes era minHeight
         }
+
         window.addEventListener('load',  () => { fitLayout(); setTimeout(()=>map.invalidateSize(), 80); });
         window.addEventListener('resize',() => { fitLayout(); map.invalidateSize(); });
     </script>
