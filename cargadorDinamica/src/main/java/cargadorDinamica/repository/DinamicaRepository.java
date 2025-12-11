@@ -32,7 +32,7 @@ public class DinamicaRepository extends JpaRepositoryBase<HechoAIntegrarDTO, Str
         try {
             // Traer los hechos no procesados (null o false)
             hechos = em.createQuery(
-                            "SELECT h FROM HechoAIntegrarDTO h", //WHERE h.fueExtraido IS NULL OR h.fueExtraido = false",
+                            "SELECT h FROM HechoAIntegrarDTO h WHERE h.fueExtraido IS NULL OR h.fueExtraido = false",
                             HechoAIntegrarDTO.class)
                     .getResultList();
 

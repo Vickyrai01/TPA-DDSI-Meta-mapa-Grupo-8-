@@ -10,7 +10,7 @@ import java.util.List;
 public class CargadorProxy {
     private static CargadorProxy instance;
     private RepositoryFuentes repositoryFuentes = RepositoryFuentes.getInstance() ;
-    private volatile Duration umbralProcesamiento = Duration.ofSeconds(30);
+    private volatile Duration umbralProcesamiento = Duration.ofMinutes(30);
 
     public void setUmbral(Duration d) { this.umbralProcesamiento = d; }
 
