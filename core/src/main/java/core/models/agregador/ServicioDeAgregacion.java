@@ -13,6 +13,7 @@ import core.models.repository.RevisionManualRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -67,9 +68,27 @@ public class ServicioDeAgregacion {
     // 5. Enviar al Factory para crear el hecho
     // 6. Agregar a las colecciones correspondientes (ver lo de los criterios de pertenencia)
 
-    private void eliminarSpam(List <HechoAIntegrarDTO> lista){
-        lista.removeIf(h -> detectorDeSpam.esSpam(h.getTitulo()) || detectorDeSpam.esSpam(h.getDescripcion()));
+    private void eliminarSpam(List <HechoAIntegrarDTO> lista) {
+        if (lista == null || lista.isEmpty()) return;
+
+        Iterator<HechoAIntegrarDTO> it = lista.iterator();
+
+        while (it.hasNext()) {
+            HechoAIntegrarDTO h = it.next();
+
+            boolean tituloSpam = detectorDeSpam.esSpam(h.getTitulo());
+            boolean descripcionSpam = detectorDeSpam.esSpam(h.getDescripcion());
+
+            if (tituloSpam || descripcionSpam) {
+                System.out.println(
+                        "[SPAM] Eliminando hecho con hash=" + h.getHash()
+                                + " | titulo=\"" + h.getTitulo() + "\""
+                                + " | descripcion=\"" + h.getDescripcion() + "\""
+                );
+                it.remove();
+            }
         }
+    }
 
 
     public void eliminarDuplicados(List<HechoAIntegrarDTO> hechos) {
