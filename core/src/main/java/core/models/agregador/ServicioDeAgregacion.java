@@ -144,8 +144,6 @@ public class ServicioDeAgregacion {
         List<Hecho> hechosFiltradosCriterio = filtradorCriterios.filtrarHechos(hechosFiltradosFuentes, criterios);
 
         List<Integer> idHechos = hechosFiltradosCriterio.stream().map(Hecho::getId).toList();
-        Integer cantidadHechosAInsertar = idHechos.size();
-        RegistroMetricas.addHechosCreados(cantidadHechosAInsertar);
         coleccionesRepository.agregarHechosAColeccion(idColeccion, idHechos);
     }
 
@@ -166,6 +164,7 @@ public class ServicioDeAgregacion {
         System.out.println("Cantidad de hechos a agregados a integrar: " + hechosAIntegrar.size());
         limpiarHechos();
         System.out.println("Cantidad de hechos limpiados: " + hechosAIntegrar.size());
+        RegistroMetricas.addHechosCreados(hechosAIntegrar.size());
         normalizarYCrearHechos();
         hechosRepository.addAllEnUnaTransaccion(hechosLimpios);
         List<Coleccion> colecciones = coleccionesRepository.obtenerTodas();

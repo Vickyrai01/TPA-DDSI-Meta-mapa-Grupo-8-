@@ -12,10 +12,6 @@ public class CargadorEstatico {
 
     private static CargadorEstatico instance;
     private RepositoryFuentes repositoryFuentes = RepositoryFuentes.getInstance() ;
-    private volatile Duration umbralProcesamiento = Duration.ofSeconds(30);
-
-    public void setUmbral(Duration d) { this.umbralProcesamiento = d; }
-
 
     public static CargadorEstatico getInstance() {
         if (instance == null) {
@@ -51,14 +47,10 @@ public class CargadorEstatico {
         return hechos;
         }
 
-
-
-
-    //Devuelve las fuentes que debo procesar: nunca procesadas o más viejas que umbral
+    //Devuelve las fuentes que debo procesar: nunca procesadas
     public List<Fuente> fuentesAProcesar() {
-        Instant corte = Instant.now().minus(umbralProcesamiento);
         return repositoryFuentes.findAll().stream()
-                .filter(f -> f.getUltimoProcesamiento() == null || f.getUltimoProcesamiento().isBefore(corte))
+                .filter(f -> f.getUltimoProcesamiento() == null)
                 .toList();
     }
 }
