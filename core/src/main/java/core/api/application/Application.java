@@ -90,9 +90,7 @@ public class Application {
         });
 
         // Endpoint de métricas
-        app.get("/metricas", ctx -> {
-            ctx.json(RegistroMetricas.snapshot());
-        });
+        app.get("/metricas", ctx -> ctx.json(RegistroMetricas.snapshot()));
 
         // Raíz genérica del core
         app.get("/", ctx -> ctx.result("MetaMapa core API ACTIVA"));

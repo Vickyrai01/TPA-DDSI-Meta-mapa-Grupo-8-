@@ -15,7 +15,7 @@ import java.util.Map;
 public class HechoService {
     private final WebClient metamapaApiADMIN;
 
-    public FuenteService(RutasProperties props) {
+    public HechoService(RutasProperties props) {
         this.metamapaApiADMIN = WebClient.create(props.getAdminBaseUrl());
     }
 

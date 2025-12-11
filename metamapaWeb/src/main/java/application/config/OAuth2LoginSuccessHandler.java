@@ -1,5 +1,6 @@
 package application.config;
 
+import application.service.RutasProperties;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 
@@ -19,7 +21,11 @@ import java.io.IOException;
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final RestTemplate restTemplate = new RestTemplate();
-    private final String coreBaseUrl = "http://localhost:8081/core/api/usuarios";
+    private final String metamapaApi;
+
+    public OAuth2LoginSuccessHandler(RutasProperties props) {
+        this.metamapaApi = props.getBaseUrl() + "/usuarios";
+    }
 
     @Override
     public void onAuthenticationSuccess(
@@ -42,7 +48,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                     // ============ 1) BUSCAR USUARIO EN EL CORE ============
                     UsuarioDTO existing = null;
                     try {
-                        String url = coreBaseUrl + "/buscar?correo={correo}";
+                        String url = metamapaApi + "/buscar?correo={correo}";
                         ResponseEntity<UsuarioDTO> resp =
                                 restTemplate.getForEntity(url, UsuarioDTO.class, email);
 
@@ -70,7 +76,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                         );
 
                         try {
-                            String url = coreBaseUrl + "/registrar";
+                            String url = metamapaApi + "/registrar";
                             ResponseEntity<UsuarioDTO> resp =
                                     restTemplate.postForEntity(url, nuevo, UsuarioDTO.class);
 
