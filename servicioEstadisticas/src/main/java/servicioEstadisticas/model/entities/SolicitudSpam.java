@@ -10,7 +10,7 @@ public class SolicitudSpam {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_spam;
+    private Integer id;
 
     @Column(name = "aceptada")
     private Boolean aceptada;
@@ -21,12 +21,12 @@ public class SolicitudSpam {
     public SolicitudSpam() {}
 
 
-    public Integer getId_spam() {
-        return id_spam;
+    public Integer getId() {
+        return id;
     }
 
-    public void setId_spam(Integer id_spam) {
-        this.id_spam = id_spam;
+    public void setId(Integer id_spam) {
+        this.id = id_spam;
     }
 
     public Boolean getFueSpam() {
