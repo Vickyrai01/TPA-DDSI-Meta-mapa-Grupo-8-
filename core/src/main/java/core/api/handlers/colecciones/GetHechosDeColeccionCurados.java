@@ -78,7 +78,12 @@ public class GetHechosDeColeccionCurados implements Handler {
             }
 
             // devuelve DTOs para no tocar relaciones LAZY de Hecho!!
-            var respuesta = coleccion.getHechosVisibles().stream()
+
+            List<Hecho> hechosParaFiltrar = coleccion.getHechosVisibles(); // <-- la lista de visibles
+            List<Hecho> hechosFiltrados = FiltradorColecciones.getInstance()
+                    .filtrarHechosPorDTO(hechosParaFiltrar, filtro);
+
+            var respuesta = hechosFiltrados.stream()
                     .map(HechoResumenDTO::from)
                     .toList();
 
