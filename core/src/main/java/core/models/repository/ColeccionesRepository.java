@@ -777,6 +777,49 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
         }
     }
 
+    public int desvincularHechosDeColeccionPorIdsFuente(int idColeccion, List<Integer> idsFuentesRemovidas) {
+        if (idsFuentesRemovidas == null || idsFuentesRemovidas.isEmpty()) return 0;
+
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            DBUtils.comenzarTransaccion(em);
+
+            // desvincula coleccion_hecho
+            int filas = em.createNativeQuery("""
+            DELETE ch
+            FROM coleccion_hecho ch
+            JOIN hecho h ON h.id_hecho = ch.id_hecho
+            WHERE ch.id_coleccion = :idColeccion
+              AND h.id_fuente IN (:idsFuentes)
+        """)
+                    .setParameter("idColeccion", idColeccion)
+                    .setParameter("idsFuentes", idsFuentesRemovidas)
+                    .executeUpdate();
+
+            // hechos_visibles
+            em.createNativeQuery("""
+            DELETE hv
+            FROM hechos_visibles hv
+            JOIN hecho h ON h.id_hecho = hv.id_hecho
+            WHERE hv.id_coleccion = :idColeccion
+              AND h.id_fuente IN (:idsFuentes)
+        """)
+                    .setParameter("idColeccion", idColeccion)
+                    .setParameter("idsFuentes", idsFuentesRemovidas)
+                    .executeUpdate();
+
+            DBUtils.commit(em);
+            return filas;
+
+        } catch (RuntimeException ex) {
+            DBUtils.rollback(em);
+            throw ex;
+        } finally {
+            try { em.close(); } catch (Exception ignore) {}
+        }
+    }
+
+
 
 }
 
