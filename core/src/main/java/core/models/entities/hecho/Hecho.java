@@ -366,10 +366,4 @@ public class Hecho {
     public boolean perteneceAFuente(List<String> listaFuentes){ //Recibe los IDs de las fuentes
         return listaFuentes.contains(this.codigoDeFuente);
     }
-
-    public String getProvincia() {
-
-        // llamar a la api para que me devuelva la provincia?
-        return "Buenos Aires";
-    }
 }
