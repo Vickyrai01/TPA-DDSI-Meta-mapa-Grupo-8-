@@ -12,9 +12,7 @@ import core.models.repository.ColeccionesRepository;
 import core.models.repository.HechosRepository;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class PatchColeccionHandler implements Handler {
     private final ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();
@@ -95,7 +93,11 @@ public class PatchColeccionHandler implements Handler {
 
         // Actualizar fuentes si viene el campo
         if (dto.fuentes != null) {
-            // Validar que existan todas las fuentes antes de actualizar
+
+            //fuentes actuales
+            List<Integer> fuentesAntes = coleccionesRepository.obtenerIdsFuentesDeColeccion(id);
+
+            //valida las nuevas
             for (Integer idFuente : dto.fuentes) {
                 Fuente fuente = core.models.repository.FuentesRepository.getInstance().getFuente(idFuente);
                 if (fuente == null) {
@@ -103,8 +105,22 @@ public class PatchColeccionHandler implements Handler {
                     return;
                 }
             }
+
+            //fuentes removidas
+            Set<Integer> nuevas = new HashSet<>(dto.fuentes);
+            List<Integer> fuentesRemovidas = fuentesAntes.stream()
+                    .filter(f -> !nuevas.contains(f))
+                    .toList();
+
+            //actualiza
             coleccionesRepository.actualizarFuentesDeColeccion(id, dto.fuentes);
+
+            //desliga
+            if (!fuentesRemovidas.isEmpty()) {
+                int desvinculados = coleccionesRepository.desvincularHechosDeColeccionPorIdsFuente(id, fuentesRemovidas);
+            }
         }
+
 
 
         //si quiero agregar hechos tengo que copiar los previos dado que sobrescribe

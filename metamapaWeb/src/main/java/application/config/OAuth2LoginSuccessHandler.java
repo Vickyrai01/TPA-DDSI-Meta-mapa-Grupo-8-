@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 @Component
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
@@ -72,11 +73,11 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                                 name,
                                 email,
                                 "USER",
-                                null  // contraseña null: tu CORE puede ignorarla si viene de SSO
+                                null
                         );
 
                         try {
-                            String url = metamapaApi + "/registrar";
+                            String url = metamapaApi + "usuarios/registrar";
                             ResponseEntity<UsuarioDTO> resp =
                                     restTemplate.postForEntity(url, nuevo, UsuarioDTO.class);
 
@@ -110,6 +111,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         private String correo;
         private String rol;
         private String contrasena;
+        private LocalDate localDate;
 
         public UsuarioDTO() {}
 
@@ -118,6 +120,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             this.correo = correo;
             this.rol = rol;
             this.contrasena = contrasena;
+            localDate = null;
         }
 
         public String getNombre() { return nombre; }
