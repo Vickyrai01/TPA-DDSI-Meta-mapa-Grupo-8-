@@ -2,9 +2,12 @@ package core.models.entities.usuario;
 
 import javax.persistence.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "usuario")
 public class Usuario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -16,21 +19,24 @@ public class Usuario {
     private String correo;
 
     @Column(nullable = false)
-    private String rol; // Ejemplo: "ADMIN" o "USER"
+    private String rol; // "ADMIN" o "USER"
 
     @Column(nullable = true)
     private String foto;
 
-    @Column()
+    @Column(nullable = true)
     private String contrasena;
 
-    // Getters y setters
+    @Column(name = "fecha_nacimiento", nullable = false)
+    private LocalDate fechaNacimiento;
+
+    // ===== Getters & Setters =====
+
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
-
 
     public String getCorreo() { return correo; }
     public void setCorreo(String correo) { this.correo = correo; }
@@ -44,15 +50,23 @@ public class Usuario {
     public String getContrasena() { return contrasena; }
     public void setContrasena(String contrasena) { this.contrasena = contrasena; }
 
-    // Constructor vacío requerido por JPA
+    public LocalDate getFechaNacimiento() { return fechaNacimiento; }
+    public void setFechaNacimiento(LocalDate fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+    // Constructor vacío (JPA)
     public Usuario() {}
 
-    // Constructor útil
-    public Usuario(String nombre, String correo, String rol, String foto, String contrasena) {
+    // Constructor útil actualizado
+    public Usuario(String nombre, String correo, String rol,
+                   String foto, String contrasena, LocalDate fechaNacimiento) {
         this.nombre = nombre;
         this.correo = correo;
         this.rol = rol;
         this.foto = foto;
         this.contrasena = contrasena;
+        this.fechaNacimiento = fechaNacimiento;
     }
 }
+
