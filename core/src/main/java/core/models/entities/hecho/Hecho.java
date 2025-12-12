@@ -44,7 +44,7 @@ public class Hecho {
                  List<SugerenciaDeCambio> sugerenciaDeCambio,
                  LocalDate ultimaFechaModificacion, List<String> multimedia,
                  Estado estado, Contribuyente contribuyente,
-                 LocalDate fechaCarga, LocalDate fechaSuceso,
+                 LocalDate fechaCarga, LocalDate fechaSuceso, LocalTime horaSuceso,
                  TipoFuente fuenteDeOrigen,
                  List<Etiqueta> etiquetas, String descripcion, String titulo,String codigoDeFuente, String hash, Integer idFuente, String linkFuente) {
 
@@ -57,6 +57,7 @@ public class Hecho {
         this.estado = estado;
         this.contribuyente = contribuyente;
         this.fechaCarga = fechaCarga;
+        this.horaSuceso = horaSuceso;
         this.fechaSuceso = fechaSuceso;
         this.fuenteDeOrigen = fuenteDeOrigen;
         this.etiquetas = etiquetas;
