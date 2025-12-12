@@ -22,6 +22,7 @@ import javax.persistence.*;
 })
 
 @Entity
+@Table(name = "criterio")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE) // o JOINED
 @DiscriminatorColumn(name = "tipo_criterio", length = 30)
 public abstract class Criterio {

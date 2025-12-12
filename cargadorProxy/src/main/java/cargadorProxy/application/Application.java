@@ -1,5 +1,7 @@
 package cargadorProxy.application;
 import cargadorProxy.observabilidad.MetricasCargadorProxy;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import utils.DBUtils;
 import javax.persistence.EntityManager;
 
@@ -12,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
+import java.time.Duration;
 import java.util.List;
 
 @SpringBootApplication(scanBasePackages = "cargadorProxy")
@@ -39,10 +42,14 @@ public class Application {
     }
 
     @GetMapping("/obtenerHechos")
-    public ResponseEntity<List<HechoAIntegrarDTO>> obtenerHechos() {
-        List<HechoAIntegrarDTO> hechos = cargadorProxy.extraerHechosAIntegrar();
-        return ResponseEntity.ok(hechos);
+    public Mono<ResponseEntity<List<HechoAIntegrarDTO>>> obtenerHechos() {
+        return Mono.fromCallable(cargadorProxy::extraerHechosAIntegrar)
+                .subscribeOn(Schedulers.boundedElastic())
+                .timeout(Duration.ofSeconds(10))
+                .map(ResponseEntity::ok)
+                .onErrorReturn(ResponseEntity.ok(List.<HechoAIntegrarDTO>of()));
     }
+
 
     @PostMapping("/agregarFuente")
     public ResponseEntity<?> agregarFuente(@RequestBody FuenteDTO fuenteDTO) {

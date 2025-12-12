@@ -37,13 +37,15 @@ public class CategoriaRepository extends JpaRepositoryBase<Categoria, Integer>{
                             "SELECT c FROM categoria c WHERE LOWER(TRIM(c.nombre)) = LOWER(:nombre)",
                             Categoria.class)
                     .setParameter("nombre", nombre.trim())
-                    .getResultStream() // evita excepción si no hay resultado
+                    .getResultList()
+                    .stream()
                     .findFirst()
                     .orElse(null);
         } finally {
             em.close();
         }
     }
+
 
     public boolean existe(String nombre) {
         return buscarPorNombre(nombre) != null;
