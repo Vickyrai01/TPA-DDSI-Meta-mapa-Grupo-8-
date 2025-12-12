@@ -23,8 +23,7 @@ public class PostRegistrarUsuarioHandler implements Handler {
 
         if (usuario == null
                 || usuario.getCorreo() == null
-                || usuario.getNombre() == null
-                || usuario.getFechaNacimiento() == null) {
+                || usuario.getNombre() == null) {
 
             System.out.println("[ERROR] Datos de usuario incompletos");
             ctx.status(400).result("Faltan datos obligatorios del usuario");

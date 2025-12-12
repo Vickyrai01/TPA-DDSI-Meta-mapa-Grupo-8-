@@ -25,6 +25,7 @@ function mostrarToastExito(mensaje) {
     toast.style.display = 'flex';
     setTimeout(() => { toast.style.display = 'none'; }, 4000);
 }
+
 // Mostrar el modal
 function abrirLoginModal() {
     document.getElementById('loginModal').style.display = 'flex';
@@ -46,92 +47,79 @@ function mostrarRegisterForm() {
     document.getElementById('loginForm').style.display = 'none';
 }
 
-// Enviar login
 function enviarLogin(event) {
     event.preventDefault();
     const form = event.target;
-    const data = {
-        correo: form.correo.value,
-        contrasena: form.contrasena.value
-    };
+
+    const correo = form.correo.value;
+    const contrasena = form.contrasena.value;
+
     fetch('/api/auth/login', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: `correo=${encodeURIComponent(data.correo)}&contrasena=${encodeURIComponent(data.contrasena)}`
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `correo=${encodeURIComponent(correo)}&contrasena=${encodeURIComponent(contrasena)}`
     })
-        .then(res => {
-            if (res.ok) return res.json();
-            else return res.text().then(msg => { throw new Error(msg); });
+        .then(async res => {
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
         })
-        .then(usuario => {
-            //cerrarLoginModal(); // Solo para modal, no para página
-            window.location.href = '/perfil'; // Redirige al perfil, ajusta si quieres otra vista
+        .then(() => {
+            mostrarToastExito('Login exitoso');
+            setTimeout(() => window.location.href = '/perfil', 800);
         })
-        .catch(err => {
-            alert('Error: ' + err.message);
-        });
+        .catch(err => alert('Error: ' + err.message));
+
     return false;
 }
 
-// Enviar registro
 function enviarRegistro(event) {
     event.preventDefault();
     const form = event.target;
-    const data = {
-        nombre: form.nombre.value,
-        apellido: form.apellido.value,
-        correo: form.correo.value,
-        contrasena: form.contrasena.value
-    };
+
+    const fechaIso = form.fechaNacimiento?.value;
+
+    if (!fechaIso) {
+        alert("Elegí tu fecha de nacimiento.");
+        return false;
+    }
+
+    const nombreCompleto = (form.nombre.value + " " + form.apellido.value).trim();
+    const correo = form.correo.value;
+    const contrasena = form.contrasena.value;
+
     fetch('/api/auth/register', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: `nombre=${encodeURIComponent(data.nombre)}&apellido=${encodeURIComponent(data.apellido)}&correo=${encodeURIComponent(data.correo)}&contrasena=${encodeURIComponent(data.contrasena)}`
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body:
+            `nombre=${encodeURIComponent(nombreCompleto)}` +
+            `&correo=${encodeURIComponent(correo)}` +
+            `&contrasena=${encodeURIComponent(contrasena)}` +
+            `&fechaNacimiento=${encodeURIComponent(fechaIso)}`
     })
         .then(async res => {
-            if (res.ok) {
-                // Confirmar que el usuario fue persistido realmente
-                fetch(`/api/auth/login?correo=${encodeURIComponent(data.correo)}&contrasena=${encodeURIComponent(data.contrasena)}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-                })
-                    .then(loginRes => {
-                        if (loginRes.ok) {
-                            mostrarToastExito('Usuario registrado correctamente');
-                            setTimeout(() => {
-                                window.location.href = '/api/auth/login';
-                            }, 1200);
-                        } else {
-                            // Si no se puede loguear, esperar y reintentar una vez
-                            setTimeout(() => {
-                                fetch(`/api/auth/login?correo=${encodeURIComponent(data.correo)}&contrasena=${encodeURIComponent(data.contrasena)}`, {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-                                })
-                                    .then(loginRes2 => {
-                                        if (loginRes2.ok) {
-                                            mostrarToastExito('Usuario registrado correctamente');
-                                            setTimeout(() => {
-                                                window.location.href = '/api/auth/login';
-                                            }, 1200);
-                                        } else {
-                                            alert('Error: El usuario no se pudo verificar tras el registro. Intenta nuevamente.');
-                                        }
-                                    });
-                            }, 800);
-                        }
-                    });
-            } else {
-                const msg = await res.text();
-                alert('Error: ' + msg);
-            }
+            if (!res.ok) throw new Error(await res.text());
+
+            mostrarToastExito('Usuario registrado correctamente');
+            setTimeout(() => {
+                window.location.href = '/api/auth/login';
+            }, 1200);
         })
-        .catch(err => {
-            alert('Error: ' + err.message);
-        });
+        .catch(err => alert('Error: ' + err.message));
+
     return false;
 }
+
+//MAYOR A 16
+document.addEventListener("DOMContentLoaded", () => {
+    const input = document.getElementById("fechaNacimientoReg");
+    if (!input) return;
+
+    const hoy = new Date();
+    const max = new Date(hoy.getFullYear() - 16, hoy.getMonth(), hoy.getDate());
+
+    const yyyy = String(max.getFullYear());
+    const mm = String(max.getMonth() + 1).padStart(2, "0");
+    const dd = String(max.getDate()).padStart(2, "0");
+
+    input.max = `${yyyy}-${mm}-${dd}`;
+});
