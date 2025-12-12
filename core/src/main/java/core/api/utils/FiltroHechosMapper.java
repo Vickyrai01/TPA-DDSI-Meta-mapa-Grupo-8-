@@ -1,11 +1,7 @@
 package core.api.utils;
 
 import core.api.DTO.FiltroHechoDTO;
-import core.models.agregador.ServicioDeAgregacion;
-import core.models.entities.hecho.Categoria;
-import core.models.repository.CategoriaRepository;
 import io.javalin.http.Context;
-import utils.DBUtils;
 
 import java.time.LocalDate;
 
