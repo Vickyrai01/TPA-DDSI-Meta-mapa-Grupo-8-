@@ -28,4 +28,7 @@ spring:
 #
 # El bloque 'provider' que tenías aquí abajo no es necesario,
 # Spring Boot ya conoce las URIs de Google.
-#
+app:
+  url:
+    graphql-playground: "http://localhost:8081/playground"
+    grafana-dashboard: "http://localhost:3000/d/metamapa-observabilidad/metamapa-observabilidad-core-metricas?orgId=1&from=now-1h&to=now&timezone=browser&var-DS_PROMETHEUS=af6t5tvl3ot1cd&refresh=10s"
