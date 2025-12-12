@@ -235,5 +235,21 @@ public class ColeccionService {
             return java.util.Collections.emptyList();
         }
     }
+
+    public List<String> getEtiquetas() {
+        try {
+            String etiquetasRaw = metamapaApi.get()
+                    .uri("/etiquetas")
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(etiquetasRaw, new com.fasterxml.jackson.core.type.TypeReference<List<String>>() {});
+        } catch (Exception e) {
+            e.printStackTrace();
+            return java.util.Collections.emptyList();
+        }
+    }
 }
 

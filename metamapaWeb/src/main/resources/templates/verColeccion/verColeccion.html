@@ -63,10 +63,7 @@
                             <label for="etiqueta">Etiquetas:</label>
                             <select id="etiqueta" name="etiqueta">
                                 <option value="">- Todas -</option>
-                                <option value="accidente">Accidente</option>
-                                <option value="fraude">Fraude</option>
-                                <option value="delito">Delito</option>
-                                <!-- Agregá más si querés -->
+                                <option th:each="tag : ${etiquetas}" th:value="${tag}" th:text="${tag}"></option>
                             </select>
                         </div>
                         <!-- Categoría -->

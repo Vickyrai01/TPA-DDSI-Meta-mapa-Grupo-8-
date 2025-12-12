@@ -90,6 +90,7 @@ public class ColeccionesController {
         model.addAttribute("param", param);
 
         model.addAttribute("categorias", coleccionService.getCategorias());
+        model.addAttribute("etiquetas", coleccionService.getEtiquetas());
 
         // Agregar categorías/etiquetas/etc si tus selects los necesitan desde el back
 
