@@ -3,10 +3,13 @@ package application.service;
 import application.dto.ColeccionDTO;
 import application.dto.HechoDTO;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestOperations;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +17,10 @@ import java.util.Map;
 @Service
 public class HechoService {
     private final WebClient metamapaApiADMIN;
+    private final WebClient metamapaApiPublic;
 
     public HechoService(RutasProperties props) {
+        this.metamapaApiPublic = WebClient.create(props.getBaseUrl());
         this.metamapaApiADMIN = WebClient.create(props.getAdminBaseUrl());
     }
 

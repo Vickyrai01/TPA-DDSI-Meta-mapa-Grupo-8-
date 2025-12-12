@@ -22,6 +22,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     });
 });
 
+
 // Micro-animación al enviar (demo)
 // Esto solo se activará en la página que tenga un .report-card
 document.querySelector('.report-card')?.addEventListener('submit', e => {

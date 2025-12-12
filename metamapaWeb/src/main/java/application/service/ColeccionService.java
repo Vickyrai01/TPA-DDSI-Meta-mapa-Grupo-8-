@@ -174,5 +174,66 @@ public class ColeccionService {
                 .toBodilessEntity()
                 .block();
     }
+
+
+    public List<HechoDTO> getHechosFiltradosDeColeccion(
+            Integer coleccionId,
+            String modo,
+            String titulo,
+            String descripcion,
+            String etiqueta,
+            String categoria,
+            String provincia,
+            Boolean soloMultimedia,
+            String fechaDesdeSuceso,
+            String fechaHastaSuceso,
+            String fechaDesdeCarga,
+            String fechaHastaCarga
+    ) {
+        try {
+            return metamapaApi .get()
+                    .uri(uriBuilder -> {
+                        // Suponiendo: baseUrl = http://localhost:8081/core/api
+                        uriBuilder.path("/colecciones/" + coleccionId + "/" + modo + "/hechos");
+                        if (titulo != null && !titulo.trim().isEmpty()) uriBuilder.queryParam("titulo", titulo);
+                        if (descripcion != null && !descripcion.trim().isEmpty()) uriBuilder.queryParam("descripcion", descripcion);
+                        if (etiqueta != null && !etiqueta.trim().isEmpty()) uriBuilder.queryParam("etiqueta", etiqueta);
+                        if (categoria != null && !categoria.trim().isEmpty()) uriBuilder.queryParam("categoria", categoria);
+                        if (provincia != null && !provincia.trim().isEmpty()) uriBuilder.queryParam("provincia", provincia);
+                        if (Boolean.TRUE.equals(soloMultimedia)) uriBuilder.queryParam("soloMultimedia", "true");
+                        if (fechaDesdeSuceso != null && !fechaDesdeSuceso.trim().isEmpty()) uriBuilder.queryParam("fechaDesdeSuceso", fechaDesdeSuceso);
+                        if (fechaHastaSuceso != null && !fechaHastaSuceso.trim().isEmpty()) uriBuilder.queryParam("fechaHastaSuceso", fechaHastaSuceso);
+                        if (fechaDesdeCarga != null && !fechaDesdeCarga.trim().isEmpty()) uriBuilder.queryParam("fechaDesdeCarga", fechaDesdeCarga);
+                        if (fechaHastaCarga != null && !fechaHastaCarga.trim().isEmpty()) uriBuilder.queryParam("fechaHastaCarga", fechaHastaCarga);
+                        return uriBuilder.build();
+                    })
+                    .retrieve()
+                    .bodyToFlux(HechoDTO.class)
+                    .collectList()
+                    .block();
+        } catch (Exception e) {
+            System.err.println("Error en getHechosFiltradosDeColeccion: " + e.getMessage());
+            return List.of();
+        }
+
+
+    }
+
+    public List<String> getCategorias() {
+        try {
+            String categoriasRaw = metamapaApi.get()
+                    .uri("/categorias")
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            // Parsear explícitamente el string del core a List<String>
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(categoriasRaw, new com.fasterxml.jackson.core.type.TypeReference<List<String>>() {});
+        } catch (Exception e) {
+            e.printStackTrace();
+            return java.util.Collections.emptyList();
+        }
+    }
 }
 
