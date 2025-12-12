@@ -27,7 +27,7 @@ public class Usuario {
     @Column(nullable = true)
     private String contrasena;
 
-    @Column(name = "fecha_nacimiento", nullable = false)
+    @Column(name = "fecha_nacimiento", nullable = true)
     private LocalDate fechaNacimiento;
 
     // ===== Getters & Setters =====
