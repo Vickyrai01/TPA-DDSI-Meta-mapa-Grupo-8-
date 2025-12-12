@@ -73,16 +73,6 @@ public class FiltradorColecciones {
                                 && hecho.getCategoria().getNombre().equalsIgnoreCase(filtro.getCategoria())
                         )
                 )
-                // Provincia: ADAPTÁ ESTE FILTRO a cómo representás provincia/localidad en tu entity
-                // Por ejemplo, si usás hecho.getUbicacion().getProvincia(), filtrá ahí.
-                // Si no, podés comentar esta línea.
-                // .filter(hecho -> filtro.getProvincia() == null
-                //     || (hecho.getUbicacion() != null
-                //         && hecho.getUbicacion().getProvincia() != null
-                //         && hecho.getUbicacion().getProvincia().equalsIgnoreCase(filtro.getProvincia())
-                //     )
-                // )
-                // Solo hechos con archivos/imágenes
                 .filter(hecho -> filtro.getSoloMultimedia() == null
                         || !filtro.getSoloMultimedia()
                         || (hecho.getMultimedia() != null && !hecho.getMultimedia().isEmpty())

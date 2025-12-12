@@ -55,7 +55,6 @@ public class ColeccionesController {
         String modoPredeterminado = coleccion.modoDeNavegacion();
         String modoActual = (modoParam != null) ? modoParam : modoPredeterminado;
 
-        // Validación/restricción custom de modo
         if (modoParam != null) {
             if (Objects.equals(modoPredeterminado, "IRRESTRICTA") && Objects.equals(modoParam, "CURADA")) {
                 modoActual = "IRRESTRICTA";
@@ -70,7 +69,6 @@ public class ColeccionesController {
                 soloMultimedia, fechaDesdeSuceso, fechaHastaSuceso, fechaDesdeCarga, fechaHastaCarga
         );
 
-        // Mantener valores en el form de filtros
         Map<String, Object> param = new HashMap<>();
         param.put("titulo", titulo);
         param.put("descripcion", descripcion);
@@ -91,8 +89,6 @@ public class ColeccionesController {
 
         model.addAttribute("categorias", coleccionService.getCategorias());
         model.addAttribute("etiquetas", coleccionService.getEtiquetas());
-
-        // Agregar categorías/etiquetas/etc si tus selects los necesitan desde el back
 
         return "verColeccion/verColeccion";
     }
