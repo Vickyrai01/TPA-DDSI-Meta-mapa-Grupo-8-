@@ -136,10 +136,16 @@
                     class="multimedia-item"
                     th:each="m : ${h.multimedia()}"
                     th:data-src="@{'/uploads/hechos/' + ${m}}"
-                    th:data-alt="${h.nombre()} + ' - imagen adjunta'">
-                <img th:src="@{'/uploads/hechos/' + ${m}}"
+                    th:data-alt="${h.nombre()} + ' - multimedia adjunta'">
+                <img th:if="${#strings.endsWith(m.toLowerCase(), '.jpg') or #strings.endsWith(m.toLowerCase(), '.jpeg') or #strings.endsWith(m.toLowerCase(), '.png') or #strings.endsWith(m.toLowerCase(), '.gif') or #strings.endsWith(m.toLowerCase(), '.webp') }"
+                     th:src="@{'/uploads/hechos/' + ${m}}"
                      th:alt="${h.nombre()} + ' - imagen adjunta'"
                      class="multimedia-thumb">
+                <video th:if="${#strings.endsWith(m.toLowerCase(), '.mp4') or #strings.endsWith(m.toLowerCase(), '.webm') or #strings.endsWith(m.toLowerCase(), '.ogg') }"
+                       th:src="@{'/uploads/hechos/' + ${m}}"
+                       class="multimedia-thumb" controls>
+                    Tu navegador no soporta la reproducción de video.
+                </video>
             </button>
         </div>
     </span>
