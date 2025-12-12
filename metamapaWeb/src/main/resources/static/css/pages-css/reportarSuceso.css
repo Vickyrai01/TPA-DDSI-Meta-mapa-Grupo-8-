@@ -1,3 +1,103 @@
+/* Mejor integración visual para la lista de archivos adjuntos */
+.attach-group-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2em;
+}
+.lista-archivos {
+    width: 100%;
+    margin: 0.5em 0 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4em;
+    align-items: flex-start;
+}
+.archivo-pill {
+    display: flex;
+    align-items: center;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 999px;
+    padding: 0.35em 1em 0.35em 0.9em;
+    font-size: 0.97em;
+    color: #1f2937;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    max-width: 220px;
+    min-width: 0;
+    position: relative;
+    margin-bottom: 0.2em;
+    transition: box-shadow .15s;
+    font-family: inherit;
+}
+.archivo-pill span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+    font-size: 0.97em;
+}
+.archivo-pill button {
+    background: none;
+    border: none;
+    color: #F47C2C;
+    cursor: pointer;
+    font-size: 1.15em;
+    margin-left: 0.5em;
+    padding: 0 0.2em;
+    transition: color .15s;
+}
+.archivo-pill button:hover {
+    color: #c85e10;
+}
+/* Lista de archivos adjuntos tipo pill */
+.lista-archivos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    margin-top: 0.5em;
+    padding-left: 0;
+    list-style: none;
+}
+.archivo-pill {
+    display: flex;
+    align-items: center;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 999px;
+    padding: 0.35em 1em 0.35em 0.9em;
+    font-size: 0.97em;
+    color: #1f2937;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    max-width: 260px;
+    min-width: 0;
+    position: relative;
+    margin-bottom: 0.2em;
+    transition: box-shadow .15s;
+}
+.archivo-pill span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+}
+.archivo-pill button {
+    background: none;
+    border: none;
+    color: #F47C2C;
+    cursor: pointer;
+    font-size: 1.15em;
+    margin-left: 0.5em;
+    padding: 0 0.2em;
+    transition: color .15s;
+}
+.archivo-pill button:hover {
+    color: #c85e10;
+}
 /* ====== Base ====== */
 :root{
     --orange:#F47C2C;
@@ -28,10 +128,10 @@ body{
     min-height: 100vh;
     /* MODIFICADO: Fondo de mapa con puntos como en la imagen */
     background-image: url("../../img/fondoHOME1.png"); /* ruta de la imagen */
-          background-size: cover;     /* que cubra todo el ancho y alto */
-          background-position: center; /* centrada */
-          background-repeat: no-repeat;
-          color: white;
+    background-size: cover;     /* que cubra todo el ancho y alto */
+    background-position: center; /* centrada */
+    background-repeat: no-repeat;
+    color: white;
 }
 
 .container{
@@ -182,83 +282,83 @@ input:focus, select:focus, textarea:focus{
 }
 
 .btn-primary{
-        margin-top:6px;
-        appearance:none; border:0; border-radius:12px;
-        padding:12px 16px; font-weight:800; cursor:pointer;
-        background: linear-gradient(180deg, var(--orange), #e66b18);
-        color:#fff; box-shadow: 0 8px 18px rgba(244,124,44,.35);
-        transition: transform .06s ease, filter .2s ease;
-    }
-    .btn-primary:hover{ filter:saturate(110%) brightness(1.02); }
-    .btn-primary:active{ transform: translateY(1px); }
+    margin-top:6px;
+    appearance:none; border:0; border-radius:12px;
+    padding:12px 16px; font-weight:800; cursor:pointer;
+    background: linear-gradient(180deg, var(--orange), #e66b18);
+    color:#fff; box-shadow: 0 8px 18px rgba(244,124,44,.35);
+    transition: transform .06s ease, filter .2s ease;
+}
+.btn-primary:hover{ filter:saturate(110%) brightness(1.02); }
+.btn-primary:active{ transform: translateY(1px); }
 
 
 /* Ícono del clip */
 .file-btn i {
-  font-size: 1rem;
-  color: var(--orange);
-  transition: color 0.25s ease;
+    font-size: 1rem;
+    color: var(--orange);
+    transition: color 0.25s ease;
 }
 
 /* Hover con efecto oscuro */
 .file-btn:hover {
-  background: #eaeaea;
-  border-color: var(--orange);
+    background: #eaeaea;
+    border-color: var(--orange);
 }
 
 .file-btn:hover i {
-  color: #c85e10; /* clip más oscuro en hover */
+    color: #c85e10; /* clip más oscuro en hover */
 }
 
 /* Para mantener consistencia con tus inputs */
 .field.half .file-btn {
-  width: 100%;
-  justify-content: center;
+    width: 100%;
+    justify-content: center;
 }
 
 /* Ocultamos el input nativo */
 input[type="file"] {
-  display: none;
+    display: none;
 }
 
 /* Botón visual del adjunto */
 .file-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  background: #f4f4f4;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-weight: 600;
-  color: #333;
-  transition: all 0.25s ease;
-  line-height: 1;            /* ayuda a centrar verticalmente */
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    background: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-weight: 600;
+    color: #333;
+    transition: all 0.25s ease;
+    line-height: 1;            /* ayuda a centrar verticalmente */
 }
 
 /* Ícono del clip (ya lo tenías, lo dejo completo por si acaso) */
 .file-btn i {
-  font-size: 1rem;
-  color: var(--orange);
-  transition: color 0.25s ease;
-  display: inline-block;      /* asegura alineación limpia */
-  vertical-align: middle;
+    font-size: 1rem;
+    color: var(--orange);
+    transition: color 0.25s ease;
+    display: inline-block;      /* asegura alineación limpia */
+    vertical-align: middle;
 }
 
 /* Hover */
 .file-btn:hover {
-  background: #eaeaea;
-  border-color: var(--orange);
+    background: #eaeaea;
+    border-color: var(--orange);
 }
 .file-btn:hover i {
-  color: #c85e10;
+    color: #c85e10;
 }
 
 /* Que el botón ocupe todo el ancho si lo querés full-width en ese layout */
 .field.half .file-btn {
-  width: 100%;
-  justify-content: center;
+    width: 100%;
+    justify-content: center;
 }
 /* ====== Base ====== */
 :root{
@@ -288,10 +388,10 @@ body{
 
     /* MODIFICADO: Fondo de mapa con puntos como en la imagen */
     background-image: url("../../img/fondoHOME1.png"); /* ruta de la imagen */
-          background-size: cover;     /* que cubra todo el ancho y alto */
-          background-position: center; /* centrada */
-          background-repeat: no-repeat;
-          color: white;
+    background-size: cover;     /* que cubra todo el ancho y alto */
+    background-position: center; /* centrada */
+    background-repeat: no-repeat;
+    color: white;
 }
 
 .container{
@@ -469,81 +569,81 @@ input:focus, select:focus, textarea:focus{
 }
 
 .btn-primary{
-        margin-top:6px;
-        appearance:none; border:0; border-radius:12px;
-        padding:12px 16px; font-weight:800; cursor:pointer;
-        background: linear-gradient(180deg, var(--orange), #e66b18);
-        color:#fff; box-shadow: 0 8px 18px rgba(244,124,44,.35);
-        transition: transform .06s ease, filter .2s ease;
-    }
-    .btn-primary:hover{ filter:saturate(110%) brightness(1.02); }
-    .btn-primary:active{ transform: translateY(1px); }
+    margin-top:6px;
+    appearance:none; border:0; border-radius:12px;
+    padding:12px 16px; font-weight:800; cursor:pointer;
+    background: linear-gradient(180deg, var(--orange), #e66b18);
+    color:#fff; box-shadow: 0 8px 18px rgba(244,124,44,.35);
+    transition: transform .06s ease, filter .2s ease;
+}
+.btn-primary:hover{ filter:saturate(110%) brightness(1.02); }
+.btn-primary:active{ transform: translateY(1px); }
 
 
 /* Ícono del clip */
 .file-btn i {
-  font-size: 1rem;
-  color: var(--orange);
-  transition: color 0.25s ease;
+    font-size: 1rem;
+    color: var(--orange);
+    transition: color 0.25s ease;
 }
 
 /* Hover con efecto oscuro */
 .file-btn:hover {
-  background: #eaeaea;
-  border-color: var(--orange);
+    background: #eaeaea;
+    border-color: var(--orange);
 }
 
 .file-btn:hover i {
-  color: #c85e10; /* clip más oscuro en hover */
+    color: #c85e10; /* clip más oscuro en hover */
 }
 
 /* Para mantener consistencia con tus inputs */
 .field.half .file-btn {
-  width: 100%;
-  justify-content: center;
+    width: 100%;
+    justify-content: center;
 }
 
 /* Ocultamos el input nativo */
 input[type="file"] {
-  display: none;
+    display: none;
 }
 
 /* Botón visual del adjunto */
 .file-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  background: #f4f4f4;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-weight: 600;
-  color: #333;
-  transition: all 0.25s ease;
-  line-height: 1;            /* ayuda a centrar verticalmente */
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    background: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-weight: 600;
+    color: #333;
+    transition: all 0.25s ease;
+    line-height: 1;            /* ayuda a centrar verticalmente */
 }
 
 /* Ícono del clip (ya lo tenías, lo dejo completo por si acaso) */
 .file-btn i {
-  font-size: 1rem;
-  color: var(--orange);
-  transition: color 0.25s ease;
-  display: inline-block;      /* asegura alineación limpia */
-  vertical-align: middle;
+    font-size: 1rem;
+    color: var(--orange);
+    transition: color 0.25s ease;
+    display: inline-block;      /* asegura alineación limpia */
+    vertical-align: middle;
 }
 
 /* Hover */
 .file-btn:hover {
-  background: #eaeaea;
-  border-color: var(--orange);
+    background: #eaeaea;
+    border-color: var(--orange);
 }
 .file-btn:hover i {
-  color: #c85e10;
+    color: #c85e10;
 }
 
 /* Que el botón ocupe todo el ancho si lo querés full-width en ese layout */
 .field.half .file-btn {
-  width: 100%;
-  justify-content: center;
+    width: 100%;
+    justify-content: center;
 }
