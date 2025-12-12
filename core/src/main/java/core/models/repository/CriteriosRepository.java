@@ -37,12 +37,13 @@ public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
 
         EntityManager em = DBUtils.getEntityManager();
         try {
-            return em.createQuery(
+            return (CriterioDescripcion) em.createQuery(
                             "SELECT c FROM CriterioDescripcion c " +
                                     "WHERE LOWER(TRIM(c.palabraClave)) = LOWER(:palabra)",
                             CriterioDescripcion.class)
                     .setParameter("palabra", palabra.trim())
-                    .getResultStream()
+                    .getResultList()
+                    .stream()
                     .findFirst()
                     .orElse(null);
         } finally {
@@ -58,14 +59,12 @@ public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
 
         EntityManager em = DBUtils.getEntityManager();
         try {
-            return em.createQuery(
+            return (CriterioNombre) em.createQuery(
                             "SELECT c FROM CriterioNombre c " +
                                     "WHERE LOWER(TRIM(c.palabraClave)) = LOWER(:palabra)",
                             CriterioNombre.class)
                     .setParameter("palabra", palabra.trim())
-                    .getResultStream()
-                    .findFirst()
-                    .orElse(null);
+                    .getResultList();
         } finally {
             em.close();
         }
@@ -79,14 +78,12 @@ public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
 
         EntityManager em = DBUtils.getEntityManager();
         try {
-            return em.createQuery(
+            return (CriterioCategoria) em.createQuery(
                             "SELECT c FROM CriterioCategoria c " +
                                     "WHERE c.categoria = :categoria",
                             CriterioCategoria.class)
                     .setParameter("categoria", categoria)
-                    .getResultStream()
-                    .findFirst()
-                    .orElse(null);
+                    .getResultList();
         } finally {
             em.close();
         }
@@ -100,14 +97,12 @@ public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
 
         EntityManager em = DBUtils.getEntityManager();
         try {
-            return em.createQuery(
+            return (CriterioUbicacion) em.createQuery(
                             "SELECT c FROM CriterioUbicacion c " +
                                     "WHERE c.coordenadas = :coords",
                             CriterioUbicacion.class)
                     .setParameter("coords", coordenadas)
-                    .getResultStream()
-                    .findFirst()
-                    .orElse(null);
+                    .getResultList();
         } finally {
             em.close();
         }
@@ -121,15 +116,13 @@ public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
 
         EntityManager em = DBUtils.getEntityManager();
         try {
-            return em.createQuery(
+            return (CriterioFechaSuceso) em.createQuery(
                             "SELECT c FROM CriterioFechaSuceso c " +
                                     "WHERE c.fechaInicio = :desde AND c.fechaFin = :hasta",
                             CriterioFechaSuceso.class)
                     .setParameter("desde", desde)
                     .setParameter("hasta", hasta)
-                    .getResultStream()
-                    .findFirst()
-                    .orElse(null);
+                    .getResultList();
         } finally {
             em.close();
         }
@@ -143,15 +136,13 @@ public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
 
         EntityManager em = DBUtils.getEntityManager();
         try {
-            return em.createQuery(
+            return (CriterioFechaCarga) em.createQuery(
                             "SELECT c FROM CriterioFechaCarga c " +
                                     "WHERE c.fechaInicio = :desde AND c.fechaFin = :hasta",
                             CriterioFechaCarga.class)
                     .setParameter("desde", desde)
                     .setParameter("hasta", hasta)
-                    .getResultStream()
-                    .findFirst()
-                    .orElse(null);
+                    .getResultList();
         } finally {
             em.close();
         }
@@ -165,15 +156,13 @@ public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
 
         EntityManager em = DBUtils.getEntityManager();
         try {
-            return em.createQuery(
+            return (CriterioFechaModificacion) em.createQuery(
                             "SELECT c FROM CriterioFechaModificacion c " +
                                     "WHERE c.fechaInicio = :desde AND c.fechaFin = :hasta",
                             CriterioFechaModificacion.class)
                     .setParameter("desde", desde)
                     .setParameter("hasta", hasta)
-                    .getResultStream()
-                    .findFirst()
-                    .orElse(null);
+                    .getResultList();
         } finally {
             em.close();
         }

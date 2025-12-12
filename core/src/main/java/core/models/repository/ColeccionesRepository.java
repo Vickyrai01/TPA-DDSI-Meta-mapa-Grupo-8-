@@ -60,52 +60,27 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
     public void agregarHechosAColeccion(int idColeccion, List<Integer> idsHechos) {
         if (idsHechos == null || idsHechos.isEmpty()) return;
 
-        EntityManager em = DBUtils.getEntityManager();
-        try {
-            DBUtils.comenzarTransaccion(em);
-
-            //Traer Coleccion
+        DBUtils.withTxVoid(em -> {
             Coleccion coleccion = em.find(Coleccion.class, idColeccion, LockModeType.PESSIMISTIC_WRITE);
-            if (coleccion == null) {
-                throw new IllegalArgumentException("No existe la Coleccion con id=" + idColeccion);
-            }
+            if (coleccion == null) throw new IllegalArgumentException("No existe la Coleccion con id=" + idColeccion);
 
-            //Inicializar la lista si hace falta
-            if (coleccion.getHechos() == null) {
-                coleccion.setHechos(new ArrayList<>());
-            }
+            if (coleccion.getHechos() == null) coleccion.setHechos(new ArrayList<>());
 
-            //Obtener ids ya vinculados para evitar duplicados en la join table
             Set<Integer> existentes = new HashSet<>(
-                    em.createQuery(
-                                    "select h.id from coleccion c join c.hechos h where c.id = :idCol",
-                                    Integer.class
-                            ).setParameter("idCol", idColeccion)
+                    em.createQuery("select h.id from coleccion c join c.hechos h where c.id = :idCol", Integer.class)
+                            .setParameter("idCol", idColeccion)
                             .getResultList()
             );
 
-            //Agregar sólo los que no están
             for (Integer idHecho : idsHechos) {
-                if (idHecho == null) continue;
-                if (existentes.contains(idHecho)) continue; // ya está linkeado
-
-                Hecho ref = em.getReference(Hecho.class, idHecho); // requiere que el Hecho exista/esté commiteado
+                if (idHecho == null || existentes.contains(idHecho)) continue;
+                Hecho ref = em.getReference(Hecho.class, idHecho);
                 coleccion.getHechos().add(ref);
                 existentes.add(idHecho);
             }
-
-            //Commit: inserta en coleccion_hecho (id_coleccion, id_hecho)
-            DBUtils.commit(em);
-        } catch (RuntimeException ex) {
-            DBUtils.rollback(em);
-            throw ex;
-        } finally {
-            try {
-                em.close();
-            } catch (Exception ignore) {
-            }
-        }
+        });
     }
+
 
     //VER SI SE TRAE LOS VISIBLES O QUE CARAJEANOS!!! (CONSULTAR EQUIPO DINAMITA)
     //EN QUE QUEDO LO DE LA TABLA ESA DE VISIBLES O NO. PORQUE SI NO HAY QUE CAMBIAR.
@@ -113,87 +88,79 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
     public Optional<Coleccion> findByIdFetchHechosYContribuyente(Integer idColeccion) {
         EntityManager em = DBUtils.getEntityManager();
         try {
-            var q = em.createQuery("""
-                        SELECT DISTINCT c
-                        FROM coleccion c
-                        LEFT JOIN FETCH c.hechos h
-                        LEFT JOIN FETCH h.contribuyente                       
-                        WHERE c.id = :id
-                    """, Coleccion.class)
-                    .setParameter("id", idColeccion)
-                    .getResultStream()
-                    .findFirst();
+            DBUtils.comenzarTransaccion(em);
 
-            q.ifPresent(c -> {
-                for (Hecho h : c.getHechos()) {
-                    Hibernate.initialize(h.getEtiquetas());
-                    Hibernate.initialize(h.getMultimedia());
-                }
-            });
-            return q;
-        } finally {
-            try {
-                em.close();
-            } catch (Exception ignore) {
-            }
-        }
-    }
-
-    public Optional<Coleccion> findByIdFetchHechosVisiblesYContribuyente(Integer idColeccion) {
-        EntityManager em = DBUtils.getEntityManager();
-        try {
-            var q = em.createQuery("""
+            List<Coleccion> res = em.createQuery("""
                     SELECT DISTINCT c
                     FROM coleccion c
-                    LEFT JOIN FETCH c.hechosVisibles hv
-                    LEFT JOIN FETCH hv.contribuyente
+                    LEFT JOIN FETCH c.hechos h
+                    LEFT JOIN FETCH h.contribuyente
                     WHERE c.id = :id
                 """, Coleccion.class)
                     .setParameter("id", idColeccion)
-                    .getResultStream()
-                    .findFirst();
+                    .getResultList();
 
-            q.ifPresent(c -> {
-                // Inicializo etiquetas de los hechos visibles
-                for (Hecho hv : c.getHechosVisibles()) {
+            Coleccion c = res.isEmpty() ? null : res.get(0);
+
+            if (c != null) {
+                // Fuerzo init de lo que después se usa fuera del EM
+                c.getHechos().forEach(h -> {
+                    Hibernate.initialize(h.getEtiquetas());
+                    Hibernate.initialize(h.getMultimedia());
+                });
+            }
+
+            DBUtils.commit(em);
+            return Optional.ofNullable(c);
+
+        } catch (Exception e) {
+            DBUtils.rollback(em);
+            throw e;
+        } finally {
+            try { em.close(); } catch (Exception ignore) {}
+        }
+    }
+
+
+    public Optional<Coleccion> findByIdFetchHechosVisiblesYContribuyente(Integer idColeccion) {
+        return DBUtils.withTx(em -> {
+            List<Coleccion> res = em.createQuery("""
+        SELECT DISTINCT c
+        FROM coleccion c
+        LEFT JOIN FETCH c.hechosVisibles hv
+        LEFT JOIN FETCH hv.contribuyente
+        WHERE c.id = :id
+      """, Coleccion.class)
+                    .setParameter("id", idColeccion)
+                    .getResultList();
+
+            Coleccion c = res.isEmpty() ? null : res.get(0);
+            if (c != null) {
+                c.getHechosVisibles().forEach(hv -> {
                     Hibernate.initialize(hv.getEtiquetas());
                     Hibernate.initialize(hv.getMultimedia());
-                }
-
-                // Inicializo algoritmoConsenso si existe
-                if (c.getAlgoritmoConsenso() != null) {
-                    c.getAlgoritmoConsenso().toString(); // con tocarlo basta
-                }
-            });
-
-            return q;
-        } finally {
-            try {
-                em.close();
-            } catch (Exception ignore) {
+                });
+                if (c.getAlgoritmoConsenso() != null) c.getAlgoritmoConsenso().toString();
             }
-        }
+            return Optional.ofNullable(c);
+        });
     }
 
 
     public Optional<Coleccion> findByIdFetchFuentes(Integer idColeccion) {
-        EntityManager em = DBUtils.getEntityManager();
-        try {
-            var q = em.createQuery("""
-                        SELECT DISTINCT c
-                        FROM coleccion c
-                        LEFT JOIN FETCH c.fuentes f
-                        WHERE c.id = :id
-                    """, Coleccion.class);
-            q.setParameter("id", idColeccion);
-            return q.getResultStream().findFirst();
-        } finally {
-            try {
-                em.close();
-            } catch (Exception ignore) {
-            }
-        }
+        return DBUtils.withTx(em -> {
+            List<Coleccion> res = em.createQuery("""
+        SELECT DISTINCT c
+        FROM coleccion c
+        LEFT JOIN FETCH c.fuentes f
+        WHERE c.id = :id
+      """, Coleccion.class)
+                    .setParameter("id", idColeccion)
+                    .getResultList();
+            return res.stream().findFirst();
+        });
     }
+
 
     public List<ColeccionDTO> listarColeccionesDTOConCantidadHechos() {
         EntityManager em = DBUtils.getEntityManager();
@@ -776,6 +743,49 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
             em.close();
         }
     }
+
+    public int desvincularHechosDeColeccionPorIdsFuente(int idColeccion, List<Integer> idsFuentesRemovidas) {
+        if (idsFuentesRemovidas == null || idsFuentesRemovidas.isEmpty()) return 0;
+
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            DBUtils.comenzarTransaccion(em);
+
+            // desvincula coleccion_hecho
+            int filas = em.createNativeQuery("""
+            DELETE ch
+            FROM coleccion_hecho ch
+            JOIN hecho h ON h.id_hecho = ch.id_hecho
+            WHERE ch.id_coleccion = :idColeccion
+              AND h.id_fuente IN (:idsFuentes)
+        """)
+                    .setParameter("idColeccion", idColeccion)
+                    .setParameter("idsFuentes", idsFuentesRemovidas)
+                    .executeUpdate();
+
+            // hechos_visibles
+            em.createNativeQuery("""
+            DELETE hv
+            FROM hechos_visibles hv
+            JOIN hecho h ON h.id_hecho = hv.id_hecho
+            WHERE hv.id_coleccion = :idColeccion
+              AND h.id_fuente IN (:idsFuentes)
+        """)
+                    .setParameter("idColeccion", idColeccion)
+                    .setParameter("idsFuentes", idsFuentesRemovidas)
+                    .executeUpdate();
+
+            DBUtils.commit(em);
+            return filas;
+
+        } catch (RuntimeException ex) {
+            DBUtils.rollback(em);
+            throw ex;
+        } finally {
+            try { em.close(); } catch (Exception ignore) {}
+        }
+    }
+
 
 
 }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,13 @@ public class PanelDeControlController {
         this.reportarService = reportarService;
     }
 
+    // 1. Inyectamos los valores desde el properties
+    @Value("${app.url.graphql-playground}")
+    private String graphqlUrl;
+
+    @Value("${app.url.grafana-dashboard}")
+    private String grafanaUrl;
+
     @GetMapping("/admin/colecciones")
     public String home(Model model, Authentication authentication, RedirectAttributes ra) throws JsonProcessingException {
         if (!adminService.isAdmin(authentication)) {
@@ -45,6 +53,10 @@ public class PanelDeControlController {
         }
         model.addAttribute("listaDeColecciones", coleccionService.getAll());
         model.addAttribute("listaDeFuentes", fuenteService.getAll());
+        // 2. Agregamos las URLs al modelo existente
+        model.addAttribute("graphqlUrl", graphqlUrl);
+        model.addAttribute("grafanaUrl", grafanaUrl);
+
         String categoriasJson = reportarService.getCategorias();
         // lo parseamos a List<String>
         List<String> categorias = objectMapper.readValue(

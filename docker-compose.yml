@@ -14,23 +14,26 @@ services:
       - metamapa-net
 
   core:
-    build: ./core          # 👈 usa Dockerfile de ./core
+    build: ./core
     image: metamapa-core
     container_name: metamapa-core
     restart: unless-stopped
     depends_on:
       - mysql
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/core?serverTimezone=America/Argentina/Buenos_Aires
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: Root123456
+      JDBC_URL: jdbc:mysql://mysql:3306/core?serverTimezone=America/Argentina/Buenos_Aires
+      JDBC_USER: root
+      JDBC_PASS: Root123456
+      CargadorDinamico: http://cargador-dinamico:8083/cargadorDinamico
+      CargadorProxy: http://cargador-proxy:8084/cargadorProxy
+      CargadorEstatico: http://cargador-estatica:8085/cargadorEstatico
     ports:
       - "8081:8081"
     networks:
       - metamapa-net
 
   cargador-dinamico:
-    build: ./cargadorDinamica   # 👈 carpeta del módulo
+    build: ./cargadorDinamica
     image: cargador-dinamica
     container_name: cargador-dinamica
     restart: unless-stopped
@@ -106,6 +109,42 @@ services:
     networks:
       - metamapa-net
 
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: metamapa-prometheus
+    restart: unless-stopped
+    depends_on:
+      - core
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+    networks:
+      - metamapa-net
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: metamapa-grafana
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=Root123456
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    networks:
+      - metamapa-net
+
+
   metamapa-web:
     build: ./metamapaWeb
     image: metamapa-web
@@ -113,10 +152,13 @@ services:
     restart: unless-stopped
     depends_on:
       - core
+      - grafana
     environment:
       METAMAPA_API_BASE_URL: http://core:8081/core/api/public
       METAMAPA_API_ADMIN_BASE_URL: http://core:8081/core/api/admin
       METAMAPA_API_ESTADISTICAS_BASE_URL: http://servicio-estadisticas:8090/servicioEstadisticas
+      APP_URL_GRAPHQL_PLAYGROUND: http://localhost:8081/playground
+      APP_URL_GRAFANA_DASHBOARD: http://localhost:3000/d/metamapa-observabilidad/metamapa-observabilidad-core-metricas
     ports:
       - "8080:8080"
     networks:
@@ -127,3 +169,5 @@ networks:
 
 volumes:
   mysql_data:
+  prometheus_data:
+  grafana_data:
