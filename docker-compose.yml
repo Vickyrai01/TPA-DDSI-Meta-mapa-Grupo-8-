@@ -14,7 +14,7 @@ services:
       - metamapa-net
 
   core:
-    build: ./core          # 👈 usa Dockerfile de ./core
+    build: ./core
     image: metamapa-core
     container_name: metamapa-core
     restart: unless-stopped
@@ -33,7 +33,7 @@ services:
       - metamapa-net
 
   cargador-dinamico:
-    build: ./cargadorDinamica   # 👈 carpeta del módulo
+    build: ./cargadorDinamica
     image: cargador-dinamica
     container_name: cargador-dinamica
     restart: unless-stopped
