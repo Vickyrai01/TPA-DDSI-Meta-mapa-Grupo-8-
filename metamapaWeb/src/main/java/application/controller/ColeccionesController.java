@@ -2,6 +2,7 @@ package application.controller;
 
 import application.dto.ColeccionDTO;
 import application.dto.HechoDTO;
+import application.enums.Provincia;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -89,6 +90,7 @@ public class ColeccionesController {
 
         model.addAttribute("categorias", coleccionService.getCategorias());
         model.addAttribute("etiquetas", coleccionService.getEtiquetas());
+        model.addAttribute("provincias", Provincia.values());
 
         return "verColeccion/verColeccion";
     }

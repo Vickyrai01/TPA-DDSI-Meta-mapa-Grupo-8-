@@ -74,6 +74,13 @@
                                 <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}"></option>
                             </select>
                         </div>
+                        <div class="filtro-item">
+                            <label for="provincia">Provincia:</label>
+                            <select name="provincia" id="provincia">
+                                <option value="">- Todas -</option>
+                                <option th:each="prov : ${provincias}" th:value="${prov.name()}" th:text="${prov.nombre}"></option>
+                            </select>
+                        </div>
                         <!-- FECHA DE SUCESO -->
                         <div class="filtro-item" style="margin-bottom:.3em;">
                             <span style="font-weight: bold; color: #a8732e;">Fecha de suceso</span>
