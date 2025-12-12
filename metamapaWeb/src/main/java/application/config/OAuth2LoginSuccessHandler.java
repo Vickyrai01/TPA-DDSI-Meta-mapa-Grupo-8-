@@ -73,7 +73,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                                 name,
                                 email,
                                 "USER",
-                                null  // contraseña null: tu CORE puede ignorarla si viene de SSO
+                                null
                         );
 
                         try {
