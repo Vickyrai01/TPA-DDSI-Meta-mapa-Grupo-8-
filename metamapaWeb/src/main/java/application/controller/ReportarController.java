@@ -97,43 +97,39 @@ public class ReportarController {
             @RequestParam("latitud") Double latitud,
             @RequestParam("longitud") Double longitud,
             // CAMBIO: Recibir el archivo como MultipartFile
-            @RequestParam("multimedia") MultipartFile multimediaFile,
+            @RequestParam(value = "multimedia", required = false) MultipartFile[] multimediaFiles,
             @RequestParam(value = "etiquetas", required = false) String etiquetas,
             @RequestParam(value = "urgente", defaultValue = "false") boolean urgente,
             @RequestParam(value = "noPublicarDatos", defaultValue = "false") boolean noPublicarDatos,
             org.springframework.security.core.Authentication authentication,
             RedirectAttributes ra
     ) {
-        String fileNameToSave = null;
-
+        List<String> fileNamesToSave = new ArrayList<>();
         // ===========================================
-        // 1. MANEJO Y GUARDADO DEL ARCHIVO MULTIMEDIA
+        // 1. MANEJO Y GUARDADO DE ARCHIVOS MULTIMEDIA (múltiples)
         // ===========================================
-        if (multimediaFile != null && !multimediaFile.isEmpty()) {
+        if (multimediaFiles != null) {
             try {
-                // Guardar siempre en la subcarpeta 'hechos' dentro de uploads
                 Path hechosUploadPath = Paths.get(this.resolvedUploadPath, "hechos");
-
-                // Crear el directorio si no existe (portable)
                 if (!Files.exists(hechosUploadPath)) {
                     Files.createDirectories(hechosUploadPath);
                 }
-
-                // Generar nombre de archivo único para evitar conflictos
-                String originalFilename = multimediaFile.getOriginalFilename();
-                String fileExtension = "";
-                if (originalFilename != null && originalFilename.contains(".")) {
-                    fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                for (MultipartFile multimediaFile : multimediaFiles) {
+                    if (multimediaFile != null && !multimediaFile.isEmpty()) {
+                        String originalFilename = multimediaFile.getOriginalFilename();
+                        String fileExtension = "";
+                        if (originalFilename != null && originalFilename.contains(".")) {
+                            fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                        }
+                        String fileNameToSave = UUID.randomUUID().toString() + fileExtension;
+                        Path filePath = hechosUploadPath.resolve(fileNameToSave);
+                        Files.copy(multimediaFile.getInputStream(), filePath);
+                        fileNamesToSave.add(fileNameToSave);
+                    }
                 }
-                fileNameToSave = UUID.randomUUID().toString() + fileExtension;
-
-                // Guardar el archivo físicamente
-                Path filePath = hechosUploadPath.resolve(fileNameToSave);
-                Files.copy(multimediaFile.getInputStream(), filePath);
-
             } catch (IOException e) {
                 e.printStackTrace();
-                ra.addFlashAttribute("mensajeError", "Error al guardar el archivo multimedia.");
+                ra.addFlashAttribute("mensajeError", "Error al guardar los archivos multimedia.");
                 return "redirect:/reportar?estado=error";
             }
         }
@@ -181,12 +177,8 @@ public class ReportarController {
             jsonMap.put("longitud", lon);
             jsonMap.put("fechaSuceso", fechaSuceso);
 
-            // Mandamos el nombre del archivo guardado (si existe) como lista, nunca null
-            if (fileNameToSave != null && !fileNameToSave.isBlank()) {
-                jsonMap.put("multimedia", List.of(fileNameToSave));
-            } else {
-                jsonMap.put("multimedia", List.of());
-            }
+            // Mandamos la lista de archivos guardados (puede ser vacía)
+            jsonMap.put("multimedia", fileNamesToSave);
 
             // Procesar etiquetas
             List<String> etiquetasList = new ArrayList<>();
