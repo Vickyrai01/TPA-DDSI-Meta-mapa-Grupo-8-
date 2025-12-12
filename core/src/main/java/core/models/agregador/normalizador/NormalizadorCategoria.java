@@ -21,25 +21,7 @@ public class NormalizadorCategoria {
 
 
     public Categoria obtenerCategoria(String categoria) {
-        /*
-        String categoriaBase = categoria.trim().toLowerCase();
-        if (categoriaRepository.existe(categoria)) {
-            return categoriaRepository.buscarPorNombre(categoria);
-        }
-
-        if (categoriaBase.endsWith("s")) {
-            String singular = categoriaBase.substring(0, categoriaBase.length() - 1);
-            if (categoriaRepository.existe(singular)) {
-                return categoriaRepository.buscarPorNombre(singular);
-            }
-        } else {
-            String plural = categoriaBase + "s";
-            if (categoriaRepository.existe(plural)) {
-                return categoriaRepository.buscarPorNombre(plural);
-            }
-        }*/
         Categoria categoriaNueva = new Categoria(categoria);
-        //categoriaRepository.add(categoriaNueva);
         return categoriaNueva;
     }
 
@@ -52,7 +34,7 @@ public class NormalizadorCategoria {
                 if (tienenDistintaCategoria(hi,hj) && comparadorHechos.esElMismoHecho(hi, hj)) {
                     hj.setCategoria(hi.getCategoria());
                 } else {
-                    j++; // solo avanzá si no eliminaste
+                    j++;
                 }
             }
         }

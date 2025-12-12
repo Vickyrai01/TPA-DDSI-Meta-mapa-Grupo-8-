@@ -1,8 +1,5 @@
 package core.models.agregador;
 
-import core.models.repository.HechosRepository;
-import core.models.repository.RevisionManualRepository;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
@@ -16,9 +13,6 @@ public class HandlerRecientes {
 
         return instance;
     }
-
-    HechosRepository hechosRepository = HechosRepository.getInstance();
-    private RevisionManualRepository revisionManualRepository = RevisionManualRepository.getInstance();
 
     public static String generarHash(String input) {
         try {
@@ -36,11 +30,4 @@ public class HandlerRecientes {
         return hash1.equals(hash2);
     }
 
-    public boolean esReciente(HechoAIntegrarDTO hechoAIntegrarDTO){
-        if (revisionManualRepository.existeElHecho(hechoAIntegrarDTO.getHash()))
-            return false;
-        if(hechosRepository.existeElHecho(hechoAIntegrarDTO.getHash()))
-            {return  false; }
-        else {return true;}
-    }
 }

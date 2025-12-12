@@ -4,12 +4,9 @@ import core.models.agregador.normalizador.*;
 import core.models.entities.colecciones.Coleccion;
 import core.models.entities.colecciones.criterios.Criterio;
 import core.models.entities.colecciones.criterios.FiltradorCriterios;
-import core.models.entities.fuentes.Fuente;
-import core.models.entities.fuentes.TipoFuente;
 import core.models.entities.hecho.*;
 import core.models.repository.ColeccionesRepository;
 import core.models.repository.HechosRepository;
-import core.models.repository.RevisionManualRepository;
 import core.observabilidad.RegistroMetricas;
 
 import java.time.LocalDate;
@@ -19,8 +16,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class ServicioDeAgregacion {
-    private RevisionManualRepository revisionManualRepository = RevisionManualRepository.getInstance();
-
     private List<HechoAIntegrarDTO> hechosAIntegrar = new ArrayList<>();
     private List<Hecho> hechosLimpios = new ArrayList<>();
 

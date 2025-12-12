@@ -13,7 +13,6 @@ import java.util.Objects;
 public class NormalizadorCoordenada {
 
     private static NormalizadorCoordenada instance;
-    private CoordenadasRepository coordenadasRepository = CoordenadasRepository.getInstance();
 
     public static NormalizadorCoordenada getInstance() {
         if (instance == null) instance = new NormalizadorCoordenada();
@@ -25,12 +24,6 @@ public class NormalizadorCoordenada {
         double latitud = Double.parseDouble(latitudString);
         double longitud = Double.parseDouble(longitudString);
         Coordenadas ubicacion = new Coordenadas(latitud, longitud);
-        /*
-        if (coordenadasRepository.existe(ubicacion)) {
-            return coordenadasRepository.buscarPorCoordenadas(ubicacion);
-        }
-        coordenadasRepository.add(ubicacion);
-        */
         return ubicacion;
     }
 }
