@@ -199,13 +199,35 @@
                             <!-- Multimedia -->
                             <div class="field">
                                 <span class="field-label">Multimedia:</span>
-                                <span class="field-value" th:if="${h.multimedia()!=null and !h.multimedia().isEmpty()}">
-                                    <a th:each="m : ${h.multimedia()}" th:href="@{'/uploads/' + ${m}}" th:text="${m}" target="_self" style="display:block; margin: 5px 0; color: #ff6600; text-decoration: underline;"/>
-                                </span>
-                                <span class="field-value muted" th:if="${h.multimedia()==null or h.multimedia().isEmpty()}">
-                                    No tiene fotos adjuntas.
-                                </span>
+
+                                <span class="field-value"
+                                      th:if="${h.multimedia()!=null and !h.multimedia().isEmpty()}">
+        <div class="multimedia-gallery">
+            <button type="button"
+                    class="multimedia-item"
+                    th:each="m : ${h.multimedia()}"
+                    th:data-src="@{'/uploads/hechos/' + ${m}}"
+                    th:data-alt="${h.nombre()} + ' - multimedia adjunta'">
+                <img th:if="${#strings.endsWith(m.toLowerCase(), '.jpg') or #strings.endsWith(m.toLowerCase(), '.jpeg') or #strings.endsWith(m.toLowerCase(), '.png') or #strings.endsWith(m.toLowerCase(), '.gif') or #strings.endsWith(m.toLowerCase(), '.webp') }"
+                     th:src="@{'/uploads/hechos/' + ${m}}"
+                     th:alt="${h.nombre()} + ' - imagen adjunta'"
+                     class="multimedia-thumb">
+                <video th:if="${#strings.endsWith(m.toLowerCase(), '.mp4') or #strings.endsWith(m.toLowerCase(), '.webm') or #strings.endsWith(m.toLowerCase(), '.ogg') }"
+                       th:src="@{'/uploads/hechos/' + ${m}}"
+                       class="multimedia-thumb" controls>
+                    Tu navegador no soporta la reproducción de video.
+                </video>
+            </button>
+        </div>
+    </span>
+
+                                <span class="field-value muted"
+                                      th:if="${h.multimedia()==null or h.multimedia().isEmpty()}">
+        No tiene fotos adjuntas.
+    </span>
                             </div>
+
+
 
                             <!-- Botón Ver -->
                             <div class="field" style="margin-top:0.6rem;">
@@ -230,6 +252,18 @@
                 </div>
             </section>
         </aside>
+        <!-- Popup de imagen grande -->
+        <div id="img-modal" class="img-modal" aria-hidden="true">
+            <div class="img-modal-backdrop"></div>
+            <div class="img-modal-content" role="dialog" aria-modal="true">
+                <button class="img-modal-close" type="button" aria-label="Cerrar">
+                    &times;
+                </button>
+                <img id="img-modal-img" src="" alt="">
+                <p id="img-modal-caption" class="img-modal-caption"></p>
+            </div>
+        </div>
+
     </main>
 </div>
 
@@ -418,6 +452,65 @@
                 window.location.href = url;
             });
         });
+
+        // ===== POPUP DE IMÁGENES =====
+        (function () {
+            const modal = document.getElementById('img-modal');
+            if (!modal) return;
+
+            const modalImg     = document.getElementById('img-modal-img');
+            const modalCaption = document.getElementById('img-modal-caption');
+            const btnClose     = document.querySelector('.img-modal-close');
+
+            function openImgModal(src, alt) {
+                if (!src) return;
+                modalImg.src = src;
+                modalImg.alt = alt || '';
+                modalCaption.textContent = alt || '';
+                modal.classList.add('is-visible');
+                modal.setAttribute('aria-hidden', 'false');
+            }
+
+            function closeImgModal() {
+                modal.classList.remove('is-visible');
+                modal.setAttribute('aria-hidden', 'true');
+                modalImg.src = '';
+                modalImg.alt = '';
+                modalCaption.textContent = '';
+            }
+
+            // Click en miniatura
+            document.addEventListener('click', (e) => {
+                const btn = e.target.closest('.multimedia-item');
+                if (!btn) return;
+
+                e.preventDefault();
+                const src = btn.dataset.src;
+                const alt = btn.dataset.alt || btn.querySelector('img')?.alt || '';
+                openImgModal(src, alt);
+            });
+
+            // Click en botón cerrar
+            btnClose?.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeImgModal();
+            });
+
+            // Click fuera del contenido (en el backdrop)
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal || e.target.classList.contains('img-modal-backdrop')) {
+                    closeImgModal();
+                }
+            });
+
+            // Escape para cerrar
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('is-visible')) {
+                    closeImgModal();
+                }
+            });
+        })();
+
     </script>
 </th:block>
 

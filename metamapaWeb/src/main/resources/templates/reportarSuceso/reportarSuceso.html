@@ -8,7 +8,6 @@
       )}">
 
 <th:block id="links-reportar">
-  <!-- Leaflet -->
   <link rel="stylesheet"
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
@@ -86,6 +85,14 @@
       min-height: 90px;
       resize: vertical;
     }
+
+    /* NUEVO: Envoltorio para manejar posición relativa */
+    .attach-group-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
     .attach-btn{
       display: inline-flex;
       align-items: center;
@@ -96,6 +103,40 @@
       padding: .55rem .8rem;
       cursor: pointer;
       width: 100%;
+      position: relative;
+      justify-content: flex-start; /* Alineación inicial */
+      padding-right: 3rem; /* Espacio para el botón de remover */
+      flex-grow: 1;
+    }
+    #clipIcon {
+      margin-right: .4rem;
+    }
+    #archivoLabel {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex-grow: 1;
+    }
+    .remove-file-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0;
+      margin: 0;
+      line-height: 1;
+      transition: color .15s;
+
+      /* Posicionamiento absoluto para estar fuera del label pero visualmente dentro */
+      position: absolute;
+      right: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.4rem;
+      z-index: 10;
+    }
+    .remove-file-btn:hover {
+      color: var(--text);
     }
     .attach-btn i{color:var(--orange);}
     .report-actions{
@@ -265,7 +306,6 @@
   <div class="report-wrapper">
     <div class="report-card" th:switch="${estado}">
 
-      <!-- VISTA DE ÉXITO -->
       <div th:case="'ok'" class="success-state">
         <div class="success-icon">
           <i class="fa-solid fa-circle-check"></i>
@@ -273,14 +313,11 @@
         <h2>Hecho enviado</h2>
         <p>Tu reporte se envió correctamente al sistema.</p>
         <div class="success-actions">
-          <!-- volver a cargar otro -->
           <a th:href="@{/reportar}" class="btn-primary">Cargar otro hecho</a>
-          <!-- opcional: ir al home -->
           <a th:href="@{/}" class="btn-secondary">Volver al inicio</a>
         </div>
       </div>
 
-      <!-- VISTA DE ERROR -->
       <div th:case="'error'" class="success-state">
         <div class="success-icon" style="background: rgba(239,68,68,0.1); color:#ef4444;">
           <i class="fa-solid fa-triangle-exclamation"></i>
@@ -295,11 +332,9 @@
         </div>
       </div>
 
-      <!-- FORMULARIO (solo si NO hay ok) -->
-      <form th:case="*" th:action="@{/reportar}" method="post" id="form-reportar" >
+      <form th:case="*" th:action="@{/reportar}" method="post" id="form-reportar" enctype="multipart/form-data">
         <div class="report-header">REPORTAR SUCESO</div>
         <div class="report-body">
-          <!-- fila 1: titulo / categoria -->
           <div class="form-grid">
             <div class="form-group">
               <label for="titulo">Título suceso <span style="color:#F47C2C;">*</span></label>
@@ -314,7 +349,6 @@
                         th:value="${c}"
                         th:text="${c}">
                 </option>
-                <!-- si querés asegurarte que exista 'Otro': -->
                 <option value="Otro">Otro</option>
               </select>
             </div>
@@ -325,14 +359,12 @@
                      placeholder="dd/mm/aaaa" required>
             </div>
 
-            <!-- input que aparece solo si se elige "Otro" -->
             <div class="form-group hidden" id="categoria-otra-group">
               <label for="categoriaOtra">Especificá la categoría <span style="color:#F47C2C;">*</span></label>
               <input type="text" id="categoriaOtra" name="categoriaOtra"
                      placeholder="Describí la categoría">
             </div>
 
-            <!-- descripción ocupa todo -->
             <div class="form-group" style="grid-column: 1 / -1;">
               <label for="descripcion">Descripción <span style="color:#F47C2C;">*</span></label>
               <textarea id="descripcion" name="descripcion" placeholder="Contanos qué pasó..." required></textarea>
@@ -343,27 +375,26 @@
               <div class="tag-input" id="tagInput">
                 <input type="text" id="inputEtiqueta" placeholder="Escribí y presioná espacio...">
               </div>
-              <!-- Campo oculto para enviar todas las etiquetas concatenadas -->
               <input type="hidden" name="etiquetas" id="etiquetasHidden">
             </div>
 
-            <!-- adjuntar -->
             <div class="form-group" style="grid-column: 1 / -1;">
               <label for="multimedia">Adjuntar evidencias</label>
-              <label class="attach-btn">
-                <i class="fa-solid fa-paperclip"></i>
-                <span id="archivoLabel">Adjuntar</span>
-                <input type="file" id="multimedia" name="multimedia" accept="image/*,video/*" style="display:none">
-              </label>
+              <div class="attach-group-wrapper">
+                <label class="attach-btn" id="attachBtnLabel">
+                  <i class="fa-solid fa-paperclip" id="clipIcon"></i>
+                  <span id="archivoLabel">Adjuntar</span>
+                  <input type="file" id="multimedia" name="multimedia" accept="image/*,video/*" style="display:none">
+                </label>
+                <button type="button" id="removeFileBtn" class="remove-file-btn hidden">&times;</button>
+              </div>
             </div>
           </div>
 
-          <!-- mapa -->
           <div class="form-group" style="margin-top:.25rem;">
             <label>Ubicación <span style="color:#F47C2C;">*</span></label>
             <div id="mapa-reportar"></div>
             <p class="map-help">Hacé clic en el mapa para marcar la ubicación del suceso.</p>
-            <!-- campos ocultos donde se guarda la posición -->
             <input type="hidden" id="latitud" name="latitud" required>
             <input type="hidden" id="longitud" name="longitud" required>
           </div>
@@ -396,14 +427,25 @@
             <button type="submit" class="btn-primary">Reportar</button>
           </div>
         </div>
-    </form>
+      </form>
+      <button id="btn-ejecutar-agregacion"
+              style="padding:0.4rem 1rem;
+               border:none;
+               border-radius:8px;
+               background:#F47C2C;
+               color:white;
+               cursor:pointer;
+               font-weight:bold;">
+        Ejecutar Servicio de Agregación
+      </button>
+
+      <input type="hidden" id="csrf-token" th:value="${_csrf.token}">
 
     </div>
-</div>
+  </div>
 </div>
 
 <th:block id="scripts-reportar">
-  <!-- leaflet -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
           integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
           crossorigin=""></script>
@@ -450,6 +492,39 @@
           }
         });
       }
+
+      // ====== ADJUNTAR EVIDENCIAS (FINAL CORREGIDO) ======
+      const multimediaInput = document.getElementById('multimedia');
+      const archivoLabel = document.getElementById('archivoLabel');
+      const removeFileBtn = document.getElementById('removeFileBtn');
+
+      if (multimediaInput && archivoLabel && removeFileBtn) {
+        // 1. Mostrar nombre de archivo al seleccionar
+        multimediaInput.addEventListener('change', function() {
+          if (this.files.length > 0) {
+            archivoLabel.textContent = this.files[0].name;
+            removeFileBtn.classList.remove('hidden');
+          } else {
+            archivoLabel.textContent = 'Adjuntar';
+            removeFileBtn.classList.add('hidden');
+          }
+        });
+
+        // 2. Quitar archivo al hacer clic en la cruz (solo preventDefault, stopPropagation ya no es estrictamente necesario
+        // debido a la nueva estructura, pero se deja por seguridad).
+        removeFileBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          // e.stopPropagation(); // Ya no es tan crítico gracias al HTML modificado.
+
+          // Limpiar el valor del input file
+          multimediaInput.value = '';
+
+          // Resetear el label y ocultar el botón de remover
+          archivoLabel.textContent = 'Adjuntar';
+          removeFileBtn.classList.add('hidden');
+        });
+      }
+
 
       // ====== MAPA ======
       const mapDiv = document.getElementById('mapa-reportar');
@@ -499,6 +574,8 @@
         }, 200);
       }
     });
+
+    // ====== ETIQUETAS (TAGS) ======
     document.addEventListener('DOMContentLoaded', () => {
       const input = document.getElementById('inputEtiqueta');
       const container = document.getElementById('tagInput');
@@ -537,6 +614,31 @@
       });
     });
 
+    // ====== EJECUTAR AGREGACIÓN ======
+    document.addEventListener("DOMContentLoaded", () => {
+
+      const btn = document.getElementById("btn-ejecutar-agregacion");
+      const csrf = document.getElementById("csrf-token")?.value;
+
+      btn.addEventListener("click", async () => {
+
+        try {
+          const resp = await fetch("/ejecutar-agregacion", {
+            method: "POST",
+            headers: { "X-CSRF-TOKEN": csrf }
+          });
+
+          if (resp.ok) {
+            alert("Servicio ejecutado correctamente");
+          } else {
+            alert("Error ejecutando servicio: " + resp.status);
+          }
+        } catch (e) {
+          console.error(e);
+          alert("Error de red ejecutando servicio");
+        }
+      });
+    });
   </script>
 </th:block>
 
