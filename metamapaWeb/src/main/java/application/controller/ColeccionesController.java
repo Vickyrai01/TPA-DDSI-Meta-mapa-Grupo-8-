@@ -1,6 +1,7 @@
 package application.controller;
 
 import application.dto.ColeccionDTO;
+import application.dto.HechoDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,11 +9,15 @@ import application.service.ColeccionService;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Controller
 public class ColeccionesController {
     private final ColeccionService coleccionService;
+
 
     public ColeccionesController(ColeccionService coleccionService) {
         this.coleccionService = coleccionService;
@@ -33,18 +38,25 @@ public class ColeccionesController {
     public String detalle(
             @PathVariable("id") Integer id,
             @RequestParam(value = "modo", required = false) String modoParam,
+            @RequestParam(value = "titulo", required = false) String titulo,
+            @RequestParam(value = "descripcion", required = false) String descripcion,
+            @RequestParam(value = "etiqueta", required = false) String etiqueta,
+            @RequestParam(value = "categoria", required = false) String categoria,
+            @RequestParam(value = "provincia", required = false) String provincia,
+            @RequestParam(value = "soloMultimedia", required = false) Boolean soloMultimedia,
+            @RequestParam(value = "fechaDesdeSuceso", required = false) String fechaDesdeSuceso,
+            @RequestParam(value = "fechaHastaSuceso", required = false) String fechaHastaSuceso,
+            @RequestParam(value = "fechaDesdeCarga", required = false) String fechaDesdeCarga,
+            @RequestParam(value = "fechaHastaCarga", required = false) String fechaHastaCarga,
             Model model
     ) {
-
-        // 1. Buscamos la colección primero para saber su configuración
         ColeccionDTO coleccion = coleccionService.getById(id);
 
-        // 2. Obtenemos el modo de navegación predeterminado de la colección
         String modoPredeterminado = coleccion.modoDeNavegacion();
-
         String modoActual = (modoParam != null) ? modoParam : modoPredeterminado;
 
-        if(modoParam != null) {
+        // Validación/restricción custom de modo
+        if (modoParam != null) {
             if (Objects.equals(modoPredeterminado, "IRRESTRICTA") && Objects.equals(modoParam, "CURADA")) {
                 modoActual = "IRRESTRICTA";
             }
@@ -53,14 +65,33 @@ public class ColeccionesController {
             }
         }
 
-        // 3. Buscamos los hechos usando ESE modo específico
-        model.addAttribute("hechos", coleccionService.getHechosVisibles(id, modoActual));
+        List<HechoDTO> hechos = coleccionService.getHechosFiltradosDeColeccion(
+                id, modoActual, titulo, descripcion, etiqueta, categoria, provincia,
+                soloMultimedia, fechaDesdeSuceso, fechaHastaSuceso, fechaDesdeCarga, fechaHastaCarga
+        );
 
-        // 4. Agregamos la colección y el dato del modo actual al modelo
+        // Mantener valores en el form de filtros
+        Map<String, Object> param = new HashMap<>();
+        param.put("titulo", titulo);
+        param.put("descripcion", descripcion);
+        param.put("etiqueta", etiqueta);
+        param.put("categoria", categoria);
+        param.put("provincia", provincia);
+        param.put("soloMultimedia", soloMultimedia);
+        param.put("fechaDesdeSuceso", fechaDesdeSuceso);
+        param.put("fechaHastaSuceso", fechaHastaSuceso);
+        param.put("fechaDesdeCarga", fechaDesdeCarga);
+        param.put("fechaHastaCarga", fechaHastaCarga);
+        param.put("modo", modoActual);
+
         model.addAttribute("coleccion", coleccion);
-
-        // Es importante pasar esto por si tu vista usa esta variable para resaltar botones o títulos
+        model.addAttribute("hechos", hechos);
         model.addAttribute("modoActual", modoActual);
+        model.addAttribute("param", param);
+
+        model.addAttribute("categorias", coleccionService.getCategorias());
+
+        // Agregar categorías/etiquetas/etc si tus selects los necesitan desde el back
 
         return "verColeccion/verColeccion";
     }

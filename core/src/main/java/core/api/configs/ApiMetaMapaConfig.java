@@ -23,7 +23,6 @@ public class ApiMetaMapaConfig {
         app.get("/core/api/public/colecciones/{id}/{modoVisualizacion}/hechos", new GetHechosDeColeccionCurados());
         app.post("/core/api/public/hechos/reportar", new PostHechoHandler());
         app.get("/core/api/public/categorias", new GetCategoriasHandler());
-
         // Endpoints de usuario para login y registro
         app.get("/core/api/public/usuarios/buscar", new GetUsuarioPorCorreoHandler());
         app.post("/core/api/public/usuarios/registrar", new PostRegistrarUsuarioHandler());

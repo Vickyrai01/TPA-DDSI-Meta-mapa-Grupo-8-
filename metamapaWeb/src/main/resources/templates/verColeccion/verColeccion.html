@@ -42,6 +42,90 @@
                         <option value="IRRESTRICTA" th:selected="${modoActual == 'IRRESTRICTA'}">Irrestricta</option>
                     </select>
                 </div>
+                <div class="filtros-bloque" style="margin-bottom:1em;">
+                    <button type="button" class="btn-toggle-filtros" aria-expanded="false">
+                        Filtros
+                    </button>
+                    <form class="filtros-form" style="display:none;" method="get" id="form-filtros">
+                        <input type="hidden" name="modo" th:value="${modoActual}">
+                        <!-- Título -->
+                        <div class="filtro-item">
+                            <label for="titulo">Título:</label>
+                            <input type="text" name="titulo" id="titulo" placeholder="Buscar por título">
+                        </div>
+                        <!-- Descripción -->
+                        <div class="filtro-item">
+                            <label for="descripcion">Descripción:</label>
+                            <input type="text" name="descripcion" id="descripcion" placeholder="Buscar por descripción">
+                        </div>
+                        <!-- Etiquetas -->
+                        <div class="filtro-item">
+                            <label for="etiqueta">Etiquetas:</label>
+                            <select id="etiqueta" name="etiqueta">
+                                <option value="">- Todas -</option>
+                                <option value="accidente">Accidente</option>
+                                <option value="fraude">Fraude</option>
+                                <option value="delito">Delito</option>
+                                <!-- Agregá más si querés -->
+                            </select>
+                        </div>
+                        <!-- Categoría -->
+                        <div class="filtro-item">
+                            <label for="categoria">Categoría:</label>
+                            <select id="categoria" name="categoria">
+                                <option value="">- Todas -</option>
+                                <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}"></option>
+                            </select>
+                        </div>
+                        <!-- FECHA DE SUCESO -->
+                        <div class="filtro-item" style="margin-bottom:.3em;">
+                            <span style="font-weight: bold; color: #a8732e;">Fecha de suceso</span>
+                        </div>
+                        <div class="filtro-item">
+                            <label for="fechaDesdeSuceso">Desde:</label>
+                            <input type="date" name="fechaDesdeSuceso" id="fechaDesdeSuceso">
+                        </div>
+                        <div class="filtro-item">
+                            <label for="fechaHastaSuceso">Hasta:</label>
+                            <input type="date" name="fechaHastaSuceso" id="fechaHastaSuceso">
+                        </div>
+                        <!-- FECHA DE CARGA -->
+                        <div class="filtro-item" style="margin-bottom:.3em; margin-top:.8em;">
+                            <span style="font-weight: bold; color: #a8732e;">Fecha de carga</span>
+                        </div>
+                        <div class="filtro-item">
+                            <label for="fechaDesdeCarga">Desde:</label>
+                            <input type="date" name="fechaDesdeCarga" id="fechaDesdeCarga">
+                        </div>
+                        <div class="filtro-item">
+                            <label for="fechaHastaCarga">Hasta:</label>
+                            <input type="date" name="fechaHastaCarga" id="fechaHastaCarga">
+                        </div>
+                        <!-- Ubicación (provincia/localidad) -->
+                        <div class="filtro-item">
+                            <label for="provincia">Provincia / Localidad:</label>
+                            <select name="provincia" id="provincia">
+                                <option value="">- Todos -</option>
+                                <option value="caba">CABA</option>
+                                <option value="cordoba">Córdoba</option>
+                                <option value="buenos-aires">Buenos Aires</option>
+                                <option value="mendoza">Mendoza</option>
+                                <!-- El resto de las provincias/localidades -->
+                            </select>
+                        </div>
+                        <!-- Multimedia -->
+                        <div class="filtro-item">
+                            <label>
+                                <input type="checkbox" name="soloMultimedia"> Solo hechos con archivos/imágenes
+                            </label>
+                        </div>
+                        <div style="margin-top:.7rem">
+                            <button type="submit" class="btn-map" style="width:100%">
+                                Filtrar
+                            </button>
+                        </div>
+                    </form>
+                </div>
 
                 <h3 style="margin-top:1rem">Hechos</h3>
                 <div class="hechos-accordion">
@@ -321,6 +405,18 @@
         window.addEventListener('resize', () => {
             fitLayout();
             map.invalidateSize();
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn = document.querySelector('.btn-toggle-filtros');
+            const form = document.querySelector('.filtros-form');
+            if (btn && form) {
+                btn.addEventListener('click', () => {
+                    const open = form.style.display === 'block';
+                    form.style.display = open ? 'none' : 'block';
+                    btn.setAttribute('aria-expanded', !open);
+                });
+            }
         });
 
         // Cambiar modo de navegación recargando la página
