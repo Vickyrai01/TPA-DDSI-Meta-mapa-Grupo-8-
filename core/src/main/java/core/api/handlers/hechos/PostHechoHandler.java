@@ -222,7 +222,7 @@ public class PostHechoHandler implements Handler {
         Contribuyente nuevo = new Contribuyente();
         nuevo.setNombre(usuario.getNombre());
         nuevo.setMail(normalizado);
-
+        nuevo.setFechaNacimiento(usuario.getFechaNacimiento());
         contribuyentesRepository.add(nuevo);
 
         log.info("Contribuyente creado para el mail {}", normalizado);
