@@ -31,7 +31,7 @@ spring:
 app:
   url:
     # Busca la variable de entorno 'GRAPHQL_URL'. Si no existe, usa localhost.
-    graphql-playground: "${GRAPHQL_URL:http://localhost:8081/playground}"
+    graphql-playground: "http://localhost:8081/playground"
 
     # Busca la variable de entorno 'GRAFANA_URL'. Si no existe, usa localhost.
-    grafana-dashboard: "${GRAFANA_URL:http://localhost:3000/d/metamapa-observabilidad/metamapa-observabilidad-core-metricas?orgId=1&from=now-1h&to=now&timezone=browser&var-DS_PROMETHEUS=af6t5tvl3ot1cd&refresh=10s}"
+    grafana-dashboard: "http://localhost:3000/d/metamapa-observabilidad/metamapa-observabilidad-core-metricas"
