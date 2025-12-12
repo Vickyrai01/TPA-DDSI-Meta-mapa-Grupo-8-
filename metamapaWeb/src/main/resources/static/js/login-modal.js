@@ -123,3 +123,131 @@ document.addEventListener("DOMContentLoaded", () => {
 
     input.max = `${yyyy}-${mm}-${dd}`;
 });
+
+//Reglas de contraseña
+function validarPasswordDetalle(pass) {
+    pass = pass || "";
+    return {
+        largo: pass.length >= 8,
+        mayus: /[A-Z]/.test(pass),
+        minus: /[a-z]/.test(pass),
+        numero: /[0-9]/.test(pass),
+        especial: /[^A-Za-z0-9]/.test(pass)
+    };
+}
+
+function passwordValida(pass) {
+    const v = validarPasswordDetalle(pass);
+    return v.largo && v.mayus && v.minus && v.numero && v.especial;
+}
+function renderPasswordChecklist(input, estado) {
+    let box = input.parentElement.querySelector(".pass-checklist");
+    if (!box) {
+        box = document.createElement("div");
+        box.className = "pass-checklist";
+        box.style.fontSize = ".88rem";
+        box.style.marginTop = ".15rem";   // pegado al input
+        box.style.lineHeight = "1.2";
+        input.insertAdjacentElement("afterend", box); }
+
+    const item = (ok, text) => `
+        <div style="
+            display:flex;
+            gap:.35rem;
+            align-items:center;
+            margin:0;
+            padding:0;
+            color:${ok ? '#2e7d32' : '#8a8a8a'};
+        ">
+            <span style="font-weight:700">${ok ? '✓' : '•'}</span>
+            <span style="line-height:1.2">${text}</span>
+        </div>
+    `;
+
+    box.innerHTML = `
+        <div style="font-weight:600;margin-bottom:.1rem;color:#444">
+            La contraseña debe tener:
+        </div>
+        ${item(estado.largo, 'Al menos 8 caracteres')}
+        ${item(estado.mayus, 'Una letra mayúscula')}
+        ${item(estado.minus, 'Una letra minúscula')}
+        ${item(estado.numero, 'Un número')}
+        <div style="padding-bottom:.45rem">
+         ${item(estado.especial, 'Un carácter especial')}
+        </div>
+    `;
+}
+
+
+function ocultarPasswordChecklist(input) {
+    const box = input.parentElement.querySelector(".pass-checklist");
+    if (box) box.remove();
+}
+
+
+
+//Mantener apretado para ver
+function habilitarPressToRevealPassword(input) {
+    if (!input) return;
+
+    // Tooltip simple (opcional)
+    input.title = "Mantené apretado para ver la contraseña";
+
+    const show = () => { input.type = "text"; };
+    const hide = () => { input.type = "password"; };
+
+    input.addEventListener("mousedown", show);
+    input.addEventListener("mouseup", hide);
+    input.addEventListener("mouseleave", hide);
+
+    input.addEventListener("touchstart", show, { passive: true });
+    input.addEventListener("touchend", hide);
+    input.addEventListener("touchcancel", hide);
+
+    input.addEventListener("keydown", (e) => {
+        if (e.code === "Space") show();
+    });
+    input.addEventListener("keyup", (e) => {
+        if (e.code === "Space") hide();
+    });
+}
+
+//Hook a tu flujo actual
+document.addEventListener("DOMContentLoaded", () => {
+    const passReg = document.getElementById("contrasenaReg");
+    const formReg = document.getElementById("formRegisterPage");
+
+    habilitarPressToRevealPassword(passReg);
+
+    if (passReg) {
+        passReg.addEventListener("input", () => {
+            if (!passReg.value) {
+                ocultarPasswordChecklist(passReg);
+                passReg.style.borderColor = "#222";
+                return;
+            }
+
+            const estado = validarPasswordDetalle(passReg.value);
+            renderPasswordChecklist(passReg, estado);
+
+            passReg.style.borderColor = passwordValida(passReg.value)
+                ? "#2e7d32"
+                : "#d93025";
+        });
+    }
+
+    if (formReg) {
+        formReg.addEventListener("submit", (e) => {
+            const pass = passReg?.value || "";
+            if (!passwordValida(pass)) {
+                e.preventDefault();
+                e.stopPropagation();
+                passReg.focus();
+
+                const estado = validarPasswordDetalle(pass);
+                renderPasswordChecklist(passReg, estado);
+                passReg.style.borderColor = "#d93025";
+            }
+        }, true);
+    }
+});
