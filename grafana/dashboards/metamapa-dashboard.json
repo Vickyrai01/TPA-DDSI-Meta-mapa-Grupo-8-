@@ -18,6 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
+  "id": 2,
   "links": [],
   "panels": [
     {
@@ -79,7 +80,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.2.2",
+      "pluginVersion": "12.3.0",
       "targets": [
         {
           "expr": "metamapa_total_requests",
@@ -140,7 +141,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.2.2",
+      "pluginVersion": "12.3.0",
       "targets": [
         {
           "expr": "metamapa_total_errors",
@@ -207,7 +208,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.2.2",
+      "pluginVersion": "12.3.0",
       "targets": [
         {
           "expr": "metamapa_error_rate",
@@ -272,7 +273,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.2.2",
+      "pluginVersion": "12.3.0",
       "targets": [
         {
           "expr": "metamapa_avg_response_time_ms",
@@ -329,7 +330,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.2.2",
+      "pluginVersion": "12.3.0",
       "targets": [
         {
           "expr": "metamapa_total_hechos_procesados",
@@ -338,6 +339,105 @@
         }
       ],
       "title": "Total Hechos Procesados",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 2,
+          "mappings": [
+            {
+              "options": {
+                "from": 0.95,
+                "result": {
+                  "text": "Bueno"
+                },
+                "to": 1
+              },
+              "type": "range"
+            },
+            {
+              "options": {
+                "from": 0.9,
+                "result": {
+                  "text": "Deprecado"
+                },
+                "to": 0.95
+              },
+              "type": "range"
+            },
+            {
+              "options": {
+                "from": 0,
+                "result": {
+                  "text": "Crítico"
+                },
+                "to": 0.9
+              },
+              "type": "range"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 0.9
+              },
+              {
+                "color": "green",
+                "value": 0.95
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 1
+      },
+      "id": 14,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value_and_name",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "metamapa_success_rate",
+          "interval": "",
+          "legendFormat": "Estado Actual",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Estado del sistema",
       "type": "stat"
     },
     {
@@ -423,7 +523,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.2",
+      "pluginVersion": "12.3.0",
       "targets": [
         {
           "expr": "rate(metamapa_total_requests[1m])",
@@ -517,7 +617,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.2",
+      "pluginVersion": "12.3.0",
       "targets": [
         {
           "expr": "metamapa_avg_response_time_ms",
@@ -624,7 +724,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.2",
+      "pluginVersion": "12.3.0",
       "targets": [
         {
           "expr": "rate(metamapa_reqs_hechos_cargador_dinamico[1m])",
@@ -728,7 +828,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.2",
+      "pluginVersion": "12.3.0",
       "targets": [
         {
           "expr": "rate(metamapa_errs_cargador_dinamico[1m])",
@@ -800,7 +900,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.2",
+      "pluginVersion": "12.3.0",
       "targets": [
         {
           "expr": "metamapa_porcentaje_reqs_dinamico",
@@ -904,7 +1004,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.2.2",
+      "pluginVersion": "12.3.0",
       "targets": [
         {
           "expr": "metamapa_time_cargador_dinamico_ms",
@@ -967,5 +1067,5 @@
   "timezone": "browser",
   "title": "MetaMapa - Observabilidad (Core / Métricas)",
   "uid": "metamapa-observabilidad",
-  "version": 3
+  "version": 2
 }
