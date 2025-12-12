@@ -19,6 +19,19 @@
             background-size: cover;
             background-position: center;
         }
+
+        .btn-animado {
+            cursor: pointer;
+            transition: transform 0.1s ease, filter 0.2s;
+        }
+        .btn-animado:hover {
+            filter: brightness(0.9);
+            transform: translateY(-2px); /* Se levanta un poquito */
+        }
+        .btn-animado:active {
+            transform: scale(0.96);
+            filter: brightness(0.85);
+        }
     </style>
 </th:block>
 
@@ -42,7 +55,7 @@
                 <label for="contrasena" style="font-weight:600;font-size:.98rem;">Contraseña</label>
                 <input type="password" name="password" id="contrasena" required
                        style="width:100%;margin-bottom:.7rem;padding:.5rem;border-radius:8px;border:2px solid #222;font-size:1rem;">
-                <button type="submit"
+                <button type="submit" class="btn-animado"
                         style="width:100%;padding:.7rem;border-radius:8px;background:#4285F4;color:#fff;font-weight:700;border:none;font-size:1.1rem;margin-bottom:.5rem;">
                     Iniciar
                 </button>
@@ -68,9 +81,19 @@
                 <input type="email" name="correo" id="correoReg" required
                        style="width:100%;margin-bottom:.7rem;padding:.5rem;border-radius:8px;border:2px solid #222;font-size:1rem;">
                 <label for="contrasenaReg" style="font-weight:600;font-size:.98rem;">Contraseña</label>
+
                 <input type="password" name="contrasena" id="contrasenaReg" required
                        style="width:100%;margin-bottom:.7rem;padding:.5rem;border-radius:8px;border:2px solid #222;font-size:1rem;">
-                <button type="submit"
+                <label for="fechaNacimientoReg"
+                       style="font-weight:600;font-size:.98rem;">Fecha de nacimiento</label>
+                <input
+                        type="date"
+                        name="fechaNacimiento"
+                        id="fechaNacimientoReg"
+                        required
+                        style="width:100%;margin-bottom:.7rem;padding:.5rem;border-radius:8px;border:2px solid #222;font-size:1rem;">
+
+                <button type="submit" class="btn-animado"
                         style="width:100%;padding:.7rem;border-radius:8px;background:var(--orange,#F47C2C);color:#fff;font-weight:700;border:none;font-size:1.1rem;margin-bottom:.5rem;">
                     Registrarse
                 </button>
@@ -85,10 +108,11 @@
             </div>
 
             <!-- LOGIN CON GOOGLE -->
-            <button onclick="window.location.href='/oauth2/authorization/google'"
+            <button onclick="window.location.href='/oauth2/authorization/google'" class="btn-animado"
                     style="width:90%;margin:0 auto 1rem auto;display:block;padding:.75rem;border-radius:8px;background:#4285F4;color:#fff;font-weight:600;border:none;font-size:1rem;">
                 <i class="fa-brands fa-google"></i> Iniciar sesión con Google
             </button>
+
         </div>
     </div>
 </div>

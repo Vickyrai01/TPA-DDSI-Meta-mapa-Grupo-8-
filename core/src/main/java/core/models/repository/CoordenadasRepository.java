@@ -38,12 +38,13 @@ public class CoordenadasRepository extends JpaRepositoryBase<Coordenadas, Intege
 
         EntityManager em = DBUtils.getEntityManager();
         try {
-            return em.createQuery(
+            return (Coordenadas) em.createQuery(
                             "SELECT c FROM coordenadas c WHERE c.latitud = :latitud AND c.longitud = :longitud",
                             Coordenadas.class)
                     .setParameter("latitud", coordenadas.getLatitud())
                     .setParameter("longitud", coordenadas.getLongitud())
-                    .getResultStream()
+                    .getResultList()
+                    .stream()
                     .findFirst()
                     .orElse(null);
         } finally {
