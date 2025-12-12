@@ -384,9 +384,9 @@
                 <label class="attach-btn" id="attachBtnLabel">
                   <i class="fa-solid fa-paperclip" id="clipIcon"></i>
                   <span id="archivoLabel">Adjuntar</span>
-                  <input type="file" id="multimedia" name="multimedia" accept="image/*,video/*" multiple style="display:none">
+                  <input type="file" id="multimedia" accept="image/*,video/*" style="display:none">
                 </label>
-                <button type="button" id="removeFileBtn" class="remove-file-btn hidden">&times;</button>
+                <ul id="listaArchivos" class="lista-archivos"></ul>
               </div>
             </div>
           </div>
@@ -494,36 +494,65 @@
       }
 
       // ====== ADJUNTAR EVIDENCIAS (FINAL CORREGIDO) ======
+
       const multimediaInput = document.getElementById('multimedia');
       const archivoLabel = document.getElementById('archivoLabel');
-      const removeFileBtn = document.getElementById('removeFileBtn');
+      const listaArchivos = document.getElementById('listaArchivos');
+      let archivosSeleccionados = [];
 
-      if (multimediaInput && archivoLabel && removeFileBtn) {
-        // 1. Mostrar nombre de archivo al seleccionar
-        multimediaInput.addEventListener('change', function() {
-          if (this.files.length > 0) {
-            archivoLabel.textContent = this.files[0].name;
-            removeFileBtn.classList.remove('hidden');
-          } else {
-            archivoLabel.textContent = 'Adjuntar';
-            removeFileBtn.classList.add('hidden');
+
+      // Cuando se seleccionan archivos nuevos
+      multimediaInput.addEventListener('change', function() {
+        if (this.files.length > 0) {
+          for (let i = 0; i < this.files.length; i++) {
+            archivosSeleccionados.push(this.files[i]);
           }
-        });
+          actualizarListaArchivos();
+        }
+        // Limpiar el input para permitir volver a seleccionar el mismo archivo si se quiere
+        this.value = '';
+      });
 
-        // 2. Quitar archivo al hacer clic en la cruz (solo preventDefault, stopPropagation ya no es estrictamente necesario
-        // debido a la nueva estructura, pero se deja por seguridad).
-        removeFileBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          // e.stopPropagation(); // Ya no es tan crítico gracias al HTML modificado.
-
-          // Limpiar el valor del input file
-          multimediaInput.value = '';
-
-          // Resetear el label y ocultar el botón de remover
+      function actualizarListaArchivos() {
+        listaArchivos.innerHTML = '';
+        if (archivosSeleccionados.length === 0) {
           archivoLabel.textContent = 'Adjuntar';
-          removeFileBtn.classList.add('hidden');
+        } else {
+          archivoLabel.textContent = archivosSeleccionados.length + ' archivo(s)';
+        }
+        archivosSeleccionados.forEach((file, idx) => {
+          const li = document.createElement('li');
+          li.style.display = 'flex';
+          li.style.alignItems = 'center';
+          li.style.gap = '0.5em';
+          li.innerHTML = `<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${file.name}</span> <button type="button" style="background:none;border:none;color:#F47C2C;cursor:pointer;font-size:1.1em;" title="Quitar" data-idx="${idx}">&times;</button>`;
+          li.querySelector('button').addEventListener('click', function() {
+            archivosSeleccionados.splice(idx, 1);
+            actualizarListaArchivos();
+          });
+          listaArchivos.appendChild(li);
         });
       }
+
+      // Al enviar el formulario, armar el FormData manualmente
+      document.getElementById('form-reportar').addEventListener('submit', function(e) {
+        if (archivosSeleccionados.length > 0) {
+          e.preventDefault();
+          const form = e.target;
+          const formData = new FormData(form);
+          archivosSeleccionados.forEach(f => formData.append('multimedia', f));
+          fetch(form.action, {
+            method: 'POST',
+            body: formData
+          }).then(resp => {
+            if (resp.redirected) {
+              window.location.href = resp.url;
+            } else {
+              return resp.text().then(html => { document.body.innerHTML = html; });
+            }
+          });
+        }
+      });
 
 
       // ====== MAPA ======
