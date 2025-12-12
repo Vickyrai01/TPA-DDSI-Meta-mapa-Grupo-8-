@@ -8,139 +8,138 @@
       )}">
 
 
-    <th:block id="links-de-mis-hechos">
-        <link rel="stylesheet"
-              href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-              crossorigin=""/>
-        <link rel="stylesheet"
-              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-        <link rel="stylesheet" th:href="@{/css/pages-css/verColeccion.css}">
-        <link rel="stylesheet"
-              href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
-        <link rel="stylesheet"
-              href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+<th:block id="links-de-mis-hechos">
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          crossorigin=""/>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/pages-css/verColeccion.css}">
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
 
-        <style>
-            /* Contenedor principal: mapa + sidebar */
-            .map-layout-container {
-                display: grid !important;
-                grid-template-columns: minmax(0, 2fr) minmax(0, 380px) !important; /* mapa | sidebar */
-                gap: 0 !important;
-                width: 100% !important;
-            }
+    <style>
+        /* Contenedor principal: mapa + sidebar */
+        .map-layout-container {
+            display: grid !important;
+            grid-template-columns: minmax(0, 2fr) minmax(0, 380px) !important; /* mapa | sidebar */
+            gap: 0 !important;
+            width: 100% !important;
+        }
 
-            /* Mapa ocupa toda su columna */
-            .map-panel {
-                width: 100% !important;
-                height: 100% !important;
-            }
+        /* Mapa ocupa toda su columna */
+        .map-panel {
+            width: 100% !important;
+            height: 100% !important;
+        }
 
-            .map-panel,
-            .map-panel .leaflet-container {
-                border-radius: 0 !important;
-            }
+        .map-panel,
+        .map-panel .leaflet-container {
+            border-radius: 0 !important;
+        }
 
-            .map-layout-container,
-            .map-layout-container > * {
-                border-radius: 0 !important;
-            }
+        .map-layout-container,
+        .map-layout-container > * {
+            border-radius: 0 !important;
+        }
 
+        /* Sidebar: columna, padding y sin que nada la haga crecer */
+        .sidebar-panel {
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100% !important;
+            overflow: hidden !important;
+            padding: 1rem 1rem 1rem 1.25rem;
+        }
 
-            /* Sidebar: columna, padding y sin que nada la haga crecer */
-            .sidebar-panel {
-                display: flex !important;
-                flex-direction: column !important;
-                height: 100% !important;
-                overflow: hidden !important;
-                padding: 1rem 1rem 1rem 1.25rem;
-            }
+        .sidebar-header {
+            flex: 0 0 auto !important;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: .5rem;
+        }
 
-            .sidebar-header {
-                flex: 0 0 auto !important;
-                font-weight: 700;
-                font-size: 1.1rem;
-                margin-bottom: .5rem;
-            }
+        .sidebar-content {
+            flex: 1 1 auto !important;
+            min-height: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
 
-            .sidebar-content {
-                flex: 1 1 auto !important;
-                min-height: 0 !important;
-                display: flex !important;
-                flex-direction: column !important;
-            }
+        .sidebar-content > h2,
+        .sidebar-content > p,
+        .sidebar-content > h3 {
+            flex: 0 0 auto !important;
+        }
 
-            .sidebar-content > h2,
-            .sidebar-content > p,
-            .sidebar-content > h3 {
-                flex: 0 0 auto !important;
-            }
+        .hechos-accordion {
+            flex: 1 1 auto !important;
+            min-height: 0 !important;
+            overflow-y: auto !important;
+            padding-right: .25rem;
+        }
 
-            .hechos-accordion {
-                flex: 1 1 auto !important;
-                min-height: 0 !important;
-                overflow-y: auto !important;
-                padding-right: .25rem;
-            }
+        .hechos-accordion details {
+            margin-bottom: .5rem;
+        }
 
-            .hechos-accordion details {
-                margin-bottom: .5rem;
-            }
+        .hecho-title {
+            font-weight: 600;
+        }
 
-            .hecho-title {
-                font-weight: 600;
-            }
+        /* Botones de acción dentro de cada hecho */
+        .field .edit-btn,
+        .field .save-btn,
+        .field .cancel-btn {
+            padding: 0.35rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color .15s ease, opacity .15s ease, transform .05s ease;
+        }
 
-            /* Botones de acción dentro de cada hecho */
-            .field .edit-btn,
-            .field .save-btn,
-            .field .cancel-btn {
-                padding: 0.35rem 0.9rem;
-                border-radius: 999px;
-                font-size: 0.85rem;
-                border: none;
-                cursor: pointer;
-                font-weight: 600;
-                transition: background-color .15s ease, opacity .15s ease, transform .05s ease;
-            }
+        .field .edit-btn {
+            background: #F47C2C;
+            color: #fff;
+            margin-right: .5rem;
+        }
 
-            .field .edit-btn {
-                background: #F47C2C;
-                color: #fff;
-                margin-right: .5rem;
-            }
+        .field .save-btn {
+            background: #2980B9;
+            color: #fff;
+            margin-right: .5rem;
+        }
 
-            .field .save-btn {
-                background: #2980B9;
-                color: #fff;
-                margin-right: .5rem;
-            }
+        .field .cancel-btn {
+            background: #f3f4f6;
+            color: #111827;
+            border: 1px solid #d1d5db;
+        }
 
-            .field .cancel-btn {
-                background: #f3f4f6;
-                color: #111827;
-                border: 1px solid #d1d5db;
-            }
+        .field .edit-btn:hover,
+        .field .save-btn:hover,
+        .field .cancel-btn:hover {
+            opacity: .9;
+            transform: translateY(-1px);
+        }
 
-            .field .edit-btn:hover,
-            .field .save-btn:hover,
-            .field .cancel-btn:hover {
-                opacity: .9;
-                transform: translateY(-1px);
-            }
+        .field .edit-btn:active,
+        .field .save-btn:active,
+        .field .cancel-btn:active {
+            transform: translateY(0);
+        }
 
-            .field .edit-btn:active,
-            .field .save-btn:active,
-            .field .cancel-btn:active {
-                transform: translateY(0);
-            }
-
-            .hechos-accordion details.highlight {
-                outline: 2px solid #3498db;
-                border-radius: 6px;
-                background: #f0f6ff;
-            }
-        </style>
-    </th:block>
+        .hechos-accordion details.highlight {
+            outline: 2px solid #3498db;
+            border-radius: 6px;
+            background: #f0f6ff;
+        }
+    </style>
+</th:block>
 
 
 <div id="contenido-de-mis-hechos">
@@ -166,15 +165,19 @@
                             <i class="chev fa-solid fa-chevron-right" aria-hidden="true"></i>
                         </summary>
                         <div class="hecho-detalle">
+                            <!-- VIEW MODE (se mantiene SIEMPRE visible) -->
                             <div class="field view-mode">
                                 <span class="field-label">Título:</span>
                                 <span class="field-value" data-field="nombre" th:text="${h.nombre}"></span>
                             </div>
+
                             <div class="field view-mode">
                                 <span class="field-label">Descripción:</span>
-                                <span class="field-value" data-field="descripcion" th:text="${h.descripcion != null ? h.descripcion : 'No indica'}"
+                                <span class="field-value" data-field="descripcion"
+                                      th:text="${h.descripcion != null ? h.descripcion : 'No indica'}"
                                       th:classappend="${h.descripcion == null} ? 'muted' : ''"></span>
                             </div>
+
                             <div class="field view-mode">
                                 <span class="field-label">Etiquetas:</span>
                                 <span class="tags view-mode">
@@ -182,43 +185,18 @@
                                 </span>
                             </div>
 
-                            <div class="field edit-mode" style="display:none">
-                                <span class="field-label">Título:</span>
-                                <input class="edit-mode" name="nombre" type="text" th:value="${h.nombre}" />
-                            </div>
+                            <!-- EDIT MODE (SOLO DESCRIPCION + ETIQUETAS) -->
                             <div class="field edit-mode" style="display:none">
                                 <span class="field-label">Descripción:</span>
                                 <input class="edit-mode" name="descripcion" type="text" th:value="${h.descripcion}" />
                             </div>
+
                             <div class="field edit-mode" style="display:none">
                                 <span class="field-label">Etiquetas (separadas por coma):</span>
                                 <input class="edit-mode" name="etiquetas" type="text" th:value="${#strings.arrayJoin(h.etiquetas, ', ')}" />
                             </div>
-                            <div class="field edit-mode" style="display:none">
-                                <span class="field-label">Fecha del hecho:</span>
-                                <input class="edit-mode" name="fecha_suceso" type="date" th:value="${h.fechaSuceso}" id="fechaSucesoInput" />
-                            </div>
-                            <div class="field edit-mode" style="display:none">
-                                <span class="field-label">Categoría:</span>
-                                <select class="edit-mode" name="categoria" required>
-                                    <option value="" th:selected="${#lists.isEmpty(h.categorias)}">Elegí una categoría</option>
-                                    <option th:each="c : ${categorias}"
-                                            th:value="${c}"
-                                            th:text="${c}"
-                                            th:selected="${!#lists.isEmpty(h.categorias) and c == h.categorias.get(0)}">
-                                    </option>
-                                    <option value="Otro" th:selected="${!#lists.isEmpty(h.categorias) and h.categorias.get(0) == 'Otro'}">Otro</option>
-                                </select>
-                            </div>
-                            <div class="field edit-mode" style="display:none">
-                                <span class="field-label">Latitud:</span>
-                                <input class="edit-mode" name="latitud" type="text" th:value="${h.latitud}" />
-                            </div>
-                            <div class="field edit-mode" style="display:none">
-                                <span class="field-label">Longitud:</span>
-                                <input class="edit-mode" name="longitud" type="text" th:value="${h.longitud}" />
-                            </div>
 
+                            <!-- RESTO DEL HECHO EN VIEW MODE (para identificar cuál editan) -->
                             <div class="field view-mode">
                                 <span class="field-label">Fecha del hecho:</span>
                                 <span class="field-value"
@@ -267,6 +245,7 @@
         window.hechos = /*[[${hechos}]]*/ [];
         /*]]>*/
     </script>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
@@ -316,37 +295,25 @@
             });
         });
 
-        // Set max date for fecha_suceso inputs to today
-        document.addEventListener('DOMContentLoaded', () => {
-            const hoy = new Date();
-            const yyyy = hoy.getFullYear();
-            const mm = String(hoy.getMonth() + 1).padStart(2, '0');
-            const dd = String(hoy.getDate()).padStart(2, '0');
-            const maxDate = `${yyyy}-${mm}-${dd}`;
-            document.querySelectorAll('input.edit-mode[name="fecha_suceso"]').forEach(input => {
-                input.setAttribute('max', maxDate);
-            });
-        });
-
-        // Edición de hechos en "mis hechos"
+        // Edición de hechos en "mis hechos" (SOLO descripcion + etiquetas)
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.hecho-detalle').forEach(detalle => {
                 const editBtn = detalle.querySelector('.edit-btn');
                 const saveBtn = detalle.querySelector('.save-btn');
                 const cancelBtn = detalle.querySelector('.cancel-btn');
-                const viewFields = detalle.querySelectorAll('.view-mode');
-                const editFields = detalle.querySelectorAll('.edit-mode');
+
+                // Importante: solo los contenedores editables (no ocultamos el view-mode)
+                const editContainers = detalle.querySelectorAll('.field.edit-mode');
                 const hash = detalle.closest('details')?.getAttribute('data-hash');
 
                 function setEditing(editing) {
-                    viewFields.forEach(f => f.style.display = editing ? 'none' : '');
-                    editFields.forEach(f => f.style.display = editing ? '' : 'none');
+                    editContainers.forEach(f => f.style.display = editing ? '' : 'none');
                     editBtn.style.display = editing ? 'none' : '';
                     saveBtn.style.display = editing ? '' : 'none';
                     cancelBtn.style.display = editing ? '' : 'none';
                 }
 
-                if(editBtn && !editBtn.disabled) {
+                if (editBtn && !editBtn.disabled) {
                     editBtn.addEventListener('click', () => {
                         setEditing(true);
                     });
@@ -359,38 +326,16 @@
                 saveBtn?.addEventListener('click', async () => {
                     saveBtn.disabled = true;
 
-                    const nombre = detalle.querySelector('input.edit-mode[name="nombre"]')?.value?.trim();
-                    const descripcion = detalle.querySelector('input.edit-mode[name="descripcion"]')?.value?.trim();
-                    const etiquetasCsv = detalle.querySelector('input.edit-mode[name="etiquetas"]')?.value?.trim();
-                    const latitud = detalle.querySelector('input.edit-mode[name="latitud"]')?.value?.trim();
-                    const longitud = detalle.querySelector('input.edit-mode[name="longitud"]')?.value?.trim();
+                    const descripcionInput = detalle.querySelector('input.edit-mode[name="descripcion"]');
+                    const etiquetasInput = detalle.querySelector('input.edit-mode[name="etiquetas"]');
 
-                    const fechaSucesoInput = detalle.querySelector('input.edit-mode[name="fecha_suceso"]');
-                    const fechaSuceso = fechaSucesoInput?.value?.trim();
+                    const descripcion = descripcionInput?.value?.trim() || '';
+                    const etiquetasCsv = etiquetasInput?.value?.trim() || '';
 
-                    if (fechaSuceso) {
-                        const hoy = new Date();
-                        const fechaIngresada = new Date(fechaSuceso);
-                        hoy.setHours(0,0,0,0);
-                        fechaIngresada.setHours(0,0,0,0);
-                        if (fechaIngresada > hoy) {
-                            alert('La fecha del suceso no puede ser futura.');
-                            saveBtn.disabled = false;
-                            fechaSucesoInput.focus();
-                            return;
-                        }
-                    }
-
-                    const categoria = detalle.querySelector('select.edit-mode[name="categoria"]')?.value?.trim();
-
+                    // Payload SOLO con campos permitidos
                     const payload = {
-                        nombre: nombre || null,
-                        descripcion: descripcion || null,
-                        etiquetas: (etiquetasCsv || '').split(',').map(s => s.trim()).filter(Boolean),
-                        latitud: latitud || null,
-                        longitud: longitud || null,
-                        fecha_suceso: fechaSuceso || null,
-                        categoria: categoria || null
+                        descripcion: descripcion.length ? descripcion : null,
+                        etiquetas: etiquetasCsv.split(',').map(s => s.trim()).filter(Boolean)
                     };
 
                     try {
@@ -405,13 +350,23 @@
                             throw new Error(`PATCH failed: ${resp.status} ${txt}`);
                         }
 
-                        detalle.querySelector('[data-field="nombre"]').textContent = nombre;
-                        detalle.querySelector('[data-field="descripcion"]').textContent = descripcion;
+                        // Actualizar descripción en view-mode
+                        const descSpan = detalle.querySelector('[data-field="descripcion"]');
+                        if (descSpan) {
+                            if (payload.descripcion == null) {
+                                descSpan.textContent = 'No indica';
+                                descSpan.classList.add('muted');
+                            } else {
+                                descSpan.textContent = payload.descripcion;
+                                descSpan.classList.remove('muted');
+                            }
+                        }
 
+                        // Actualizar chips de etiquetas en view-mode
                         const tagsWrap = detalle.querySelector('.tags.view-mode');
                         if (tagsWrap) {
                             tagsWrap.innerHTML = '';
-                            (etiquetasCsv || '').split(',').map(s => s.trim()).filter(Boolean).forEach(tag => {
+                            (payload.etiquetas || []).forEach(tag => {
                                 const span = document.createElement('span');
                                 span.className = 'chip';
                                 span.textContent = tag;
@@ -430,7 +385,7 @@
             });
         });
 
-        // Configuración del Mapa
+        // Configuración del Mapa (ORIGINAL)
         const toNum = v => {
             if (v == null) return null;
             const n = parseFloat(String(v).replace(',', '.'));
@@ -523,7 +478,6 @@
             openDetails(hash);
         });
 
-        
         function fitLayout(){
             const header = document.querySelector('header.site-header');
             const footer = document.querySelector('footer.site-footer');
