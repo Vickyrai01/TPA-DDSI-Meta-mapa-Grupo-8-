@@ -76,7 +76,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                         );
 
                         try {
-                            String url = metamapaApi + "/registrar";
+                            String url = metamapaApi + "usuarios/registrar";
                             ResponseEntity<UsuarioDTO> resp =
                                     restTemplate.postForEntity(url, nuevo, UsuarioDTO.class);
 
