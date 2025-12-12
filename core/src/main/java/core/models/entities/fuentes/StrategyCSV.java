@@ -15,7 +15,6 @@ public class StrategyCSV implements StrategyTipoConexion {
 
     FiltradorCriterios filtradorCriterios = FiltradorCriterios.getInstance();
     HechosRepository hechosRepository = HechosRepository.getInstance();
-    int i = 5; // A SOLUCIONAR DSP!!
 
     @Override
     public List<HechoAIntegrarDTO> extraerHecho(String fuenteBase) {
@@ -48,7 +47,6 @@ public class StrategyCSV implements StrategyTipoConexion {
                 );
                 hechos.add(hechoAIntegrarDTO);
 
-                // 👇 límite de 100
                 if (hechos.size() >= 100) {
                     break;
                 }
