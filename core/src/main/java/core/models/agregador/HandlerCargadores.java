@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import core.observabilidad.RegistroMetricas;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import java.net.URI;
@@ -17,6 +19,16 @@ import java.util.List;
 import java.util.UUID;
 
 public class HandlerCargadores {
+
+    private static final Logger log = LoggerFactory.getLogger(HandlerCargadores.class);
+
+    private static final String TRACE_KEY = "traceId";          // mismo que en logback.xml (%X{traceId})
+    private static final String TRACE_HEADER = "X-Trace-Id";    // header que mandás a cargadores
+
+
+    private static String newSpanId() {
+        return UUID.randomUUID().toString().substring(0, 8);
+    }
 
     private static volatile HandlerCargadores instance;
     List<HechoAIntegrarDTO> resultado = new ArrayList<>();
@@ -45,45 +57,75 @@ public class HandlerCargadores {
     List<HechoAIntegrarDTO> hechosAIntegrar = new ArrayList<>();
 
     public List<HechoAIntegrarDTO> extraerHechosAIntegrar() {
+        String traceId = MDC.get("traceId");
         // Lista local, nueva en cada ejecución
+        long t0 = System.currentTimeMillis();
+        log.info("Inicio extracción de hechos desde cargadores.");
         List<HechoAIntegrarDTO> resultado = new ArrayList<>();
 
         try {
             List<HechoAIntegrarDTO> d = extraerHechoConMetricas(dinamico, TipoCargador.DINAMICO);
+            int n = (d == null ? 0 : d.size());
+            log.info("Cargador DINAMICO OK. items={}", n);
             if (d != null) resultado.addAll(d);
-            System.out.println("[DINAMICO] items: " + (d == null ? 0 : d.size()));
         } catch (Exception e) {
-            System.err.println("No se pudo extraer de DINAMICO: " + e.getMessage());
+            log.error("Cargador DINAMICO falló.", e);
         }
 
         try {
             List<HechoAIntegrarDTO> p = extraerHechoConMetricas(proxy, TipoCargador.PROXY);
+            int n = (p == null ? 0 : p.size());
+            log.info("Cargador PROXY OK. items={}", n);
             if (p != null) resultado.addAll(p);
-            System.out.println("[PROXY] items: " + (p == null ? 0 : p.size()));
         } catch (Exception e) {
-            System.err.println("No se pudo extraer de PROXY: " + e.getMessage());
+            log.error("Cargador PROXY falló.", e);
         }
 
         try {
             List<HechoAIntegrarDTO> eList = extraerHechoConMetricas(estatico, TipoCargador.ESTATICO);
+            int n = (eList == null ? 0 : eList.size());
+            log.info("Cargador ESTATICO OK. items={}", n);
             if (eList != null) resultado.addAll(eList);
-            System.out.println("[ESTATICO] items: " + (eList == null ? 0 : eList.size()));
         } catch (Exception e) {
-            System.err.println("No se pudo extraer de ESTATICO: " + e.getMessage());
+            log.error("Cargador ESTATICO falló.", e);
         }
 
-        System.out.println("[TOTAL en esta llamada] " + resultado.size());
+        long dt = System.currentTimeMillis() - t0;
+        log.info("Fin extracción de cargadores. totalItems={} durationMs={}", resultado.size(), dt);
+
+        if (resultado.isEmpty()) {
+            log.warn("No se obtuvieron hechos de ningún cargador. (totalItems=0)");
+        }
+
         return resultado; // Nueva lista en cada invocación
     }
 
     public List<HechoAIntegrarDTO> extraerHecho(String fuente) {
-        // Lista LOCAL (no campo compartido)
+
         List<HechoAIntegrarDTO> hechosExtraidos = new ArrayList<>();
 
         if (fuente == null || fuente.isBlank()) {
-            System.err.println("Fuente vacía o nula");
-            return hechosExtraidos; // lista vacía nueva
+            log.warn("extraerHecho: fuente vacía o nula");
+            return hechosExtraidos;
         }
+
+        // ✅ viene del Scheduler (no lo generes acá)
+        String traceId = MDC.get("traceId");
+        if (traceId == null || traceId.isBlank()) {
+            // por seguridad si alguien llama fuera del scheduler
+            traceId = UUID.randomUUID().toString().substring(0, 8);
+            MDC.put("traceId", traceId);
+        }
+
+        // ✅ correlationId propio de este handler (lo querés mantener)
+        String correlationId = MDC.get("correlationId");
+        if (correlationId == null || correlationId.isBlank()) {
+            correlationId = UUID.randomUUID().toString().substring(0, 8);
+            MDC.put("correlationId", correlationId);
+        }
+
+        // opcional: distinguir cada request a cargador
+        String spanId = UUID.randomUUID().toString().substring(0, 8);
 
         ObjectMapper objectMapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
@@ -91,44 +133,51 @@ public class HandlerCargadores {
                 .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
                 .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 
-        // 1) correlationId del MDC (lo setea el before de Javalin)
-        String correlationId = MDC.get("correlationId");
-        if (correlationId == null || correlationId.isBlank()) {
-            correlationId = UUID.randomUUID().toString();
-            MDC.put("correlationId", correlationId);
-        }
-
-
         HttpClient client = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(10))
                 .build();
-
+        MDC.put("spanId", spanId);
+        try {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(fuente))
                 .timeout(Duration.ofSeconds(10))
                 .header("Accept", "application/json")
-                .header("X-Correlation-Id", correlationId)
+                .header("X-Trace-Id", traceId)              // ✅ traceId del scheduler
+                .header("X-Correlation-Id", correlationId)  // ✅ correlationId mantenido
+                .header("X-Span-Id", spanId)                // ✅ opcional
                 .GET()
                 .build();
 
-        try {
+        long start = System.nanoTime();
+        log.info("Request a cargador. url={} span={}", fuente, spanId);
+
+
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            long durMs = (System.nanoTime() - start) / 1_000_000;
 
             int status = response.statusCode();
             if (status != 200) {
-                throw new RuntimeException("Error en la llamada HTTP (" + status + "): " + response.body());
+                log.warn("Respuesta cargador no-200. url={} status={} durationMs={} span={}",
+                        fuente, status, durMs, spanId);
+                return List.of();
             }
 
             HechoAIntegrarDTO[] array = objectMapper.readValue(response.body(), HechoAIntegrarDTO[].class);
             Collections.addAll(hechosExtraidos, array);
 
-            // Devolvés SIEMPRE una lista NUEVA, no compartida
+            log.info("Respuesta cargador OK. url={} status=200 items={} durationMs={} span={}",
+                    fuente, hechosExtraidos.size(), durMs, spanId);
+
             return hechosExtraidos;
+
         } catch (Exception e) {
-            System.out.println("Error al extraer hechos desde " + fuente + ": " + e.getMessage());
-            return List.of(); // inmutable y segura
+            log.error("Fallo request a cargador. url={}", fuente, e);
+            return List.of();
+        }finally {
+            MDC.remove("spanId");
         }
     }
+
 
     // ==== NUEVO: enum interno para identificar cargador ====
     private enum TipoCargador { DINAMICO, PROXY, ESTATICO }
@@ -170,6 +219,7 @@ public class HandlerCargadores {
             long durMs = (System.nanoTime() - start) / 1_000_000;
             registrarTiempo(tipo, durMs);
             registrarError(tipo);
+            log.error("Error en extracción con métricas. tipo={} durationMs={}", tipo, durMs, e);
             throw e;
         }
     }

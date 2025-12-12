@@ -189,13 +189,12 @@ public class ServicioDeAgregacion {
 
     //EL QUE SE USA!!
     public void actualizarColecciones(List<HechoAIntegrarDTO> lista) {
+        if (MDC.get("traceId") == null) {
+            MDC.put("traceId", UUID.randomUUID().toString().substring(0, 8));
+        }
 
-        String traceId = UUID.randomUUID().toString().substring(0, 8);
-        MDC.put("traceId", traceId);
         long t0 = System.currentTimeMillis();
 
-
-        try {
             if (lista == null) {
                 log.error("actualizarColecciones: lista=null");
                 return;
@@ -244,9 +243,7 @@ public class ServicioDeAgregacion {
             hechosAIntegrar.clear();
             hechosLimpios.clear();
             colecciones.clear();
-        } finally {
-            MDC.clear();
-        }
+
     }
 
     public void hechoUnicoUrgente(HechoAIntegrarDTO hechoUnico) {
