@@ -327,11 +327,14 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
 
                 em.persist(h);
 
-                if (++i % batch == 0) { em.flush(); em.clear(); }
+                if (++i % batch == 0) { em.flush(); /*em.clear();*/ }
             }
 
             DBUtils.commit(em);
         } catch (RuntimeException ex) {
+            System.err.println("❌ Error en addAllEnUnaTransaccion");
+            System.err.println("Mensaje: " + ex.getMessage());
+            ex.printStackTrace();
             DBUtils.rollback(em);
             throw ex;
         } finally {

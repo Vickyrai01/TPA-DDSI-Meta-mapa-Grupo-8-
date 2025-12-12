@@ -17,8 +17,15 @@ public class ConfigLoader {
             }
         }
 
-        public static String getProperty(String key) {
-            return properties.getProperty(key);
+    public static String getProperty(String key) {
+        // Prioridad: variable de entorno (Docker)
+        String envValue = System.getenv(key);
+        if (envValue != null && !envValue.isBlank()) {
+            return envValue.trim();
         }
+
+        // Fallback: config.properties
+        return properties.getProperty(key);
+    }
 
     }

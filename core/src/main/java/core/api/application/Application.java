@@ -23,19 +23,6 @@ public class Application {
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) {
-        HechosRepositorySeeder hechosRepositorySeeder = HechosRepositorySeeder.getInstance();
-        hechosRepositorySeeder.cargarHechosSeeder();
-
-        FuentesRepositorySeeder fuentesRepositorySeeder = FuentesRepositorySeeder.getInstance();
-        fuentesRepositorySeeder.cargarFuentesSeeder();
-
-        SolicitudEliminacioRepositorySeeder solicitudEliminacioRepositorySeeder = SolicitudEliminacioRepositorySeeder.getInstance();
-        solicitudEliminacioRepositorySeeder.cargarSolicitudDeEliminacionSeeder();
-
-        ColeccionesRepositorySeeder coleccionesRepositorySeeder = ColeccionesRepositorySeeder.getInstance();
-        coleccionesRepositorySeeder.cargarColeccionesRepositorySeeder();
-
-
         HechosRepository hechosRepo = HechosRepository.getInstance();
         ColeccionesRepository colRepo = ColeccionesRepository.getInstance();
         FuentesRepository fuentesRepo = FuentesRepository.getInstance();
@@ -138,5 +125,17 @@ public class Application {
 
         // Arrancamos UNA sola vez
         app.start("0.0.0.0", 8081);
+
+        HechosRepositorySeeder hechosRepositorySeeder = HechosRepositorySeeder.getInstance();
+        hechosRepositorySeeder.cargarHechosSeeder();
+
+        FuentesRepositorySeeder fuentesRepositorySeeder = FuentesRepositorySeeder.getInstance();
+        fuentesRepositorySeeder.cargarFuentesSeeder();
+
+        SolicitudEliminacioRepositorySeeder solicitudEliminacioRepositorySeeder = SolicitudEliminacioRepositorySeeder.getInstance();
+        solicitudEliminacioRepositorySeeder.cargarSolicitudDeEliminacionSeeder();
+
+        ColeccionesRepositorySeeder coleccionesRepositorySeeder = ColeccionesRepositorySeeder.getInstance();
+        coleccionesRepositorySeeder.cargarColeccionesRepositorySeeder();
     }
 }
