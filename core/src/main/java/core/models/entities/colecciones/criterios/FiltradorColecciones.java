@@ -4,6 +4,7 @@ import core.models.entities.colecciones.Coleccion;
 import core.models.entities.hecho.Hecho;
 import core.api.DTO.FiltroHechoDTO;
 
+import java.text.Normalizer;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,6 +47,12 @@ public class FiltradorColecciones {
         return filtrarHechos(coleccion.getHechos(), criterios);}
     }
 
+    private String normalizar(String texto) {
+        if (texto == null) return null;
+        return Normalizer.normalize(texto, Normalizer.Form.NFD).replaceAll("[\\p{InCombiningDiacriticalMarks}]", "").toLowerCase();
+    }
+
+
     public List<Hecho> filtrarHechosPorDTO(List<Hecho> hechos, FiltroHechoDTO filtro) {
         return hechos.stream()
                 // Título
@@ -72,6 +79,11 @@ public class FiltradorColecciones {
                                 && hecho.getCategoria().getNombre() != null
                                 && hecho.getCategoria().getNombre().equalsIgnoreCase(filtro.getCategoria())
                         )
+                )
+                // Provincia (compara por nombre)
+                .filter(hecho -> filtro.getProvincia() == null
+                        || (hecho.getProvincia() != null
+                        && normalizar(hecho.getProvincia()).equals(normalizar(filtro.getProvincia())))
                 )
                 .filter(hecho -> filtro.getSoloMultimedia() == null
                         || !filtro.getSoloMultimedia()

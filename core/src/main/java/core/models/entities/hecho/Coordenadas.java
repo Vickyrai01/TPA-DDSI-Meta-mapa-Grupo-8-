@@ -3,6 +3,7 @@ package core.models.entities.hecho;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import utils.GeocodingUtils;
 
 import javax.persistence.*;
 
@@ -52,5 +53,9 @@ public class Coordenadas {
 
     public String toString(){
         return "(Latitud: " + latitud + "° Longitud: " + longitud + "°)";
+    }
+
+    public String getProvincia() {
+        return GeocodingUtils.obtenerProvincia(latitud, longitud);
     }
 }
