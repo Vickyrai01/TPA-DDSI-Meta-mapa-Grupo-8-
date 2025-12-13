@@ -153,6 +153,16 @@
                             </div>
 
                             <div class="field">
+                                <span class="field-label">Hora del hecho:</span>
+                                <span class="field-value"
+                                    th:text="${h.horaSuceso() != null} ?
+                                    ${#temporals.format(h.horaSuceso(), 'HH:mm a')} :
+                                    'No indica'"
+                                    th:classappend="${h.horaSuceso() == null} ? 'muted' : ''">
+                                </span>
+                            </div>
+
+                            <div class="field">
                                 <span class="field-label">Fecha de carga:</span>
                                 <span class="field-value"
                                       th:text="${h.fechaCarga() != null} ?

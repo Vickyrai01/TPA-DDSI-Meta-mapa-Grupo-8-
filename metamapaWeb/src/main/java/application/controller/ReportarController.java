@@ -70,6 +70,7 @@ public class ReportarController {
             @RequestParam(value = "etiquetas", required = false) String etiquetas,
             @RequestParam(value = "urgente", defaultValue = "false") boolean urgente,
             @RequestParam(value = "noPublicarDatos", defaultValue = "false") boolean noPublicarDatos,
+            @RequestParam(value = "horaSuceso", required = false) String horaSuceso,
             org.springframework.security.core.Authentication authentication,
             RedirectAttributes ra
     ) {
@@ -112,6 +113,7 @@ public class ReportarController {
             jsonMap.put("latitud", lat);
             jsonMap.put("longitud", lon);
             jsonMap.put("fechaSuceso", fechaSuceso);
+            jsonMap.put("horaSuceso", horaSuceso);
             if (multimedia != null && !multimedia.isBlank()) {
                 // si tiene contenido, lo mandamos como lista de un solo elemento
                 jsonMap.put("multimedia", List.of(multimedia));
