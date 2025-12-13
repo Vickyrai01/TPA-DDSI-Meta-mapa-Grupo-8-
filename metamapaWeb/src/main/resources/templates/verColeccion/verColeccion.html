@@ -212,11 +212,13 @@
                      th:src="@{'/uploads/hechos/' + ${m}}"
                      th:alt="${h.nombre()} + ' - imagen adjunta'"
                      class="multimedia-thumb">
-                <video th:if="${#strings.endsWith(m.toLowerCase(), '.mp4') or #strings.endsWith(m.toLowerCase(), '.webm') or #strings.endsWith(m.toLowerCase(), '.ogg') }"
-                       th:src="@{'/uploads/hechos/' + ${m}}"
-                       class="multimedia-thumb" controls>
-                    Tu navegador no soporta la reproducción de video.
-                </video>
+                <div th:if="${#strings.endsWith(m.toLowerCase(), '.mp4') or #strings.endsWith(m.toLowerCase(), '.webm') or #strings.endsWith(m.toLowerCase(), '.ogg') or #strings.endsWith(m.toLowerCase(), '.mkv') }">
+                    <video th:src="@{'/uploads/hechos/' + ${m}}"
+                           class="multimedia-thumb" controls onerror="mostrarBotonDescarga(this)">
+                        Tu navegador no soporta la reproducción de video.
+                    </video>
+                    <a th:href="@{'/uploads/hechos/' + ${m}}" download class="download-btn" style="display:none;margin-top:5px;">Descargar video</a>
+                </div>
             </button>
         </div>
     </span>
@@ -292,6 +294,33 @@
             const n = parseFloat(String(v).replace(',', '.'));
             return Number.isFinite(n) ? n : null;
         };
+
+        // Detectar videos no soportados y mostrar botón de descarga
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.multimedia-thumb').forEach(function (el) {
+                if (el.tagName === 'VIDEO') {
+                    el.addEventListener('error', function () {
+                        mostrarBotonDescarga(el);
+                    });
+                    // Si el video no puede reproducirse, mostrar el botón
+                    el.addEventListener('loadeddata', function () {
+                        if (el.readyState < 2) {
+                            mostrarBotonDescarga(el);
+                        }
+                    });
+                }
+            });
+        });
+
+        // Función global para usar desde onerror en el HTML
+        function mostrarBotonDescarga(videoEl) {
+            videoEl.style.display = 'none';
+            const parent = videoEl.parentElement;
+            const downloadBtn = parent.querySelector('.download-btn');
+            if (downloadBtn) {
+                downloadBtn.style.display = 'inline-block';
+            }
+        }
 
         // ===== Datos para el mapa =====
         const puntos = (window.hechos || [])
