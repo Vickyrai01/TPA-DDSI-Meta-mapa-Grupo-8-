@@ -3,6 +3,7 @@ package core.models.entities.colecciones;
 import core.models.entities.colecciones.criterios.Criterio;
 import core.models.entities.fuentes.Fuente;
 import core.models.entities.hecho.Hecho;
+import core.models.entities.hecho.Estado;
 import core.models.repository.ColeccionesRepository;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -88,7 +89,7 @@ public class Coleccion {
     @Fetch(FetchMode.SUBSELECT)
     private List<Criterio> criterioDePertenencia = new ArrayList<>();
     public List<Criterio> getCriterioDePertenencia() {
-       return criterioDePertenencia;
+        return criterioDePertenencia;
     }
     public void setCriterioDePertenencia(List<Criterio> criterioDePertenencia) {this.criterioDePertenencia = criterioDePertenencia;}
     public void agregarCriterio(Criterio criterio) {criterioDePertenencia.add(criterio);};
@@ -103,26 +104,32 @@ public class Coleccion {
     @Column(name = "algoritmoConsenso")
     public AlgoritmoConsenso algoritmoConsenso = null;
     public void cambiarAlgoritmoConsenso(TipoConsenso algoritmoConsenso){
-      switch (algoritmoConsenso){
-          case ABSOLUTO -> this.setAlgoritmoConsenso(new StrategyAbsoluta());
-          case MAYORIA_SIMPLE -> this.setAlgoritmoConsenso(new StrategyMayoriaSimple());
-          case MULTIPLES_MENCIONES -> this.setAlgoritmoConsenso(new StrategyMultiplesMenciones());
-          case null -> this.setAlgoritmoConsenso(null);
-       }
+        switch (algoritmoConsenso){
+            case ABSOLUTO -> this.setAlgoritmoConsenso(new StrategyAbsoluta());
+            case MAYORIA_SIMPLE -> this.setAlgoritmoConsenso(new StrategyMayoriaSimple());
+            case MULTIPLES_MENCIONES -> this.setAlgoritmoConsenso(new StrategyMultiplesMenciones());
+            case null -> this.setAlgoritmoConsenso(null);
+        }
     }
     public AlgoritmoConsenso getAlgoritmoConsenso() {return algoritmoConsenso;}
     public void setAlgoritmoConsenso(AlgoritmoConsenso algoritmoConsenso) {this.algoritmoConsenso = algoritmoConsenso;}
 
-   public void actualizarColeccionVisible(){
+    public void actualizarColeccionVisible(){
 
-       if(this.modoDeNavegacion==ModoDeNavegacion.IRRESTRICTA || this.algoritmoConsenso == null){
-           this.hechosVisibles = null; //El front toma de la lista de hechos
+        if(this.modoDeNavegacion==ModoDeNavegacion.IRRESTRICTA || this.algoritmoConsenso == null){
+            // Solo hechos aceptados
+            if (this.hechos != null) {
+                this.hechosVisibles = this.hechos.stream()
+                        .filter(h -> h.getEstado() == Estado.ACEPTADO)
+                        .toList();
+            } else {
+                this.hechosVisibles = null;
+            }
+        }else{
+            this.hechosVisibles = this.algoritmoConsenso.ejecutarAlgoritmo(this.hechos, this.fuentes);
+        }
 
-       }else{
-           this.hechosVisibles = this.algoritmoConsenso.ejecutarAlgoritmo(this.hechos, this.fuentes);
-       }
-
-   }
+    }
 
     public void modificarModoNavegacion(ModoDeNavegacion modoDeNavegacion){
         this.modoDeNavegacion=modoDeNavegacion;

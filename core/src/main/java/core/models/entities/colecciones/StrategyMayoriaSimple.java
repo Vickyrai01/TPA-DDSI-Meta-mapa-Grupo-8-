@@ -2,6 +2,7 @@ package core.models.entities.colecciones;
 
 import core.models.entities.fuentes.Fuente;
 import core.models.entities.hecho.Hecho;
+import core.models.entities.hecho.Estado;
 import core.models.repository.HechosRepository;
 import core.models.repository.FuentesRepository;
 
@@ -20,8 +21,13 @@ public class StrategyMayoriaSimple extends AlgoritmoConsenso {
         int cantidadFuentes = fuentes.size();
         int minimoMayoria = (int) Math.ceil(cantidadFuentes / 2.0); // al menos la mitad, redondeando hacia arriba
 
-        for (Hecho hecho : hechos) {
-            List<Hecho> grupo = obtenerHechosIguales(hecho, hechos);
+        // Filtrar solo hechos aceptados
+        List<Hecho> hechosAceptados = hechos.stream()
+                .filter(h -> h.getEstado() == Estado.ACEPTADO)
+                .toList();
+
+        for (Hecho hecho : hechosAceptados) {
+            List<Hecho> grupo = obtenerHechosIguales(hecho, hechosAceptados);
             Set<Integer> idsFuentesEncontradas = grupo.stream()
                     .map(Hecho::getIdFuente)
                     .collect(Collectors.toSet());
