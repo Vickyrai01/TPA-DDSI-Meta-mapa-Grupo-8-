@@ -58,6 +58,7 @@ public class Application {
                 hecho.getLatitud(),
                 hecho.getLongitud(),
                 hecho.getFechaSuceso(),
+                hecho.getHoraSuceso(),
                 hecho.getEtiquetas(),
                 hecho.getContribuyente(),
                 hecho.getMultimedia()
