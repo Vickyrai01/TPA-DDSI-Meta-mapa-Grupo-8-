@@ -13,6 +13,7 @@ import io.javalin.http.Handler;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import javax.swing.plaf.PanelUI;
 import java.net.URI;
@@ -24,6 +25,10 @@ import java.util.Map;
 
 public class PostFuenteHandler implements Handler {
 
+
+    private static final Logger log = LoggerFactory.getLogger(PostFuenteHandler.class);
+
+
     FuentesRepository fuentesRepository = FuentesRepository.getInstance();
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
@@ -33,8 +38,6 @@ public class PostFuenteHandler implements Handler {
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
-        System.out.println("Body crudo: " + context.body());
-
         FuenteDTO dto = context.bodyAsClass(FuenteDTO.class);
         System.out.println("DTO.strategyTipoConexion = " + dto.getStrategyTipoConexion());
 
@@ -42,9 +45,15 @@ public class PostFuenteHandler implements Handler {
         System.out.println("Strategy creada = " + strategyTipoConexion
                 + " (tipo: " + (strategyTipoConexion != null ? strategyTipoConexion.getClass().getSimpleName() : "null") + ")");
 
+
+        log.info("Creando fuente nombre={} strategy={}",
+                (dto != null ? dto.getNombre() : "null"),
+                (dto != null ? dto.getStrategyTipoConexion() : "null"));
+
         TipoFuente tipoFuente = obtenerTipoFuente(dto.getStrategyTipoConexion());
 
         if (strategyTipoConexion == null || tipoFuente == null) {
+            log.warn("Tipo/estrategia no reconocidos strategy={}", dto.getStrategyTipoConexion());
             context.status(400).result("Tipo de fuente / estrategia no reconocidos");
             return;
         }
@@ -80,10 +89,12 @@ public class PostFuenteHandler implements Handler {
             // fuente API → cargador dinámico / proxy
             urlCargador = CARGADOR_DINAMICO_BASE_URL + "/agregarFuente";
         } else {
+            log.warn("StrategyTipoConexion no soportada strategy={}", dto.getStrategyTipoConexion());
             context.status(400).result("StrategyTipoConexion no soportada: " + dto.getStrategyTipoConexion());
             return;
         }
 
+        String traceId = MDC.get("traceId");
         // 6) Armar request HTTP hacia el cargador
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(urlCargador))
@@ -96,14 +107,15 @@ public class PostFuenteHandler implements Handler {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() / 100 != 2) {
-            System.out.println("[Core] Error al mandar fuente al cargador: "
-                    + response.statusCode() + " body=" + response.body());
+            log.error("Error registrando fuente en cargador url={} status={} body={}",
+                    urlCargador, response.statusCode(), safe(response.body()));
 
             // opcional: podrías deshacer (no guardar la fuente en el core si falló)
             context.status(502).result("Error al registrar fuente en cargador");
             return;
         }
-
+        log.info("Fuente creada ok id={} tipoFuente={} strategy={} cargadorUrl={}",
+                respuestaCore.getId(), tipoFuente, dto.getStrategyTipoConexion(), urlCargador);
         context.status(201).json(respuestaCore);
     }
 
@@ -138,5 +150,10 @@ public class PostFuenteHandler implements Handler {
             case "API REST","BIBLIOTECA" -> TipoFuente.PROXY;
             default -> null;
         };
+    }
+
+    private String safe(String s) {
+        if (s == null) return "-";
+        return s.length() > 200 ? s.substring(0, 200) + "..." : s;
     }
 }
