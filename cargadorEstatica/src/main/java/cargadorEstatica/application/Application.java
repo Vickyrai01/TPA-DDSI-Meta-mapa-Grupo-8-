@@ -29,7 +29,7 @@ public class Application {
     private final RepositoryFuentes repoFuentes = RepositoryFuentes.getInstance();
 
     public Application() {
-        repositoryFuentesSeeder.cargarRepos();
+        //repositoryFuentesSeeder.cargarRepos();
         this.cargadorEstatico = CargadorEstatico.getInstance();
     }
 

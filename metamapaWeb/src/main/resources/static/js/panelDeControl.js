@@ -131,6 +131,8 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('input-group-geo').classList.remove('hidden');
     } else if (type === 'fechaSuceso' || type === 'fechaCarga') {
       document.getElementById('input-group-date').classList.remove('hidden');
+    } else if (type === 'horaSuceso') {
+      document.getElementById('input-group-time').classList.remove('hidden');
     }
   });
 
@@ -141,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const type = selectType.value;
     if (!type) { alert('Selecciona un tipo'); return; }
 
-    let palabra=null, cat=null, lat=null, lon=null, desde=null, hasta=null;
+    let palabra=null, cat=null, lat=null, lon=null, desde=null, hasta=null, horaDesde=null, horaHasta=null;
     let displayText = "";
 
     if (type === 'nombre' || type === 'descripcion') {
@@ -175,7 +177,17 @@ document.addEventListener('DOMContentLoaded', () => {
       desde = document.getElementById('crit-input-from').value;
       hasta = document.getElementById('crit-input-to').value;
       displayText = `${type}: ${desde} al ${hasta}`;
+    } else if (type === 'horaSuceso') {
+    horaDesde = document.getElementById('crit-input-time-from').value;
+    horaHasta = document.getElementById('crit-input-time-to').value;
+
+    if (!horaDesde || !horaHasta) {
+      alert('Completá hora desde y hora hasta');
+      return;
     }
+
+    displayText = `Hora suceso: ${horaDesde} a ${horaHasta}`;
+  }
 
     const li = document.createElement('li');
     li.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; margin-bottom:6px;";
@@ -187,6 +199,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if(lon) li.dataset.lon = lon;
     if(desde) li.dataset.desde = desde;
     if(hasta) li.dataset.hasta = hasta;
+    if(horaDesde) li.dataset.horaDesde = horaDesde;
+    if(horaHasta) li.dataset.horaHasta = horaHasta;
+
 
     li.innerHTML = `<span>${displayText}</span><button type="button" class="delete-source-btn btn-delete-crit">×</button>`;
     targetUlForCriteria.appendChild(li);
@@ -243,6 +258,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if(d.lon) c.longitud = parseFloat(d.lon);
       if(d.desde) c.desde = d.desde;
       if(d.hasta) c.hasta = d.hasta;
+      if(d.horaDesde) c.horaDesde = d.horaDesde;
+      if(d.horaHasta) c.horaHasta = d.horaHasta;
       criterios.push(c);
     });
 
@@ -371,6 +388,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if(d.lon) c.longitud = parseFloat(d.lon);
       if(d.desde) c.desde = d.desde;
       if(d.hasta) c.hasta = d.hasta;
+      if(d.horaDesde) c.horaDesde = d.horaDesde;
+      if(d.horaHasta) c.horaHasta = d.horaHasta;
       criteriosFinales.push(c);
     });
 

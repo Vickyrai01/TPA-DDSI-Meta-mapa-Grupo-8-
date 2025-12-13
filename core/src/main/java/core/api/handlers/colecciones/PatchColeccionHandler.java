@@ -52,13 +52,49 @@ public class PatchColeccionHandler implements Handler {
         }
 
         if (dto.criterioDePertenencia != null) {
-            List<Criterio> criterios = dto.criterioDePertenencia.stream()
+
+            // 0) criterios viejos
+            Coleccion coleccionConCriterios = coleccionesRepository.findByIdConCriterios(id);
+            List<Criterio> criteriosViejos = new ArrayList<>(coleccionConCriterios.getCriterioDePertenencia());
+
+            // 1) criterios nuevos
+            List<Criterio> criteriosNuevos = dto.criterioDePertenencia.stream()
                     .map(core.api.DTO.criterio.CriterioDTO::toEntity)
                     .toList();
 
-            coleccion.setCriterioDePertenencia(criterios);
-            coleccionesRepository.update(coleccion);
+            // 2) fuentes (ids) sin lazy
+            List<Integer> idsFuentes = coleccionesRepository.obtenerIdsFuentesDeColeccion(id);
+
+            // 3) hechos candidatos por fuentes
+            List<Hecho> candidatos = hechosRepository.obtenerHechosPorIdsFuente(idsFuentes);
+
+            // 4) ids que estaban “antes” (cumplían criterios viejos)
+            Set<Integer> idsAntes = candidatos.stream()
+                    .filter(h -> criteriosViejos.stream().allMatch(c -> c.cumpleCriterio(h)))
+                    .map(Hecho::getId)
+                    .collect(java.util.stream.Collectors.toSet());
+
+            // 5) ids que siguen cumpliendo con los nuevos
+            Set<Integer> idsSiguen = candidatos.stream()
+                    .filter(h -> criteriosNuevos.stream().allMatch(c -> c.cumpleCriterio(h)))
+                    .map(Hecho::getId)
+                    .collect(java.util.stream.Collectors.toSet());
+
+            // 6) solo remover: (antes - siguen)
+            Set<Integer> aRemover = new HashSet<>(idsAntes);
+            aRemover.removeAll(idsSiguen);
+
+            // 7) persistir criterios nuevos
+            Coleccion coleccionManaged = coleccionesRepository.findByIdConCriterios(id);
+            coleccionManaged.setCriterioDePertenencia(criteriosNuevos);
+            coleccionesRepository.update(coleccionManaged);
+
+            // 8) sacar los que ya no cumplen
+            if (!aRemover.isEmpty()) {
+                coleccionesRepository.desvincularHechosDeColeccion(id, new ArrayList<>(aRemover));
+            }
         }
+
         /*
         if (dto.algoritmoConsenso != null) {
             coleccion.setAlgoritmoConsenso(

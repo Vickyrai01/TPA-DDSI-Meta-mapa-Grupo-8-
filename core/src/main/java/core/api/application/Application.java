@@ -164,7 +164,9 @@ public class Application {
         }
         return traceId.trim();
     }
-
+  FuentesRepositorySeeder fuentesRepositorySeeder = FuentesRepositorySeeder.getInstance();
+        fuentesRepositorySeeder.cargarFuentesSeeder();
+  
     private static long durationMs(io.javalin.http.Context ctx) {
         Long start = ctx.attribute(ATTR_START_NS);
         if (start == null) return -1;
@@ -178,6 +180,7 @@ public class Application {
         }
         return ctx.req().getRemoteAddr();
     }
+      
 
     private static String safe(String s) {
         if (s == null || s.isBlank()) return "-";

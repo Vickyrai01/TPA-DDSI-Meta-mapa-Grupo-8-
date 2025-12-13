@@ -60,7 +60,6 @@ public class StrategyCSV implements StrategyTipoConexion {
                             titulo, descripcion, categoria, latitud, longitud, fecha
                     );
                     hechos.add(hechoAIntegrarDTO);
-
                 }
             }
             }catch (IOException e) {
