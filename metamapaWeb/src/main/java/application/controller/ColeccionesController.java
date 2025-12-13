@@ -2,6 +2,7 @@ package application.controller;
 
 import application.dto.ColeccionDTO;
 import application.dto.HechoDTO;
+import application.enums.Provincia;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +43,7 @@ public class ColeccionesController {
             @RequestParam(value = "descripcion", required = false) String descripcion,
             @RequestParam(value = "etiqueta", required = false) String etiqueta,
             @RequestParam(value = "categoria", required = false) String categoria,
-            @RequestParam(value = "provincia", required = false) String provincia,
+            @RequestParam(value = "provincia", required = false) String provinciaParam,
             @RequestParam(value = "soloMultimedia", required = false) Boolean soloMultimedia,
             @RequestParam(value = "fechaDesdeSuceso", required = false) String fechaDesdeSuceso,
             @RequestParam(value = "fechaHastaSuceso", required = false) String fechaHastaSuceso,
@@ -66,8 +67,13 @@ public class ColeccionesController {
             }
         }
 
+        // Aquí conviertes el string de la provincia al enum Provincia
+        Provincia provincia = Provincia.fromString(provinciaParam);
+
+        // IMPORTANTE: pasas provincia.name() si en el service espera un String, o directo el enum si acepta Provincia
         List<HechoDTO> hechos = coleccionService.getHechosFiltradosDeColeccion(
-                id, modoActual, titulo, descripcion, etiqueta, categoria, provincia,
+                id, modoActual, titulo, descripcion, etiqueta, categoria,
+                provincia != null ? provincia.name() : null,
                 soloMultimedia, fechaDesdeSuceso, fechaHastaSuceso, fechaDesdeCarga, fechaHastaCarga, horaDesdeSuceso, horaHastaSuceso
         );
 
@@ -76,7 +82,7 @@ public class ColeccionesController {
         param.put("descripcion", descripcion);
         param.put("etiqueta", etiqueta);
         param.put("categoria", categoria);
-        param.put("provincia", provincia);
+        param.put("provincia", provinciaParam);
         param.put("soloMultimedia", soloMultimedia);
         param.put("fechaDesdeSuceso", fechaDesdeSuceso);
         param.put("fechaHastaSuceso", fechaHastaSuceso);
@@ -93,8 +99,10 @@ public class ColeccionesController {
 
         model.addAttribute("categorias", coleccionService.getCategorias());
         model.addAttribute("etiquetas", coleccionService.getEtiquetas());
+        model.addAttribute("provincias", Provincia.values());
 
         return "verColeccion/verColeccion";
     }
+
 
 }

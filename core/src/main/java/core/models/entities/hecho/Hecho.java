@@ -367,4 +367,9 @@ public class Hecho {
     public boolean perteneceAFuente(List<String> listaFuentes){ //Recibe los IDs de las fuentes
         return listaFuentes.contains(this.codigoDeFuente);
     }
+
+    public String getProvincia() {
+
+        return this.ubicacion.getProvincia();
+    }
 }
