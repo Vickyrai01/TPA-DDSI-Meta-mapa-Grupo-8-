@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const type = selectType.value;
     if (!type) { alert('Selecciona un tipo'); return; }
 
-    let palabra=null, cat=null, lat=null, lon=null, desde=null, hasta=null, horaDesde=null, horaHasta=null;
+    let palabra=null, cat=null, provincia=null, desde=null, hasta=null, horaDesde=null, horaHasta=null;
     let displayText = "";
 
     if (type === 'nombre' || type === 'descripcion') {
@@ -167,27 +167,28 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         cat = select.value;
       }
-
       displayText = `Categoría: ${cat}`;
     } else if (type === 'ubicacion') {
-      lat = document.getElementById('crit-input-lat').value;
-      lon = document.getElementById('crit-input-lon').value;
-      displayText = `Ubicación: ${lat}, ${lon}`;
+      provincia = document.getElementById('crit-select-provincia').value;
+      if (!provincia) {
+        alert('Elegí una provincia');
+        return;
+      }
+      displayText = `Provincia: ${provincia}`;
     } else if (type.startsWith('fecha')) {
       desde = document.getElementById('crit-input-from').value;
       hasta = document.getElementById('crit-input-to').value;
       displayText = `${type}: ${desde} al ${hasta}`;
     } else if (type === 'horaSuceso') {
-    horaDesde = document.getElementById('crit-input-time-from').value;
-    horaHasta = document.getElementById('crit-input-time-to').value;
+      horaDesde = document.getElementById('crit-input-time-from').value;
+      horaHasta = document.getElementById('crit-input-time-to').value;
 
-    if (!horaDesde || !horaHasta) {
-      alert('Completá hora desde y hora hasta');
-      return;
+      if (!horaDesde || !horaHasta) {
+        alert('Completá hora desde y hora hasta');
+        return;
+      }
+      displayText = `Hora suceso: ${horaDesde} a ${horaHasta}`;
     }
-
-    displayText = `Hora suceso: ${horaDesde} a ${horaHasta}`;
-  }
 
     const li = document.createElement('li');
     li.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; margin-bottom:6px;";
@@ -195,13 +196,11 @@ document.addEventListener('DOMContentLoaded', () => {
     li.dataset.type = type;
     if(palabra) li.dataset.palabra = palabra;
     if(cat) li.dataset.categoria = cat;
-    if(lat) li.dataset.lat = lat;
-    if(lon) li.dataset.lon = lon;
+    if(provincia) li.dataset.provincia = provincia;
     if(desde) li.dataset.desde = desde;
     if(hasta) li.dataset.hasta = hasta;
     if(horaDesde) li.dataset.horaDesde = horaDesde;
     if(horaHasta) li.dataset.horaHasta = horaHasta;
-
 
     li.innerHTML = `<span>${displayText}</span><button type="button" class="delete-source-btn btn-delete-crit">×</button>`;
     targetUlForCriteria.appendChild(li);
@@ -254,8 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const c = { type: d.type };
       if(d.palabra) c.palabraClave = d.palabra;
       if(d.categoria) c.categoria = d.categoria;
-      if(d.lat) c.latitud = parseFloat(d.lat);
-      if(d.lon) c.longitud = parseFloat(d.lon);
+      if(d.provincia) c.provincia = d.provincia;
       if(d.desde) c.desde = d.desde;
       if(d.hasta) c.hasta = d.hasta;
       if(d.horaDesde) c.horaDesde = d.horaDesde;
@@ -384,8 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const c = { type: d.type };
       if(d.palabra) c.palabraClave = d.palabra;
       if(d.categoria) c.categoria = d.categoria;
-      if(d.lat) c.latitud = parseFloat(d.lat);
-      if(d.lon) c.longitud = parseFloat(d.lon);
+      if(d.provincia) c.provincia = d.provincia;
       if(d.desde) c.desde = d.desde;
       if(d.hasta) c.hasta = d.hasta;
       if(d.horaDesde) c.horaDesde = d.horaDesde;

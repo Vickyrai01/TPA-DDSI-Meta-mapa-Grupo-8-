@@ -99,11 +99,10 @@ public class PostColeccionHandler implements Handler {
                     }
                     break;
                 case "ubicacion":
-                    Double lat = ((Number) criterioMap.get("latitud")).doubleValue();
-                    Double lon = ((Number) criterioMap.get("longitud")).doubleValue();
-                    Coordenadas coords = coordenadasRepository.buscarPorCoordenadas(new Coordenadas(lat, lon));
-                    if (coords == null) coords = new Coordenadas(lat, lon);
-                    criterio = new CriterioUbicacion(coords);
+                    String provincia = (String) criterioMap.get("provincia");
+                    if (provincia != null && !provincia.isBlank()) {
+                        criterio = new CriterioUbicacion(provincia);
+                    }
                     break;
                 case "fechaSuceso":
                     criterio = new CriterioFechaSuceso(

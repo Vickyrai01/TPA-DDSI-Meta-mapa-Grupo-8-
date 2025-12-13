@@ -48,7 +48,7 @@ public abstract class CriterioDTO {
             return new CriterioFechaCargaDTO(c.getId(), c.getFechaInicio(), c.getFechaFin());
         }
         if (criterio instanceof CriterioUbicacion c) {
-            return new CriterioUbicacionDTO(c.getId(), c.getLatitud(), c.getLongitud());
+            return new CriterioUbicacionDTO(c.getId(), c.getProvincia());
         }
         if (criterio instanceof CriterioNombre c) {
             return new CriterioNombreDTO(c.getId(), c.getPalabraClave());

@@ -175,18 +175,18 @@
                                         <li th:each="crit : ${c.criterioDePertenencia}"
                                             class="criteria-item"
                                             th:attr="data-type=${crit.type},
-                                                     data-palabra=${crit.palabraClave},
-                                                     data-categoria=${crit.categoria},
-                                                     data-lat=${crit.latitud},
-                                                     data-lon=${crit.longitud},
-                                                     data-desde=${crit.desde},
-                                                     data-hasta=${crit.hasta},
-                                                     data-hora-desde=${crit.horaDesde},
-                                                     data-hora-hasta=${crit.horaHasta}">
-                                            <span th:text="|${crit.type}: ${crit.palabraClave ?: ''}${crit.categoria ?: ''}${crit.latitud != null ? (' Ubicación') : ''}${crit.desde != null ? (' Rango fechas') : ''}${crit.horaDesde != null ? (' Rango horas') : ''}|">
-                                                Info
-                                            </span>
+                                               data-palabra=${crit.palabraClave},
+                                               data-categoria=${crit.categoria},
 
+                                               data-lat=${crit.latitud},
+                                               data-lon=${crit.longitud},
+                                               data-desde=${crit.desde},
+                                               data-hasta=${crit.hasta},
+                                               data-hora-desde=${crit.horaDesde},
+                                               data-hora-hasta=${crit.horaHasta}">
+                                    <span th:text="|${crit.type}: ${crit.palabraClave ?: ''}${crit.categoria ?: ''}${crit.latitud != null ? (' Ubicación') : ''}${crit.desde != null ? (' Rango fechas') : ''}${crit.horaDesde != null ? (' Rango horas') : ''}|">
+                                      Info
+                                    </span>
                                             <button type="button" class="delete-source-btn btn-delete-crit">×</button>
                                         </li>
                                     </ul>
@@ -365,7 +365,7 @@
                         <option value="nombre">Nombre (Palabra clave)</option>
                         <option value="descripcion">Descripción (Palabra clave)</option>
                         <option value="categoria">Categoría</option>
-                        <option value="ubicacion">Ubicación (Lat/Lon)</option>
+                        <option value="ubicacion">Provincia</option>
                         <option value="fechaSuceso">Fecha de Suceso</option>
                         <option value="fechaCarga">Fecha de Carga</option>
                         <option value="horaSuceso">Hora de Suceso</option>
@@ -399,11 +399,11 @@
                     </div>
 
                     <div id="input-group-geo" class="dynamic-group hidden">
-                        <label>Coordenadas:</label>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                            <input type="number" id="crit-input-lat" class="card-input" placeholder="Latitud">
-                            <input type="number" id="crit-input-lon" class="card-input" placeholder="Longitud">
-                        </div>
+                        <label for="crit-select-provincia">Provincia</label>
+                        <select id="crit-select-provincia" class="card-select">
+                            <option value="">Elegí una provincia</option>
+                            <option th:each="p : ${provincias}" th:value="${p.name()}" th:text="${p.nombre}"></option>
+                        </select>
                     </div>
 
                     <div id="input-group-date" class="dynamic-group hidden">

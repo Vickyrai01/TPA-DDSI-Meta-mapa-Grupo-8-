@@ -37,8 +37,7 @@ public class GetHechosDeColeccionesHandler implements Handler {
         String fechaReporteHasta = context.queryParam("fecha_reporte_hasta");
         String fechaAcontecimientoDesde = context.queryParam("fecha_acontecimiento_desde");
         String fechaAcontecimientoHasta = context.queryParam("fecha_acontecimiento_hasta");
-        String latitud = context.queryParam("latitud");
-        String longitud = context.queryParam("longitud");
+        String provincia = context.queryParam("provincia");
 
         List<Criterio> criterios = new ArrayList<>();
 
@@ -61,7 +60,9 @@ public class GetHechosDeColeccionesHandler implements Handler {
             ));
         }
 
-        if (latitud != null && longitud != null) {criterios.add(utilsFormatos.transformarUbicacionEnCriterio(latitud, longitud));}
+        if (provincia != null && !provincia.isBlank()) {
+            criterios.add(utilsFormatos.transformarUbicacionEnCriterio(provincia));
+        }
 
         var opt = repoColecciones.findByIdFetchHechosYContribuyente(idBuscado); // <<-- NUEVO
         if (opt.isEmpty()) {

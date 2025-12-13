@@ -1,5 +1,6 @@
 package application.controller;
 import application.dto.CriterioDTO;
+import application.enums.Provincia;
 import application.service.FuenteService;
 import application.dto.ColeccionDTO;
 import application.service.ColeccionService;
@@ -53,6 +54,8 @@ public class PanelDeControlController {
         }
         model.addAttribute("listaDeColecciones", coleccionService.getAll());
         model.addAttribute("listaDeFuentes", fuenteService.getAll());
+        model.addAttribute("provincias", Provincia.values());
+
         // 2. Agregamos las URLs al modelo existente
         model.addAttribute("graphqlUrl", graphqlUrl);
         model.addAttribute("grafanaUrl", grafanaUrl);

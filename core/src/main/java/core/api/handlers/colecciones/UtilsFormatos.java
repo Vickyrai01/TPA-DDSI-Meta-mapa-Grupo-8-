@@ -24,8 +24,7 @@ public class UtilsFormatos {
             throw new IllegalArgumentException("Formato de fecha inválido. Debe ser dd-MM-yyyy", e);
         }}
 
-    public CriterioUbicacion transformarUbicacionEnCriterio(String latitud, String longitud){
-        Coordenadas coordenadas = new Coordenadas(Double.parseDouble(latitud), Double.parseDouble(longitud));
-        return new CriterioUbicacion(coordenadas);
+    public CriterioUbicacion transformarUbicacionEnCriterio(String provincia){
+        return new CriterioUbicacion(provincia);
     }
 }
