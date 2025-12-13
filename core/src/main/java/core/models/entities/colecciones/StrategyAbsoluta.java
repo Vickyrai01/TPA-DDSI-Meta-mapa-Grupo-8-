@@ -17,17 +17,15 @@ public class StrategyAbsoluta extends AlgoritmoConsenso {
         List<Hecho> hechosVisibles = new ArrayList<>();
         if (fuentes == null || fuentes.isEmpty()) return hechosVisibles;
 
-        // Mayoría simple: Más del 50%
-        double mayoria = fuentes.size() / 2.0;
+        int cantidadFuentes = fuentes.size();
 
         for (Hecho hecho : hechos) {
             List<Hecho> grupo = obtenerHechosIguales(hecho, hechos);
-
             Set<Integer> idsFuentesEncontradas = grupo.stream()
                     .map(Hecho::getIdFuente)
                     .collect(Collectors.toSet());
 
-            if (idsFuentesEncontradas.size() > mayoria) {
+            if (idsFuentesEncontradas.size() == cantidadFuentes) {
                 boolean yaExiste = hechosVisibles.stream().anyMatch(hv -> esElMismoHecho(hv, hecho));
                 if (!yaExiste) {
                     hechosVisibles.add(hecho);

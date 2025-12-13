@@ -15,29 +15,30 @@ public class StrategyMultiplesMenciones extends AlgoritmoConsenso {
     @Override
     public List<Hecho> ejecutarAlgoritmo(List<Hecho> hechos, List<Fuente> fuentes) {
         List<Hecho> hechosVisibles = new ArrayList<>();
+        if (hechos == null || hechos.isEmpty()) return hechosVisibles;
 
-        // Recorremos los hechos de la colección
         for (Hecho hecho : hechos) {
-
-            // PASO 1: Agrupar hechos idénticos (Por Hash o por la lógica de esElMismoHecho)
-            // Si quieres forzar que sea POR HASH, cambia 'esElMismoHecho' por comparación de Strings
+            // Agrupar hechos idénticos (por hash)
             List<Hecho> grupo = hechos.stream()
-                    .filter(h -> h.getHash().equals(hecho.getHash())) // Comparación estricta de Hash
+                    .filter(h -> h.getHash().equals(hecho.getHash()))
                     .toList();
-
-            // PASO 2: Contar fuentes distintas
             Set<Integer> idsFuentesEncontradas = grupo.stream()
                     .map(Hecho::getIdFuente)
                     .collect(Collectors.toSet());
 
-            // PASO 3: Validar regla (Al menos 2 fuentes distintas)
+            // Regla 1: Al menos 2 fuentes
             if (idsFuentesEncontradas.size() >= 2) {
-                // Evitamos agregar duplicados visuales a la lista final
-                boolean yaAgregado = hechosVisibles.stream()
-                        .anyMatch(hv -> hv.getHash().equals(hecho.getHash()));
-
-                if (!yaAgregado) {
-                    hechosVisibles.add(hecho);
+                // Regla 2: Ninguna otra fuente tiene un hecho con el mismo título pero diferentes atributos
+                boolean hayConflicto = hechos.stream()
+                        .filter(h -> h.getTitulo().equals(hecho.getTitulo()) && !h.getHash().equals(hecho.getHash()))
+                        .findAny()
+                        .isPresent();
+                if (!hayConflicto) {
+                    boolean yaAgregado = hechosVisibles.stream()
+                            .anyMatch(hv -> hv.getHash().equals(hecho.getHash()));
+                    if (!yaAgregado) {
+                        hechosVisibles.add(hecho);
+                    }
                 }
             }
         }

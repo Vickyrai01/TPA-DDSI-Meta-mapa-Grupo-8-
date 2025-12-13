@@ -15,16 +15,18 @@ public class StrategyMayoriaSimple extends AlgoritmoConsenso {
     @Override
     public List<Hecho> ejecutarAlgoritmo(List<Hecho> hechos, List<Fuente> fuentes) {
         List<Hecho> hechosVisibles = new ArrayList<>();
+        if (fuentes == null || fuentes.isEmpty()) return hechosVisibles;
+
+        int cantidadFuentes = fuentes.size();
+        int minimoMayoria = (int) Math.ceil(cantidadFuentes / 2.0); // al menos la mitad, redondeando hacia arriba
 
         for (Hecho hecho : hechos) {
             List<Hecho> grupo = obtenerHechosIguales(hecho, hechos);
-
             Set<Integer> idsFuentesEncontradas = grupo.stream()
                     .map(Hecho::getIdFuente)
                     .collect(Collectors.toSet());
 
-            // Regla 1: Al menos 2 fuentes
-            if (idsFuentesEncontradas.size() >= 2) {
+            if (idsFuentesEncontradas.size() >= minimoMayoria) {
                 boolean yaExiste = hechosVisibles.stream().anyMatch(hv -> esElMismoHecho(hv, hecho));
                 if (!yaExiste) {
                     hechosVisibles.add(hecho);
