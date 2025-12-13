@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class HechoResumenDTO {
+    public Integer id;
     public String hash;
     public String nombre;
     public String descripcion;
@@ -27,39 +28,12 @@ public class HechoResumenDTO {
     public String estado;
 
 
-    public HechoResumenDTO(String hash, String titulo, String descripcion, String nombreContribuyente, LocalDate fechaSuceso, LocalTime horaSuceso, List<String> multimedia, List<String> etiquetas, String latitud, String longitud, List<String> categorias, String estado) {
+    public HechoResumenDTO(Integer id, String hash, String titulo, String descripcion, String nombreContribuyente, LocalDate fechaCarga, LocalDate fechaSuceso, LocalTime horaSuceso, List<String> multimedia, List<String> etiquetas, String latitud, String longitud, List<String> categorias, String estado) {
+        this.id = id;
         this.hash = hash;
         this.nombre = titulo;
         this.descripcion = descripcion;
         this.contribuyente = nombreContribuyente;
-        this.fechaSuceso = fechaSuceso;
-        this.horaSuceso = horaSuceso;
-        this.multimedia = multimedia;
-        this.etiquetas = etiquetas;
-        this.latitud = latitud;
-        this.longitud = longitud;
-        this.categorias = categorias;
-        this.estado = estado;
-    }
-
-    public HechoResumenDTO(String hash, String nombre, String descripcion, String contribuyente, LocalDate fechaSuceso, LocalTime horaSuceso, List<String> multimedia, String latitud, String longitud) {
-        this.hash = hash;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.contribuyente = contribuyente;
-        this.fechaSuceso = fechaSuceso;
-        this.horaSuceso = horaSuceso;
-        this.multimedia = multimedia;
-        //this.etiquetas = etiquetas;
-        this.latitud = latitud;
-        this.longitud = longitud;
-    }
-
-    public HechoResumenDTO(String hash, String nombre, String descripcion, String contribuyente, LocalDate fechaCarga, LocalDate fechaSuceso, LocalTime horaSuceso, List<String> multimedia, List<String> etiquetas, String latitud, String longitud, List<String> categorias, String estado) {
-        this.hash = hash;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.contribuyente = contribuyente;
         this.fechaCarga = fechaCarga;
         this.fechaSuceso = fechaSuceso;
         this.horaSuceso = horaSuceso;
@@ -105,6 +79,7 @@ public class HechoResumenDTO {
                 : Collections.emptyList();
 
         return new HechoResumenDTO(
+                h.getId(),
                 h.getHash(),
                 h.getTitulo(),
                 h.getDescripcion(),
@@ -121,6 +96,8 @@ public class HechoResumenDTO {
         );
     }
 
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
     public String getHash() { return hash; }
     public String getNombre() { return nombre; }
     public String getDescripcion() { return descripcion; }

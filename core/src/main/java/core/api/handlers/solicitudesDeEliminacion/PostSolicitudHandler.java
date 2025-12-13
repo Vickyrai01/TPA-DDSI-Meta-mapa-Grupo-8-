@@ -16,9 +16,9 @@ public class PostSolicitudHandler implements Handler {
     @Override
     public void handle(@NotNull Context context) throws Exception {
         SolicitudDeEliminacionDTO dto  = context.bodyAsClass(SolicitudDeEliminacionDTO.class);
-        System.out.println("Creando solicitud de eliminación: " + dto.hecho);
+        System.out.println("Creando solicitud de eliminación para hecho ID: " + dto.hecho);
 
-        Hecho hecho = HechosRepository.getInstance().getHechoHash(dto.hecho);
+        Hecho hecho = HechosRepository.getInstance().getHecho(dto.hecho);
 
         if (hecho == null) {
             context.status(404).result("Hecho con ID " + dto.hecho + " no encontrado");
