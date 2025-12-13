@@ -587,18 +587,34 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
     public Coleccion findByIdConCriteriosYFuentes(Integer id) {
         EntityManager em = DBUtils.getEntityManager();
         try {
-            return em.createQuery("""
+            // 1) Traigo la coleccion + fuentes
+            Coleccion c = em.createQuery("""
             select distinct c from coleccion c
-            left join fetch c.criterioDePertenencia
             left join fetch c.fuentes
             where c.id = :id
         """, Coleccion.class)
                     .setParameter("id", id)
                     .getSingleResult();
+
+            // 2) Inicializo criterios en una segunda query (mismo EM)
+            em.createQuery("""
+            select c from coleccion c
+            left join fetch c.criterioDePertenencia
+            where c.id = :id
+        """, Coleccion.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+
+            // ahora c ya tiene ambas cargadas (porque sigue siendo managed en este EM)
+            c.getCriterioDePertenencia().size();
+            c.getFuentes().size();
+
+            return c;
         } finally {
             em.close();
         }
     }
+
 
     // Solo criterios, sin fuentes
     public Coleccion findByIdConCriterios(Integer id) {
@@ -773,6 +789,42 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
         """)
                     .setParameter("idColeccion", idColeccion)
                     .setParameter("idsFuentes", idsFuentesRemovidas)
+                    .executeUpdate();
+
+            DBUtils.commit(em);
+            return filas;
+
+        } catch (RuntimeException ex) {
+            DBUtils.rollback(em);
+            throw ex;
+        } finally {
+            try { em.close(); } catch (Exception ignore) {}
+        }
+    }
+
+    public int desvincularHechosDeColeccion(int idColeccion, List<Integer> idsHechos) {
+        if (idsHechos == null || idsHechos.isEmpty()) return 0;
+
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            DBUtils.comenzarTransaccion(em);
+
+            int filas = em.createNativeQuery("""
+            DELETE FROM coleccion_hecho
+            WHERE id_coleccion = ?1
+              AND id_hecho IN (?2)
+        """)
+                    .setParameter(1, idColeccion)
+                    .setParameter(2, idsHechos)
+                    .executeUpdate();
+
+            em.createNativeQuery("""
+            DELETE FROM hechos_visibles
+            WHERE id_coleccion = ?1
+              AND id_hecho IN (?2)
+        """)
+                    .setParameter(1, idColeccion)
+                    .setParameter(2, idsHechos)
                     .executeUpdate();
 
             DBUtils.commit(em);

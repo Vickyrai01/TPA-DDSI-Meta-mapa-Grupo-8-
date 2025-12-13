@@ -15,6 +15,7 @@ import core.models.entities.colecciones.criterios.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -116,6 +117,11 @@ public class PostColeccionHandler implements Handler {
                             LocalDate.parse((String) criterioMap.get("hasta"))
                     );
                     break;
+                case "horaSuceso":
+                    criterio = new CriterioHoraSuceso(
+                            LocalTime.parse((String) criterioMap.get("horaDesde")),
+                            LocalTime.parse((String) criterioMap.get("horaHasta"))
+                    );
             }
 
             if (criterio != null) {
