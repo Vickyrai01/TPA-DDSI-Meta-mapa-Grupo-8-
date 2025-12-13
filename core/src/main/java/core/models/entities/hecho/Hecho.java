@@ -168,6 +168,7 @@ public class Hecho {
         this.titulo = titulo;
     }
 
+    @Lob
     @Column(name = "descripcion")
     private String descripcion;
     public String getDescripcion() {

@@ -8,8 +8,12 @@ import core.models.entities.hecho.*;
 import core.models.repository.ColeccionesRepository;
 import core.models.repository.HechosRepository;
 import core.observabilidad.RegistroMetricas;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.time.LocalDate;
+import java.util.*;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -35,6 +39,7 @@ public class ServicioDeAgregacion {
     private NormalizadorContribuyente normalizadorContribuyente = NormalizadorContribuyente.getInstance();
     private FactoryHecho factoryHecho = FactoryHecho.getInstance();
 
+    private static final Logger log = LoggerFactory.getLogger(ServicioDeAgregacion.class);
 
     private static volatile ServicioDeAgregacion instance;
 
@@ -66,9 +71,10 @@ public class ServicioDeAgregacion {
     // 5. Enviar al Factory para crear el hecho
     // 6. Agregar a las colecciones correspondientes (ver lo de los criterios de pertenencia)
 
-    private void eliminarSpam(List <HechoAIntegrarDTO> lista) {
-        if (lista == null || lista.isEmpty()) return;
+    private int  eliminarSpam(List <HechoAIntegrarDTO> lista) {
+        if (lista == null || lista.isEmpty()) return 0;
 
+        int eliminados = 0;
         Iterator<HechoAIntegrarDTO> it = lista.iterator();
 
         while (it.hasNext()) {
@@ -78,21 +84,24 @@ public class ServicioDeAgregacion {
             boolean descripcionSpam = detectorDeSpam.esSpam(h.getDescripcion());
 
             if (tituloSpam || descripcionSpam) {
-                System.out.println(
-                        "[SPAM] Eliminando hecho con hash=" + h.getHash()
-                                + " | titulo=\"" + h.getTitulo() + "\""
-                                + " | descripcion=\"" + h.getDescripcion() + "\""
-                );
+                log.warn("SPAM eliminado. hash={} tituloSpam={} descripcionSpam={} titulo=\"{}\"",
+                        h.getHash(), tituloSpam, descripcionSpam, safe(h.getTitulo()));
                 it.remove();
             }
         }
+        return eliminados;
     }
 
+    private String safe(String s) {
+        if (s == null) return "null";
+        s = s.replaceAll("\\s+", " ").trim();
+        return s.length() > 80 ? s.substring(0, 80) + "..." : s;
+    }
 
-    public void eliminarDuplicados(List<HechoAIntegrarDTO> hechos) {
-        //System.out.print(hechos);
+    public int eliminarDuplicados(List<HechoAIntegrarDTO> hechos) {
         Objects.requireNonNull(hechos, "lista nula");
-        if (hechos.isEmpty() || hechos.size() == 1) return;
+        if (hechos.isEmpty() || hechos.size() == 1) return 0;
+       int before = hechos.size();
         for (int i = 0; i < hechos.size(); i++) {
             HechoAIntegrarDTO hi = hechos.get(i);
             for (int j = i + 1; j < hechos.size(); ) {
@@ -103,6 +112,11 @@ public class ServicioDeAgregacion {
                 }
             }
         }
+        int eliminados = before - hechos.size();
+        if (eliminados > 0) {
+            log.info("Duplicados eliminados. eliminados={} before={} after={}", eliminados, before, hechos.size());
+        }
+        return eliminados;
     }
 
     //1. Buscar los hechos parecidos, varios grupos de hechos parecidos
@@ -112,10 +126,12 @@ public class ServicioDeAgregacion {
     //     Si crea una categoria nueva y es solo, se deja o se manda a revisión??
 
     public void normalizarYCrearHechos() {
-
-        System.out.println("antes de normalizar hechos: " + hechosAIntegrar.size());
+        int ok = 0;
+        int fallidos = 0;
         for (HechoAIntegrarDTO dto : hechosAIntegrar) {
             try{
+                if (dto.getCategoria() == null || dto.getCategoria().isBlank()) {
+                    log.warn("Hecho sin categoría. hash={}", dto.getHash());}
                 Categoria categoria = normalizadorCategoria.obtenerCategoria(dto.getCategoria()); //Solo la crea
                 LocalDate fecha = normalizadorFecha.normalizarFecha(dto.getFechaSuceso()); // hace el quilombo de fecha
                 LocalTime horaSuceso = normalizadorHora.normalizarHora(dto.getHoraSuceso());
@@ -124,60 +140,125 @@ public class ServicioDeAgregacion {
                 Contribuyente contribuyente = normalizadorContribuyente.obtenerContribuyente(dto.getContribuyente());
                 Hecho hecho = factoryHecho.convertirHecho(dto, fecha, categoria, ubicacion, etiquetas, contribuyente, horaSuceso); // factory que funciona
                 hechosLimpios.add(hecho);
+                ok++;
             } catch (NormalizadorFecha.ExcepcionRevisionManualFecha e) {
-                System.out.println("A revisión manual");
-             }
+                log.warn("Fecha no normalizable → revisión manual. hash={} fechaRaw={}", dto.getHash(), dto.getFechaSuceso());
+            } catch (Exception e) {
+                fallidos++;
+                log.error("Error creando hecho desde DTO. hash={}", dto.getHash(), e);
+            }
         }
+
+        log.info("Normalización: fin. fallidos={} output={}",
+               fallidos, hechosLimpios.size());
     }
 
     private void agregarHechosAColecciones(Integer idColeccion)
     {
+        long t0 = System.currentTimeMillis();
         Coleccion coleccion = coleccionesRepository.findByIdConCriterios(idColeccion);
+        if (coleccion == null) {
+            log.error("Colección inexistente. id={}", idColeccion);
+            return;
+        }
+
         List<Criterio> criterios = coleccion.getCriterioDePertenencia();
 
         // 2) Traigo solo los IDs de las fuentes de esa colección
         List<Integer> idsFuentesDeColeccion = coleccionesRepository.obtenerIdsFuentesDeColeccion(idColeccion);
 
         List<Hecho> hechosFiltradosFuentes = hechosRepository.obtenerHechosPorIdsFuente(idsFuentesDeColeccion);
-        List<Hecho> hechosFiltradosCriterio = filtradorCriterios.filtrarHechos(hechosFiltradosFuentes, criterios);
+        if (hechosFiltradosFuentes.isEmpty()) {
+            log.warn("Colección con fuentes pero sin hechos asociados. id={} fuentes={}", idColeccion, idsFuentesDeColeccion.size());
+            return;
+        }
 
+        List<Hecho> hechosFiltradosCriterio = filtradorCriterios.filtrarHechos(hechosFiltradosFuentes, criterios);
         List<Integer> idHechos = hechosFiltradosCriterio.stream().map(Hecho::getId).toList();
         coleccionesRepository.agregarHechosAColeccion(idColeccion, idHechos);
+
+        long dt = System.currentTimeMillis() - t0;
+        log.info("Colección actualizada. id={} hechosAgregados={} durationMs={}", idColeccion, idHechos.size(), dt);
     }
 
+
     public void limpiarHechos() {
-         eliminarSpam(hechosAIntegrar);
-         eliminarDuplicados(hechosAIntegrar);
+
+         int spamEliminados = eliminarSpam(hechosAIntegrar);
+
+         int duplicadosEliminados = eliminarDuplicados(hechosAIntegrar);
+
          normalizadorCategoria.estandarizarCategoriasDuplicadas(hechosAIntegrar);
+
+        log.info("Limpieza: spamEliminados={} duplicadosEliminados={}",
+                spamEliminados, duplicadosEliminados);
     }
 
     //EL QUE SE USA!!
-    public void actualizarColecciones(List<HechoAIntegrarDTO> lista){
-
-        hechosAIntegrar.clear();
-        hechosLimpios.clear();
-
-        System.out.println("Cantidad de hechos a limpiar: " + lista.size());
-        hechosAIntegrar.addAll(lista);
-        System.out.println("Cantidad de hechos a agregados a integrar: " + hechosAIntegrar.size());
-        limpiarHechos();
-        System.out.println("Cantidad de hechos limpiados: " + hechosAIntegrar.size());
-        RegistroMetricas.addHechosCreados(hechosAIntegrar.size());
-        normalizarYCrearHechos();
-        hechosRepository.addAllEnUnaTransaccion(hechosLimpios);
-        List<Coleccion> colecciones = coleccionesRepository.obtenerTodas();
-        System.out.println("Obtuve todas las colecciones.." + " son " + colecciones.size() + " colecciones.");
-        for (Coleccion coleccion : colecciones) {
-            agregarHechosAColecciones(coleccion.getId());
+    public void actualizarColecciones(List<HechoAIntegrarDTO> lista) {
+        if (MDC.get("traceId") == null) {
+            MDC.put("traceId", UUID.randomUUID().toString().substring(0, 8));
         }
-        hechosAIntegrar.clear();
-        hechosLimpios.clear();
-        colecciones.clear();
+
+        long t0 = System.currentTimeMillis();
+
+            if (lista == null) {
+                log.error("actualizarColecciones: lista=null");
+                return;
+            }
+
+            log.info("Inicio actualizarColecciones. inputSize={}", lista.size());
+
+            hechosAIntegrar.clear();
+            hechosLimpios.clear();
+
+            hechosAIntegrar.addAll(lista);
+            log.info("Hechos cargados a integrar. size={}", hechosAIntegrar.size());
+
+            limpiarHechos();
+            log.info("Post-limpieza. hechosAIntegrar={}", hechosAIntegrar.size());
+
+            RegistroMetricas.addHechosCreados(hechosAIntegrar.size());
+            normalizarYCrearHechos();
+            log.info("Post-normalización. hechosLimpios={}", hechosLimpios.size());
+
+            try {
+                hechosRepository.addAllEnUnaTransaccion(hechosLimpios);
+                log.info("Persistencia OK. insertCount={}", hechosLimpios.size());
+            } catch (Exception e) {
+                log.error("Falló persistencia en una transacción. insertCount={}", hechosLimpios.size(), e);
+                return;
+            }
+
+            List<Coleccion> colecciones = coleccionesRepository.obtenerTodas();
+            log.info("Colecciones obtenidas. count={}", colecciones.size());
+
+
+            int ok = 0;
+            for (Coleccion coleccion : colecciones) {
+                try {
+                    agregarHechosAColecciones(coleccion.getId()); // adentro le metemos logs
+                    ok++;
+                } catch (Exception e) {
+                    log.error("Error actualizando colección id={}", coleccion.getId(), e);
+                }
+            }
+
+            long dt = System.currentTimeMillis() - t0;
+            log.info("Fin actualizarColecciones. coleccionesOK={}/{} durationMs={}", ok, colecciones.size(), dt);
+
+            hechosAIntegrar.clear();
+            hechosLimpios.clear();
+            colecciones.clear();
+
     }
 
     public void hechoUnicoUrgente(HechoAIntegrarDTO hechoUnico) {
-        if (hechoUnico == null) return;
-        System.out.println(hechoUnico.getHash());
+        if (hechoUnico == null) {
+            log.warn("hechoUnicoUrgente llamado con null");
+            return;
+        }
+        log.info("hechoUnicoUrgente: hash={}", hechoUnico.getHash());
         actualizarColecciones(List.of(hechoUnico));
     }
 

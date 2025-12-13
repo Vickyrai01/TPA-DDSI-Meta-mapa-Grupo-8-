@@ -1,5 +1,7 @@
 package cargadorEstatica.application;
 import cargadorEstatica.observabilidad.MetricasCargadorEstatica;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import cargadorEstatica.model.*;
@@ -18,6 +20,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/cargadorEstatico")
 public class Application {
+
+    private static final Logger log = LoggerFactory.getLogger(Application.class);
 
     private static final RepositoryFuentesSeeder repositoryFuentesSeeder = RepositoryFuentesSeeder.getInstance();
 
@@ -41,16 +45,33 @@ public class Application {
 
     @GetMapping(value = "/obtenerHechos", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<HechoAIntegrarDTO>> obtenerHechos() {
-        List<HechoAIntegrarDTO> hechos = cargadorEstatico.extraerHechosAIntegrar();
-        return ResponseEntity.ok(hechos); // 200 con [] si está vacío
+        log.info("Solicitud para obtener hechos");
+        try {
+            List<HechoAIntegrarDTO> hechos = cargadorEstatico.extraerHechosAIntegrar();
+            log.info("Hechos obtenidos correctamente. cantidad={}", hechos.size());
+            return ResponseEntity.ok(hechos);
+        } catch (Exception e) {
+            log.error("Error al obtener hechos (estático)", e);
+            return ResponseEntity.status(500).build();
+        }
     }
 
     @PostMapping("/agregarFuente")
     public ResponseEntity<?> agregarFuente(@RequestBody FuenteDTO fuenteDTO) {
+        log.info("Solicitud para agregar fuente estática nombre={} tipoFuente={}",
+                fuenteDTO.getNombre(), fuenteDTO.getTipoFuente());
+
         StrategyTipoConexion strategyFuente = obtenerStrategyFuente(fuenteDTO.getTipoFuente());
-        if (strategyFuente == null) return ResponseEntity.status(400).body("Tipo de fuente no reconocido");
+        if (strategyFuente == null) {
+            log.warn("Tipo de fuente no reconocido: {}", fuenteDTO.getTipoFuente());
+            return ResponseEntity.status(400).body("Tipo de fuente no reconocido");
+        }
         Fuente fuente = new Fuente(fuenteDTO.getId(), fuenteDTO.getNombre(), fuenteDTO.getLink(), strategyFuente, fuenteDTO.getTipoFuente());
         repoFuentes.save(fuente);
+
+        log.info("Fuente estática agregada correctamente id={} nombre={}",
+                fuenteDTO.getId(), fuenteDTO.getNombre());
+
         return ResponseEntity.status(201).build();
     }
 
@@ -61,8 +82,13 @@ public class Application {
 
     @GetMapping("/obtenerFuentes")
     public ResponseEntity<List<Fuente>> obtenerFuentes(){
+        log.info("Solicitud para listar fuentes");
         List<Fuente> fuentes = repoFuentes.findAll();
-        if(fuentes.isEmpty()) return ResponseEntity.status(204).build();
+        if (fuentes.isEmpty()) {
+            log.info("No se encontraron fuentes (estático)");
+            return ResponseEntity.status(204).build();
+        }
+        log.info("Fuentes obtenidas (estático). cantidad={}", fuentes.size());
         return ResponseEntity.ok(fuentes);
     }
 
@@ -71,9 +97,13 @@ public class Application {
             @PathVariable("id") Integer fuenteId,
             @RequestParam("archivoCsv") MultipartFile archivoCsv
     ) {
+        log.info("Solicitud para subir CSV fuenteId={} archivo={}",
+                fuenteId,
+                archivoCsv != null ? archivoCsv.getOriginalFilename() : "null");
         try {
             var fuente = repoFuentes.findById(fuenteId);
             if (fuente == null) {
+                log.warn("Fuente no encontrada al subir CSV. fuenteId={}", fuenteId);
                 return ResponseEntity.status(404).body("Fuente no encontrada");
             }
 
@@ -83,6 +113,7 @@ public class Application {
             String nombreArchivo = archivoCsv.getOriginalFilename();
             if (nombreArchivo == null || nombreArchivo.isBlank()) {
                 nombreArchivo = "fuente_" + fuenteId + ".csv";
+                log.debug("Nombre de archivo vacío, se asigna por defecto: {}", nombreArchivo);
             }
 
             Path destino = carpeta.resolve(nombreArchivo);
@@ -91,6 +122,10 @@ public class Application {
             // guardar solo el nombre relativo, que StrategyCSV usa
             fuente.setLink(nombreArchivo);
             repoFuentes.save(fuente);
+
+            log.info("CSV guardado correctamente fuenteId={} path={}",
+                    fuenteId,
+                    destino.toAbsolutePath());
 
             return ResponseEntity.status(201).body("CSV guardado correctamente");
         } catch (Exception e) {
@@ -101,21 +136,32 @@ public class Application {
 
     @PostMapping("/eliminar/{id}")
     public ResponseEntity<?> eliminarFuente(@PathVariable("id") Integer id){
+        log.info("Solicitud para eliminar fuente estática id={}", id);
         try {
             Fuente fuente = repoFuentes.findById(id);
-            if(fuente == null) return ResponseEntity.status(404).build();
+            if (fuente == null) {
+                log.warn("No se encontró la fuente a eliminar id={}", id);
+                return ResponseEntity.status(404).build();
+            }
+
             try {
                 Path carpeta = Paths.get("cargadorEstatica", "csv");
                 Path destino = carpeta.resolve(fuente.getLink());
-                Files.deleteIfExists(destino);
+                boolean deleted = Files.deleteIfExists(destino);
+                log.info("Archivo físico {} id={} path={}",
+                        deleted ? "eliminado" : "no existía",
+                        id,
+                        destino.toAbsolutePath());
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("No se pudo borrar el archivo físico de la fuente id={} link={}",
+                        id, fuente.getLink(), e);
                 return ResponseEntity.status(500).body("No se pudo borrar archivo físico");
             }
             repoFuentes.deleteById(id);
+            log.info("Fuente estática eliminada correctamente id={}", id);
             return ResponseEntity.status(204).build();
         } catch (Exception e) {
-        e.printStackTrace();
+            log.error("Error al eliminar fuente estática id={}", id, e);
         return ResponseEntity.status(500).body("Error al eliminar fuente estática");
         }
     }

@@ -3,6 +3,8 @@ package application.config;
 import application.service.RutasProperties;
 import core.models.entities.usuario.Usuario;
 import core.models.repository.UsuarioRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -27,6 +29,7 @@ import java.util.Optional;
     @Component
     public class CustomAuthProvider implements AuthenticationProvider {
 
+        private static final Logger log = LoggerFactory.getLogger(CustomAuthProvider.class);
         private final RestTemplate restTemplate = new RestTemplate();
         private final String metamapaApi;
 
@@ -40,11 +43,12 @@ import java.util.Optional;
             String contrasena = authentication.getCredentials().toString();
 
             if (rawCorreo == null || rawCorreo.trim().isEmpty()) {
+                log.warn("Intento de autenticación con correo inválido");
                 throw new BadCredentialsException("Correo inválido");
             }
 
             String correo = rawCorreo.trim().toLowerCase();
-            System.out.println("[AUTH] Intentando autenticar: '" + correo + "'");
+            log.info("Intentando autenticar usuario correo={}", correo);
 
             UsuarioDTO usuario = null;
 
@@ -59,22 +63,25 @@ import java.util.Optional;
                 }
             } catch (HttpClientErrorException.NotFound ex) {
                 // 404 -> usuario no existe en el CORE
-                System.out.println("[AUTH] Usuario no encontrado en CORE: " + correo);
+                log.warn("Usuario no encontrado en CORE correo={}", correo);
                 throw new BadCredentialsException("Usuario no encontrado");
             } catch (RestClientResponseException ex) {
-                System.out.println("[AUTH] Error HTTP consultando CORE: " + ex.getStatusText());
+                log.error("Error HTTP consultando CORE correo={} status={}",
+                        correo, ex.getStatusText(), ex);
                 throw new AuthenticationServiceException("Error al comunicarse con el CORE", ex);
             } catch (Exception ex) {
-                System.out.println("[AUTH] Error inesperado consultando CORE: " + ex.getMessage());
+                log.error("Error inesperado consultando CORE correo={}", correo, ex);
                 throw new AuthenticationServiceException("Error al autenticarse contra el CORE", ex);
             }
 
             if (usuario == null) {
+                log.warn("Usuario nulo devuelto por CORE correo={}", correo);
                 throw new BadCredentialsException("Usuario no encontrado");
             }
 
             // ============ 2) VALIDAR CONTRASEÑA ============
             if (usuario.getContrasena() == null || !usuario.getContrasena().equals(contrasena)) {
+                log.warn("Contraseña incorrecta correo={}", correo);
                 throw new BadCredentialsException("Contraseña incorrecta");
             }
 
@@ -87,7 +94,7 @@ import java.util.Optional;
             attributes.put("email", usuario.getCorreo());
             attributes.put("picture", usuario.getFoto());
 
-            System.out.println("[AUTH] Autenticación exitosa para: " + usuario.getCorreo());
+            log.info("Autenticación exitosa correo={} rol={}", correo, rol);
 
             return new UsernamePasswordAuthenticationToken(
                     attributes,

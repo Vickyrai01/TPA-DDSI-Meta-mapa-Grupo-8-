@@ -26,37 +26,60 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        long start = System.nanoTime();
+        long startNs = System.nanoTime();
         MetricasCargadorProxy.incRequests();
 
         String uri = request.getRequestURI();
         boolean esObtenerHechos = uri != null && uri.contains("/obtenerHechos");
 
-        try {
-            String correlationId = request.getHeader(HEADER_NAME);
-            if (correlationId == null || correlationId.isBlank()) {
-                correlationId = UUID.randomUUID().toString();
-            }
+        String correlationId = obtenerOCrearCorrelationId(request);
 
+        try {
             MDC.put("correlationId", correlationId);
             response.setHeader(HEADER_NAME, correlationId);
 
-            log.info("REQ CargadorProxy correlationId={} method={} uri={}",
-                    correlationId, request.getMethod(), request.getRequestURI());
+            log.info("REQ {} {}", request.getMethod(), uri);
 
-            if(esObtenerHechos){
+            if (esObtenerHechos) {
                 MetricasCargadorProxy.incRequestsObtenerHechos();
             }
 
             filterChain.doFilter(request, response);
 
+            long durationMs = calcularDuracionMs(startNs);
+            MetricasCargadorProxy.addTime(durationMs);
+
+            log.info("RES {} {} status={} time={}ms",
+                    request.getMethod(),
+                    uri,
+                    response.getStatus(),
+                    durationMs
+            );
+
         } catch (Exception e) {
             MetricasCargadorProxy.incErrors();
+
+            log.error("ERROR {} {} - {}",
+                    request.getMethod(),
+                    uri,
+                    e.getClass().getSimpleName(),
+                    e
+            );
+
             throw e;
         } finally {
-            long durationMs = (System.nanoTime() - start) / 1_000_000;
-            MetricasCargadorProxy.addTime(durationMs);
             MDC.clear();
         }
+    }
+
+    private String obtenerOCrearCorrelationId(HttpServletRequest request) {
+        String correlationId = request.getHeader(HEADER_NAME);
+        return (correlationId == null || correlationId.isBlank())
+                ? UUID.randomUUID().toString()
+                : correlationId;
+    }
+
+    private long calcularDuracionMs(long startNs) {
+        return (System.nanoTime() - startNs) / 1_000_000;
     }
 }

@@ -39,14 +39,17 @@ public class PostHechoHandler implements Handler {
         try {
             String urgenteHeader = context.header("X-Urgente");
             boolean urgente = Boolean.parseBoolean(urgenteHeader);
-            log.info("Header X-Urgente='{}' => urgente={}", urgenteHeader, urgente);
 
             String anonimoHeader = context.header("X-Anonimo");
             boolean anonimo = Boolean.parseBoolean(anonimoHeader);
-            log.info("Header X-Anonimo='{}' => anonimo={}", anonimoHeader, anonimo);
 
             HechoAIntegrarDINAMICO dto = context.bodyAsClass(HechoAIntegrarDINAMICO.class);
-            log.info("Creando hecho: {}", context.body());
+            log.info("Crear hecho request urgente={} anonimoHeader={} tituloLen={} descLen={}",
+                    urgente,
+                    anonimo,
+                    (dto != null && dto.getTitulo() != null ? dto.getTitulo().length() : 0),
+                    (dto != null && dto.getDescripcion() != null ? dto.getDescripcion().length() : 0)
+            );
 
             // Tomamos el correo que viene como contribuyente desde web
             String correoContribuyente = dto.getContribuyente();

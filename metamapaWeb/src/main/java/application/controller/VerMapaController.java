@@ -27,16 +27,6 @@ public class VerMapaController {
     public String verMapaGlobal(Model model) {
         try {
             List<HechoDTO> hechosGlobales = hechoService.getAll();
-
-            // --- AGREGA ESTO PARA PROBAR ---
-            System.out.println("--------------------------------------------------");
-            System.out.println("DEBUG MAPA: Cantidad de hechos encontrados: " + (hechosGlobales != null ? hechosGlobales.size() : "NULL"));
-            if (hechosGlobales != null && !hechosGlobales.isEmpty()) {
-                System.out.println("Primer hecho: " + hechosGlobales.get(0).nombre());
-                System.out.println("Coordenadas: " + hechosGlobales.get(0).latitud() + ", " + hechosGlobales.get(0).longitud());
-            }
-            // -------------------------------
-
             model.addAttribute("hechos", Optional.ofNullable(hechosGlobales).orElse(List.of()));
         } catch (Exception e) {
             System.err.println("Error en verMapaGlobal: " + e.getMessage());

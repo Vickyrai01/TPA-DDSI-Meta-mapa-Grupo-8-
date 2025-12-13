@@ -3,6 +3,8 @@ package application.service;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 
@@ -10,19 +12,17 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Getter
 @Setter
 public class RutasProperties {
+    private static final Logger log =
+            LoggerFactory.getLogger(RutasProperties.class);
     private String baseUrl;
     private String adminBaseUrl;
     private String estadisticasBaseUrl;
 
-    public RutasProperties() {
-        System.out.println(">>> RutasProperties creado!");
-    }
-
     @PostConstruct
     public void init() {
-        System.out.println("BASE URL = " + baseUrl);
-        System.out.println("ADMIN URL = " + adminBaseUrl);
-        System.out.println("ESTADISTICAS URL = " + estadisticasBaseUrl);
+        log.info("BASE CORE URL = " + baseUrl);
+        log.info("ADMIN URL = " + adminBaseUrl);
+        log.info("ESTADISTICAS URL = " + estadisticasBaseUrl);
     }
 
 }

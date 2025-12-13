@@ -3,16 +3,25 @@ package core.api.handlers.hechos;
 import core.models.entities.hecho.Hecho;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utils.DBUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
 public class DeleteHechoHandler implements Handler {
+
+    private static final Logger log = LoggerFactory.getLogger(DeleteHechoHandler.class);
+
     @Override
     public void handle(Context ctx) {
-        String hash = ctx.pathParam("hash"); // coincide con {hash} en el config
+        String hash = ctx.pathParam("hash");
+
+        log.info("Eliminar hecho por hash hash={}", hash);
+
         if (hash == null || hash.isBlank()) {
+            log.warn("Hash requerido faltante");
             ctx.status(400).result("Hash requerido");
             return;
         }
@@ -24,6 +33,7 @@ public class DeleteHechoHandler implements Handler {
             Hecho hecho = buscarPorHash(em, hash);
             if (hecho == null) {
                 DBUtils.rollback(em);
+                log.warn("Hecho no encontrado hash={}", hash);
                 ctx.status(404).result("Hecho no encontrado");
                 return;
             }
@@ -48,10 +58,11 @@ public class DeleteHechoHandler implements Handler {
             em.remove(managed);
 
             DBUtils.commit(em);
+            log.info("Hecho eliminado ok hash={} id={}", hash, id);
             ctx.status(204);
         } catch (Exception ex) {
             DBUtils.rollback(em);
-            ex.printStackTrace();
+            log.error("Error eliminando hecho hash={}", hash, ex);
             ctx.status(500).result("Error eliminando hecho: " + ex.getMessage());
         } finally {
             try { em.close(); } catch (Exception ignore) {}
