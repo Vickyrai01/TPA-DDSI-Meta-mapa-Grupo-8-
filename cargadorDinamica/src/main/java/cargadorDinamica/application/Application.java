@@ -74,11 +74,11 @@ public class Application {
         String hash = (hecho == null ? null : hecho.getHash());
 
         if (hecho == null) {
-            log.warn("POST /agregarHecho: body null span={}", span);
+            log.warn("POST /agregarHecho: body null");
             return ResponseEntity.badRequest().body("Body vacío");
         }
 
-        log.info("POST /agregarHecho: inicio hash={} span={}", hash, span);
+        log.info("POST /agregarHecho: inicio hash={}", hash);
         try {
         HechoAIntegrarDTO hechoDTO = new HechoAIntegrarDTO(
                 hecho.getHash(),
@@ -100,11 +100,11 @@ public class Application {
 
         dinamicaRepository.save(hechoDTO);
         long dt = System.currentTimeMillis() - t0;
-        log.info("POST /agregarHecho: creado hash={} durationMs={} span={}", hash, dt, span);
+        log.info("POST /agregarHecho: creado hash={} durationMs={}", hash, dt);
         return ResponseEntity.status(201).body("Hecho agregado correctamente");
         } catch (Exception e) {
             long dt = System.currentTimeMillis() - t0;
-            log.error("POST /agregarHecho: error hash={} durationMs={} span={}", hash, dt, span, e);
+            log.error("POST /agregarHecho: error hash={} durationMs={}", hash, dt, e);
             return ResponseEntity.status(500).body("Error guardando hecho");
         }}
 
