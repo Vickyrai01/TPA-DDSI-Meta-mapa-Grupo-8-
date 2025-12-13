@@ -14,12 +14,17 @@ import core.models.entities.colecciones.criterios.FiltradorColecciones;
 import core.models.entities.hecho.Hecho;
 import core.models.repository.HechosRepository;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
 public class GetHechoHandler implements Handler {
+
+    private static final Logger log = LoggerFactory.getLogger(GetHechoHandler.class);
+
     private final HechosRepository repoHechos = HechosRepository.getInstance();
     private final ContribuyentesRepository repoContribuyentes = ContribuyentesRepository.getInstance();
 
@@ -74,12 +79,13 @@ public class GetHechoHandler implements Handler {
         List<Hecho> hechosFiltrados = hechosAprobados;
 
         if (mailContribuyente != null && !mailContribuyente.isBlank()) {
-
+            log.info("Listar hechos aprobados contribuyenteMail={}", mailContribuyente);
             // 3) Busco el contribuyente por mail en el repo
             Optional<Contribuyente> contribOpt = repoContribuyentes.findByMail(mailContribuyente);
 
             // 3.a) Si no existe → error
             if (contribOpt.isEmpty()) {
+                log.warn("Contribuyente no existe mail={}", mailContribuyente);
                 context.status(404).json(Map.of(
                         "error", "Contribuyente no existe",
                         "mail", mailContribuyente
@@ -99,6 +105,9 @@ public class GetHechoHandler implements Handler {
 
         // 5) Paso a DTO y devuelvo JSON
         List<HechoResumenDTO> hechosDevolver = pasarDTO(hechosFiltrados);
+
+        log.info("Hechos listados (aprobadosTotal={})",
+                hechosAprobados.size());
         context.json(hechosDevolver);
     }
 

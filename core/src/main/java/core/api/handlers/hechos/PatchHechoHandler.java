@@ -7,6 +7,8 @@ import core.models.entities.hecho.Etiqueta;
 import core.models.entities.hecho.Hecho;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utils.DBUtils;
 
 import javax.persistence.EntityManager;
@@ -18,7 +20,7 @@ import core.models.entities.hecho.Categoria;
 import core.models.repository.CategoriaRepository;
 
 public class PatchHechoHandler implements Handler {
-
+    private static final Logger log = LoggerFactory.getLogger(PatchHechoHandler.class);
     private static final ObjectMapper RELAXED_JSON = new ObjectMapper()
             .configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
             .configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
@@ -26,7 +28,10 @@ public class PatchHechoHandler implements Handler {
     @Override
     public void handle(Context ctx) {
         String hash = ctx.pathParam("hash"); // Ruta: /core/api/hechos/{hash}
+        log.info("Patch hecho hash={}", hash);
+
         if (hash == null || hash.isBlank()) {
+            log.warn("Hash requerido faltante");
             ctx.status(400).result("Hash requerido");
             return;
         }
@@ -38,6 +43,7 @@ public class PatchHechoHandler implements Handler {
                     ? Collections.emptyMap()
                     : RELAXED_JSON.readValue(raw, new TypeReference<Map<String, Object>>() {});
         } catch (Exception ex) {
+            log.warn("Body inválido en patch hecho hash={}", hash);
             ctx.status(400).result("Body inválido. Enviar JSON con nombre/descripcion/etiquetas.");
             return;
         }
@@ -97,6 +103,7 @@ public class PatchHechoHandler implements Handler {
                 && latitud == null && longitud == null
                 && fechaSuceso == null
                 && (categoriaStr == null || categoriaStr.isBlank())) {
+            log.info("Patch hecho sin cambios hash={}", hash);
             ctx.status(204);
             return;
         }
@@ -108,6 +115,7 @@ public class PatchHechoHandler implements Handler {
             Hecho hecho = buscarPorHash(em, hash);
             if (hecho == null) {
                 DBUtils.rollback(em);
+                log.warn("Hecho no encontrado para patch hash={}", hash);
                 ctx.status(404).result("Hecho no encontrado");
                 return;
             }
@@ -166,10 +174,11 @@ public class PatchHechoHandler implements Handler {
 
             em.merge(hecho);
             DBUtils.commit(em);
+            log.info("Patch hecho aplicado ok hash={}", hash);
             ctx.status(204);
         } catch (Exception ex) {
             DBUtils.rollback(em);
-            ex.printStackTrace();
+            log.error("Error actualizando hecho hash={}", hash, ex);
             ctx.status(500).result("Error actualizando hecho: " + ex.getMessage());
         } finally {
             try { em.close(); } catch (Exception ignore) {}
