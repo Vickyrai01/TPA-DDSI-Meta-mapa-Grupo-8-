@@ -19,6 +19,8 @@ import javax.persistence.*;
         @JsonSubTypes.Type(value = CriterioFechaSuceso.class, name = "fechaSuceso"),
         @JsonSubTypes.Type(value = CriterioNombre.class, name = "nombre"),
         @JsonSubTypes.Type(value = CriterioFechaModificacion.class, name = "fechaModificacion"),
+        @JsonSubTypes.Type(value = CriterioEtiqueta.class, name = "etiqueta"),
+        @JsonSubTypes.Type(value = CriterioHoraSuceso.class, name = "horaSuceso")
 })
 
 @Entity

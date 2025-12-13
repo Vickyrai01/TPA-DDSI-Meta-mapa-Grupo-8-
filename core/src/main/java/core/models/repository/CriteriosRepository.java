@@ -7,6 +7,7 @@ import utils.DBUtils;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
 
@@ -42,8 +43,7 @@ public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
                                     "WHERE LOWER(TRIM(c.palabraClave)) = LOWER(:palabra)",
                             CriterioDescripcion.class)
                     .setParameter("palabra", palabra.trim())
-                    .getResultList()
-                    .stream()
+                    .getResultStream()
                     .findFirst()
                     .orElse(null);
         } finally {
@@ -64,7 +64,9 @@ public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
                                     "WHERE LOWER(TRIM(c.palabraClave)) = LOWER(:palabra)",
                             CriterioNombre.class)
                     .setParameter("palabra", palabra.trim())
-                    .getResultList();
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
         } finally {
             em.close();
         }
@@ -83,7 +85,9 @@ public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
                                     "WHERE c.categoria = :categoria",
                             CriterioCategoria.class)
                     .setParameter("categoria", categoria)
-                    .getResultList();
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
         } finally {
             em.close();
         }
@@ -102,7 +106,9 @@ public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
                                     "WHERE c.coordenadas = :coords",
                             CriterioUbicacion.class)
                     .setParameter("coords", coordenadas)
-                    .getResultList();
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
         } finally {
             em.close();
         }
@@ -122,7 +128,9 @@ public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
                             CriterioFechaSuceso.class)
                     .setParameter("desde", desde)
                     .setParameter("hasta", hasta)
-                    .getResultList();
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
         } finally {
             em.close();
         }
@@ -142,7 +150,9 @@ public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
                             CriterioFechaCarga.class)
                     .setParameter("desde", desde)
                     .setParameter("hasta", hasta)
-                    .getResultList();
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
         } finally {
             em.close();
         }
@@ -162,7 +172,32 @@ public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
                             CriterioFechaModificacion.class)
                     .setParameter("desde", desde)
                     .setParameter("hasta", hasta)
-                    .getResultList();
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
+        } finally {
+            em.close();
+        }
+    }
+
+    // =====================================================
+    //  HORA SUCESO  (horaInicio / horaFin)
+    // =====================================================
+    public CriterioHoraSuceso buscarHoraSuceso(LocalTime desde, LocalTime hasta) {
+        if (desde == null || hasta == null) return null;
+
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            return em.createQuery(
+                            "SELECT c FROM CriterioHoraSuceso c " +
+                                    "WHERE c.horaInicio = :desde AND c.horaFin = :hasta",
+                            CriterioHoraSuceso.class)
+                    .setParameter("desde", desde)
+                    .setParameter("hasta", hasta)
+                    .getResultList()
+                    .stream()
+                    .findFirst()
+                    .orElse(null);
         } finally {
             em.close();
         }

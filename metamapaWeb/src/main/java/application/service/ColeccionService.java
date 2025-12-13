@@ -188,7 +188,9 @@ public class ColeccionService {
             String fechaDesdeSuceso,
             String fechaHastaSuceso,
             String fechaDesdeCarga,
-            String fechaHastaCarga
+            String fechaHastaCarga,
+            String horaDesdeSuceso,
+            String horaHastaSuceso
     ) {
         try {
             return metamapaApi .get()
@@ -205,6 +207,8 @@ public class ColeccionService {
                         if (fechaHastaSuceso != null && !fechaHastaSuceso.trim().isEmpty()) uriBuilder.queryParam("fechaHastaSuceso", fechaHastaSuceso);
                         if (fechaDesdeCarga != null && !fechaDesdeCarga.trim().isEmpty()) uriBuilder.queryParam("fechaDesdeCarga", fechaDesdeCarga);
                         if (fechaHastaCarga != null && !fechaHastaCarga.trim().isEmpty()) uriBuilder.queryParam("fechaHastaCarga", fechaHastaCarga);
+                        if (horaDesdeSuceso != null && !horaDesdeSuceso.trim().isEmpty()) uriBuilder.queryParam("horaDesdeSuceso", horaDesdeSuceso);
+                        if (horaHastaSuceso != null && !horaHastaSuceso.trim().isEmpty()) uriBuilder.queryParam("horaHastaSuceso", horaHastaSuceso);
                         return uriBuilder.build();
                     })
                     .retrieve()

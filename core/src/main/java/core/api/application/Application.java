@@ -126,16 +126,18 @@ public class Application {
         // Arrancamos UNA sola vez
         app.start("0.0.0.0", 8081);
 
+        FuentesRepositorySeeder fuentesRepositorySeeder = FuentesRepositorySeeder.getInstance();
+        fuentesRepositorySeeder.cargarFuentesSeeder();
+        /*
         HechosRepositorySeeder hechosRepositorySeeder = HechosRepositorySeeder.getInstance();
         hechosRepositorySeeder.cargarHechosSeeder();
 
-        FuentesRepositorySeeder fuentesRepositorySeeder = FuentesRepositorySeeder.getInstance();
-        fuentesRepositorySeeder.cargarFuentesSeeder();
 
         SolicitudEliminacioRepositorySeeder solicitudEliminacioRepositorySeeder = SolicitudEliminacioRepositorySeeder.getInstance();
         solicitudEliminacioRepositorySeeder.cargarSolicitudDeEliminacionSeeder();
 
         ColeccionesRepositorySeeder coleccionesRepositorySeeder = ColeccionesRepositorySeeder.getInstance();
         coleccionesRepositorySeeder.cargarColeccionesRepositorySeeder();
+         */
     }
 }
