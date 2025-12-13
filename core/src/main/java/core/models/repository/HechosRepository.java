@@ -318,11 +318,22 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
                 }
 
 
-                // Evitar duplicados por hash/título dentro de la misma TX
                 if (h.getHash() != null && !h.getHash().isBlank()) {
-                    Long dup = em.createQuery("select count(x) from hecho x where lower(x.hash)=:hs", Long.class)
-                            .setParameter("hs", h.getHash().toLowerCase()).getSingleResult();
-                    if (dup > 0) continue; // saltar duplicado
+
+                    // Ojo: tu getter devuelve -1 si es null
+                    int fuenteId = h.getIdFuente(); // -1 si no vino
+
+                    Long dup = em.createQuery("""
+                        select count(x)
+                        from hecho x
+                        where lower(x.hash) = :hs
+                          and x.idFuente = :fid
+                        """, Long.class)
+                            .setParameter("hs", h.getHash().toLowerCase().trim())
+                            .setParameter("fid", fuenteId)
+                            .getSingleResult();
+
+                    if (dup > 0) continue; // duplicado SOLO dentro de la misma fuente
                 }
 
                 em.persist(h);
@@ -332,8 +343,7 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
 
             DBUtils.commit(em);
         } catch (RuntimeException ex) {
-            System.err.println("❌ Error en addAllEnUnaTransaccion");
-            System.err.println("Mensaje: " + ex.getMessage());
+            System.err.println("Error addAllEnUnaTransaccion");
             ex.printStackTrace();
             DBUtils.rollback(em);
             throw ex;

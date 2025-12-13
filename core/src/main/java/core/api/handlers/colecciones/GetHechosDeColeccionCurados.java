@@ -12,12 +12,16 @@ import core.models.entities.colecciones.ModoDeNavegacion;
 import core.models.entities.hecho.Hecho;
 import core.models.repository.ColeccionesRepository;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class GetHechosDeColeccionCurados implements Handler {
+
+    private static final Logger log = LoggerFactory.getLogger(GetHechosDeColeccionCurados.class);
 
     private final ColeccionesRepository repoColecciones = ColeccionesRepository.getInstance();
     // podés inyectarlo también si ya lo tenés en algún lado
@@ -29,6 +33,8 @@ public class GetHechosDeColeccionCurados implements Handler {
         Integer idBuscado = context.pathParamAsClass("id", Integer.class).get();
         String modoVisualizacion = context.pathParam("modoVisualizacion");
 
+        log.info("Listar hechos colección idColeccion={} modo={}", idBuscado, modoVisualizacion);
+
         FiltroHechoDTO filtro = FiltroHechosMapper.extraerFiltroDeContext(context);
 
         // ─────────────────────────────────────────────
@@ -39,6 +45,7 @@ public class GetHechosDeColeccionCurados implements Handler {
 
             var opt = repoColecciones.findByIdFetchHechosYContribuyente(idBuscado); // <<-- NUEVO
             if (opt.isEmpty()) {
+                log.warn("Colección no encontrada idColeccion={}", idBuscado);
                 context.status(404).result("Colección no encontrada con ID: " + idBuscado);
                 return;
             }
@@ -54,7 +61,7 @@ public class GetHechosDeColeccionCurados implements Handler {
             var respuesta = hechosFiltrados.stream()
                     .map(HechoResumenDTO::from)
                     .toList();
-
+            log.info("Hechos devueltos ok idColeccion={} modo=IRRESTRICTA count={}", idBuscado, respuesta.size());
             context.status(200).json(respuesta);
 
             return;
@@ -68,6 +75,7 @@ public class GetHechosDeColeccionCurados implements Handler {
             // Usamos el mismo repo que el otro handler (ya te trae hechos cargados)
             var opt = repoColecciones.findByIdFetchHechosVisiblesYContribuyente(idBuscado); // <<-- NUEVO
             if (opt.isEmpty()) {
+                log.warn("Colección no encontrada idColeccion={}", idBuscado);
                 context.status(404).result("Colección no encontrada con ID: " + idBuscado);
                 return;
             }
@@ -75,6 +83,7 @@ public class GetHechosDeColeccionCurados implements Handler {
             Coleccion coleccion = opt.get();
             //List<Hecho> hechosFiltrados = FiltradorColecciones.getInstance().filtrarColeccion(coleccion, criterios);
             if(coleccion.getAlgoritmoConsenso() == null){
+                log.warn("Colección sin algoritmo de consenso idColeccion={}", idBuscado);
                 context.status(400).result("La coleccion no tiene algoritmo de consenso definido.");
                 return;
             }
@@ -88,7 +97,7 @@ public class GetHechosDeColeccionCurados implements Handler {
             var respuesta = hechosFiltrados.stream()
                     .map(HechoResumenDTO::from)
                     .toList();
-
+            log.info("Hechos devueltos ok idColeccion={} modo=CURADA count={}", idBuscado, respuesta.size());
             context.status(200).json(respuesta);
             return;
         }
@@ -96,6 +105,7 @@ public class GetHechosDeColeccionCurados implements Handler {
         // ─────────────────────────────────────────────
         // 3) Modo inválido
         // ─────────────────────────────────────────────
+        log.warn("modoVisualizacion inválido idColeccion={} modo={}", idBuscado, modoVisualizacion);
         context.status(400).result("modoVisualizacion inválido. Use IRRESTRICTA o CURADA.");
     }
 }

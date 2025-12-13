@@ -7,7 +7,7 @@ import utils.DBUtils;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalTime;
 
 public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
 
@@ -43,8 +43,7 @@ public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
                                     "WHERE LOWER(TRIM(c.palabraClave)) = LOWER(:palabra)",
                             CriterioDescripcion.class)
                     .setParameter("palabra", palabra.trim())
-                    .getResultList()
-                    .stream()
+                    .getResultStream()
                     .findFirst()
                     .orElse(null);
         } finally {
@@ -55,24 +54,19 @@ public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
     // =====================================================
     //  NOMBRE  (palabraClave)
     // =====================================================
-    public CriterioNombre buscarNombre(String palabraClave) {
+    public CriterioNombre buscarNombre(String palabra) {
+        if (palabra == null || palabra.isBlank()) return null;
+
         EntityManager em = DBUtils.getEntityManager();
         try {
-            // 1. Obtenemos la lista de resultados (sin hacer cast todavía)
-            List<CriterioNombre> resultados = em.createQuery(
-                            "SELECT c FROM CriterioNombre c WHERE c.palabraClave = :palabra",
+            return (CriterioNombre) em.createQuery(
+                            "SELECT c FROM CriterioNombre c " +
+                                    "WHERE LOWER(TRIM(c.palabraClave)) = LOWER(:palabra)",
                             CriterioNombre.class)
-                    .setParameter("palabra", palabraClave)
-                    .getResultList();
-
-            // 2. Verificamos si la lista está vacía
-            if (resultados.isEmpty()) {
-                return null;
-            }
-
-            // 3. Devolvemos el primer elemento
-            return resultados.get(0);
-
+                    .setParameter("palabra", palabra.trim())
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
         } finally {
             em.close();
         }
@@ -91,7 +85,9 @@ public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
                                     "WHERE c.categoria = :categoria",
                             CriterioCategoria.class)
                     .setParameter("categoria", categoria)
-                    .getResultList();
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
         } finally {
             em.close();
         }
@@ -110,7 +106,9 @@ public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
                                     "WHERE c.coordenadas = :coords",
                             CriterioUbicacion.class)
                     .setParameter("coords", coordenadas)
-                    .getResultList();
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
         } finally {
             em.close();
         }
@@ -130,7 +128,9 @@ public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
                             CriterioFechaSuceso.class)
                     .setParameter("desde", desde)
                     .setParameter("hasta", hasta)
-                    .getResultList();
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
         } finally {
             em.close();
         }
@@ -150,7 +150,9 @@ public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
                             CriterioFechaCarga.class)
                     .setParameter("desde", desde)
                     .setParameter("hasta", hasta)
-                    .getResultList();
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
         } finally {
             em.close();
         }
@@ -170,7 +172,32 @@ public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
                             CriterioFechaModificacion.class)
                     .setParameter("desde", desde)
                     .setParameter("hasta", hasta)
-                    .getResultList();
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
+        } finally {
+            em.close();
+        }
+    }
+
+    // =====================================================
+    //  HORA SUCESO  (horaInicio / horaFin)
+    // =====================================================
+    public CriterioHoraSuceso buscarHoraSuceso(LocalTime desde, LocalTime hasta) {
+        if (desde == null || hasta == null) return null;
+
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            return em.createQuery(
+                            "SELECT c FROM CriterioHoraSuceso c " +
+                                    "WHERE c.horaInicio = :desde AND c.horaFin = :hasta",
+                            CriterioHoraSuceso.class)
+                    .setParameter("desde", desde)
+                    .setParameter("hasta", hasta)
+                    .getResultList()
+                    .stream()
+                    .findFirst()
+                    .orElse(null);
         } finally {
             em.close();
         }
