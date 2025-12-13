@@ -57,12 +57,10 @@ public class SolicitudesEliminacionService {
         }
     }
 
-    public boolean crear(String idHecho, String descripcion) {
-        // el JSON que esa API espera
+    public boolean crear(Integer idHecho, String descripcion) {
         Map<String, Object> body = new HashMap<>();
         body.put("hecho", idHecho);
         body.put("descripcion", descripcion);
-
         try {
             var resp = metamapaApi.post()
                     .uri("/solicitudes")
@@ -70,10 +68,8 @@ public class SolicitudesEliminacionService {
                     .retrieve()
                     .toBodilessEntity()
                     .block();
-
             return resp != null && resp.getStatusCode().is2xxSuccessful();
         } catch (Exception e) {
-            // podés loguear
             System.err.println("Error creando solicitud de eliminación: " + e.getMessage());
             return false;
         }
