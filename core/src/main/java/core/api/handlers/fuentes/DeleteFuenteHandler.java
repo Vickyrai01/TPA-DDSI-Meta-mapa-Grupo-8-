@@ -7,6 +7,9 @@ import core.models.repository.HechosRepository;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -14,6 +17,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class DeleteFuenteHandler implements Handler {
+
+    private static final Logger log = LoggerFactory.getLogger(DeleteFuenteHandler.class);
 
     private final HechosRepository hechosRepository = HechosRepository.getInstance();
     private final ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();
@@ -28,6 +33,7 @@ public class DeleteFuenteHandler implements Handler {
     @Override
     public void handle(@NotNull Context context) throws Exception {
         Integer id = context.pathParamAsClass("id", Integer.class).get();
+        log.info("Eliminar fuente id={}", id);
 
         boolean eliminadoEnEstatica = eliminarEnCargador(CARGADOR_ESTATICO_BASE_URL + "/eliminar/" + id);
         boolean eliminadoEnProxy   = eliminarEnCargador(CARGADOR_PROXY_BASE_URL   + "/eliminar/" + id);
@@ -36,8 +42,11 @@ public class DeleteFuenteHandler implements Handler {
             hechosRepository.eliminarHechosPorIdFuente(id);
             coleccionesRepository.eliminarFuenteDeTodasLasColecciones(id);
             fuentesRepository.deleteById(id);
+            log.info("Fuente eliminada ok id={}",
+                    id);
             context.status(200).result("Fuente con ID " + id + " eliminada");
         } else {
+            log.warn("No se pudo eliminar fuente (no encontrada en cargadores) id={}", id);
             context.status(404).result("La fuente con ID " + id + " no pudo ser eliminada");
         }
     }
@@ -48,9 +57,17 @@ public class DeleteFuenteHandler implements Handler {
      */
     private boolean eliminarEnCargador(String url) {
         try {
-            HttpRequest req = HttpRequest.newBuilder()
+            String traceId = MDC.get("traceId");
+
+            HttpRequest.Builder builder = HttpRequest.newBuilder()
                     .uri(URI.create(url))
-                    .timeout(java.time.Duration.ofSeconds(10))
+                    .timeout(java.time.Duration.ofSeconds(10));
+
+            if (traceId != null && !traceId.isBlank()) {
+                builder.header("X-Trace-Id", traceId);
+            }
+
+            HttpRequest req = builder
                     .POST(HttpRequest.BodyPublishers.noBody())
                     .build();
 
@@ -58,19 +75,26 @@ public class DeleteFuenteHandler implements Handler {
 
             int status = resp.statusCode();
             if (status / 100 == 2) {
-                return true;          // borró OK
+                log.info("Eliminación en {} OK url={} status={}", url, status);
+                return true;
             }
             if (status == 404) {
-                return false;         // no la encontró, pero no es grave
+                log.warn("No encontrada en {} url={} status=404", url);
+                return false;
             }
 
-            System.out.println("[Core] Error al eliminar fuente en " + url +
-                    " status=" + status + " body=" + resp.body());
+            log.warn("Error eliminando en {} url={} status={} body={}",
+                     url, status, safe(resp.body()));
             return false;
+
         } catch (Exception e) {
-            System.out.println("[Core] Excepción al llamar a " + url);
-            e.printStackTrace();
+            log.error("Excepción llamando a {} url={}", url, e);
+            return false;
         }
-        return false;
+    }
+
+    private String safe(String s) {
+        if (s == null) return "-";
+        return s.length() > 200 ? s.substring(0, 200) + "..." : s;
     }
 }

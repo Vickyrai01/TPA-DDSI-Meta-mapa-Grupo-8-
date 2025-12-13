@@ -97,7 +97,6 @@ public class DetectorDeSpam {
                 score += peso;
             }
         }
-        System.out.println("DEBUG SPAM => score=" + score + ", umbral=" + UMBRAL_SPAM);
         return score >= UMBRAL_SPAM;
     }
 

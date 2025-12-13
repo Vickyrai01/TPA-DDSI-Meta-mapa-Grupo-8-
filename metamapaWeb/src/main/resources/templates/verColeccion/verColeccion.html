@@ -74,6 +74,13 @@
                                 <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}"></option>
                             </select>
                         </div>
+                        <div class="filtro-item">
+                            <label for="provincia">Provincia:</label>
+                            <select name="provincia" id="provincia">
+                                <option value="">- Todas -</option>
+                                <option th:each="prov : ${provincias}" th:value="${prov.name()}" th:text="${prov.nombre}"></option>
+                            </select>
+                        </div>
                         <!-- FECHA DE SUCESO -->
                         <div class="filtro-item" style="margin-bottom:.3em;">
                             <span style="font-weight: bold; color: #a8732e;">Fecha de suceso</span>
@@ -146,6 +153,16 @@
                             </div>
 
                             <div class="field">
+                                <span class="field-label">Hora del hecho:</span>
+                                <span class="field-value"
+                                    th:text="${h.horaSuceso() != null} ?
+                                    ${#temporals.format(h.horaSuceso(), 'HH:mm a')} :
+                                    'No indica'"
+                                    th:classappend="${h.horaSuceso() == null} ? 'muted' : ''">
+                                </span>
+                            </div>
+
+                            <div class="field">
                                 <span class="field-label">Fecha de carga:</span>
                                 <span class="field-value"
                                       th:text="${h.fechaCarga() != null} ?
@@ -199,13 +216,40 @@
                             <!-- Multimedia -->
                             <div class="field">
                                 <span class="field-label">Multimedia:</span>
+
                                 <span class="field-value" th:if="${h.multimedia()!=null and !h.multimedia().isEmpty()}">
-                                    <a th:each="m : ${h.multimedia()}" th:href="@{'/uploads/' + ${m}}" th:text="${m}" target="_self" style="display:block; margin: 5px 0; color: #ff6600; text-decoration: underline;"/>
+                                    <div class="multimedia-gallery">
+                                        <button type="button"
+                                                class="multimedia-item"
+                                                th:each="m : ${h.multimedia()}"
+                                                th:data-src="@{'/uploads/hechos/' + ${m}}"
+                                                th:data-alt="${h.nombre()} + ' - multimedia adjunta'"
+                                                th:data-type="${
+                                                    (#strings.endsWith(m.toLowerCase(), '.mp4') or
+                                                     #strings.endsWith(m.toLowerCase(), '.webm') or
+                                                     #strings.endsWith(m.toLowerCase(), '.ogg') or
+                                                     #strings.endsWith(m.toLowerCase(), '.mkv')) ? 'video' : 'image'
+                                                 }"><!-- Si es imagen --><img th:if="${#strings.endsWith(m.toLowerCase(), '.jpg') or #strings.endsWith(m.toLowerCase(), '.jpeg') or #strings.endsWith(m.toLowerCase(), '.png') or #strings.endsWith(m.toLowerCase(), '.gif') or #strings.endsWith(m.toLowerCase(), '.webp')}" th:src="@{'/uploads/hechos/' + ${m}}" th:alt="${h.nombre()} + ' - imagen adjunta'"
+                                                                              class="multimedia-thumb" />
+
+                                        <!-- Si es video (preview simple con ícono) -->
+                                      <div class="multimedia-video-thumb"
+                                           th:if="${#strings.endsWith(m.toLowerCase(), '.mp4') or #strings.endsWith(m.toLowerCase(), '.webm') or #strings.endsWith(m.toLowerCase(), '.ogg') or #strings.endsWith(m.toLowerCase(), '.mkv')}">
+                                        <i class="fa-solid fa-play"></i>
+                                        <span class="multimedia-video-label" th:text="${m}">video.mp4</span>
+                                      </div>
+
+                                    </button>
+                                  </div>
                                 </span>
-                                <span class="field-value muted" th:if="${h.multimedia()==null or h.multimedia().isEmpty()}">
-                                    No tiene fotos adjuntas.
+
+                                                              <span class="field-value muted" th:if="${h.multimedia()==null or h.multimedia().isEmpty()}">
+                                  No tiene archivos adjuntos.
                                 </span>
                             </div>
+
+
+
 
                             <!-- Botón Ver -->
                             <div class="field" style="margin-top:0.6rem;">
@@ -230,6 +274,32 @@
                 </div>
             </section>
         </aside>
+        <!-- Modal multimedia (imagen o video) -->
+        <div id="media-modal" class="img-modal" aria-hidden="true">
+            <div class="img-modal-backdrop"></div>
+
+            <div class="img-modal-content" role="dialog" aria-modal="true">
+                <button class="img-modal-close" type="button" aria-label="Cerrar">&times;</button>
+
+                <img id="media-modal-img" src="" alt="" style="display:none;">
+                <video id="media-modal-video" style="display:none;" controls playsinline>
+                    Tu navegador no soporta la reproducción de video.
+                </video>
+
+                <div class="media-modal-actions" style="margin-top:10px; display:none;" id="media-modal-actions">
+                    <a id="media-modal-download" class="btn-map" href="#" download>
+                        <i class="fa-solid fa-download"></i> Descargar
+                    </a>
+                    <a id="media-modal-open" class="btn-map" href="#" target="_blank" rel="noopener">
+                        <i class="fa-solid fa-up-right-from-square"></i> Abrir en pestaña
+                    </a>
+                </div>
+
+                <p id="media-modal-caption" class="img-modal-caption"></p>
+            </div>
+        </div>
+
+
     </main>
 </div>
 
@@ -258,6 +328,33 @@
             const n = parseFloat(String(v).replace(',', '.'));
             return Number.isFinite(n) ? n : null;
         };
+
+        // Detectar videos no soportados y mostrar botón de descarga
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.multimedia-thumb').forEach(function (el) {
+                if (el.tagName === 'VIDEO') {
+                    el.addEventListener('error', function () {
+                        mostrarBotonDescarga(el);
+                    });
+                    // Si el video no puede reproducirse, mostrar el botón
+                    el.addEventListener('loadeddata', function () {
+                        if (el.readyState < 2) {
+                            mostrarBotonDescarga(el);
+                        }
+                    });
+                }
+            });
+        });
+
+        // Función global para usar desde onerror en el HTML
+        function mostrarBotonDescarga(videoEl) {
+            videoEl.style.display = 'none';
+            const parent = videoEl.parentElement;
+            const downloadBtn = parent.querySelector('.download-btn');
+            if (downloadBtn) {
+                downloadBtn.style.display = 'inline-block';
+            }
+        }
 
         // ===== Datos para el mapa =====
         const puntos = (window.hechos || [])
@@ -418,6 +515,102 @@
                 window.location.href = url;
             });
         });
+
+        // ===== POPUP MULTIMEDIA (IMAGEN + VIDEO) =====
+        (function () {
+            const modal = document.getElementById('media-modal');
+            if (!modal) return;
+
+            const modalImg     = document.getElementById('media-modal-img');
+            const modalVideo   = document.getElementById('media-modal-video');
+            const modalCaption = document.getElementById('media-modal-caption');
+            const btnClose     = modal.querySelector('.img-modal-close');
+
+            const actionsWrap  = document.getElementById('media-modal-actions');
+            const btnDownload  = document.getElementById('media-modal-download');
+            const btnOpenTab   = document.getElementById('media-modal-open');
+
+            function openModal({ type, src, alt }) {
+                if (!src) return;
+
+                // reset
+                modalImg.style.display = 'none';
+                modalVideo.style.display = 'none';
+                modalVideo.pause();
+                modalVideo.removeAttribute('src'); // importante para “cortar” descarga
+                modalVideo.load();
+
+                // set caption + acciones
+                modalCaption.textContent = alt || '';
+                if (actionsWrap) actionsWrap.style.display = 'flex';
+                if (btnDownload) btnDownload.href = src;
+                if (btnOpenTab)  btnOpenTab.href = src;
+
+                // show correct media
+                if (type === 'video') {
+                    modalVideo.style.display = 'block';
+                    modalVideo.src = src;
+                    modalVideo.load();
+                } else {
+                    modalImg.style.display = 'block';
+                    modalImg.src = src;
+                    modalImg.alt = alt || '';
+                }
+
+                modal.classList.add('is-visible');
+                modal.setAttribute('aria-hidden', 'false');
+            }
+
+            function closeModal() {
+                modal.classList.remove('is-visible');
+                modal.setAttribute('aria-hidden', 'true');
+
+                // limpiar para que no siga sonando / descargando
+                modalImg.src = '';
+                modalImg.alt = '';
+
+                modalVideo.pause();
+                modalVideo.removeAttribute('src');
+                modalVideo.load();
+
+                modalCaption.textContent = '';
+                if (actionsWrap) actionsWrap.style.display = 'none';
+            }
+
+            // Click en miniatura
+            document.addEventListener('click', (e) => {
+                const btn = e.target.closest('.multimedia-item');
+                if (!btn) return;
+
+                e.preventDefault();
+
+                const src  = btn.dataset.src;
+                const alt  = btn.dataset.alt || '';
+                const type = btn.dataset.type || 'image';
+
+                openModal({ type, src, alt });
+            });
+
+            // cerrar
+            btnClose?.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeModal();
+            });
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal || e.target.classList.contains('img-modal-backdrop')) {
+                    closeModal();
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('is-visible')) {
+                    closeModal();
+                }
+            });
+        })();
+
+
     </script>
 </th:block>
 

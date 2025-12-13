@@ -8,9 +8,12 @@ import org.jetbrains.annotations.NotNull;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PostRegistrarUsuarioHandler implements Handler {
-
+    private static final Logger log =
+            LoggerFactory.getLogger(PostRegistrarUsuarioHandler.class);
     private final UsuarioRepository usuarioRepository = UsuarioRepository.getInstance();
 
     @Override
@@ -18,32 +21,37 @@ public class PostRegistrarUsuarioHandler implements Handler {
 
         Usuario usuario = ctx.bodyAsClass(Usuario.class);
 
-        System.out.println("[DEBUG] Intentando registrar usuario: " +
-                (usuario != null ? usuario.getCorreo() : "null"));
+        log.info("Intentando registrar usuario correo={}",
+                usuario != null ? usuario.getCorreo() : "null");
 
         if (usuario == null
                 || usuario.getCorreo() == null
                 || usuario.getNombre() == null) {
 
-            System.out.println("[ERROR] Datos de usuario incompletos");
+            log.warn("Datos de usuario incompletos");
             ctx.status(400).result("Faltan datos obligatorios del usuario");
             return;
         }
 
         boolean existe = usuarioRepository.findByCorreo(usuario.getCorreo()).isPresent();
-        System.out.println("[DEBUG] ¿Existe el usuario? " + existe);
+        log.debug("Chequeo de existencia usuario correo={} existe={}",
+                usuario.getCorreo(), existe);
 
         if (existe) {
+            log.warn("Intento de registro con correo ya existente correo={}",
+                    usuario.getCorreo());
             ctx.status(409).result("El correo ya está registrado");
             return;
         }
 
         try {
             usuarioRepository.add(usuario);
-            System.out.println("[DEBUG] Usuario registrado correctamente: " + usuario.getCorreo());
+            log.info("Usuario registrado correctamente correo={}",
+                    usuario.getCorreo());
             ctx.status(201).json(usuario);
         } catch (Exception e) {
-            System.out.println("[ERROR] Fallo al registrar usuario: " + e.getMessage());
+            log.error("Error al registrar usuario correo={}",
+                    usuario.getCorreo(), e);
             ctx.status(500).result("Error al registrar usuario");
         }
     }

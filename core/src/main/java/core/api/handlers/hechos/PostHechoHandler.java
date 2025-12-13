@@ -39,14 +39,17 @@ public class PostHechoHandler implements Handler {
         try {
             String urgenteHeader = context.header("X-Urgente");
             boolean urgente = Boolean.parseBoolean(urgenteHeader);
-            log.info("Header X-Urgente='{}' => urgente={}", urgenteHeader, urgente);
 
             String anonimoHeader = context.header("X-Anonimo");
             boolean anonimo = Boolean.parseBoolean(anonimoHeader);
-            log.info("Header X-Anonimo='{}' => anonimo={}", anonimoHeader, anonimo);
 
             HechoAIntegrarDINAMICO dto = context.bodyAsClass(HechoAIntegrarDINAMICO.class);
-            log.info("Creando hecho: {}", context.body());
+            log.info("Crear hecho request urgente={} anonimoHeader={} tituloLen={} descLen={}",
+                    urgente,
+                    anonimo,
+                    (dto != null && dto.getTitulo() != null ? dto.getTitulo().length() : 0),
+                    (dto != null && dto.getDescripcion() != null ? dto.getDescripcion().length() : 0)
+            );
 
             // Tomamos el correo que viene como contribuyente desde web
             String correoContribuyente = dto.getContribuyente();
@@ -63,7 +66,6 @@ public class PostHechoHandler implements Handler {
                 idContribuyente =  registrarContribuyenteDesdeUsuario(correoContribuyente);
             }
 
-
             // Construimos el DTO que va al cargador / servicio de agregación
             HechoAIntegrarDINAMICO hechoDTO = new HechoAIntegrarDINAMICO(
                     dto.getTitulo(),
@@ -72,6 +74,7 @@ public class PostHechoHandler implements Handler {
                     dto.getLatitud(),
                     dto.getLongitud(),
                     dto.getFechaSuceso(),
+                    dto.getHoraSuceso(),
                     dto.getEtiquetas(),
                     idContribuyente,
                     dto.getMultimedia()
@@ -176,6 +179,7 @@ public class PostHechoHandler implements Handler {
         jsonMap.put("latitud", hechoAIntegrarDTO.getLatitud());
         jsonMap.put("longitud", hechoAIntegrarDTO.getLongitud());
         jsonMap.put("fechaSuceso", hechoAIntegrarDTO.getFechaSuceso());
+        jsonMap.put("horaSuceso", hechoAIntegrarDTO.getHoraSuceso());
         jsonMap.put("etiquetas", hechoAIntegrarDTO.getEtiquetas());
         jsonMap.put("contribuyente", hechoAIntegrarDTO.getContribuyente());
         jsonMap.put("multimedia", hechoAIntegrarDTO.getMultimedia());
@@ -188,7 +192,7 @@ public class PostHechoHandler implements Handler {
     }
 
     private HechoAIntegrarDTO mapearADTOAgregacion(HechoAIntegrarDINAMICO d) {
-        HechoAIntegrarDTO dto = new HechoAIntegrarDTO(d.getTitulo(), d.getDescripcion(),d.getCategoria(), d.getLatitud(), d.getLongitud(), d.getFechaSuceso(),
+        HechoAIntegrarDTO dto = new HechoAIntegrarDTO(d.getTitulo(), d.getDescripcion(),d.getCategoria(), d.getLatitud(), d.getLongitud(), d.getFechaSuceso(), d.getHoraSuceso(),
                 d.getEtiquetas(), d.getContribuyente(), d.getMultimedia(), "Cargado por la web");
         dto.setTipoFuente(String.valueOf(TipoFuente.DINAMICA));
         return dto;
