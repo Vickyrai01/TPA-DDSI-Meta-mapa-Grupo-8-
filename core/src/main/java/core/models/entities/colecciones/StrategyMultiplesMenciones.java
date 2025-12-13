@@ -7,64 +7,41 @@ import core.models.repository.FuentesRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class StrategyMultiplesMenciones extends AlgoritmoConsenso {
 
-    List<Fuente> fuentes = FuentesRepository.getInstance().obtenerTodas();
-    List<Hecho> hechos = HechosRepository.getInstance().obtenerTodas();
-
-    List<Hecho> hechosVisibles = new ArrayList<>();
-    List<String> idFuente = new ArrayList<>();
-    List<Hecho> verificarSimilares = new ArrayList<>();
-
     @Override
-    public List<Hecho> ejecutarAlgoritmo() {
-        for(Fuente fuente : fuentes) {
-            String id = fuente.getId().toString();
-            if (!idFuente.contains(id)) {
-                idFuente.add(id);
-            }
-        }
+    public List<Hecho> ejecutarAlgoritmo(List<Hecho> hechos, List<Fuente> fuentes) {
+        List<Hecho> hechosVisibles = new ArrayList<>();
 
+        // Recorremos los hechos de la colección
         for (Hecho hecho : hechos) {
-            if (alMenosDos(hecho) && ningunOtro(hecho)) {
-                hechosVisibles.add(hecho);
+
+            // PASO 1: Agrupar hechos idénticos (Por Hash o por la lógica de esElMismoHecho)
+            // Si quieres forzar que sea POR HASH, cambia 'esElMismoHecho' por comparación de Strings
+            List<Hecho> grupo = hechos.stream()
+                    .filter(h -> h.getHash().equals(hecho.getHash())) // Comparación estricta de Hash
+                    .toList();
+
+            // PASO 2: Contar fuentes distintas
+            Set<Integer> idsFuentesEncontradas = grupo.stream()
+                    .map(Hecho::getIdFuente)
+                    .collect(Collectors.toSet());
+
+            // PASO 3: Validar regla (Al menos 2 fuentes distintas)
+            if (idsFuentesEncontradas.size() >= 2) {
+                // Evitamos agregar duplicados visuales a la lista final
+                boolean yaAgregado = hechosVisibles.stream()
+                        .anyMatch(hv -> hv.getHash().equals(hecho.getHash()));
+
+                if (!yaAgregado) {
+                    hechosVisibles.add(hecho);
+                }
             }
         }
         return hechosVisibles;
-    }
-
-    public boolean ningunOtro(Hecho hecho) {
-        verificarSimilares = obtenerHechosSimilares(hecho, hechos);
-        boolean haySimilar = false;
-
-        for (Hecho hechoSimilar : verificarSimilares) {
-            haySimilar = esHechoSimilar(hecho, hechoSimilar);
-
-            if(haySimilar){
-                break;
-            }
-        }
-        return haySimilar;
-    }
-
-    public boolean alMenosDos(Hecho hecho) {
-        boolean estaEnFuente = false;
-        int valido = 0;
-        List<Hecho> hechosIguales = obtenerHechosIguales(hecho, hechos);
-
-        for (String id : idFuente) {
-            estaEnFuente = hechosIguales.stream()
-                    .anyMatch(hechoVerifica -> hechoVerifica.getIdFuente().toString() == id);
-            if (estaEnFuente) {
-                valido++;
-            }
-        }
-
-        if(valido >= 2) {
-            return true;
-        }
-        return false;
     }
 
     @Override

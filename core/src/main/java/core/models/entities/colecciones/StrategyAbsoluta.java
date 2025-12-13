@@ -6,47 +6,35 @@ import core.models.repository.FuentesRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class StrategyAbsoluta extends AlgoritmoConsenso {
 
     @Override
-    public List<Hecho> ejecutarAlgoritmo() {
-
-        List<Fuente> fuentes = FuentesRepository.getInstance().obtenerTodas();
-        List<Hecho> hechos = HechosRepository.getInstance().obtenerTodas();
-
+    public List<Hecho> ejecutarAlgoritmo(List<Hecho> hechos, List<Fuente> fuentes) {
         List<Hecho> hechosVisibles = new ArrayList<>();
-        List<String> idFuente = new ArrayList<>();
+        if (fuentes == null || fuentes.isEmpty()) return hechosVisibles;
 
-        boolean estaEnFuente = false;
-        boolean valido = true;
+        // Mayoría simple: Más del 50%
+        double mayoria = fuentes.size() / 2.0;
 
-        for (Fuente fuente : fuentes) {
-            String id = fuente.getId().toString();
-            if (!idFuente.contains(id)) {
-                idFuente.add(id);
-            }
-        }
+        for (Hecho hecho : hechos) {
+            List<Hecho> grupo = obtenerHechosIguales(hecho, hechos);
 
-        for(Hecho hecho: hechos){
-            List<Hecho> hechosIguales = obtenerHechosIguales(hecho, hechos);
+            Set<Integer> idsFuentesEncontradas = grupo.stream()
+                    .map(Hecho::getIdFuente)
+                    .collect(Collectors.toSet());
 
-            for(String id: idFuente){
-                estaEnFuente = hechosIguales.stream()
-                        .anyMatch(hechoVerifica -> hechoVerifica.getIdFuente().toString() == id);
-
-                if (!estaEnFuente) {
-                    valido = false;
-                    break;
+            if (idsFuentesEncontradas.size() > mayoria) {
+                boolean yaExiste = hechosVisibles.stream().anyMatch(hv -> esElMismoHecho(hv, hecho));
+                if (!yaExiste) {
+                    hechosVisibles.add(hecho);
                 }
             }
-
-            if (valido) {
-                hechosVisibles.add(hecho); // solo agrego si pasó todos los chequeos
-            }
         }
-    return hechosVisibles;
+        return hechosVisibles;
     }
 
     @Override
