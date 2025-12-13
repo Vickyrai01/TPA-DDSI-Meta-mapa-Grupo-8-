@@ -44,7 +44,7 @@ public class Hecho {
                  List<SugerenciaDeCambio> sugerenciaDeCambio,
                  LocalDate ultimaFechaModificacion, List<String> multimedia,
                  Estado estado, Contribuyente contribuyente,
-                 LocalDate fechaCarga, LocalDate fechaSuceso,
+                 LocalDate fechaCarga, LocalDate fechaSuceso, LocalTime horaSuceso,
                  TipoFuente fuenteDeOrigen,
                  List<Etiqueta> etiquetas, String descripcion, String titulo,String codigoDeFuente, String hash, Integer idFuente, String linkFuente) {
 
@@ -57,6 +57,7 @@ public class Hecho {
         this.estado = estado;
         this.contribuyente = contribuyente;
         this.fechaCarga = fechaCarga;
+        this.horaSuceso = horaSuceso;
         this.fechaSuceso = fechaSuceso;
         this.fuenteDeOrigen = fuenteDeOrigen;
         this.etiquetas = etiquetas;
@@ -365,5 +366,10 @@ public class Hecho {
 
     public boolean perteneceAFuente(List<String> listaFuentes){ //Recibe los IDs de las fuentes
         return listaFuentes.contains(this.codigoDeFuente);
+    }
+
+    public String getProvincia() {
+
+        return this.ubicacion.getProvincia();
     }
 }

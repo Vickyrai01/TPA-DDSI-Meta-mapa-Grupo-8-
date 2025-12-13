@@ -5,6 +5,7 @@ import core.models.entities.fuentes.TipoFuente;
 import core.models.entities.hecho.*;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 //Esto va a pasar un hecho DTO a un hecho
@@ -28,7 +29,7 @@ public class FactoryHecho {
         return instance;
     }
 
-    public Hecho convertirHecho(HechoAIntegrarDTO hecho, LocalDate fecha, Categoria categoria, Coordenadas ubicacion, List<Etiqueta> etiquetas, Contribuyente contribuyente){
+    public Hecho convertirHecho(HechoAIntegrarDTO hecho, LocalDate fecha, Categoria categoria, Coordenadas ubicacion, List<Etiqueta> etiquetas, Contribuyente contribuyente, LocalTime horaSuceso){
         TipoFuente tipoFuente = TipoFuente.valueOf(hecho.getTipoFuente());
 
         // Si el DTO trae multimedia, la usamos; si no, dejamos null para que el flujo de agregación la complete con la de la base
@@ -45,6 +46,7 @@ public class FactoryHecho {
                 contribuyente,
                 LocalDate.now(),
                 fecha,
+                horaSuceso,
                 tipoFuente,
                 etiquetas,
                 hecho.getDescripcion(),
