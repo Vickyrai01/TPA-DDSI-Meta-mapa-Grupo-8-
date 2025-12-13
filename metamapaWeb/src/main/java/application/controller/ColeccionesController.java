@@ -49,6 +49,8 @@ public class ColeccionesController {
             @RequestParam(value = "fechaHastaSuceso", required = false) String fechaHastaSuceso,
             @RequestParam(value = "fechaDesdeCarga", required = false) String fechaDesdeCarga,
             @RequestParam(value = "fechaHastaCarga", required = false) String fechaHastaCarga,
+            @RequestParam(value = "horaDesdeSuceso", required = false) String horaDesdeSuceso,
+            @RequestParam(value = "horaHastaSuceso", required = false) String horaHastaSuceso,
             Model model
     ) {
         ColeccionDTO coleccion = coleccionService.getById(id);
@@ -72,7 +74,7 @@ public class ColeccionesController {
         List<HechoDTO> hechos = coleccionService.getHechosFiltradosDeColeccion(
                 id, modoActual, titulo, descripcion, etiqueta, categoria,
                 provincia != null ? provincia.name() : null,
-                soloMultimedia, fechaDesdeSuceso, fechaHastaSuceso, fechaDesdeCarga, fechaHastaCarga
+                soloMultimedia, fechaDesdeSuceso, fechaHastaSuceso, fechaDesdeCarga, fechaHastaCarga, horaDesdeSuceso, horaHastaSuceso
         );
 
         Map<String, Object> param = new HashMap<>();
@@ -86,6 +88,8 @@ public class ColeccionesController {
         param.put("fechaHastaSuceso", fechaHastaSuceso);
         param.put("fechaDesdeCarga", fechaDesdeCarga);
         param.put("fechaHastaCarga", fechaHastaCarga);
+        param.put("horaDesdeSuceso", horaDesdeSuceso);
+        param.put("horaHastaSuceso", horaHastaSuceso);
         param.put("modo", modoActual);
 
         model.addAttribute("coleccion", coleccion);
