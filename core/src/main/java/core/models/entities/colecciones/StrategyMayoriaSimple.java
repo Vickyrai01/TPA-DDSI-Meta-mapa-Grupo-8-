@@ -7,41 +7,28 @@ import core.models.repository.FuentesRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class StrategyMayoriaSimple extends AlgoritmoConsenso {
 
     @Override
-    public List<Hecho> ejecutarAlgoritmo() {
-        List<Fuente> fuentes = FuentesRepository.getInstance().obtenerTodas();
-        List<Hecho> hechos = HechosRepository.getInstance().obtenerTodas();
-
+    public List<Hecho> ejecutarAlgoritmo(List<Hecho> hechos, List<Fuente> fuentes) {
         List<Hecho> hechosVisibles = new ArrayList<>();
-        List<String> idFuente = new ArrayList<>();
 
-        boolean estaEnFuente = false;
+        for (Hecho hecho : hechos) {
+            List<Hecho> grupo = obtenerHechosIguales(hecho, hechos);
 
-        for (Fuente fuente : fuentes) {
-            String id = fuente.getId().toString();
-            if (!idFuente.contains(id)) {
-                idFuente.add(id);
-            }
-        }
+            Set<Integer> idsFuentesEncontradas = grupo.stream()
+                    .map(Hecho::getIdFuente)
+                    .collect(Collectors.toSet());
 
-        for(Hecho hecho: hechos){
-            int valido = 0;
-            List<Hecho> hechosIguales = obtenerHechosIguales(hecho, hechos);
-
-            for(String id: idFuente){
-                estaEnFuente = hechosIguales.stream()
-                        .anyMatch(hechoVerifica -> hechoVerifica.getIdFuente().toString() == id);
-
-                if (estaEnFuente) {
-                    valido++;
+            // Regla 1: Al menos 2 fuentes
+            if (idsFuentesEncontradas.size() >= 2) {
+                boolean yaExiste = hechosVisibles.stream().anyMatch(hv -> esElMismoHecho(hv, hecho));
+                if (!yaExiste) {
+                    hechosVisibles.add(hecho);
                 }
-            }
-
-            if (valido>=fuentes.size()/2) {
-                hechosVisibles.add(hecho);
             }
         }
         return hechosVisibles;

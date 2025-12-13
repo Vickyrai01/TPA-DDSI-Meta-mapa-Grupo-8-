@@ -115,11 +115,11 @@ public class Coleccion {
 
    public void actualizarColeccionVisible(){
 
-       if(modoDeNavegacion==modoDeNavegacion.IRRESTRICTA || algoritmoConsenso == null){
-           hechosVisibles=hechos;
+       if(this.modoDeNavegacion==ModoDeNavegacion.IRRESTRICTA || this.algoritmoConsenso == null){
+           this.hechosVisibles = null; //El front toma de la lista de hechos
 
        }else{
-           hechosVisibles = algoritmoConsenso.ejecutarAlgoritmo();
+           this.hechosVisibles = this.algoritmoConsenso.ejecutarAlgoritmo(this.hechos, this.fuentes);
        }
 
    }

@@ -144,7 +144,7 @@ public class ServicioDeAgregacion {
 
     public void limpiarHechos() {
          eliminarSpam(hechosAIntegrar);
-         eliminarDuplicados(hechosAIntegrar);
+         //eliminarDuplicados(hechosAIntegrar);
          normalizadorCategoria.estandarizarCategoriasDuplicadas(hechosAIntegrar);
     }
 
