@@ -13,7 +13,7 @@ public class NormalizadorHora {
     }
 
     public LocalTime normalizarHora(String horaString){
-        return horaString != null
+        return (horaString != null || horaString.equals(""))
                 ? LocalTime.parse(horaString)
                 : null;
     }
