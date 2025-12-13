@@ -70,6 +70,7 @@
     }
     input[type="text"],
     input[type="date"],
+    input[type="time"],
     select,
     textarea{
       border: 1px solid #ddd;
@@ -325,6 +326,13 @@
                      placeholder="dd/mm/aaaa" required>
             </div>
 
+            <div class="form-group">
+              <label for="horaSuceso">Hora del suceso<span style="color:#F47C2C;"></span></label>
+              <input type="time" id="horaSuceso" name="horaSuceso"
+                     step="60" placeholder="HH:mm">
+              <small class="map-help">Formato 24 hs (HH:mm). Si no sabés la hora, dejalo vacío.</small>
+            </div>
+
             <!-- input que aparece solo si se elige "Otro" -->
             <div class="form-group hidden" id="categoria-otra-group">
               <label for="categoriaOtra">Especificá la categoría <span style="color:#F47C2C;">*</span></label>
@@ -498,6 +506,16 @@
           map.invalidateSize();
         }, 200);
       }
+      const horaInput = document.getElementById('horaSuceso');
+      if (horaInput) {
+        horaInput.addEventListener('input', () => {
+          // Deja solo HH:mm
+          const ok = /^\d{2}:\d{2}$/.test(horaInput.value) || horaInput.value === '';
+          if (!ok) horaInput.setCustomValidity('Usá formato HH:mm');
+          else horaInput.setCustomValidity('');
+        });
+      }
+
     });
     document.addEventListener('DOMContentLoaded', () => {
       const input = document.getElementById('inputEtiqueta');

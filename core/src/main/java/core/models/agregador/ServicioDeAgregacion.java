@@ -14,6 +14,11 @@ import org.slf4j.MDC;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 
 public class ServicioDeAgregacion {
     private List<HechoAIntegrarDTO> hechosAIntegrar = new ArrayList<>();
@@ -27,6 +32,7 @@ public class ServicioDeAgregacion {
     private DetectorDeSpam detectorDeSpam = DetectorDeSpam.getInstance();
     private ComparadorHechos comparadorHechos = ComparadorHechos.getInstance();
     private NormalizadorFecha normalizadorFecha = NormalizadorFecha.getInstance();
+    private NormalizadorHora normalizadorHora = NormalizadorHora.getInstance();
     private NormalizadorCategoria normalizadorCategoria = NormalizadorCategoria.getInstance();
     private NormalizadorCoordenada normalizadorCoordenada = NormalizadorCoordenada.getInstance();
     private NormalizadorEtiqueta normalizadorEtiqueta = NormalizadorEtiqueta.getInstance();
@@ -128,10 +134,11 @@ public class ServicioDeAgregacion {
                     log.warn("Hecho sin categoría. hash={}", dto.getHash());}
                 Categoria categoria = normalizadorCategoria.obtenerCategoria(dto.getCategoria()); //Solo la crea
                 LocalDate fecha = normalizadorFecha.normalizarFecha(dto.getFechaSuceso()); // hace el quilombo de fecha
+                LocalTime horaSuceso = normalizadorHora.normalizarHora(dto.getHoraSuceso());
                 Coordenadas ubicacion = normalizadorCoordenada.obtenerCoordenadas(dto.getLatitud(), dto.getLongitud()); // solo la crea
                 List<Etiqueta> etiquetas = normalizadorEtiqueta.obtenerEtiquetas(dto.getEtiquetas());
                 Contribuyente contribuyente = normalizadorContribuyente.obtenerContribuyente(dto.getContribuyente());
-                Hecho hecho = factoryHecho.convertirHecho(dto, fecha, categoria, ubicacion, etiquetas, contribuyente); // factory que funciona
+                Hecho hecho = factoryHecho.convertirHecho(dto, fecha, categoria, ubicacion, etiquetas, contribuyente, horaSuceso); // factory que funciona
                 hechosLimpios.add(hecho);
                 ok++;
             } catch (NormalizadorFecha.ExcepcionRevisionManualFecha e) {

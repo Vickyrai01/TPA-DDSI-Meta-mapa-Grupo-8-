@@ -22,6 +22,7 @@ public class HechoAIntegrarDTO {
     public String longitud;
     @JsonDeserialize(using = ArrayToStringDateTimeDeserializer.class)
     public String fechaSuceso;
+    public String horaSuceso;
     public String linkFuente;
 
     public List<String> etiquetas;
@@ -56,6 +57,7 @@ public class HechoAIntegrarDTO {
         this.linkFuente = linkFuente;
 
         // opcionales: quedan null si no vienen
+        this.horaSuceso = null;
         this.etiquetas = null;
         this.contribuyente = null;
         this.multimedia = null;
@@ -64,7 +66,7 @@ public class HechoAIntegrarDTO {
         this.fueExtraido = Boolean.FALSE; // default interno
     }
 
-    public HechoAIntegrarDTO(String titulo, String descripcion, String categoria, String latitud, String longitud, String fechaSuceso,
+    public HechoAIntegrarDTO(String titulo, String descripcion, String categoria, String latitud, String longitud, String fechaSuceso, String horaSuceso,
                              List<String> etiquetas, String contribuyente, List<String> multimedia, String linkFuente)
     {
         this.hash = HandlerRecientes.generarHash(titulo+descripcion+categoria+latitud+longitud);
@@ -74,6 +76,7 @@ public class HechoAIntegrarDTO {
         this.latitud = latitud;
         this.longitud = longitud;
         this.fechaSuceso = fechaSuceso;
+        this.horaSuceso = horaSuceso;
         this.etiquetas = etiquetas;
         this.contribuyente = contribuyente;
         this.multimedia = multimedia;
@@ -141,6 +144,8 @@ public class HechoAIntegrarDTO {
     public void setFueExtraido(Boolean fueExtraido) {
         this.fueExtraido = fueExtraido;
     }
+    public String getHoraSuceso() {return horaSuceso;}
+    public void setHoraSuceso(String horaSuceso) {this.horaSuceso = horaSuceso;}
 
     public Boolean tieneMismoTitulo(String tituloExterno){
         String tituloPropioLimpio = this.getTitulo().toLowerCase().replace(" ","");
