@@ -22,6 +22,11 @@ public class Application {
 
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
+    private static final String HDR_TRACE = "X-Trace-Id";
+    private static final String HDR_CORR  = "X-Correlation-Id"; // compat opcional
+    private static final String ATTR_TRACE = "traceId";
+    private static final String ATTR_START_NS = "startTimeNs";
+
     public static void main(String[] args) {
         HechosRepository hechosRepo = HechosRepository.getInstance();
         ColeccionesRepository colRepo = ColeccionesRepository.getInstance();
@@ -32,71 +37,84 @@ public class Application {
             config.staticFiles.add("/public"); // carpeta en el classpath: src/main/resources/public
         });
 
-        // BEFORE → logs + correlationId + tiempo inicio + métrica de request
+        // BEFORE: traceId + startTime + log request + métrica request
         app.before(ctx -> {
             RegistroMetricas.sumPeticiones();
 
-            // Correlation ID
-            String correlationId = ctx.header("X-Correlation-Id");
-            if (correlationId == null || correlationId.isBlank()) {
-                correlationId = UUID.randomUUID().toString();
-            }
-            MDC.put("correlationId", correlationId);
+            String traceId = resolveTraceId(ctx);
+            ctx.attribute(ATTR_TRACE, traceId);
+            MDC.put(ATTR_TRACE, traceId);
 
-            // Guardar tiempo inicio
-            ctx.attribute("startTimeNs", System.nanoTime());
+            // devolverlo al cliente SIEMPRE
+            ctx.header(HDR_TRACE, traceId);
 
-            // Log de request
-            log.info("REQ correlationId={} method={} path={} ip={} query={}",
-                    correlationId,
+            // start time
+            ctx.attribute(ATTR_START_NS, System.nanoTime());
+
+            log.info(
+                    "http_req traceId={} method={} path={} ip={} ua=\"{}\" query=\"{}\"",
+                    traceId,
                     ctx.method(),
                     ctx.path(),
-                    ctx.req().getRemoteAddr(),
-                    ctx.queryString()
+                    extractClientIp(ctx),
+                    safe(ctx.userAgent()),
+                    safe(ctx.queryString())
             );
         });
 
-        // AFTER → logs + duración + limpiar MDC
+        // AFTER: corre incluso si hubo exception handler.
         app.after(ctx -> {
-            Long start = ctx.attribute("startTimeNs");
-            long durationMs = -1;
+            String traceId = (String) ctx.attribute(ATTR_TRACE);
+            if (traceId == null) traceId = MDC.get(ATTR_TRACE);
 
-            if (start != null) {
-                durationMs = (System.nanoTime() - start) / 1_000_000;
-                RegistroMetricas.sumTiempoPeticion(durationMs);
-            }
+            long durationMs = durationMs(ctx);
+            if (durationMs >= 0) RegistroMetricas.sumTiempoPeticion(durationMs);
 
-            log.info("RES correlationId={} method={} path={} status={} durationMs={}",
-                    MDC.get("correlationId"),
+            String contentType = safe(ctx.res().getContentType());
+
+            int bufSize = ctx.res().getBufferSize();
+
+            log.info(
+                    "http_res traceId={} method={} path={} status={} durationMs={} contentType={} resBufferSize={}",
+                    traceId,
                     ctx.method(),
                     ctx.path(),
                     ctx.status(),
-                    durationMs
+                    durationMs,
+                    contentType,
+                    bufSize
             );
 
             MDC.clear();
         });
 
-        // Excepciones → log + métrica de error
+        // EXCEPTIONS: log + métrica de error + traceId en response
         app.exception(Exception.class, (e, ctx) -> {
             RegistroMetricas.sumErrores();
 
-            log.error("ERROR correlationId={} method={} path={} msg={}",
-                    MDC.get("correlationId"),
+            String traceId = (String) ctx.attribute(ATTR_TRACE);
+            if (traceId == null || traceId.isBlank()) traceId = MDC.get(ATTR_TRACE);
+            if (traceId == null || traceId.isBlank()) traceId = UUID.randomUUID().toString();
+
+            ctx.header(HDR_TRACE, traceId);
+
+            log.error(
+                    "http_error traceId={} method={} path={} ip={} msg={}",
+                    traceId,
                     ctx.method(),
                     ctx.path(),
-                    e.getMessage(),
+                    extractClientIp(ctx),
+                    safeErrMsg(e),
                     e
             );
 
             ctx.status(500).result("Error interno");
-            MDC.clear();
         });
 
-        // Raíz genérica del core
+        // Raíz
         app.get("/", ctx -> ctx.result("MetaMapa core API ACTIVA"));
 
-        // Endpoint de métricas
+        // Métricas
         app.get("/metricas", ctx -> ctx.json(RegistroMetricas.snapshot()));
         app.get("/metrics", ctx -> {
             String body = PrometheusExporter.export(RegistroMetricas.snapshot());
@@ -104,13 +122,17 @@ public class Application {
             ctx.result(body);
         });
 
-
+        // GraphQL
         app.post("/graphql", ctx -> {
-            System.out.println("BODY RECIBIDO: " + ctx.body());
             Map<String, Object> body = ctx.bodyAsClass(Map.class);
-
             String query = (String) body.get("query");
             Map<String, Object> variables = (Map<String, Object>) body.getOrDefault("variables", Map.of());
+
+            log.debug("graphql_req traceId={} queryLen={} varsKeys={}",
+                    MDC.get(ATTR_TRACE),
+                    (query != null ? query.length() : 0),
+                    variables.keySet()
+            );
 
             Map<String, Object> result = graphQLProvider.execute(query, variables);
             ctx.json(result);
@@ -118,24 +140,53 @@ public class Application {
 
         app.get("/playground", ctx -> ctx.redirect("/graphiql.html"));
 
+        ApiMetaMapa.configurar(app);
+        ApiAdminMetaMapa.configurar(app, graphQLProvider);
 
-        // Configuramos endpoints públicos y admin sobre la MISMA app
-        ApiMetaMapa.configurar(app);       // público
-        ApiAdminMetaMapa.configurar(app, graphQLProvider);  // admin
+        HechosRepositorySeeder.getInstance().cargarHechosSeeder();
+        FuentesRepositorySeeder.getInstance().cargarFuentesSeeder();
+        SolicitudEliminacioRepositorySeeder.getInstance().cargarSolicitudDeEliminacionSeeder();
+        ColeccionesRepositorySeeder.getInstance().cargarColeccionesRepositorySeeder();
 
-        // Arrancamos UNA sola vez
         app.start("0.0.0.0", 8081);
+    }
 
-        HechosRepositorySeeder hechosRepositorySeeder = HechosRepositorySeeder.getInstance();
-        hechosRepositorySeeder.cargarHechosSeeder();
+    // ===== helpers =====
 
-        FuentesRepositorySeeder fuentesRepositorySeeder = FuentesRepositorySeeder.getInstance();
-        fuentesRepositorySeeder.cargarFuentesSeeder();
+    private static String resolveTraceId(io.javalin.http.Context ctx) {
+        // Preferimos X-Trace-Id. Si no viene, aceptamos X-Correlation-Id por compat.
+        String traceId = ctx.header(HDR_TRACE);
+        if (traceId == null || traceId.isBlank()) {
+            traceId = ctx.header(HDR_CORR);
+        }
+        if (traceId == null || traceId.isBlank()) {
+            traceId = UUID.randomUUID().toString();
+        }
+        return traceId.trim();
+    }
 
-        SolicitudEliminacioRepositorySeeder solicitudEliminacioRepositorySeeder = SolicitudEliminacioRepositorySeeder.getInstance();
-        solicitudEliminacioRepositorySeeder.cargarSolicitudDeEliminacionSeeder();
+    private static long durationMs(io.javalin.http.Context ctx) {
+        Long start = ctx.attribute(ATTR_START_NS);
+        if (start == null) return -1;
+        return (System.nanoTime() - start) / 1_000_000;
+    }
 
-        ColeccionesRepositorySeeder coleccionesRepositorySeeder = ColeccionesRepositorySeeder.getInstance();
-        coleccionesRepositorySeeder.cargarColeccionesRepositorySeeder();
+    private static String extractClientIp(io.javalin.http.Context ctx) {
+        String xff = ctx.header("X-Forwarded-For");
+        if (xff != null && !xff.isBlank()) {
+            return xff.split(",")[0].trim();
+        }
+        return ctx.req().getRemoteAddr();
+    }
+
+    private static String safe(String s) {
+        if (s == null || s.isBlank()) return "-";
+        return s.length() > 200 ? s.substring(0, 200) + "..." : s;
+    }
+
+    private static String safeErrMsg(Throwable t) {
+        String m = t.getMessage();
+        if (m == null || m.isBlank()) return t.getClass().getSimpleName();
+        return m.length() > 300 ? m.substring(0, 300) + "..." : m;
     }
 }

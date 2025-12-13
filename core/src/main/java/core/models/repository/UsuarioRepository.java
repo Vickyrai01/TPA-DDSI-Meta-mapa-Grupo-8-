@@ -32,7 +32,6 @@ public class UsuarioRepository extends JpaRepositoryBase<Usuario, Integer> {
             if (correo == null) return Optional.empty();
 
             String normalizado = correo.trim().toLowerCase();
-            System.out.println("[CORE] Buscando usuario por correo normalizado: '" + normalizado + "'");
 
             Usuario usuario = em.createQuery(
                             "SELECT u FROM Usuario u WHERE LOWER(u.correo) = :correo", Usuario.class)
@@ -41,7 +40,6 @@ public class UsuarioRepository extends JpaRepositoryBase<Usuario, Integer> {
 
             return Optional.of(usuario);
         } catch (NoResultException e) {
-            System.out.println("[CORE] No se encontró usuario para correo: '" + correo + "'");
             return Optional.empty();
         } finally {
             em.close();

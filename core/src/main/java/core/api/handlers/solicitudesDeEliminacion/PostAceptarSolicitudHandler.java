@@ -7,7 +7,7 @@ import core.models.repository.HechosRepository;
 import core.models.repository.SolicitudEliminacionRepository;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;public class PostAceptarSolicitudHandler implements Handler {
+public class PostAceptarSolicitudHandler implements Handler {
     private final SolicitudEliminacionRepository repo = SolicitudEliminacionRepository.getInstance();
     private final HechosRepository repoHechos = HechosRepository.getInstance();
 
