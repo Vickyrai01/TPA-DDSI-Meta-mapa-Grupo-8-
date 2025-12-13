@@ -11,6 +11,8 @@ import core.models.entities.colecciones.criterios.FiltradorColecciones;
 import core.models.entities.hecho.Hecho;
 import core.models.repository.ColeccionesRepository;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +20,17 @@ import java.util.Optional;
 
 public class GetHechosDeColeccionesHandler implements Handler {
 
+    private static final Logger log = LoggerFactory.getLogger(GetHechosDeColeccionesHandler.class);
+
     private final ColeccionesRepository repoColecciones = ColeccionesRepository.getInstance();
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
 
         UtilsFormatos utilsFormatos = new UtilsFormatos();
+
+        Integer idBuscado = context.pathParamAsClass("id", Integer.class).get();
+        log.info("Listar hechos de colección (filtrados) idColeccion={}", idBuscado);
 
         String categoria = context.queryParam("categoria");
         String fechaReporteDesde = context.queryParam("fecha_reporte_desde");
@@ -44,8 +51,6 @@ public class GetHechosDeColeccionesHandler implements Handler {
                     utilsFormatos.stringALocalDate(fechaReporteDesde),
                     utilsFormatos.stringALocalDate(fechaReporteHasta)
             ));
-        } else {
-            System.out.println("No se han pasado las fechas de reporte");
         }
 
         if ((fechaAcontecimientoDesde != null && !fechaAcontecimientoDesde.isBlank()) ||
@@ -58,9 +63,9 @@ public class GetHechosDeColeccionesHandler implements Handler {
 
         if (latitud != null && longitud != null) {criterios.add(utilsFormatos.transformarUbicacionEnCriterio(latitud, longitud));}
 
-        Integer idBuscado = context.pathParamAsClass("id", Integer.class).get();
         var opt = repoColecciones.findByIdFetchHechosYContribuyente(idBuscado); // <<-- NUEVO
         if (opt.isEmpty()) {
+            log.warn("Colección no encontrada idColeccion={}", idBuscado);
             context.status(404).result("Colección no encontrada con ID: " + idBuscado);
             return;
         }
@@ -72,7 +77,8 @@ public class GetHechosDeColeccionesHandler implements Handler {
         var respuesta = hechosFiltrados.stream()
                 .map(HechoResumenDTO::from)
                 .toList();
-
+        log.info("Hechos devueltos ok idColeccion={} count={}", idBuscado, respuesta.size());
+        context.status(200).json(respuesta);
         context.status(200).json(respuesta);
 
 
