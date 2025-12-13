@@ -143,10 +143,10 @@ public class Application {
         ApiMetaMapa.configurar(app);
         ApiAdminMetaMapa.configurar(app, graphQLProvider);
 
-        HechosRepositorySeeder.getInstance().cargarHechosSeeder();
         FuentesRepositorySeeder.getInstance().cargarFuentesSeeder();
-        SolicitudEliminacioRepositorySeeder.getInstance().cargarSolicitudDeEliminacionSeeder();
-        ColeccionesRepositorySeeder.getInstance().cargarColeccionesRepositorySeeder();
+        //HechosRepositorySeeder.getInstance().cargarHechosSeeder();
+        //SolicitudEliminacioRepositorySeeder.getInstance().cargarSolicitudDeEliminacionSeeder();
+        //ColeccionesRepositorySeeder.getInstance().cargarColeccionesRepositorySeeder();
 
         app.start("0.0.0.0", 8081);
     }
