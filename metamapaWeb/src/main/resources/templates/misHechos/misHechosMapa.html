@@ -216,28 +216,39 @@
                                 </span>
                                 <span class="field-value muted" th:if="${h.categorias == null or #lists.isEmpty(h.categorias)}">No indica</span>
                             </div>
-                            <div class="field view-mode">
+                            <!-- Multimedia -->
+                            <div class="field">
                                 <span class="field-label">Multimedia:</span>
-                                <span class="field-value" th:if="${h.multimedia != null and !#lists.isEmpty(h.multimedia)}">
+
+                                <span class="field-value" th:if="${h.multimedia()!=null and !h.multimedia().isEmpty()}">
                                     <div class="multimedia-gallery">
-                                        <button type="button" class="multimedia-item" th:each="m : ${h.multimedia}" th:if="${#strings.endsWithAny(m.toLowerCase(), '.jpg', '.jpeg', '.png', '.gif', '.jfif', '.webp')}" th:attr="data-img=${m}" tabindex="0">
-                                            <img class="multimedia-thumb" th:src="${m}" alt="Imagen adjunta" loading="lazy" />
-                                        </button>
-                                        <a th:each="m : ${h.multimedia}" th:if="${!#strings.endsWithAny(m.toLowerCase(), '.jpg', '.jpeg', '.png', '.gif', '.jfif', '.webp')}" th:href="${m}" target="_blank" rel="noreferrer">
-                                            <i class="fa-solid fa-link"></i><span th:text="${#strings.abbreviate(m, 30)}">Archivo</span>
-                                        </a>
-                                    </div>
-                                    <!-- Modal de imagen -->
-                                    <div class="img-modal" tabindex="-1">
-                                        <div class="img-modal-backdrop"></div>
-                                        <div class="img-modal-content">
-                                            <button type="button" class="img-modal-close" aria-label="Cerrar">&times;</button>
-                                            <img src="" alt="Imagen adjunta" />
-                                            <div class="img-modal-caption"></div>
-                                        </div>
-                                    </div>
+                                        <button type="button"
+                                                class="multimedia-item"
+                                                th:each="m : ${h.multimedia()}"
+                                                th:data-src="@{'/uploads/hechos/' + ${m}}"
+                                                th:data-alt="${h.nombre()} + ' - multimedia adjunta'"
+                                                th:data-type="${
+                                                    (#strings.endsWith(m.toLowerCase(), '.mp4') or
+                                                     #strings.endsWith(m.toLowerCase(), '.webm') or
+                                                     #strings.endsWith(m.toLowerCase(), '.ogg') or
+                                                     #strings.endsWith(m.toLowerCase(), '.mkv')) ? 'video' : 'image'
+                                                 }"><!-- Si es imagen --><img th:if="${#strings.endsWith(m.toLowerCase(), '.jpg') or #strings.endsWith(m.toLowerCase(), '.jpeg') or #strings.endsWith(m.toLowerCase(), '.png') or #strings.endsWith(m.toLowerCase(), '.gif') or #strings.endsWith(m.toLowerCase(), '.webp')}" th:src="@{'/uploads/hechos/' + ${m}}" th:alt="${h.nombre()} + ' - imagen adjunta'"
+                                                                              class="multimedia-thumb" />
+
+                                            <!-- Si es video (preview simple con ícono) -->
+                                      <div class="multimedia-video-thumb"
+                                           th:if="${#strings.endsWith(m.toLowerCase(), '.mp4') or #strings.endsWith(m.toLowerCase(), '.webm') or #strings.endsWith(m.toLowerCase(), '.ogg') or #strings.endsWith(m.toLowerCase(), '.mkv')}">
+                                        <i class="fa-solid fa-play"></i>
+                                        <span class="multimedia-video-label" th:text="${m}">video.mp4</span>
+                                      </div>
+
+                                    </button>
+                                  </div>
                                 </span>
-                                <span class="field-value muted" th:if="${h.multimedia == null or #lists.isEmpty(h.multimedia)}">No indica</span>
+
+                                <span class="field-value muted" th:if="${h.multimedia()==null or h.multimedia().isEmpty()}">
+                                  No tiene archivos adjuntos.
+                                </span>
                             </div>
 
                             <div class="field">
@@ -250,6 +261,30 @@
                 </div>
             </section>
         </aside>
+        <!-- Modal multimedia (imagen o video) -->
+        <div id="media-modal" class="img-modal" aria-hidden="true">
+            <div class="img-modal-backdrop"></div>
+
+            <div class="img-modal-content" role="dialog" aria-modal="true">
+                <button class="img-modal-close" type="button" aria-label="Cerrar">&times;</button>
+
+                <img id="media-modal-img" src="" alt="" style="display:none;">
+                <video id="media-modal-video" style="display:none;" controls playsinline>
+                    Tu navegador no soporta la reproducción de video.
+                </video>
+
+                <div class="media-modal-actions" style="margin-top:10px; display:none;" id="media-modal-actions">
+                    <a id="media-modal-download" class="btn-map" href="#" download>
+                        <i class="fa-solid fa-download"></i> Descargar
+                    </a>
+                    <a id="media-modal-open" class="btn-map" href="#" target="_blank" rel="noopener">
+                        <i class="fa-solid fa-up-right-from-square"></i> Abrir en pestaña
+                    </a>
+                </div>
+
+                <p id="media-modal-caption" class="img-modal-caption"></p>
+            </div>
+        </div>
     </main>
 </div>
 
@@ -263,38 +298,6 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-    // --- MODAL DE IMAGENES (galería) ---
-    document.addEventListener('DOMContentLoaded', () => {
-    // Modal único por página
-    const modal = document.querySelector('.img-modal');
-    if (!modal) return;
-    const modalImg = modal.querySelector('img');
-    const modalCaption = modal.querySelector('.img-modal-caption');
-    const closeBtn = modal.querySelector('.img-modal-close');
-    const backdrop = modal.querySelector('.img-modal-backdrop');
-    // Abrir modal
-    document.querySelectorAll('.multimedia-item').forEach(btn => {
-    btn.addEventListener('click', () => {
-    const src = btn.getAttribute('data-img');
-    modalImg.src = src;
-    modalCaption.textContent = src.split('/').pop();
-    modal.classList.add('is-visible');
-    modal.focus();
-    });
-    });
-    // Cerrar modal
-    function closeModal() {
-    modal.classList.remove('is-visible');
-    modalImg.src = '';
-    modalCaption.textContent = '';
-    }
-    closeBtn.addEventListener('click', closeModal);
-    backdrop.addEventListener('click', closeModal);
-    modal.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeModal();
-    });
-    });
-
     <script>
         // --- VALIDACION: Deshabilitar edicion si pasaron 7 días o si no hay fecha ---
         document.addEventListener('DOMContentLoaded', () => {
@@ -535,6 +538,100 @@
 
         window.addEventListener('load',  () => { fitLayout(); setTimeout(()=>map.invalidateSize(), 80); });
         window.addEventListener('resize',() => { fitLayout(); map.invalidateSize(); });
+
+        // ===== POPUP MULTIMEDIA (IMAGEN + VIDEO) =====
+        (function () {
+            const modal = document.getElementById('media-modal');
+            if (!modal) return;
+
+            const modalImg     = document.getElementById('media-modal-img');
+            const modalVideo   = document.getElementById('media-modal-video');
+            const modalCaption = document.getElementById('media-modal-caption');
+            const btnClose     = modal.querySelector('.img-modal-close');
+
+            const actionsWrap  = document.getElementById('media-modal-actions');
+            const btnDownload  = document.getElementById('media-modal-download');
+            const btnOpenTab   = document.getElementById('media-modal-open');
+
+            function openModal({ type, src, alt }) {
+                if (!src) return;
+
+                // reset
+                modalImg.style.display = 'none';
+                modalVideo.style.display = 'none';
+                modalVideo.pause();
+                modalVideo.removeAttribute('src'); // importante para “cortar” descarga
+                modalVideo.load();
+
+                // set caption + acciones
+                modalCaption.textContent = alt || '';
+                if (actionsWrap) actionsWrap.style.display = 'flex';
+                if (btnDownload) btnDownload.href = src;
+                if (btnOpenTab)  btnOpenTab.href = src;
+
+                // show correct media
+                if (type === 'video') {
+                    modalVideo.style.display = 'block';
+                    modalVideo.src = src;
+                    modalVideo.load();
+                } else {
+                    modalImg.style.display = 'block';
+                    modalImg.src = src;
+                    modalImg.alt = alt || '';
+                }
+
+                modal.classList.add('is-visible');
+                modal.setAttribute('aria-hidden', 'false');
+            }
+
+            function closeModal() {
+                modal.classList.remove('is-visible');
+                modal.setAttribute('aria-hidden', 'true');
+
+                // limpiar para que no siga sonando / descargando
+                modalImg.src = '';
+                modalImg.alt = '';
+
+                modalVideo.pause();
+                modalVideo.removeAttribute('src');
+                modalVideo.load();
+
+                modalCaption.textContent = '';
+                if (actionsWrap) actionsWrap.style.display = 'none';
+            }
+
+            // Click en miniatura
+            document.addEventListener('click', (e) => {
+                const btn = e.target.closest('.multimedia-item');
+                if (!btn) return;
+
+                e.preventDefault();
+
+                const src  = btn.dataset.src;
+                const alt  = btn.dataset.alt || '';
+                const type = btn.dataset.type || 'image';
+
+                openModal({ type, src, alt });
+            });
+
+            // cerrar
+            btnClose?.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeModal();
+            });
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal || e.target.classList.contains('img-modal-backdrop')) {
+                    closeModal();
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('is-visible')) {
+                    closeModal();
+                }
+            });
+        })();
     </script>
 </th:block>
 </html>
