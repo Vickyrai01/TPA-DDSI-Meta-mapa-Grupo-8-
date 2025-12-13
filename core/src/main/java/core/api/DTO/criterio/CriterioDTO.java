@@ -15,7 +15,8 @@ import core.models.entities.colecciones.criterios.*;
         @JsonSubTypes.Type(value = CriterioFechaCargaDTO.class, name = "fechaCarga"),
         @JsonSubTypes.Type(value = CriterioUbicacionDTO.class, name = "ubicacion"),
         @JsonSubTypes.Type(value = CriterioFechaModificacionDTO.class, name = "fechaModificacion"),
-        @JsonSubTypes.Type(value = CriterioFechaSucesoDTO.class, name = "fechaSuceso")
+        @JsonSubTypes.Type(value = CriterioFechaSucesoDTO.class, name = "fechaSuceso"),
+        @JsonSubTypes.Type(value = CriterioHoraSucesoDTO.class, name = "horaSuceso")
 })
 public abstract class CriterioDTO {
     private Integer id;
@@ -57,6 +58,9 @@ public abstract class CriterioDTO {
         }
         if (criterio instanceof CriterioFechaModificacion c) {
             return new CriterioFechaModificacionDTO(c.getId(), c.getFechaInicio(), c.getFechaFin());
+        }
+        if(criterio instanceof CriterioHoraSuceso c){
+            return new CriterioHoraSucesoDTO(c.getId(), c.getHoraInicio(), c.getHoraFin());
         }
         return new CriterioDescripcionDTO(criterio.getId(), "Criterio desconocido");
     }
