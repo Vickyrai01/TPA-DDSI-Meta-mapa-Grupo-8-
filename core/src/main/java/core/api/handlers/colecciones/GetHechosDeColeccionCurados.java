@@ -44,7 +44,10 @@ public class GetHechosDeColeccionCurados implements Handler {
             }
 
             Coleccion coleccion = opt.get();
-            List<Hecho> hechosParaFiltrar = coleccion.getHechos(); // <-- la lista original
+            // Filtrar solo hechos activos (estado ACEPTADO)
+            List<Hecho> hechosParaFiltrar = coleccion.getHechos().stream()
+                    .filter(h -> h.getEstado() == core.models.entities.hecho.Estado.ACEPTADO)
+                    .toList();
             List<Hecho> hechosFiltrados = FiltradorColecciones.getInstance()
                     .filtrarHechosPorDTO(hechosParaFiltrar, filtro);   // <-- filtrás esa lista
 
@@ -53,7 +56,6 @@ public class GetHechosDeColeccionCurados implements Handler {
                     .toList();
 
             context.status(200).json(respuesta);
-
 
             return;
         }
