@@ -51,10 +51,10 @@ public class ColeccionesRepositorySeeder {
 
         // Obtener fuentes (validar que existan)
         Fuente fuente1 = fuentesRepository.findById(1);
-        Fuente fuente2 = fuentesRepository.findById(2);
-        Fuente fuente3 = fuentesRepository.findById(3);
+        //Fuente fuente2 = fuentesRepository.findById(2);
+        //Fuente fuente3 = fuentesRepository.findById(3);
 
-        if (fuente1 == null || fuente2 == null || fuente3 == null) {
+        if (fuente1 == null /*|| fuente2 == null || fuente3 == null */) {
             throw new IllegalStateException("No se encontraron todas las fuentes necesarias");
         }
 
@@ -68,8 +68,8 @@ public class ColeccionesRepositorySeeder {
         List<Hecho> hechosVisibles3 = List.of(hecho1, hecho4, hecho5);
 
         List<Fuente> fuentes1 = List.of(fuente1);
-        List<Fuente> fuentes2 = List.of(fuente2);
-        List<Fuente> fuentes3 = List.of(fuente1, fuente2, fuente3);
+        //List<Fuente> fuentes2 = List.of(fuente2);
+        //List<Fuente> fuentes3 = List.of(fuente1, fuente2, fuente3);
 
         // Crear colecciones
         CriteriosRepository criteriosRepository = CriteriosRepository.getInstance();
@@ -80,15 +80,15 @@ public class ColeccionesRepositorySeeder {
 
         Coleccion coleccion1 = new Coleccion(1, "Incendios", "Incendios de cualquier objeto", criterios, fuentes1, coleccionHechos1,hechosVisibles1, null);
         coleccion1.cambiarAlgoritmoConsenso(TipoConsenso.ABSOLUTO);
-        Coleccion coleccion2 = new Coleccion(2, "Choques", "Todos los choques", criterios, fuentes2, coleccionHechos2,hechosVisibles2, null);
-        Coleccion coleccion3 = new Coleccion(3, "Sin victimas fatales", "Accidentes de cualquier tipo sin accidentes", criterios, fuentes3, coleccionHechos3,hechosVisibles3, null);
-        coleccion3.cambiarAlgoritmoConsenso(TipoConsenso.MAYORIA_SIMPLE);
-        coleccion3.modificarModoNavegacion(ModoDeNavegacion.CURADA);
+       // Coleccion coleccion2 = new Coleccion(2, "Choques", "Todos los choques", criterios, fuentes2, coleccionHechos2,hechosVisibles2, null);
+        //Coleccion coleccion3 = new Coleccion(3, "Sin victimas fatales", "Accidentes de cualquier tipo sin accidentes", criterios, fuentes3, coleccionHechos3,hechosVisibles3, null);
+        //coleccion3.cambiarAlgoritmoConsenso(TipoConsenso.MAYORIA_SIMPLE);
+        //coleccion3.modificarModoNavegacion(ModoDeNavegacion.CURADA);
 
 
         // Guardar colecciones
         coleccionesRepository.add(coleccion1);
-        coleccionesRepository.add(coleccion2);
-        coleccionesRepository.add(coleccion3);
+        //coleccionesRepository.add(coleccion2);
+        //coleccionesRepository.add(coleccion3);
     }
 }

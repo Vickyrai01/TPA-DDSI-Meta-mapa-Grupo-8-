@@ -164,8 +164,8 @@ public class Application {
         }
         return traceId.trim();
     }
-  FuentesRepositorySeeder fuentesRepositorySeeder = FuentesRepositorySeeder.getInstance();
-        fuentesRepositorySeeder.cargarFuentesSeeder();
+        //FuentesRepositorySeeder fuentesRepositorySeeder = FuentesRepositorySeeder.getInstance();
+        //fuentesRepositorySeeder.cargarFuentesSeeder();
   
     private static long durationMs(io.javalin.http.Context ctx) {
         Long start = ctx.attribute(ATTR_START_NS);
