@@ -1,6 +1,8 @@
 package cargadorEstatica.model;
 
 import com.opencsv.CSVReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 
 public class StrategyCSV implements StrategyTipoConexion {
 
+    private static final Logger log = LoggerFactory.getLogger(StrategyCSV.class);
     public StrategyCSV() {}
 
     private static final String BASE_CSV_DIR = Paths.get("cargadorEstatica", "csv").toString();; // carpeta base
@@ -26,25 +29,23 @@ public class StrategyCSV implements StrategyTipoConexion {
 
         try {
             Path csvPath = Paths.get(BASE_CSV_DIR, fuenteBase);
-
+            log.info("Procesando CSV fuente={} path={}", fuenteBase, csvPath.toAbsolutePath());
             if (!Files.exists(csvPath)) {
-                System.err.println("[StrategyCSV] No se encontró el archivo CSV: " + csvPath.toAbsolutePath());
+                log.warn("No se encontró el archivo CSV path={}", csvPath.toAbsolutePath());
                 return List.of();
             }
 
             try (CSVReader reader = new CSVReader(
-                    Files.newBufferedReader(csvPath, StandardCharsets.UTF_8))) { //<- esto por ahi rompe, ni idea que es guadi
+                    Files.newBufferedReader(csvPath, StandardCharsets.UTF_8))) {
                 String[] fila;
                 reader.readNext(); // header
 
                 while ((fila = reader.readNext()) != null) {
                     if (fila.length != 6) {
-                        System.out.println("Línea ignorada: no tiene 6 columnas." + Arrays.toString(fila));
                         continue;
                     }
 
                     if (Arrays.stream(fila).anyMatch(col -> col == null || col.trim().isEmpty())) {
-                        System.out.println("Fila ignorada: tiene campos vacíos. " + Arrays.toString(fila));
                         continue;
                     }
 
@@ -63,12 +64,11 @@ public class StrategyCSV implements StrategyTipoConexion {
                 }
             }
             }catch (IOException e) {
-                System.err.println("[StrategyCSV] Error al leer CSV: " + fuenteBase);
-                e.printStackTrace();
+            log.error("Error al leer CSV fuente={}", fuenteBase, e);
         }catch (Exception e) {
-                System.err.println("[StrategyCSV] Error inesperado procesando CSV: " + fuenteBase);
-                e.printStackTrace();
+            log.error("Error inesperado procesando CSV fuente={}", fuenteBase, e);
         }
+        log.info("CSV procesado fuente={} hechosGenerados={}", fuenteBase, hechos.size());
         return hechos.stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
