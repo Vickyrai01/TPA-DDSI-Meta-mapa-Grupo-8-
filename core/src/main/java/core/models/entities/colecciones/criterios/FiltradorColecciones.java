@@ -49,7 +49,15 @@ public class FiltradorColecciones {
 
     private String normalizar(String texto) {
         if (texto == null) return null;
-        return Normalizer.normalize(texto, Normalizer.Form.NFD).replaceAll("[\\p{InCombiningDiacriticalMarks}]", "").toLowerCase();
+        // Paso 1: quitar acentos
+        String s = Normalizer.normalize(texto, Normalizer.Form.NFD)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+        // Paso 2: poner a minúsculas y quitar símbolos, guiones bajos, etc
+        s = s.toLowerCase()
+                .replaceAll("[^\\p{L}\\p{Nd}]+", " ") // Deja solo letras y dígitos, separa símbolos por espacio
+                .replaceAll("\\s+", " ") // reemplaza múltiples espacios por uno
+                .trim();
+        return s;
     }
 
 

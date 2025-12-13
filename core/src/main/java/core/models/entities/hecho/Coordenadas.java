@@ -56,6 +56,7 @@ public class Coordenadas {
     }
 
     public String getProvincia() {
+        System.out.println("Provincia: " + GeocodingUtils.obtenerProvincia(latitud, longitud));
         return GeocodingUtils.obtenerProvincia(latitud, longitud);
     }
 }

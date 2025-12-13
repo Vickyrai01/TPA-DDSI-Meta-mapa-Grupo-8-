@@ -43,7 +43,7 @@ public class ColeccionesController {
             @RequestParam(value = "descripcion", required = false) String descripcion,
             @RequestParam(value = "etiqueta", required = false) String etiqueta,
             @RequestParam(value = "categoria", required = false) String categoria,
-            @RequestParam(value = "provincia", required = false) String provincia,
+            @RequestParam(value = "provincia", required = false) String provinciaParam,
             @RequestParam(value = "soloMultimedia", required = false) Boolean soloMultimedia,
             @RequestParam(value = "fechaDesdeSuceso", required = false) String fechaDesdeSuceso,
             @RequestParam(value = "fechaHastaSuceso", required = false) String fechaHastaSuceso,
@@ -65,8 +65,13 @@ public class ColeccionesController {
             }
         }
 
+        // Aquí conviertes el string de la provincia al enum Provincia
+        Provincia provincia = Provincia.fromString(provinciaParam);
+
+        // IMPORTANTE: pasas provincia.name() si en el service espera un String, o directo el enum si acepta Provincia
         List<HechoDTO> hechos = coleccionService.getHechosFiltradosDeColeccion(
-                id, modoActual, titulo, descripcion, etiqueta, categoria, provincia,
+                id, modoActual, titulo, descripcion, etiqueta, categoria,
+                provincia != null ? provincia.name() : null,
                 soloMultimedia, fechaDesdeSuceso, fechaHastaSuceso, fechaDesdeCarga, fechaHastaCarga
         );
 
@@ -75,7 +80,7 @@ public class ColeccionesController {
         param.put("descripcion", descripcion);
         param.put("etiqueta", etiqueta);
         param.put("categoria", categoria);
-        param.put("provincia", provincia);
+        param.put("provincia", provinciaParam);
         param.put("soloMultimedia", soloMultimedia);
         param.put("fechaDesdeSuceso", fechaDesdeSuceso);
         param.put("fechaHastaSuceso", fechaHastaSuceso);
@@ -94,5 +99,6 @@ public class ColeccionesController {
 
         return "verColeccion/verColeccion";
     }
+
 
 }
