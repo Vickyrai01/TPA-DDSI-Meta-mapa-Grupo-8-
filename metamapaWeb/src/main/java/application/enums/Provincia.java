@@ -1,8 +1,10 @@
 package application.enums;
 
+import java.text.Normalizer;
+
 public enum Provincia {
     BUENOS_AIRES("Buenos Aires"),
-    CABA("Ciudad Autónoma de Buenos Aires"),
+    CIUDAD_AUTONOMA_DE_BUENOS_AIRES("Ciudad Autónoma de Buenos Aires"),
     CATAMARCA("Catamarca"),
     CHACO("Chaco"),
     CHUBUT("Chubut"),
@@ -34,6 +36,24 @@ public enum Provincia {
 
     public String getNombre() {
         return nombre;
+    }
+
+    public static Provincia fromString(String provincia) {
+        if (provincia == null) return null;
+        // Normalizar el string: quita acentos, pasa a mayúsculas, reemplaza espacios y guiones
+        String normalizada = Normalizer.normalize(provincia, Normalizer.Form.NFD)
+                .replaceAll("[\\p{InCombiningDiacriticalMarks}]", "")
+                .replace(" ", "_")
+                .replaceAll("-", "_")
+                .toUpperCase();
+        // Mapeo especial para valores atípicos
+        if (normalizada.equals("CABA")) normalizada = "CIUDAD_AUTONOMA_DE_BUENOS_AIRES";
+        for (Provincia p : Provincia.values()) {
+            if (p.name().equals(normalizada)) {
+                return p;
+            }
+        }
+        return null;
     }
 
 }
