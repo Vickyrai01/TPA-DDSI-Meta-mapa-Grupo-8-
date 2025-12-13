@@ -10,16 +10,15 @@ import java.nio.file.Paths;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-    @Value("${app.upload.hechos-dir:uploads/hechos}")
-    private String hechosDir;
+
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        Path hechosPath = Paths.get(hechosDir).toAbsolutePath().normalize();
-        String location = "file:" + hechosPath.toString() + "/";
-
-        registry.addResourceHandler("/media/hechos/**")
-                .addResourceLocations(location);
+        // Sirve archivos desde src/main/resources/static/uploads/hechos/
+        String hechosStaticPath = Paths.get(System.getProperty("user.dir"),
+                "metamapaWeb", "src", "main", "resources", "static", "uploads", "hechos").toAbsolutePath().toString() + "/";
+        registry.addResourceHandler("/uploads/hechos/**")
+                .addResourceLocations("file:" + hechosStaticPath);
     }
 
 }
