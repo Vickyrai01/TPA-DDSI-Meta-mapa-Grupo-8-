@@ -8,6 +8,7 @@ import utils.DBUtils;
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
 
@@ -54,14 +55,12 @@ public class CriteriosRepository extends JpaRepositoryBase<Criterio, Integer> {
     // =====================================================
     //  NOMBRE  (palabraClave)
     // =====================================================
-    public CriterioNombre buscarNombre(String palabra) {
-        if (palabra == null || palabra.isBlank()) return null;
-
+    public CriterioNombre buscarNombre(String palabraClave) {
         EntityManager em = DBUtils.getEntityManager();
         try {
-            return (CriterioNombre) em.createQuery(
-                            "SELECT c FROM CriterioNombre c " +
-                                    "WHERE LOWER(TRIM(c.palabraClave)) = LOWER(:palabra)",
+            // 1. Obtenemos la lista de resultados (sin hacer cast todavía)
+            List<CriterioNombre> resultados = em.createQuery(
+                            "SELECT c FROM CriterioNombre c WHERE c.palabraClave = :palabra",
                             CriterioNombre.class)
                     .setParameter("palabra", palabra.trim())
                     .getResultStream()

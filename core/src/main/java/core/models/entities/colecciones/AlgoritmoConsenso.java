@@ -1,6 +1,7 @@
 package core.models.entities.colecciones;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import core.models.entities.fuentes.Fuente;
 import core.models.entities.hecho.Hecho;
 import core.models.agregador.HechoAIntegrarDTO;
 import core.models.agregador.normalizador.ComparadorHechos;
@@ -20,12 +21,16 @@ import java.util.stream.Collectors;
 
 public abstract class AlgoritmoConsenso {
 
+    public abstract List<Hecho> ejecutarAlgoritmo(List<Hecho> hechos, List<Fuente> fuentes);
+
     //múltiples menciones: si al menos dos fuentes contienen un mismo hecho y ninguna otra fuente contiene otro de igual título pero diferentes atributos, se lo considera consensuado;
 
+    /*
     public List<Hecho> ejecutarAlgoritmo() {
         List<Hecho> hechosVisibles = new ArrayList<>();
         return hechosVisibles;
     }
+    */
 
     public boolean esElMismoHecho(Hecho h1, Hecho h2) {
         return ComparadorHechos.getInstance().esElMismoHecho(convertirADTO(h1), convertirADTO(h2));
@@ -70,6 +75,18 @@ public abstract class AlgoritmoConsenso {
                 hecho.getFechaSuceso() != null ? hecho.getFechaSuceso().toString() : null
         );
         return dto;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 
     public String devolverTipoDeConsenso() {

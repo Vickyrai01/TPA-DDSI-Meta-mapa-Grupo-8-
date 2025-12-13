@@ -13,7 +13,7 @@ public class SolicitudConHechoDTO {
     private  Boolean aceptada;
 
     // datos del hecho
-    private String hash;
+    private Integer idHecho;
     private String nombre;
     private String descripcionHecho;
     private String contribuyente;
@@ -23,7 +23,7 @@ public class SolicitudConHechoDTO {
 
     public SolicitudConHechoDTO(Integer id,
                                 String descripcionSolicitud,
-                                String hash,
+                                Integer idHecho,
                                 String nombre,
                                 String descripcionHecho,
                                 String contribuyente,
@@ -33,7 +33,7 @@ public class SolicitudConHechoDTO {
                                 Boolean estado) {
         this.id = id;
         this.descripcionSolicitud = descripcionSolicitud;
-        this.hash = hash;
+        this.idHecho = idHecho;
         this.nombre = nombre;
         this.descripcionHecho = descripcionHecho;
         this.contribuyente = contribuyente;
@@ -45,11 +45,10 @@ public class SolicitudConHechoDTO {
 
     public static SolicitudConHechoDTO from(SolicitudDeEliminacion s) {
         Hecho h = s.getHecho();
-
         return new SolicitudConHechoDTO(
                 s.getId(),
                 s.getDescripcion(),
-                h != null ? h.getHash() : null,
+                h != null ? h.getId() : null,
                 h != null ? h.getTitulo() : null,
                 h != null ? h.getDescripcion() : null,
                 (h != null && h.getContribuyente() != null)
@@ -65,7 +64,6 @@ public class SolicitudConHechoDTO {
     // getters y setters
     public Integer getId() { return id; }
     public String getDescripcionSolicitud() { return descripcionSolicitud; }
-    public String getHash() { return hash; }
     public String getNombre() { return nombre; }
     public String getDescripcionHecho() { return descripcionHecho; }
     public String getContribuyente() { return contribuyente; }
@@ -79,7 +77,6 @@ public class SolicitudConHechoDTO {
 
     public void setId(Integer id) { this.id = id; }
     public void setDescripcionSolicitud(String descripcionSolicitud) { this.descripcionSolicitud = descripcionSolicitud; }
-    public void setHash(String hash) { this.hash = hash; }
     public void setNombre(String nombre) { this.nombre = nombre; }
     public void setDescripcionHecho(String descripcionHecho) { this.descripcionHecho = descripcionHecho; }
     public void setContribuyente(String contribuyente) { this.contribuyente = contribuyente; }

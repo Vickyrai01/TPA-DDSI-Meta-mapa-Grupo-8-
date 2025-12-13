@@ -410,5 +410,22 @@ public class HechosRepositorySeeder {
         hechosRepository.add(hecho3);
         hechosRepository.add(hecho4);
         hechosRepository.add(hecho5);
+
+        //PRUEBA CONSENSO
+        Hecho hecho35 = new Hecho(
+                coordenadas21, categoriaChoque, null, null, null, Estado.ACEPTADO, contribuyente21,
+                LocalDate.now().minusDays(2), LocalDate.now().minusDays(2),
+                TipoFuente.ESTATICA, null,
+                "Dos autos chocaron en la intersección, uno de los conductores no respetó el semáforo.",
+                "Choque en semáforo", "S21", 2, LocalTime.of(7, 10));
+        hecho35.setHash(hash21);
+
+        Hecho hecho36 = new Hecho(coordenadas2, categoriaChoque, null,
+                null, null, Estado.ACEPTADO, contribuyente3,
+                LocalDate.now().minusDays(2), LocalDate.now().minusDays(3),
+                TipoFuente.ESTATICA, null, "Un perro cruzo por la calle y frenó de golpe, todos a salvo.", "Choque entre moto y gol", null,2);
+        hecho36.setHash(hash2);
+        hechosRepository.add(hecho35);
+        hechosRepository.add(hecho36);
     }
 }
