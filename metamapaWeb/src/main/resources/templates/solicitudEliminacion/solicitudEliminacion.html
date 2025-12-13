@@ -37,7 +37,7 @@
                 <!-- Si luego querés postear, podés usar th:action y method="post" -->
                 <form th:action="@{/solicitudes/eliminacion}" method="post" autocomplete="off">
                     <!-- si TENÉS id en el DTO -->
-                    <input type="hidden" name="hashHecho" th:value="${hecho.hash}" />
+                    <input type="hidden" name="idHecho" th:value="${hecho.id}" />
 
                     <div class="form-group">
                         <label for="descripcion"><strong>Motivo solicitud</strong></label>

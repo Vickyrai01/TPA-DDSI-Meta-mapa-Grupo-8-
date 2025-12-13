@@ -186,12 +186,12 @@ public class ServicioDeAgregacion {
 
          int spamEliminados = eliminarSpam(hechosAIntegrar);
 
-         int duplicadosEliminados = eliminarDuplicados(hechosAIntegrar);
+         //int duplicadosEliminados = eliminarDuplicados(hechosAIntegrar);
 
          normalizadorCategoria.estandarizarCategoriasDuplicadas(hechosAIntegrar);
 
-        log.info("Limpieza: spamEliminados={} duplicadosEliminados={}",
-                spamEliminados, duplicadosEliminados);
+         //log.info("Limpieza: spamEliminados={} duplicadosEliminados={}", spamEliminados, duplicadosEliminados);
+         log.info("Limpieza: spamEliminados={}", spamEliminados);
     }
 
     //EL QUE SE USA!!
