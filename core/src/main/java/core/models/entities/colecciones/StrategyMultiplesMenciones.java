@@ -2,69 +2,53 @@ package core.models.entities.colecciones;
 
 import core.models.entities.fuentes.Fuente;
 import core.models.entities.hecho.Hecho;
+import core.models.entities.hecho.Estado;
 import core.models.repository.HechosRepository;
 import core.models.repository.FuentesRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class StrategyMultiplesMenciones extends AlgoritmoConsenso {
 
-    List<Fuente> fuentes = FuentesRepository.getInstance().obtenerTodas();
-    List<Hecho> hechos = HechosRepository.getInstance().obtenerTodas();
-
-    List<Hecho> hechosVisibles = new ArrayList<>();
-    List<String> idFuente = new ArrayList<>();
-    List<Hecho> verificarSimilares = new ArrayList<>();
-
     @Override
-    public List<Hecho> ejecutarAlgoritmo() {
-        for(Fuente fuente : fuentes) {
-            String id = fuente.getId().toString();
-            if (!idFuente.contains(id)) {
-                idFuente.add(id);
-            }
-        }
+    public List<Hecho> ejecutarAlgoritmo(List<Hecho> hechos, List<Fuente> fuentes) {
+        List<Hecho> hechosVisibles = new ArrayList<>();
+        if (hechos == null || hechos.isEmpty()) return hechosVisibles;
 
-        for (Hecho hecho : hechos) {
-            if (alMenosDos(hecho) && ningunOtro(hecho)) {
-                hechosVisibles.add(hecho);
+        // Filtrar solo hechos aceptados
+        List<Hecho> hechosAceptados = hechos.stream()
+                .filter(h -> h.getEstado() == Estado.ACEPTADO)
+                .toList();
+
+        for (Hecho hecho : hechosAceptados) {
+            // Agrupar hechos idénticos (por hash)
+            List<Hecho> grupo = hechosAceptados.stream()
+                    .filter(h -> h.getHash().equals(hecho.getHash()))
+                    .toList();
+            Set<Integer> idsFuentesEncontradas = grupo.stream()
+                    .map(Hecho::getIdFuente)
+                    .collect(Collectors.toSet());
+
+            // Regla 1: Al menos 2 fuentes
+            if (idsFuentesEncontradas.size() >= 2) {
+                // Regla 2: Ninguna otra fuente tiene un hecho con el mismo título pero diferentes atributos
+                boolean hayConflicto = hechosAceptados.stream()
+                        .filter(h -> h.getTitulo().equals(hecho.getTitulo()) && !h.getHash().equals(hecho.getHash()))
+                        .findAny()
+                        .isPresent();
+                if (!hayConflicto) {
+                    boolean yaAgregado = hechosVisibles.stream()
+                            .anyMatch(hv -> hv.getHash().equals(hecho.getHash()));
+                    if (!yaAgregado) {
+                        hechosVisibles.add(hecho);
+                    }
+                }
             }
         }
         return hechosVisibles;
-    }
-
-    public boolean ningunOtro(Hecho hecho) {
-        verificarSimilares = obtenerHechosSimilares(hecho, hechos);
-        boolean haySimilar = false;
-
-        for (Hecho hechoSimilar : verificarSimilares) {
-            haySimilar = esHechoSimilar(hecho, hechoSimilar);
-
-            if(haySimilar){
-                break;
-            }
-        }
-        return haySimilar;
-    }
-
-    public boolean alMenosDos(Hecho hecho) {
-        boolean estaEnFuente = false;
-        int valido = 0;
-        List<Hecho> hechosIguales = obtenerHechosIguales(hecho, hechos);
-
-        for (String id : idFuente) {
-            estaEnFuente = hechosIguales.stream()
-                    .anyMatch(hechoVerifica -> hechoVerifica.getIdFuente().toString() == id);
-            if (estaEnFuente) {
-                valido++;
-            }
-        }
-
-        if(valido >= 2) {
-            return true;
-        }
-        return false;
     }
 
     @Override

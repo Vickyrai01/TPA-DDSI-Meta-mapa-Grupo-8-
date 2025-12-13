@@ -2,46 +2,41 @@ package core.models.entities.colecciones;
 
 import core.models.entities.fuentes.Fuente;
 import core.models.entities.hecho.Hecho;
+import core.models.entities.hecho.Estado;
 import core.models.repository.HechosRepository;
 import core.models.repository.FuentesRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class StrategyMayoriaSimple extends AlgoritmoConsenso {
 
     @Override
-    public List<Hecho> ejecutarAlgoritmo() {
-        List<Fuente> fuentes = FuentesRepository.getInstance().obtenerTodas();
-        List<Hecho> hechos = HechosRepository.getInstance().obtenerTodas();
-
+    public List<Hecho> ejecutarAlgoritmo(List<Hecho> hechos, List<Fuente> fuentes) {
         List<Hecho> hechosVisibles = new ArrayList<>();
-        List<String> idFuente = new ArrayList<>();
+        if (fuentes == null || fuentes.isEmpty()) return hechosVisibles;
 
-        boolean estaEnFuente = false;
+        int cantidadFuentes = fuentes.size();
+        int minimoMayoria = (int) Math.ceil(cantidadFuentes / 2.0); // al menos la mitad, redondeando hacia arriba
 
-        for (Fuente fuente : fuentes) {
-            String id = fuente.getId().toString();
-            if (!idFuente.contains(id)) {
-                idFuente.add(id);
-            }
-        }
+        // Filtrar solo hechos aceptados
+        List<Hecho> hechosAceptados = hechos.stream()
+                .filter(h -> h.getEstado() == Estado.ACEPTADO)
+                .toList();
 
-        for(Hecho hecho: hechos){
-            int valido = 0;
-            List<Hecho> hechosIguales = obtenerHechosIguales(hecho, hechos);
+        for (Hecho hecho : hechosAceptados) {
+            List<Hecho> grupo = obtenerHechosIguales(hecho, hechosAceptados);
+            Set<Integer> idsFuentesEncontradas = grupo.stream()
+                    .map(Hecho::getIdFuente)
+                    .collect(Collectors.toSet());
 
-            for(String id: idFuente){
-                estaEnFuente = hechosIguales.stream()
-                        .anyMatch(hechoVerifica -> hechoVerifica.getIdFuente().toString() == id);
-
-                if (estaEnFuente) {
-                    valido++;
+            if (idsFuentesEncontradas.size() >= minimoMayoria) {
+                boolean yaExiste = hechosVisibles.stream().anyMatch(hv -> esElMismoHecho(hv, hecho));
+                if (!yaExiste) {
+                    hechosVisibles.add(hecho);
                 }
-            }
-
-            if (valido>=fuentes.size()/2) {
-                hechosVisibles.add(hecho);
             }
         }
         return hechosVisibles;

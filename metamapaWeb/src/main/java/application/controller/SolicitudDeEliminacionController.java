@@ -23,76 +23,61 @@ public class SolicitudDeEliminacionController {
     private  final SolicitudesEliminacionService solicitudesEliminacionService;
 
     public SolicitudDeEliminacionController(ColeccionService coleccionService, HechoService hechoService, SolicitudesEliminacionService solicitudesEliminacionService) {
-            this.coleccionService = coleccionService;
+        this.coleccionService = coleccionService;
         this.hechoService = hechoService;
         this.solicitudesEliminacionService = solicitudesEliminacionService;
     }
 
-        // 1. Cambia el GetMapping para que acepte un 'hash'
-        @GetMapping("/solicitudEliminacion/{hash}")
-        public String home(@PathVariable("hash") String hash, Model model) { // 2. Recibe el HASH (String)
+    // 1. Cambia el GetMapping para que acepte un 'hash'
+    @GetMapping("/solicitudEliminacion/{id}")
+    public String home(@PathVariable("id") Integer id, Model model) { // Recibe el ID del hecho
 
-            try {
-                // 3. Busca la colección global (esto sigue igual)
-                List<ColeccionDTO> todasLasColecciones = coleccionService.getAll();
+        try {
+            // 3. Busca la colección global (esto sigue igual)
+            List<ColeccionDTO> todasLasColecciones = coleccionService.getAll();
 
-                Optional<Integer> idGlobalOpt = todasLasColecciones.stream()
-                        .filter(coleccion -> coleccion.criterioDePertenencia() == null)
-                        .map(ColeccionDTO::id)
-                        .findFirst();
+            Optional<Integer> idGlobalOpt = todasLasColecciones.stream()
+                    .filter(coleccion -> coleccion.criterioDePertenencia() == null)
+                    .map(ColeccionDTO::id)
+                    .findFirst();
 
-                if (idGlobalOpt.isEmpty()) {
-                    // Si no existe la colección "global", hacemos un fallback: pedimos todos los hechos
-                    // al admin API y buscamos el hash entre ellos.
-                    System.err.println("Advertencia: No se encontró una colección global (criterio == null). Intentando fallback por hechos globales.");
-                    List<HechoDTO> todosLosHechos = hechoService.getAll();
-                    Optional<HechoDTO> hechoBuscado = todosLosHechos == null ? Optional.empty() : todosLosHechos.stream()
-                            .filter(hecho -> hecho.hash() != null && hecho.hash().equals(hash))
-                            .findFirst();
-
-                    if (hechoBuscado.isPresent()) {
-                        model.addAttribute("hecho", hechoBuscado.get());
-                        return "solicitudEliminacion/solicitudEliminacion";
-                    } else {
-                        System.err.println("Error: El hecho con HASH " + hash + " no se encontró en el fallback de hechos.");
-                        return "redirect:/mapa";
-                    }
+            // Buscar el hecho por ID en la colección global o en todos los hechos
+            HechoDTO hechoBuscado = null;
+            if (idGlobalOpt.isEmpty()) {
+                List<HechoDTO> todosLosHechos = hechoService.getAll();
+                if (todosLosHechos != null) {
+                    hechoBuscado = todosLosHechos.stream()
+                            .filter(hecho -> hecho.id() != null && hecho.id().equals(id))
+                            .findFirst().orElse(null);
                 }
-
-                // 4. Traemos TODOS los hechos de esa colección
+            } else {
                 List<HechoDTO> hechosGlobales = coleccionService.getHechosDeColeccion(idGlobalOpt.get());
-
-                // 5. ¡LA CLAVE! Filtramos la lista buscando el HASH
-                Optional<HechoDTO> hechoBuscado = hechosGlobales.stream()
-                        .filter(hecho -> hecho.hash() != null && hecho.hash().equals(hash))
-                        .findFirst();
-
-                if (hechoBuscado.isPresent()) {
-                    // 6. ¡Éxito! Lo pasamos al modelo
-                    model.addAttribute("hecho", hechoBuscado.get());
-                } else {
-                    System.err.println("Error: El hecho con HASH " + hash + " no se encontró en la colección global.");
-                    return "redirect:/mapa";
-                }
-
-            } catch (Exception e) {
-                System.err.println("Error en SolicitudDeEliminacionController: " + e.getMessage());
+                hechoBuscado = hechosGlobales.stream()
+                        .filter(hecho -> hecho.id() != null && hecho.id().equals(id))
+                        .findFirst().orElse(null);
+            }
+            if (hechoBuscado != null) {
+                model.addAttribute("hecho", hechoBuscado);
+            } else {
+                System.err.println("Error: El hecho con ID " + id + " no se encontró.");
                 return "redirect:/mapa";
             }
 
-            return "solicitudEliminacion/solicitudEliminacion";
+        } catch (Exception e) {
+            System.err.println("Error en SolicitudDeEliminacionController: " + e.getMessage());
+            return "redirect:/mapa";
         }
 
-        // POST que recibe el form y llama a la API NORMAL (8081)
+        return "solicitudEliminacion/solicitudEliminacion";
+    }
+
+    // POST que recibe el form y llama a la API NORMAL (8081)
     @PostMapping("/solicitudes/eliminacion")
     public String procesarSolicitudDeEliminacion(
-            @RequestParam("hashHecho") String hashHecho,    // hidden en el form
+            @RequestParam("idHecho") Integer idHecho,    // hidden en el form
             @RequestParam("descripcion") String descripcion
     ) {
-
-        boolean ok = solicitudesEliminacionService.crear(hashHecho, descripcion);
-
-        // podés mandar un query param para mostrar mensaje
+        boolean ok = solicitudesEliminacionService.crear(idHecho, descripcion);
         if (ok) {
             return "redirect:/mapa?solicitudEliminacion=ok";
         } else {

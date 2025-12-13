@@ -131,8 +131,7 @@ public class PanelDeControlController {
         } catch (Exception e) {
             ra.addFlashAttribute("popupError", "Error al ejecutar el servicio de agregación.");
         }
-
-        return "redirect:/mapa";
+        return "redirect:/admin/colecciones";
     }
 }
 

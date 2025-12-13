@@ -22,12 +22,12 @@ public class PostSolicitudHandler implements Handler {
     @Override
     public void handle(@NotNull Context context) throws Exception {
         SolicitudDeEliminacionDTO dto  = context.bodyAsClass(SolicitudDeEliminacionDTO.class);
-        log.info("Creando solicitud de eliminación hechoHash={} descLen={}",
+        log.info("Creando solicitud de eliminación hechoID={} descLen={}",
                 (dto != null ? dto.hecho : "null"),
                 (dto != null && dto.descripcion != null ? dto.descripcion.length() : 0)
         );
 
-        Hecho hecho = HechosRepository.getInstance().getHechoHash(dto.hecho);
+        Hecho hecho = HechosRepository.getInstance().getHecho(dto.hecho);
 
         if (hecho == null) {
             log.warn("Hecho no encontrado para solicitud hechoHash={}", dto.hecho);
