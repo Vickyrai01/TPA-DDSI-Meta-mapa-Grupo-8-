@@ -21,6 +21,7 @@ public class HechoAIntegrarDINAMICO {
     public String longitud;
     @JsonDeserialize(using = ArrayToStringDateTimeDeserializer.class)
     public String fechaSuceso;
+    public String horaSuceso;
 
     public List<String> etiquetas;
     public String contribuyente;
@@ -51,6 +52,7 @@ public class HechoAIntegrarDINAMICO {
         this.fechaSuceso = fechaSuceso;
         this.tipoFuente = String.valueOf(TipoFuente.DINAMICA);
         // opcionales: quedan null si no vienen
+        this.horaSuceso = null;
         this.etiquetas = null;
         this.contribuyente = null;
         this.multimedia = null;
@@ -58,7 +60,7 @@ public class HechoAIntegrarDINAMICO {
         this.fueExtraido = Boolean.FALSE; // default interno
     }
 
-    public HechoAIntegrarDINAMICO(String titulo, String descripcion, String categoria, String latitud, String longitud, String fechaSuceso,
+    public HechoAIntegrarDINAMICO(String titulo, String descripcion, String categoria, String latitud, String longitud, String fechaSuceso, String horaSuceso,
                              List<String> etiquetas, String contribuyente, List<String> multimedia)
     {
         this.hash = HandlerRecientes.generarHash(titulo+descripcion+categoria+latitud+longitud);
@@ -68,6 +70,7 @@ public class HechoAIntegrarDINAMICO {
         this.latitud = latitud;
         this.longitud = longitud;
         this.fechaSuceso = fechaSuceso;
+        this.horaSuceso = horaSuceso;
         this.etiquetas = etiquetas;
         this.contribuyente = contribuyente;
         this.multimedia = multimedia;
@@ -92,6 +95,10 @@ public class HechoAIntegrarDINAMICO {
     public void setTipoFuente(String fuente) {this.tipoFuente = fuente;};
     public Integer getIdFuente() {return idFuente;}
     public void setIdFuente(Integer idFuente) {this.idFuente = idFuente;};
+    public Boolean getFueExtraido() {return fueExtraido;}
+    public void setFueExtraido(Boolean fueExtraido) {this.fueExtraido = fueExtraido;};
+    public String getHoraSuceso() {return horaSuceso;}
+    public void setHoraSuceso(String horaSuceso) {this.horaSuceso = horaSuceso;}
 
     public List<String> getEtiquetas() {
         return etiquetas;

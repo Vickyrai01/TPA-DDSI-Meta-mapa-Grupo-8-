@@ -37,6 +37,9 @@ public class HechoAIntegrarDTO {
     @Column(name= "fecha_suceso")
     public String fechaSuceso;
 
+    @Column(name= "hora_suceso")
+    public String horaSuceso;
+
     @Column(name= "fecha_carga")
     public String fechaCarga;
 
@@ -95,6 +98,7 @@ public class HechoAIntegrarDTO {
         this.fechaSuceso = fechaSuceso;
 
         // opcionales: quedan null si no vienen
+        this.horaSuceso = null;
         this.etiquetas = null;
         this.contribuyente = null;
         this.multimedia = null;
@@ -105,7 +109,7 @@ public class HechoAIntegrarDTO {
     }
 
     public HechoAIntegrarDTO(
-            String hash, String titulo, String descripcion, String categoria, String latitud, String longitud, String fechaSuceso,
+            String hash, String titulo, String descripcion, String categoria, String latitud, String longitud, String fechaSuceso, String horaSuceso,
                              List<String> etiquetas, String contribuyente, List<String> multimedia)
     {
         this.hash = hash;
@@ -115,6 +119,7 @@ public class HechoAIntegrarDTO {
         this.latitud = latitud;
         this.longitud = longitud;
         this.fechaSuceso = fechaSuceso;
+        this.horaSuceso = horaSuceso;
         this.etiquetas = etiquetas;
         this.contribuyente = contribuyente;
         this.multimedia = multimedia;
@@ -183,6 +188,13 @@ public class HechoAIntegrarDTO {
     }
     public String getFechaCarga() {
         return fechaCarga;
+    }
+
+    public void setHoraSuceso(String horaSuceso) {
+        this.horaSuceso = horaSuceso;
+    }
+    public String getHoraSuceso() {
+        return horaSuceso;
     }
 
 

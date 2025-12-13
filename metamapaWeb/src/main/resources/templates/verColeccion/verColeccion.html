@@ -74,6 +74,13 @@
                                 <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}"></option>
                             </select>
                         </div>
+                        <div class="filtro-item">
+                            <label for="provincia">Provincia:</label>
+                            <select name="provincia" id="provincia">
+                                <option value="">- Todas -</option>
+                                <option th:each="prov : ${provincias}" th:value="${prov.name()}" th:text="${prov.nombre}"></option>
+                            </select>
+                        </div>
                         <!-- FECHA DE SUCESO -->
                         <div class="filtro-item" style="margin-bottom:.3em;">
                             <span style="font-weight: bold; color: #a8732e;">Fecha de suceso</span>
@@ -142,6 +149,16 @@
                                                ${#temporals.format(h.fechaSuceso(), 'dd/MM/yyyy')} :
                                                'No indica'"
                                       th:classappend="${h.fechaSuceso() == null} ? 'muted' : ''">
+                                </span>
+                            </div>
+
+                            <div class="field">
+                                <span class="field-label">Hora del hecho:</span>
+                                <span class="field-value"
+                                    th:text="${h.horaSuceso() != null} ?
+                                    ${#temporals.format(h.horaSuceso(), 'HH:mm a')} :
+                                    'No indica'"
+                                    th:classappend="${h.horaSuceso() == null} ? 'muted' : ''">
                                 </span>
                             </div>
 

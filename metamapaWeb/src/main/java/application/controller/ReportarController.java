@@ -101,6 +101,7 @@ public class ReportarController {
             @RequestParam(value = "etiquetas", required = false) String etiquetas,
             @RequestParam(value = "urgente", defaultValue = "false") boolean urgente,
             @RequestParam(value = "noPublicarDatos", defaultValue = "false") boolean noPublicarDatos,
+            @RequestParam(value = "horaSuceso", required = false) String horaSuceso,
             org.springframework.security.core.Authentication authentication,
             RedirectAttributes ra
     ) {
@@ -179,7 +180,8 @@ public class ReportarController {
 
             // Mandamos la lista de archivos guardados (puede ser vacía)
             jsonMap.put("multimedia", fileNamesToSave);
-
+          
+            jsonMap.put("horaSuceso", horaSuceso);
             // Procesar etiquetas
             List<String> etiquetasList = new ArrayList<>();
             if (etiquetas != null && !etiquetas.isBlank()) {
