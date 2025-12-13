@@ -1,11 +1,9 @@
 package application.controller;
 
-import application.service.ColeccionService;
 import application.service.ReportarService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import core.models.entities.usuario.Usuario;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,19 +13,51 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 public class ReportarController {
+
     private final ReportarService reportarService;
     private final ObjectMapper objectMapper;
 
+    // Almacena la ruta ABSOLUTA y correcta al directorio de subida dentro del módulo
+    private final String resolvedUploadPath;
+
+    // Constructor para inyección de dependencias y para resolver la ruta de UPLOADS de forma portable
     public ReportarController(ReportarService reportarService, ObjectMapper objectMapper) {
         this.reportarService = reportarService;
         this.objectMapper = objectMapper;
+
+        // =========================================================
+        // LÓGICA DE RESOLUCIÓN DE RUTA PORTABLE (para proyectos multi-módulo)
+        // =========================================================
+        String pathCalculated = null;
+        try {
+            // Obtener el directorio de trabajo del proyecto raíz (TPA-DDSI-Meta-mapa-Grupo-8-)
+            String rootPath = System.getProperty("user.dir");
+
+            // CONCATENAR la carpeta del MÓDULO y la ruta estática interna
+            // **IMPORTANTE: Ajusta "metamapaWeb" si el nombre de tu carpeta de módulo es diferente**
+            Path modulePath = Paths.get(rootPath, "metamapaWeb");
+
+            // Construir la ruta final: .../metamapaWeb/src/main/resources/static/uploads/
+            pathCalculated = Paths.get(modulePath.toString(), "src/main/resources/static/uploads/").toString();
+
+        } catch (Exception e) {
+            // Fallback si no se puede determinar la ruta del módulo
+            e.printStackTrace();
+            System.err.println("Advertencia: No se pudo resolver la ruta de UPLOADS del módulo. Usando la ruta relativa a la raíz del IDE.");
+            pathCalculated = Paths.get(System.getProperty("user.dir"), "src/main/resources/static/uploads/").toString();
+        }
+        this.resolvedUploadPath = pathCalculated;
     }
 
     @GetMapping("/reportar")
@@ -49,7 +79,7 @@ public class ReportarController {
         model.addAttribute("estado", estado);
         // Obtener correo del usuario autenticado
         String email = null;
- if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof OAuth2User oAuth2User) {
+        if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof OAuth2User oAuth2User) {
             email = oAuth2User.getAttribute("email");
         }
 
@@ -66,7 +96,8 @@ public class ReportarController {
             @RequestParam("descripcion") String descripcion,
             @RequestParam("latitud") Double latitud,
             @RequestParam("longitud") Double longitud,
-            @RequestParam("multimedia") String multimedia,
+            // CAMBIO: Recibir el archivo como MultipartFile
+            @RequestParam(value = "multimedia", required = false) MultipartFile[] multimediaFiles,
             @RequestParam(value = "etiquetas", required = false) String etiquetas,
             @RequestParam(value = "urgente", defaultValue = "false") boolean urgente,
             @RequestParam(value = "noPublicarDatos", defaultValue = "false") boolean noPublicarDatos,
@@ -74,6 +105,39 @@ public class ReportarController {
             org.springframework.security.core.Authentication authentication,
             RedirectAttributes ra
     ) {
+        List<String> fileNamesToSave = new ArrayList<>();
+        // ===========================================
+        // 1. MANEJO Y GUARDADO DE ARCHIVOS MULTIMEDIA (múltiples)
+        // ===========================================
+        if (multimediaFiles != null) {
+            try {
+                Path hechosUploadPath = Paths.get(this.resolvedUploadPath, "hechos");
+                if (!Files.exists(hechosUploadPath)) {
+                    Files.createDirectories(hechosUploadPath);
+                }
+                for (MultipartFile multimediaFile : multimediaFiles) {
+                    if (multimediaFile != null && !multimediaFile.isEmpty()) {
+                        String originalFilename = multimediaFile.getOriginalFilename();
+                        String fileExtension = "";
+                        if (originalFilename != null && originalFilename.contains(".")) {
+                            fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                        }
+                        String fileNameToSave = UUID.randomUUID().toString() + fileExtension;
+                        Path filePath = hechosUploadPath.resolve(fileNameToSave);
+                        Files.copy(multimediaFile.getInputStream(), filePath);
+                        fileNamesToSave.add(fileNameToSave);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                ra.addFlashAttribute("mensajeError", "Error al guardar los archivos multimedia.");
+                return "redirect:/reportar?estado=error";
+            }
+        }
+
+        // ===========================================
+        // 2. CONSTRUCCIÓN Y ENVÍO DEL JSON
+        // ===========================================
         try {
             ObjectMapper mapper = new ObjectMapper();
             Map<String, Object> jsonMap = new HashMap<>();
@@ -113,15 +177,12 @@ public class ReportarController {
             jsonMap.put("latitud", lat);
             jsonMap.put("longitud", lon);
             jsonMap.put("fechaSuceso", fechaSuceso);
+
+            // Mandamos la lista de archivos guardados (puede ser vacía)
+            jsonMap.put("multimedia", fileNamesToSave);
+          
             jsonMap.put("horaSuceso", horaSuceso);
-            if (multimedia != null && !multimedia.isBlank()) {
-                // si tiene contenido, lo mandamos como lista de un solo elemento
-                jsonMap.put("multimedia", List.of(multimedia));
-            } else {
-                // si está vacío, mandamos lista vacía
-                jsonMap.put("multimedia", new ArrayList<>());
-            }
-            //jsonMap.put("etiquetas", etiquetas);
+            // Procesar etiquetas
             List<String> etiquetasList = new ArrayList<>();
             if (etiquetas != null && !etiquetas.isBlank()) {
                 etiquetasList = Arrays.stream(etiquetas.trim().split("\\s+"))
@@ -139,19 +200,16 @@ public class ReportarController {
                 return "redirect:/reportar?estado=error";
             }
         } catch (WebClientResponseException e) {
-            // Errores HTTP del servidor remoto (400, 500, etc.)
             e.printStackTrace();
             ra.addFlashAttribute("mensajeError",
                     "Error al conectar con el servidor: " + e.getStatusCode().value());
             return "redirect:/reportar?estado=error";
 
         } catch (Exception e) {
-            // Cualquier otro error (JSON, red, null pointers, etc.)
             e.printStackTrace();
             ra.addFlashAttribute("mensajeError", "Ocurrió un error inesperado.");
             return "redirect:/reportar?estado=error";
         }
     }
-
 
 }

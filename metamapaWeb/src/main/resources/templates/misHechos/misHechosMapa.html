@@ -219,9 +219,23 @@
                             <div class="field view-mode">
                                 <span class="field-label">Multimedia:</span>
                                 <span class="field-value" th:if="${h.multimedia != null and !#lists.isEmpty(h.multimedia)}">
-                                    <a th:each="m : ${h.multimedia}" th:href="${m}" target="_blank" rel="noreferrer">
-                                         <i class="fa-solid fa-link"></i><span th:text="${#strings.abbreviate(m, 30)}">Archivo</span>
-                                    </a>
+                                    <div class="multimedia-gallery">
+                                        <button type="button" class="multimedia-item" th:each="m : ${h.multimedia}" th:if="${#strings.endsWithAny(m.toLowerCase(), '.jpg', '.jpeg', '.png', '.gif', '.jfif', '.webp')}" th:attr="data-img=${m}" tabindex="0">
+                                            <img class="multimedia-thumb" th:src="${m}" alt="Imagen adjunta" loading="lazy" />
+                                        </button>
+                                        <a th:each="m : ${h.multimedia}" th:if="${!#strings.endsWithAny(m.toLowerCase(), '.jpg', '.jpeg', '.png', '.gif', '.jfif', '.webp')}" th:href="${m}" target="_blank" rel="noreferrer">
+                                            <i class="fa-solid fa-link"></i><span th:text="${#strings.abbreviate(m, 30)}">Archivo</span>
+                                        </a>
+                                    </div>
+                                    <!-- Modal de imagen -->
+                                    <div class="img-modal" tabindex="-1">
+                                        <div class="img-modal-backdrop"></div>
+                                        <div class="img-modal-content">
+                                            <button type="button" class="img-modal-close" aria-label="Cerrar">&times;</button>
+                                            <img src="" alt="Imagen adjunta" />
+                                            <div class="img-modal-caption"></div>
+                                        </div>
+                                    </div>
                                 </span>
                                 <span class="field-value muted" th:if="${h.multimedia == null or #lists.isEmpty(h.multimedia)}">No indica</span>
                             </div>
@@ -246,8 +260,40 @@
         /*]]>*/
     </script>
 
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    // --- MODAL DE IMAGENES (galería) ---
+    document.addEventListener('DOMContentLoaded', () => {
+    // Modal único por página
+    const modal = document.querySelector('.img-modal');
+    if (!modal) return;
+    const modalImg = modal.querySelector('img');
+    const modalCaption = modal.querySelector('.img-modal-caption');
+    const closeBtn = modal.querySelector('.img-modal-close');
+    const backdrop = modal.querySelector('.img-modal-backdrop');
+    // Abrir modal
+    document.querySelectorAll('.multimedia-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+    const src = btn.getAttribute('data-img');
+    modalImg.src = src;
+    modalCaption.textContent = src.split('/').pop();
+    modal.classList.add('is-visible');
+    modal.focus();
+    });
+    });
+    // Cerrar modal
+    function closeModal() {
+    modal.classList.remove('is-visible');
+    modalImg.src = '';
+    modalCaption.textContent = '';
+    }
+    closeBtn.addEventListener('click', closeModal);
+    backdrop.addEventListener('click', closeModal);
+    modal.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+    });
+    });
 
     <script>
         // --- VALIDACION: Deshabilitar edicion si pasaron 7 días o si no hay fecha ---

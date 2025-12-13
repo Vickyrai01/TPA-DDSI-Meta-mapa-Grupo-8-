@@ -36,7 +36,7 @@ public class Application {
     }
 
     public static void main(String[] args) {
-        repoFuentesSeeder.cargarRepos();
+        //repoFuentesSeeder.cargarRepos();
         SpringApplication.run(Application.class, args);
     }
 

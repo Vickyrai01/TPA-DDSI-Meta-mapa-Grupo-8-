@@ -161,7 +161,7 @@
 
                                 <ul class="view-mode source-list" style="margin-top: 5px;">
                                     <li th:each="crit : ${c.criterioDePertenencia}">
-                                        <span th:text="|${crit.type}: ${crit.palabraClave ?: ''} ${crit.categoria ?: ''} ${crit.latitud != null ? (crit.latitud + ', ' + crit.longitud) : ''} ${crit.desde != null ? (crit.desde + ' al ' + crit.hasta) : ''}|">
+                                        <span th:text="|${crit.type}: ${crit.palabraClave ?: ''} ${crit.categoria ?: ''} ${crit.latitud != null ? (crit.latitud + ', ' + crit.longitud) : ''} ${crit.desde != null ? (crit.desde + ' al ' + crit.hasta) : ''}${crit.horaDesde != null ? (crit.horaDesde + ' a ' + crit.horaHasta) : ''}|">
                                             Criterio
                                         </span>
                                     </li>
@@ -180,8 +180,10 @@
                                                      data-lat=${crit.latitud},
                                                      data-lon=${crit.longitud},
                                                      data-desde=${crit.desde},
-                                                     data-hasta=${crit.hasta}">
-                                            <span th:text="|${crit.type}: ${crit.palabraClave ?: ''}${crit.categoria ?: ''}${crit.latitud != null ? (' Ubicación') : ''}${crit.desde != null ? (' Rango fechas') : ''}|">
+                                                     data-hasta=${crit.hasta},
+                                                     data-hora-desde=${crit.horaDesde},
+                                                     data-hora-hasta=${crit.horaHasta}">
+                                            <span th:text="|${crit.type}: ${crit.palabraClave ?: ''}${crit.categoria ?: ''}${crit.latitud != null ? (' Ubicación') : ''}${crit.desde != null ? (' Rango fechas') : ''}${crit.horaDesde != null ? (' Rango horas') : ''}|">
                                                 Info
                                             </span>
 
@@ -366,6 +368,7 @@
                         <option value="ubicacion">Ubicación (Lat/Lon)</option>
                         <option value="fechaSuceso">Fecha de Suceso</option>
                         <option value="fechaCarga">Fecha de Carga</option>
+                        <option value="horaSuceso">Hora de Suceso</option>
                     </select>
                 </div>
 
@@ -410,6 +413,18 @@
                             <input type="date" id="crit-input-to" class="card-input">
                         </div>
                     </div>
+
+                    <div id="input-group-time" class="dynamic-group hidden">
+                        <label>Rango de Horas:</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <input type="time" id="crit-input-time-from" class="card-input" step="60">
+                            <input type="time" id="crit-input-time-to" class="card-input" step="60">
+                        </div>
+                        <p style="font-size:0.8rem;color:#666;margin-top:6px;">
+                            Ej: 22:00 a 02:00 (cruza medianoche)
+                        </p>
+                    </div>
+
                 </div>
 
             </form>
