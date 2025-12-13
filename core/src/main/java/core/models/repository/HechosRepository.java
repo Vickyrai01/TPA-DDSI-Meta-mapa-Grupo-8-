@@ -332,8 +332,7 @@ public class HechosRepository extends JpaRepositoryBase<Hecho, Integer> {
 
             DBUtils.commit(em);
         } catch (RuntimeException ex) {
-            System.err.println("❌ Error en addAllEnUnaTransaccion");
-            System.err.println("Mensaje: " + ex.getMessage());
+            System.err.println("Error addAllEnUnaTransaccion");
             ex.printStackTrace();
             DBUtils.rollback(em);
             throw ex;

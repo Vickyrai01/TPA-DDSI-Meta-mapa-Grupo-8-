@@ -4,6 +4,8 @@ import application.service.RutasProperties;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,7 +22,8 @@ import java.time.LocalDate;
 
 @Component
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
-
+    private static final Logger log =
+            LoggerFactory.getLogger(OAuth2LoginSuccessHandler.class);
     private final RestTemplate restTemplate = new RestTemplate();
     private final String metamapaApi;
 
@@ -38,11 +41,11 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         try {
             if (authentication.getPrincipal() instanceof DefaultOAuth2User oAuth2User) {
 
-                String email   = (String) oAuth2User.getAttributes().get("email");
-                String name    = (String) oAuth2User.getAttributes().get("name");
+                String email = (String) oAuth2User.getAttributes().get("email");
+                String name = (String) oAuth2User.getAttributes().get("name");
                 String picture = (String) oAuth2User.getAttributes().get("picture");
 
-                System.out.println("[SSO] Login exitoso con Google. Email: " + email);
+                log.info("Login SSO exitoso con Google email={}", email);
 
                 if (email != null) {
 
@@ -58,16 +61,17 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                         }
                     } catch (HttpClientErrorException.NotFound ex) {
                         // 404 -> usuario no existe en el CORE (esto es lo esperado a veces)
-                        System.out.println("[SSO] Usuario no encontrado en CORE, se creará: " + email);
+                        log.info("Usuario SSO no encontrado en CORE, se creará email={}", email);
                     } catch (RestClientResponseException ex) {
-                        System.out.println("[SSO] Error consultando CORE: " + ex.getStatusText());
+                        log.error("Error HTTP consultando CORE email={} status={}",
+                                email, ex.getStatusText(), ex);
                     } catch (Exception ex) {
-                        System.out.println("[SSO] Error inesperado consultando CORE: " + ex.getMessage());
+                        log.error("Error inesperado consultando CORE email={}", email, ex);
                     }
 
                     // ============ 2) SI NO EXISTE, LO CREAMOS EN EL CORE ============
                     if (existing == null) {
-                        System.out.println("[SSO] Creando usuario en CORE para: " + email);
+                        log.info("Creando usuario en CORE vía SSO email={}", email);
 
                         UsuarioDTO nuevo = new UsuarioDTO(
                                 name,
@@ -83,23 +87,24 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
                             if (resp.getStatusCode() == HttpStatus.CREATED
                                     || resp.getStatusCode().is2xxSuccessful()) {
-                                System.out.println("[SSO] Usuario creado en CORE: " + email);
+                                log.info("Usuario creado en CORE vía SSO email={}", email);
                             } else {
-                                System.out.println("[SSO] El CORE devolvió estado no exitoso al registrar: "
-                                        + resp.getStatusCode());
+                                log.warn("CORE devolvió estado no exitoso al registrar email={} status={}",
+                                        email, resp.getStatusCode());
                             }
                         } catch (RestClientResponseException ex) {
-                            System.out.println("[SSO] Error HTTP al crear usuario en CORE: " + ex.getStatusText());
+                            log.error("Error HTTP al crear usuario en CORE email={} status={}",
+                                    email, ex.getStatusText(), ex);
                         } catch (Exception ex) {
-                            System.out.println("[SSO] Error inesperado al crear usuario en CORE: " + ex.getMessage());
+                            log.error("Error inesperado al crear usuario en CORE email={}", email, ex);
                         }
-                    } else {
-                        System.out.println("[SSO] Usuario ya existía en el CORE: " + email);
                     }
+                } else {
+                    log.info("Usuario SSO ya existía en CORE email={}", email);
                 }
             }
         } catch (Exception e) {
-            System.out.println("[SSO] Error en successHandler SSO (no corta el login): " + e.getMessage());
+            log.error("Error en successHandler SSO (no corta el login)", e);
         }
 
         response.sendRedirect("/mapa");

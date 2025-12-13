@@ -22,10 +22,6 @@ public class NormalizadorEtiqueta {
                 .filter(e -> e != null && !e.isBlank())
                 .map(Etiqueta::new)     // crea Etiqueta(nombre)
                 .toList();
-
-        for (Etiqueta etiqueta : etiquetas) {
-            System.out.println("Etiqueta: " + etiqueta.getNombre());
-        }
         
         return etiquetas;
     }

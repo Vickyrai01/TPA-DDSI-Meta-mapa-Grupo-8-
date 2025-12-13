@@ -1,12 +1,20 @@
 package core.models.agregador;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class SchedulerAgregador {
+
+    private static final Logger log = LoggerFactory.getLogger(SchedulerAgregador.class);
+    private static final String TRACE_KEY = "traceId";
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private boolean enEjecucion = false;
@@ -18,23 +26,27 @@ public class SchedulerAgregador {
         this.enEjecucion = enEjecucion;
     }
 
-    public void iniciarScheduler(){
-        if(enEjecucion){
-            System.out.println("El scheduler ya está en ejecución");
+    public void iniciarScheduler() {
+        if (enEjecucion) {
+            log.warn("El scheduler ya está en ejecución");
             return;
         }
 
         enEjecucion = true;
-        System.out.println("Iniciando scheduler...");
+        log.info("Iniciando scheduler...");
 
-        scheduler.scheduleAtFixedRate(this::verificarNuevosHechos,0,20, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(this::verificarNuevosHechos, 0, 20, TimeUnit.SECONDS);
     }
 
     public void verificarNuevosHechos() {
-        hechos.addAll(handlerCargadores.extraerHechosAIntegrar());
-        System.out.println("Nuevos hechos a integrar: " + hechos.size());
-        servicioDeAgregacion.actualizarColecciones(hechos);
-        hechos.clear();
+        MDC.put("traceId", UUID.randomUUID().toString().substring(0, 8));
+        try {
+            hechos.addAll(handlerCargadores.extraerHechosAIntegrar());
+            servicioDeAgregacion.actualizarColecciones(hechos);
+            hechos.clear();
+        } finally {
+            MDC.clear();
+        }
     }
 
     public List<HechoAIntegrarDTO> obtenerHechosAIntegrar(){
