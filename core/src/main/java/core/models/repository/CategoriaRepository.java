@@ -51,6 +51,46 @@ public class CategoriaRepository extends JpaRepositoryBase<Categoria, Integer>{
         return buscarPorNombre(nombre) != null;
     }
 
+    public Categoria buscarOCrearPorNombre(String nombre) {
+        if (nombre == null) return null;
+
+        String normalized = nombre.trim();
+        if (normalized.isBlank()) return null;
+
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            // 1) buscar existente
+            Categoria existente = em.createQuery(
+                            "select c from categoria c where lower(trim(c.nombre)) = :n",
+                            Categoria.class
+                    )
+                    .setParameter("n", normalized.toLowerCase())
+                    .setMaxResults(1)
+                    .getResultList()
+                    .stream()
+                    .findFirst()
+                    .orElse(null);
+
+            if (existente != null) return existente;
+
+            // 2) crear
+            DBUtils.comenzarTransaccion(em);
+
+            Categoria nueva = new Categoria();
+            nueva.setNombre(normalized);
+            em.persist(nueva);
+            em.flush();
+
+            DBUtils.commit(em);
+            return nueva;
+
+        } catch (RuntimeException ex) {
+            DBUtils.rollback(em);
+            throw ex;
+        } finally {
+            try { em.close(); } catch (Exception ignore) {}
+        }
+    }
 
 
     }

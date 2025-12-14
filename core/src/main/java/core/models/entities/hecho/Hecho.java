@@ -275,7 +275,7 @@ public class Hecho {
 
     @OneToMany
     @Column(name = "sugerenciaDeCambio")
-    @JoinColumn(name = "id_sugerenciaDeCambio")
+    @JoinColumn(name = "id_sugerencia_de_cambio")
     private List<SugerenciaDeCambio> sugerenciaDeCambio;
     public List<SugerenciaDeCambio> getSugerenciaDeCambio() {
         return sugerenciaDeCambio;
