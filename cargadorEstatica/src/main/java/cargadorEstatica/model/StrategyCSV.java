@@ -10,10 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class StrategyCSV implements StrategyTipoConexion {
@@ -35,32 +32,51 @@ public class StrategyCSV implements StrategyTipoConexion {
                 return List.of();
             }
 
-            try (CSVReader reader = new CSVReader(
-                    Files.newBufferedReader(csvPath, StandardCharsets.UTF_8))) {
+            try (CSVReader reader = new CSVReader(Files.newBufferedReader(csvPath, StandardCharsets.UTF_8))) {
+                String[] header = reader.readNext();
+                if (header == null) {
+                    log.warn("CSV vacío fuente={} path={}", fuenteBase, csvPath.toAbsolutePath());
+                    return List.of();
+                }
+
                 String[] fila;
-                reader.readNext(); // header
-
                 while ((fila = reader.readNext()) != null) {
-                    if (fila.length != 6) {
+
+                    // Mínimo requerido
+                    if (fila.length < 6) {
                         continue;
                     }
 
-                    if (Arrays.stream(fila).anyMatch(col -> col == null || col.trim().isEmpty())) {
+                    String titulo      = normalizar(fila[0]);
+                    String descripcion = normalizar(fila[1]);
+                    String categoria   = normalizar(fila[2]);
+                    String latitud     = normalizar(fila[3]);
+                    String longitud    = normalizar(fila[4]);
+                    String fecha       = normalizar(fila[5]);
+
+                    // Si falta algo esencial → skip
+                    if (titulo == null || descripcion == null || categoria == null ||
+                            latitud == null || longitud == null || fecha == null) {
                         continue;
                     }
 
-                    String titulo = fila[0].trim();
-                    String descripcion = fila[1].trim();
-                    String categoria = fila[2].trim();
-                    String latitud = fila[3].trim();
-                    String longitud = fila[4].trim();
-                    String fecha = fila[5].trim();
+                    // Opcionales (si no existen → null)
+                    String horaSuceso     = fila.length > 6 ? normalizar(fila[6]) : null;
+                    String contribuyente = fila.length > 7 ? normalizar(fila[7]) : null;
+                    List<String> etiquetas =
+                            fila.length > 8 ? parseEtiquetas(fila[8]) : null;
 
-                    HechoAIntegrarDTO hechoAIntegrarDTO = new HechoAIntegrarDTO(
+                    HechoAIntegrarDTO dto = new HechoAIntegrarDTO(
                             titulo, descripcion, categoria, latitud, longitud, fecha
                     );
-                    hechos.add(hechoAIntegrarDTO);
+
+                    dto.setHoraSuceso(horaSuceso);
+                    dto.setContribuyente(contribuyente);
+                    dto.setEtiquetas(etiquetas);
+
+                    hechos.add(dto);
                 }
+
             }
             }catch (IOException e) {
             log.error("Error al leer CSV fuente={}", fuenteBase, e);
@@ -77,5 +93,28 @@ public class StrategyCSV implements StrategyTipoConexion {
     public String devolverTipoDeConexion() {
         return "CSV";
     }
+
+    // ----------------- helpers -----------------
+
+    private String normalizar(String s) {
+        if (s == null) return null;
+        String t = s.trim();
+        if (t.isEmpty() || "null".equalsIgnoreCase(t)) return null;
+        return t;
+    }
+
+    private List<String> parseEtiquetas(String raw) {
+        raw = normalizar(raw);
+        if (raw == null) return null;
+
+        String sep = raw.contains(";") ? ";" : ",";
+        List<String> tags = Arrays.stream(raw.split(sep))
+                .map(String::trim)
+                .filter(x -> !x.isEmpty())
+                .toList();
+
+        return tags.isEmpty() ? null : tags;
+    }
+
 }
 

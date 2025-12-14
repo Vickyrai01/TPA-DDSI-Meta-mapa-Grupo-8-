@@ -30,7 +30,13 @@ public class FuentesRepositorySeeder {
     public void cargarFuentesSeeder()
     {
         Fuente fuenteCore = FuenteFactory.crearFuente("Hechos Reportados", null,  TipoFuente.DINAMICA, TipoConexion.DINAMICA);
+        Fuente fuente2 = FuenteFactory.crearFuente("Seguridad Ciudadana", "https://69344a4e4090fe3bf01f882a.mockapi.io/metamapa/SeguridadCiudadana", TipoFuente.PROXY, TipoConexion.APIREST);
+        Fuente fuente3 = FuenteFactory.crearFuente("Reportes Vecinales", "https://69344a4e4090fe3bf01f882a.mockapi.io/metamapa/ReportesVecinales", TipoFuente.PROXY, TipoConexion.APIREST);
+        Fuente fuente4 = FuenteFactory.crearFuente("Comunidad ARG", "alertasurbanas.csv", TipoFuente.ESTATICA, TipoConexion.CSV);
         fuentesRepository.add(fuenteCore);
+        fuentesRepository.add(fuente2);
+        fuentesRepository.add(fuente3);
+        fuentesRepository.add(fuente4);
     }
 
 

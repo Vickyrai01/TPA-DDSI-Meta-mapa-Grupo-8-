@@ -23,11 +23,13 @@ public class RepositoryFuentesSeeder {
         return instance;
     }
 
-    StrategyTipoConexion strategyAPIREST = new StrategyAPIREST();
-
-    Fuente fuente = new Fuente(4,"API Choque", "https://choques.com",  strategyAPIREST, "API REST");
 
     public void cargarRepos() {
-        repositoryFuentes.save(fuente);
+        StrategyTipoConexion strategyAPIREST = new StrategyAPIREST();
+        Fuente fuente2 = new Fuente(2,"Seguridad Ciudadana", "https://69344a4e4090fe3bf01f882a.mockapi.io/metamapa/SeguridadCiudadana",  strategyAPIREST, "API REST");
+        Fuente fuente3 = new Fuente(3, "Reportes Vecinales", "https://69344a4e4090fe3bf01f882a.mockapi.io/metamapa/ReportesVecinales", strategyAPIREST, "API REST");
+
+        repositoryFuentes.save(fuente2);
+        repositoryFuentes.save(fuente3);
     }
 }

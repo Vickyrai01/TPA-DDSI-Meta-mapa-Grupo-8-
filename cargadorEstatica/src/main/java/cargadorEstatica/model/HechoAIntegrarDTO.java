@@ -9,6 +9,7 @@ public class HechoAIntegrarDTO {
     private String latitud;
     private String longitud;
     private String fechaSuceso;
+    private String horaSuceso;
     private List<String> etiquetas;
     private String contribuyente;
     private String multimedia;
@@ -121,6 +122,13 @@ public class HechoAIntegrarDTO {
 
     public void setLinkFuente(String linkFuente) {
         this.linkFuente = linkFuente;
+    }
+
+    public String getHoraSuceso() {
+        return horaSuceso;
+    }
+    public void setHoraSuceso(String horaSuceso) {
+        this.horaSuceso = horaSuceso;
     }
 
     public HechoAIntegrarDTO(String titulo, String descripcion, String categoria, String latitud, String longitud, String fechaSuceso) {
