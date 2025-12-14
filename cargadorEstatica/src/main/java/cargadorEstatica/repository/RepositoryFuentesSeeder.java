@@ -20,13 +20,10 @@ public class RepositoryFuentesSeeder {
         return instance;
     }
 
-    StrategyTipoConexion StrategyCSV = new StrategyCSV();
-
-    //Fuente fuente1 = new Fuente(2,"Accidentes en AMBA", "eventosSanitariosPrueba1.csv",  StrategyCSV, "CSV");
-    Fuente fuente4 = new Fuente(3,"CSV Incendio", null,  StrategyCSV, "CSV");
 
     public void cargarRepos() {
-        //repositoryFuentes.save(fuente1);
+        StrategyTipoConexion StrategyCSV = new StrategyCSV();
+        Fuente fuente4 = new Fuente(4,"Comunidad ARG", "alertasurbanas.csv",  StrategyCSV, "CSV");
         repositoryFuentes.save(fuente4);
     }
 

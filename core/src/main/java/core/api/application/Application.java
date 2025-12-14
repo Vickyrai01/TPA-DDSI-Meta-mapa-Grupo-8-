@@ -144,9 +144,9 @@ public class Application {
         ApiAdminMetaMapa.configurar(app, graphQLProvider);
 
         FuentesRepositorySeeder.getInstance().cargarFuentesSeeder();
+        //ColeccionesRepositorySeeder.getInstance().cargarColeccionesRepositorySeeder();
         //HechosRepositorySeeder.getInstance().cargarHechosSeeder();
         //SolicitudEliminacioRepositorySeeder.getInstance().cargarSolicitudDeEliminacionSeeder();
-        //ColeccionesRepositorySeeder.getInstance().cargarColeccionesRepositorySeeder();
 
         app.start("0.0.0.0", 8081);
     }
