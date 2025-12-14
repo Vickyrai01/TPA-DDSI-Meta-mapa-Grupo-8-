@@ -1,4 +1,6 @@
 package servicioEstadisticas.application;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
@@ -20,17 +22,27 @@ import java.util.Map;
 @RestController
 @RequestMapping("/servicioEstadisticas")
 public class Application {
+
+    private static final Logger log = LoggerFactory.getLogger(Application.class);
+
     private static GeneradorTodasEstadisticas generadorTodasEstadisticas = GeneradorTodasEstadisticas.getInstance();
 
-    public Application() {
-        this.generadorTodasEstadisticas = GeneradorTodasEstadisticas.getInstance();
+    public Application() {this.generadorTodasEstadisticas = GeneradorTodasEstadisticas.getInstance();
     }
 
     public static void main(String[] args) {
+        log.info("[BOOT] Iniciando Servicio de Estadísticas...");
         SpringApplication.run(Application.class, args);
         RepositoryServicioEstadisticasSeeder repoSeeder = RepositoryServicioEstadisticasSeeder.getInstance();
         //repoSeeder.cargarHechos();
-        generadorTodasEstadisticas.actualizarEstadisticas();
+        try {
+            // repoSeeder.cargarHechos();
+            log.info("[BOOT] Generando estadísticas iniciales...");
+            generadorTodasEstadisticas.actualizarEstadisticas();
+            log.info("[BOOT] Estadísticas iniciales generadas correctamente");
+        } catch (Exception e) {
+            log.error("[BOOT] Error generando estadísticas iniciales", e);
+        }
     }
 
     @GetMapping("/health")
@@ -40,12 +52,14 @@ public class Application {
 
     @GetMapping("/provincia-con-mas-hechos")
     public ResponseEntity<List<Map<String, Object>>> provinciaConMasHechos() {
+        log.info("[GET] /provincia-con-mas-hechos - Obteniendo provincia con más hechos");
         List<Map<String, Object>> provincias = generadorTodasEstadisticas.getProvinciaConMasHechos();
         return ResponseEntity.ok(provincias);
     }
 
     @GetMapping("/categoria-mayor-cantidad")
     public ResponseEntity<List<Map<String, Object>>> CategoriaMayorCantidad() {
+        log.info("[GET] /categoria-mayor-cantidad - Obteniendo categorías más reportadas");
         List<Map<String, Object>> categorias = generadorTodasEstadisticas.getCategoriaMasReportada();
         return ResponseEntity.ok(categorias);
     }
@@ -53,6 +67,7 @@ public class Application {
 
     @GetMapping("/cantidad-spam")
     public ResponseEntity<Map<String, Object>> cantidadSpam() {
+        log.info("[GET] /cantidad-spam - Obteniendo cantidad de solicitudes de spam");
         Map<String, Object> estadisticas = generadorTodasEstadisticas.getCantSolicitudesEliminacion();
         return ResponseEntity.ok(estadisticas);
     }
@@ -60,8 +75,9 @@ public class Application {
     @GetMapping("/provincia-con-mas-hechos-por-categoria")
     public ResponseEntity<List<Map<String, Object>>> provinciaConMasHechosPorCategoria(
             @RequestParam("categoria") String categoria) {
-
+        log.info("[GET] /provincia-con-mas-hechos-por-categoria - categoria={}", categoria);
         if (categoria == null || categoria.isBlank()) {
+            log.warn("[GET] /provincia-con-mas-hechos-por-categoria - categoria vacía o null");
             return ResponseEntity.badRequest().build();
         }
 
@@ -73,7 +89,9 @@ public class Application {
 
     @GetMapping("/horario-categoria")
     public ResponseEntity<List<Map<String, Object>>> horarioPorCategoria(@RequestParam("categoria") String categoria) {
+        log.info("[GET] /horario-categoria - categoria={}", categoria);
         if (categoria == null || categoria.isBlank()) {
+            log.warn("[GET] /horario-categoria - categoria vacía o null");
             return ResponseEntity.badRequest().build();
         }
 
@@ -84,6 +102,7 @@ public class Application {
 
     @GetMapping(value = "/export/csv/provincia-mas-hechos")
     public ResponseEntity<byte[]> exportProvinciaMasHechosCsv() {
+        log.info("[EXPORT] /export/csv/provincia-mas-hechos - Generando CSV");
         generadorTodasEstadisticas.actualizarEstadisticas();
         List<Map<String, Object>> data = generadorTodasEstadisticas.getProvinciaConMasHechos();
 
@@ -93,6 +112,7 @@ public class Application {
 
     @GetMapping(value = "/export/csv/categoria-mas-reportada")
     public ResponseEntity<byte[]> exportCategoriaMasReportadaCsv() {
+        log.info("[EXPORT] /export/csv/categoria-mas-reportada - Generando CSV");
         generadorTodasEstadisticas.actualizarEstadisticas();
         List<Map<String, Object>> data = generadorTodasEstadisticas.getCategoriaMasReportada();
 
@@ -102,6 +122,7 @@ public class Application {
 
     @GetMapping(value = "/export/csv/solicitudes-spam")
     public ResponseEntity<byte[]> exportSolicitudesSpamCsv() {
+        log.info("[EXPORT] /export/csv/solicitudes-spam - Generando CSV");
         generadorTodasEstadisticas.actualizarEstadisticas();
         Map<String, Object> unico = generadorTodasEstadisticas.getCantSolicitudesEliminacion();
 
@@ -112,6 +133,7 @@ public class Application {
 
     @GetMapping("/export/csv/horario-por-categoria/{categoria}")
     public ResponseEntity<byte[]> exportHorarioPorCategoriaCsv(@PathVariable String categoria) {
+        log.info("[EXPORT] /export/csv/horario-por-categoria/{} - Generando CSV", categoria);
         generadorTodasEstadisticas.actualizarEstadisticas();
 
         // Normaliza por las dudas
@@ -126,6 +148,7 @@ public class Application {
 
     @GetMapping("/export/csv/provincia-por-categoria/{categoria}")
     public ResponseEntity<byte[]> exportProvinciaPorCategoriaCsv(@PathVariable String categoria) {
+        log.info("[EXPORT] /export/csv/provincia-por-categoria/{} - Generando CSV (antes de normalizar)", categoria);
         generadorTodasEstadisticas.actualizarEstadisticas();
         List<Map<String, Object>> data = generadorTodasEstadisticas.provinciaConMasHechosEnCategoria(categoria);
 
@@ -157,6 +180,7 @@ public class Application {
     }
 
     private ResponseEntity<byte[]> asAttachment(String csv, String filename) {
+        log.info("[CSV] Enviando archivo CSV como attachment filename={}", filename);
         byte[] bytes = csv.getBytes(java.nio.charset.StandardCharsets.UTF_8);
         return ResponseEntity.ok()
                 .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)

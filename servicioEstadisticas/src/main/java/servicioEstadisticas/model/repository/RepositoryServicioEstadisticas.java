@@ -1,5 +1,7 @@
 package servicioEstadisticas.model.repository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import servicioEstadisticas.model.entities.Categoria;
 import servicioEstadisticas.model.entities.Hecho;
 import servicioEstadisticas.model.entities.SolicitudSpam;
@@ -15,6 +17,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class RepositoryServicioEstadisticas {
+
+    private static final Logger log = LoggerFactory.getLogger(RepositoryServicioEstadisticas.class);
 
     private static volatile RepositoryServicioEstadisticas instance;
     public static RepositoryServicioEstadisticas getInstance() {
@@ -47,7 +51,7 @@ public class RepositoryServicioEstadisticas {
                 String provincia = utils.GeocodingUtils.obtenerProvincia(lat, lon);
 
                 if (provincia == null) {
-                    System.out.println("[DEBUG] Hecho con coordenadas (" + lat + "," + lon + ") NO mapeado a ninguna provincia");
+                    log.warn("[DEBUG] Hecho con coordenadas ({},{}) NO mapeado a ninguna provincia", lat, lon);
                 }
                 if (provincia != null) {
                     provinciaCount.merge(provincia, 1L, Long::sum);
@@ -55,9 +59,6 @@ public class RepositoryServicioEstadisticas {
             }
 
             // Acá, después del for:
-            System.out.println("[DEBUG] ***** Total hechos: " + coordenadas.size());
-            System.out.println("[DEBUG] ***** Total mapeados a provincia: " + provinciaCount.values().stream().mapToLong(l -> l).sum());
-            System.out.println("[DEBUG] ***** Detalle por provincia: " + provinciaCount);
 
             return provinciaCount.entrySet().stream()
                     .map(entry -> {
