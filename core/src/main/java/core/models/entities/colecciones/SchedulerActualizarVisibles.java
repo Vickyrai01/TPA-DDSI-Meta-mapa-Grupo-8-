@@ -11,18 +11,6 @@ import java.util.List;
 public class SchedulerActualizarVisibles {
     private final ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();
 
-    public void ejecutarSiHayBajaCarga(){
-        if (hayBajaCargaEnSistema()){
-            ejecutar();
-        }
-    }
-
-    public boolean hayBajaCargaEnSistema(){ //suposición
-        int hora = java.time.LocalTime.now().getHour();
-        //return hora >= 1 && hora <= 6;
-        return true; //PARA PROBAR
-    }
-
     public void ejecutar() {
             System.out.println("Iniciando actualización de visibles...");
             EntityManager em = DBUtils.getEntityManager();
