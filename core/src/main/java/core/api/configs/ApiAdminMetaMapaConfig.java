@@ -45,7 +45,7 @@ public class ApiAdminMetaMapaConfig {
 
         app.get("core/api/admin/sugerencias", new GetSugerenciaHandler());
         app.post("core/api/admin/sugerencias", new PostSugerenciaHandler());
-        //app.post("/core/api/admin/sugerencias/{id}/aceptar", new PostAceptarSugerenciaHandler());
-        //app.post("/core/api/admin/sugerencias/{id}/rechazar", new PostRechazarSugerenciaHandler());
+        app.post("/core/api/admin/sugerencias/{id}/aceptar", new PostAceptarSugerenciaHandler());
+        app.post("/core/api/admin/sugerencias/{id}/rechazar", new PostRechazarSugerenciaHandler());
     }
 }

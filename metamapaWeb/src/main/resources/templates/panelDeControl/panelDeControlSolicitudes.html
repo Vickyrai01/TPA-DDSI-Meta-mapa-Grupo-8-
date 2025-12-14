@@ -114,7 +114,32 @@
                     <a th:href="@{/admin/hechos}" class="admin-menu-item">ADMINISTRAR HECHOS</a>
                     <a th:href="@{/admin/fuentes}" class="admin-menu-item">ADMINISTRAR FUENTES</a>
                     <a th:href="@{/admin/solicitudesEliminacion}" class="admin-menu-item active">ADMINISTRAR SOLICITUDES DE ELIMINACIÓN</a>
+                    <a th:href="@{/admin/sugerenciasDeCambio}" class="admin-menu-item">ADMINISTRAR SUGERENCIAS DE CAMBIO</a>
                 </nav>
+
+                <form th:action="@{/ejecutar-agregacion}"
+                      method="post"
+                      class="aggregation-actions">
+
+                    <input type="hidden" name="_csrf"
+                           th:if="${_csrf}"
+                           th:value="${_csrf.token}"/>
+
+                    <button type="submit" class="aggregation-btn">
+                        Ejecutar Servicio de Agregación
+                    </button>
+                </form>
+                <div class="contenedor-botones-observabilidad" style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+
+                    <a th:href="${graphqlUrl}" target="_blank" class="aggregation-btn" style="text-decoration: none; text-align: center; background-color: #2980b9; color: white;">
+                        <i class="fa-solid fa-rocket"></i> Playground GraphQL
+                    </a>
+
+                    <a th:href="${grafanaUrl}" target="_blank" class="aggregation-btn" style="text-decoration: none; text-align: center; background-color: #f47a20; color: white;">
+                        <i class="fa-solid fa-chart-line"></i> Ver Métricas Grafana
+                    </a>
+
+                </div>
             </aside>
         </div>
     </section>

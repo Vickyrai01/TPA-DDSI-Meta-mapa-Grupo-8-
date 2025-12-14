@@ -61,7 +61,18 @@ public class SugerenciaDeCambio {
         this.aprobada = estado;
     }
 
+    @Column(name = "fecha_revision")
+    private LocalDate fechaRevision;
+    public LocalDate getFechaRevision() {
+        return fechaRevision;
+    }
+    public void setFechaRevision(LocalDate fechaRevision) {
+        this.fechaRevision = fechaRevision;
+    }
+
     @ManyToOne
+    @JoinColumn(name = "id_hecho", referencedColumnName = "id_hecho", nullable = false)
+
     private Hecho hecho;
     public Hecho getHecho() {
         return hecho;
@@ -128,5 +139,43 @@ public class SugerenciaDeCambio {
     }
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
+    }
+
+    public Hecho aceptarSugerencia(){
+        this.aprobada = true;
+        this.fechaRevision = LocalDate.now();
+
+        if (this.titulo != null) {
+            this.hecho.setTitulo(this.titulo);
+        }
+
+        if (this.descripcion != null) {
+            this.hecho.setDescripcion(this.descripcion);
+        }
+
+        if (this.fechaSuceso != null) {
+            this.hecho.setFechaSuceso(this.fechaSuceso);
+        }
+
+        if (this.horaSuceso != null) {
+            this.hecho.setHoraSuceso(this.horaSuceso);
+        }
+
+        if (this.categoria != null) {
+            this.hecho.setCategoria(this.categoria);
+        }
+
+        if (this.etiquetas != null) {
+            this.hecho.setEtiquetas(new ArrayList<>(this.etiquetas));
+        }
+
+        this.hecho.setUltimaFechaModificacion(LocalDate.now());
+
+        return this.hecho;
+    }
+
+    public void rechazarSugerencia(){
+        this.aprobada = false;
+        this.fechaRevision = LocalDate.now();
     }
 }
