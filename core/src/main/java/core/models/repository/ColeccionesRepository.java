@@ -13,6 +13,8 @@ import core.models.entities.hecho.Etiqueta;
 import core.models.entities.hecho.Hecho;
 import org.hibernate.Hibernate;
 import utils.DBUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
@@ -22,7 +24,7 @@ import java.util.*;
 public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer> {
 
     private static volatile ColeccionesRepository instance;
-
+    private static final Logger logger = LoggerFactory.getLogger(ColeccionesRepository.class);
     private ColeccionesRepository() {
         super(Coleccion.class, DBUtils::getEntityManager, Coleccion::getId);
     }
@@ -838,7 +840,41 @@ public class ColeccionesRepository extends JpaRepositoryBase<Coleccion, Integer>
         }
     }
 
+    public List<Integer> obtenerTodosLosIds() {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            return em.createQuery("SELECT c.id FROM coleccion c", Integer.class).getResultList();
+        } finally {
+            em.close();
+        }
+    }
 
+    // 2. Método transaccional que encapsula toda la lógica de base de datos
+    public void recalcularHechosVisibles(Integer idColeccion) {
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            DBUtils.comenzarTransaccion(em);
 
+            // A. Query optimizada con JOIN FETCH para traer todo en un viaje y evitar LazyInitException
+            Coleccion coleccion = em.createQuery(
+                            "SELECT DISTINCT c FROM coleccion c LEFT JOIN FETCH c.hechos WHERE c.id = :id",
+                            Coleccion.class)
+                    .setParameter("id", idColeccion)
+                    .getSingleResult();
+
+            // B. Ejecutar lógica de dominio (El algoritmo de consenso)
+            coleccion.actualizarColeccionVisible();
+
+            // C. Guardar cambios (Hibernate detectará los cambios en 'hechosVisibles')
+            em.merge(coleccion);
+
+            DBUtils.commit(em);
+        } catch (Exception e) {
+            DBUtils.rollback(em);
+            logger.error("Error recalculando colección ID {}", idColeccion, e);
+        } finally {
+            try { em.close(); } catch (Exception ignore) {}
+        }
+    }
 }
 

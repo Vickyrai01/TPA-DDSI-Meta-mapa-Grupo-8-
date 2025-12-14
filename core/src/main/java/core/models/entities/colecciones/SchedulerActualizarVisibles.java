@@ -3,6 +3,8 @@ package core.models.entities.colecciones;
 import core.models.entities.fuentes.Fuente;
 import core.models.entities.hecho.Hecho;
 import core.models.repository.ColeccionesRepository;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import utils.DBUtils;
 
 import javax.persistence.EntityManager;
@@ -10,55 +12,28 @@ import java.util.List;
 
 public class SchedulerActualizarVisibles {
     private final ColeccionesRepository coleccionesRepository = ColeccionesRepository.getInstance();
+    private static final Logger logger = LoggerFactory.getLogger(SchedulerActualizarVisibles.class);
+
+    public boolean hayBajaCargaEnSistema() {
+        // Lógica de horario, etc.
+        return true;
+    }
 
     public void ejecutar() {
-            System.out.println("Iniciando actualización de visibles...");
-            EntityManager em = DBUtils.getEntityManager();
-            List<Integer> idsColecciones;
+        if (hayBajaCargaEnSistema()) {
+            logger.info("Iniciando actualización de visibles...");
 
-            try {
-                // 1. Obtenemos solo los IDs para no sobrecargar la memoria
-                idsColecciones = em.createQuery("SELECT c.id FROM coleccion c", Integer.class).getResultList();
-            } finally {
-                em.close();
-            }
+            // 1. Pedimos al repo solo los IDs
+            List<Integer> idsColecciones = coleccionesRepository.obtenerTodosLosIds();
 
-            // 2. Procesamos cada colección en su propia transacción
+            // 2. Delegamos la lógica pesada al repo, una por una
             int procesadas = 0;
             for (Integer id : idsColecciones) {
-                procesarColeccion(id);
+                coleccionesRepository.recalcularHechosVisibles(id);
                 procesadas++;
             }
 
-            System.out.println("Finalizado. Colecciones actualizadas: " + procesadas);
-    }
-
-    private void procesarColeccion(Integer id) {
-        EntityManager em = DBUtils.getEntityManager();
-        try {
-            DBUtils.comenzarTransaccion(em);
-
-            // 3. Cargamos la colección Y sus hechos en una sola consulta (JOIN FETCH)
-            // Esto evita la LazyInitializationException porque 'hechos' ya viene cargado.
-            Coleccion coleccion = em.createQuery(
-                            "SELECT DISTINCT c FROM coleccion c LEFT JOIN FETCH c.hechos WHERE c.id = :id",
-                            Coleccion.class)
-                    .setParameter("id", id)
-                    .getSingleResult();
-
-            // 4. Ejecutamos la lógica (ahora 'hechos' está disponible)
-            coleccion.actualizarColeccionVisible();
-
-            // 5. Guardamos los cambios (Hibernate detecta el cambio en 'hechosVisibles')
-            em.merge(coleccion);
-
-            DBUtils.commit(em);
-        } catch (Exception e) {
-            DBUtils.rollback(em);
-            System.err.println("Error procesando colección ID " + id + ": " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            em.close();
+            logger.info("Finalizado. Colecciones actualizadas: {}", procesadas);
         }
     }
 }

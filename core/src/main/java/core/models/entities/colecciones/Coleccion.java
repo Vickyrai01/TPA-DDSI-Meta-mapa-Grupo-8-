@@ -11,6 +11,7 @@ import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity(name="coleccion")
 public class Coleccion {
@@ -121,7 +122,7 @@ public class Coleccion {
             if (this.hechos != null) {
                 this.hechosVisibles = this.hechos.stream()
                         .filter(h -> h.getEstado() == Estado.ACEPTADO)
-                        .toList();
+                        .collect(Collectors.toCollection(ArrayList::new));
             } else {
                 this.hechosVisibles = null;
             }
