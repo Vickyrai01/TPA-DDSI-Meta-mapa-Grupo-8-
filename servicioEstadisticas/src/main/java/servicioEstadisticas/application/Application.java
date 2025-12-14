@@ -132,7 +132,7 @@ public class Application {
     }
 
     @GetMapping("/export/csv/horario-por-categoria/{categoria}")
-    public ResponseEntity<byte[]> exportHorarioPorCategoriaCsv(@PathVariable String categoria) {
+    public ResponseEntity<byte[]> exportHorarioPorCategoriaCsv(@PathVariable("categoria") String categoria) {
         log.info("[EXPORT] /export/csv/horario-por-categoria/{} - Generando CSV", categoria);
         generadorTodasEstadisticas.actualizarEstadisticas();
 
@@ -147,7 +147,7 @@ public class Application {
     }
 
     @GetMapping("/export/csv/provincia-por-categoria/{categoria}")
-    public ResponseEntity<byte[]> exportProvinciaPorCategoriaCsv(@PathVariable String categoria) {
+    public ResponseEntity<byte[]> exportProvinciaPorCategoriaCsv(@PathVariable("categoria")  String categoria) {
         log.info("[EXPORT] /export/csv/provincia-por-categoria/{} - Generando CSV (antes de normalizar)", categoria);
         generadorTodasEstadisticas.actualizarEstadisticas();
         List<Map<String, Object>> data = generadorTodasEstadisticas.provinciaConMasHechosEnCategoria(categoria);
