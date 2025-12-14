@@ -3,6 +3,8 @@ package servicioEstadisticas.csv;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.QuoteMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,6 +17,8 @@ import java.util.*;
 public class GeneradorCSV {
 
     private static final String DEFAULT_DIR = "servicioEstadisticas/estadisticasGeneradas/";
+
+    private static final Logger log = LoggerFactory.getLogger(GeneradorCSV.class);
 
     public  void writeCsv(String fileName,
                                 List<Map<String, String>> rows,
@@ -59,7 +63,7 @@ public class GeneradorCSV {
             }
         }
 
-        System.out.println("Archivo CSV generado en: " + outPath.toAbsolutePath());
+        log.info("[CSV] Archivo CSV generado correctamente en: {}", outPath.toAbsolutePath());
     }
 
     public  List<Map<String, String>> toStringRows(List<Map<String, Object>> rows) {
