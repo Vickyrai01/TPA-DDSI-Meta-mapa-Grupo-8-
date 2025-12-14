@@ -138,6 +138,12 @@
             border-radius: 6px;
             background: #f0f6ff;
         }
+
+        .suggest-btn{
+            margin-top: .75rem;
+            width: 100%;
+        }
+
     </style>
 </th:block>
 
@@ -250,12 +256,6 @@
                                 <span class="field-value muted" th:if="${h.multimedia()==null or h.multimedia().isEmpty()}">
                                   No tiene archivos adjuntos.
                                 </span>
-                            </div>
-
-                            <div class="field">
-                                <button type="button" class="edit-btn">Editar</button>
-                                <button type="button" class="save-btn" style="display:none">Guardar</button>
-                                <button type="button" class="cancel-btn" style="display:none">Cancelar</button>
                             </div>
                         </div>
                     </details>
@@ -741,20 +741,41 @@
                 const idHecho = details?.getAttribute('data-idhecho');
                 if (!hash || !idHecho) return;
 
-                const actionsField = det.querySelector('.field:last-child');
-                if (!actionsField || actionsField.querySelector('.suggest-btn')) return;
+                // Buscar el field de Multimedia (es el que tiene la galería o el texto "No tiene archivos...")
+                const multimediaField =
+                    det.querySelector('.multimedia-gallery')?.closest('.field') ||
+                    Array.from(det.querySelectorAll('.field')).find(f =>
+                        (f.querySelector('.field-label')?.textContent || '').toLowerCase().includes('multimedia')
+                    );
 
+                if (!multimediaField) return;
+
+// Si ya existe el bloque de acciones, no lo dupliques
+                if (det.querySelector('.hecho-actions')) return;
+
+// Crear un bloque de acciones propio
+                const acciones = document.createElement('div');
+                acciones.className = 'field hecho-actions';
+                acciones.innerHTML = `<span class="field-label">Acciones:</span>`;
+
+// Insertarlo antes de Multimedia
+                multimediaField.insertAdjacentElement('afterend', acciones);
+
+// Crear botón
                 const b = document.createElement('button');
                 b.type = 'button';
                 b.className = 'edit-btn suggest-btn';
                 b.textContent = 'Sugerir cambio';
-                b.style.background = '#7c3aed';
+                b.style.background = '#ff8c42';
 
                 b.addEventListener('click', () => {
+                    const details = det.closest('details');
+                    const idHecho = details?.getAttribute('data-idhecho');
                     const hecho = (window.hechos || []).find(x => Number(x.id) === Number(idHecho));
                     if (hecho) abrirPanelSugerencia(hecho, Number(idHecho));
                 });
 
+// Si el editar está bloqueado, bloqueá sugerir también
                 const editBtn = det.querySelector('.edit-btn:not(.suggest-btn)');
                 if (editBtn && editBtn.disabled) {
                     b.disabled = true;
@@ -763,7 +784,8 @@
                     b.title = editBtn.title || "No se puede modificar: edición bloqueada";
                 }
 
-                actionsField.prepend(b);
+                acciones.appendChild(b);
+
             });
         });
 
