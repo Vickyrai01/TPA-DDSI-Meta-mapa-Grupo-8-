@@ -7,6 +7,7 @@ const toNum = v => {
 
 const puntos = hechos
     .map(h => ({
+        id: h.id,
         nombre: h.nombre,
         hash: h.hash,
         lat: toNum(h.latitud),
@@ -75,7 +76,7 @@ for (const p of puntos) {
               <p class="description-box">${p.descripcion ?? 'No hay descripción disponible.'}</p>
               <p><strong>Fecha de suceso:</strong> ${p.fecha ?? 'No especificada'}</p>
               ${etiquetasHtml}
-             <a class="btn-solicitud" href="/solicitudEliminacion/${p.hash}" style="color: white;"> Solicitar eliminación </a>
+             <a class="btn-solicitud" href="/solicitudEliminacion/${p.id}" style="color: white;"> Solicitar eliminación </a>
           </section>
       </div>
     `;
