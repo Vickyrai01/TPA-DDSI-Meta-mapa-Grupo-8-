@@ -603,3 +603,11 @@ body{
 .aggregation-btn-side:active {
   filter: brightness(0.95);
 }
+
+.badge-disabled {
+  background-color: #e0e0e0;
+  color: #666;
+  font-size: 0.8rem;
+  padding: 4px 8px;
+  border-radius: 8px;
+}

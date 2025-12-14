@@ -42,8 +42,9 @@
                             <h2 th:text="${f.nombre()}">*NOMBRE*</h2>
 
                             <div class="card-actions">
-                                <!-- Eliminar -->
+                                <!-- Eliminar solo si NO es dinámica-dinámica -->
                                 <form class="delete-form"
+                                      th:if="${!(f.tipoFuente() == 'DINAMICA' and f.strategyTipoConexion() == 'DINAMICA')}"
                                       th:action="@{/admin/fuentes/{id}/eliminar(id=${f.id()})}"
                                       method="post">
                                     <input type="hidden" name="_csrf" th:if="${_csrf}" th:value="${_csrf.token}"/>
@@ -51,6 +52,12 @@
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
                                 </form>
+
+                                <!-- Mensaje alternativo -->
+                                <span class="badge badge-disabled"
+                                      th:if="${f.tipoFuente() == 'DINAMICA' and f.strategyTipoConexion() == 'DINAMICA'}">
+                                        No se puede eliminar
+                                </span>
                             </div>
                         </div>
 
