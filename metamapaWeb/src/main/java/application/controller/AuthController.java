@@ -4,6 +4,7 @@ import application.service.RutasProperties;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -32,7 +33,7 @@ public class AuthController {
                 .retrieve()
                 .bodyToMono(UsuarioDTO.class)
                 .map(usuario -> {
-                    if (usuario.getContrasena() != null && usuario.getContrasena().equals(contrasena)) {
+                    if (usuario.getContrasena() != null && BCrypt.checkpw(contrasena, usuario.getContrasena())) {
                         return ResponseEntity.ok(usuario);
                     } else {
                         return ResponseEntity.status(401).body("Contraseña incorrecta");

@@ -2,6 +2,7 @@ package core.api.handlers.usuario;
 
 import core.models.entities.usuario.Usuario;
 import core.models.repository.UsuarioRepository;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import org.jetbrains.annotations.NotNull;
@@ -27,10 +28,15 @@ public class PostRegistrarUsuarioHandler implements Handler {
         if (usuario == null
                 || usuario.getCorreo() == null
                 || usuario.getNombre() == null) {
-
             log.warn("Datos de usuario incompletos");
             ctx.status(400).result("Faltan datos obligatorios del usuario");
             return;
+        }
+
+        // Hash de la contraseña si viene presente
+        if (usuario.getContrasena() != null && !usuario.getContrasena().isBlank()) {
+            String hashed = BCrypt.hashpw(usuario.getContrasena(), BCrypt.gensalt());
+            usuario.setContrasena(hashed);
         }
 
         boolean existe = usuarioRepository.findByCorreo(usuario.getCorreo()).isPresent();
