@@ -1,14 +1,20 @@
 package application.controller;
 
 import application.dto.HechoDTO;
+import application.dto.SugerenciaDTO;
 import application.service.HechoService;
 import application.service.ReportarService;
+import application.service.SugerenciaDeCambioService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -17,10 +23,12 @@ public class MisHechosMapaController {
     private final HechoService hechoService;
     private final ReportarService reportarService;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final SugerenciaDeCambioService sugerenciaService;
 
-    public MisHechosMapaController(HechoService hechoService, ReportarService reportarService) {
+    public MisHechosMapaController(HechoService hechoService, ReportarService reportarService, SugerenciaDeCambioService sugerenciaService) {
         this.hechoService = hechoService;
         this.reportarService = reportarService;
+        this.sugerenciaService = sugerenciaService;
     }
 
     @GetMapping("/mis-hechos/mapa")
@@ -65,5 +73,14 @@ public class MisHechosMapaController {
         }
 
         return "misHechos/misHechosMapa";
+    }
+
+    // POST /misHechos/{idHecho}/sugerencias
+    @PostMapping(path = "/misHechos/{idHecho}/sugerencias", consumes = "application/json")
+    @ResponseBody
+    public ResponseEntity<?> crearSugerencia(
+            @RequestBody SugerenciaDTO req) {
+        sugerenciaService.crear(req);
+        return ResponseEntity.ok().build();
     }
 }

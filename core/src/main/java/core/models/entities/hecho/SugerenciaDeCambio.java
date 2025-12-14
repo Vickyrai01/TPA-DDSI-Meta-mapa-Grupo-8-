@@ -1,45 +1,132 @@
 package core.models.entities.hecho;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "sugerencia_de_cambio")
 public class SugerenciaDeCambio {
+    public SugerenciaDeCambio() {}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_sugerencia_de_cambio")
     private Integer id;
+
+    public SugerenciaDeCambio(LocalDate fechaSugerencia, String descripcionSugerencia, Hecho hecho, String tituloSugerencia, List<Etiqueta> etiquetasSugerencia, LocalDate fechaSucesoSugerencia, LocalTime horaSucesoSugerencia, Categoria categoriaSugerencia, String descripcion) {
+        this.fechaSugerencia = fechaSugerencia;
+        this.descripcionSugerencia = descripcionSugerencia;
+        this.hecho = hecho;
+        this.titulo = tituloSugerencia;
+        this.descripcion = descripcion;
+        this.etiquetas = etiquetasSugerencia;
+        this.fechaSuceso = fechaSucesoSugerencia;
+        this.horaSuceso = horaSucesoSugerencia;
+        this.categoria = categoriaSugerencia;
+    }
+
     public Integer getId() {
         return id;
     }
     public void setId(Integer id) {
         this.id = id;
     }
-    @Column(name = "detalle")
-    private String detalle;
-    public String getDetalle() {
-        return detalle;
+
+    @Column(name = "fecha_sugerencia")
+    private LocalDate fechaSugerencia;
+    public LocalDate getFechaSugerencia() {
+        return fechaSugerencia;
     }
-    public void setDetalle(String detalle) {
-        this.detalle = detalle;
+    public void setFechaSugerencia(LocalDate fechaSugerencia) {
+        this.fechaSugerencia = fechaSugerencia;
     }
 
-    @Column(name = "fecha")
-    private LocalDateTime fecha;
-    public LocalDateTime getFecha() {
-        return fecha;
+    @Column(name = "descripcion_sugerencia")
+    private String descripcionSugerencia;
+    public String getDescripcionSugerencia() {
+        return descripcionSugerencia;
     }
-    public void setFecha(LocalDateTime fecha) {
-        this.fecha = fecha;
-    }
-
-    public SugerenciaDeCambio(String detalle) {
-        this.detalle = detalle;
-        this.fecha = LocalDateTime.now();
+    public void setDescripcionSugerencia(String descripcionSugerencia) {
+        this.descripcionSugerencia = descripcionSugerencia;
     }
 
-    public SugerenciaDeCambio(){}
+    @Column(name = "aprobada")
+    private Boolean aprobada;
+    public Boolean getAprobada() {
+        return aprobada;
+    }
+    public void setAprobada(Boolean estado) {
+        this.aprobada = estado;
+    }
+
+    @ManyToOne
+    private Hecho hecho;
+    public Hecho getHecho() {
+        return hecho;
+    }
+    public void setHecho(Hecho hecho) {
+        this.hecho = hecho;
+    }
+
+    @Column(name = "titulo")
+    private String titulo;
+    public String getTitulo() {
+        return titulo;
+    }
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    @Column(name = "descripcion")
+    private String descripcion;
+    public String getDescripcion() {
+        return descripcion;
+    }
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
+    @JoinTable(
+            name = "modificacion_etiqueta",
+            joinColumns = @JoinColumn(name = "id_sugerencia_de_cambio"),
+            inverseJoinColumns = @JoinColumn(name = "id_etiqueta")
+    )
+    private List<Etiqueta> etiquetas = new ArrayList<>();
+    public List<Etiqueta> getEtiquetas() {
+        return etiquetas;
+    }
+    public void setEtiquetas(List<Etiqueta> etiquetas) {
+        this.etiquetas = etiquetas;
+    }
+
+    @Column(name = "fecha_suceso")
+    private LocalDate fechaSuceso;
+    public LocalDate getFechaSuceso() {
+        return fechaSuceso;
+    }
+    public void setFechaSuceso(LocalDate fecha) {
+        this.fechaSuceso = fecha;
+    }
+
+    @Column(name = "hora_suceso")
+    private LocalTime horaSuceso;
+    public LocalTime getHoraSuceso() {
+        return horaSuceso;
+    }
+    public void setHoraSuceso(LocalTime hora) {
+        this.horaSuceso = hora;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "id_categoria")
+    private Categoria categoria;
+    public Categoria getCategoria() {
+        return categoria;
+    }
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
 }
