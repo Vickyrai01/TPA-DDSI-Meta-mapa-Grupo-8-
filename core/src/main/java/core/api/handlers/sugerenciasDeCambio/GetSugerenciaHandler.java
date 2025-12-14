@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class GetSugerenciaHandler implements Handler {
-    private static final Logger log = LoggerFactory.getLogger(GetSolicitudHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(GetSugerenciaHandler.class);
     private final SugerenciasDeCambioRepository sugerenciasRepository = SugerenciasDeCambioRepository.getInstance();
 
     @Override

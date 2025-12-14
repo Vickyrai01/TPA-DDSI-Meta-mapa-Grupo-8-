@@ -40,6 +40,7 @@ public class SugerenciasDeCambioRepository extends JpaRepositoryBase<SugerenciaD
                     LEFT JOIN FETCH s.categoria
                     LEFT JOIN FETCH h.categoria
                     LEFT JOIN FETCH s.etiquetas
+                    WHERE s.aprobada IS NULL
                     ORDER BY s.id DESC
                 """, SugerenciaDeCambio.class).getResultList();
 
@@ -70,6 +71,28 @@ public class SugerenciasDeCambioRepository extends JpaRepositoryBase<SugerenciaD
             em.close();
         }
     }
+
+    public SugerenciaDeCambio getByIdConEtiquetas(Integer id) {
+        if (id == null) return null;
+
+        EntityManager em = DBUtils.getEntityManager();
+        try {
+            return em.createQuery("""
+            select distinct s
+            from sugerencia_de_cambio s
+            left join fetch s.etiquetas
+            where s.id = :id
+        """, SugerenciaDeCambio.class)
+                    .setParameter("id", id)
+                    .getResultList()
+                    .stream()
+                    .findFirst()
+                    .orElse(null);
+        } finally {
+            em.close();
+        }
+    }
+
 
 
 }

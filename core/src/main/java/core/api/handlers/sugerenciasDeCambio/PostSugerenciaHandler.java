@@ -22,7 +22,7 @@ import java.util.List;
 
 public class PostSugerenciaHandler implements Handler {
 
-    private static final Logger log = LoggerFactory.getLogger(PostSolicitudHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(PostSugerenciaHandler.class);
 
     private final SugerenciasDeCambioRepository sugerenciasRepository = SugerenciasDeCambioRepository.getInstance();
     private final CategoriaRepository categoriaRepo = CategoriaRepository.getInstance();
