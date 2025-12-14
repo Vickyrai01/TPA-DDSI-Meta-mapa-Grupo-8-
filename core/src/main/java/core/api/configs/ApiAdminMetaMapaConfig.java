@@ -7,6 +7,10 @@ import core.api.handlers.fuentes.PostFuenteCSVHandler;
 import core.api.handlers.fuentes.PostFuenteHandler;
 import core.api.handlers.hechos.*;
 import core.api.handlers.solicitudesDeEliminacion.*;
+import core.api.handlers.sugerenciasDeCambio.GetSugerenciaHandler;
+import core.api.handlers.sugerenciasDeCambio.PostAceptarSugerenciaHandler;
+import core.api.handlers.sugerenciasDeCambio.PostRechazarSugerenciaHandler;
+import core.api.handlers.sugerenciasDeCambio.PostSugerenciaHandler;
 import io.javalin.Javalin;
 
 public class ApiAdminMetaMapaConfig {
@@ -37,5 +41,11 @@ public class ApiAdminMetaMapaConfig {
         app.post("core/api/admin/fuentes/{id}/eliminar", new DeleteFuenteHandler());
 
         app.post("core/api/admin/ejecutarServicio", new EjecutarServicioHandler());
+
+
+        app.get("core/api/admin/sugerencias", new GetSugerenciaHandler());
+        app.post("core/api/admin/sugerencias", new PostSugerenciaHandler());
+        app.post("/core/api/admin/sugerencias/{id}/aceptar", new PostAceptarSugerenciaHandler());
+        app.post("/core/api/admin/sugerencias/{id}/rechazar", new PostRechazarSugerenciaHandler());
     }
 }
