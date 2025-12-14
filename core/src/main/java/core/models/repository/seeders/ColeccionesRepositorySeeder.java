@@ -3,26 +3,25 @@ package core.models.repository.seeders;
 import core.models.entities.colecciones.Coleccion;
 import core.models.entities.colecciones.ModoDeNavegacion;
 import core.models.entities.colecciones.TipoConsenso;
-import core.models.entities.colecciones.criterios.Criterio;
-import core.models.entities.colecciones.criterios.CriterioDescripcion;
+import core.models.entities.colecciones.criterios.*;
 import core.models.entities.fuentes.Fuente;
+import core.models.entities.hecho.Categoria;
 import core.models.entities.hecho.Hecho;
-import core.models.repository.ColeccionesRepository;
-import core.models.repository.CriteriosRepository;
-import core.models.repository.FuentesRepository;
-import core.models.repository.HechosRepository;
+import core.models.repository.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 public class ColeccionesRepositorySeeder {
     private static volatile ColeccionesRepositorySeeder instance;
     private final ColeccionesRepository coleccionesRepository;
-    private final HechosRepository hechosRepository;
     private final FuentesRepository fuentesRepository;
+    private final CategoriaRepository categoriaRepository;
 
     private ColeccionesRepositorySeeder() {
         this.coleccionesRepository = ColeccionesRepository.getInstance();
-        this.hechosRepository = HechosRepository.getInstance();
+        this.categoriaRepository = CategoriaRepository.getInstance();
         this.fuentesRepository = FuentesRepository.getInstance();
     }
 
@@ -38,6 +37,7 @@ public class ColeccionesRepositorySeeder {
     }
 
     public void cargarColeccionesRepositorySeeder() {
+        /*
         // Obtener hechos (validar que existan)
         Hecho hecho1 = hechosRepository.findById(1);
         Hecho hecho2 = hechosRepository.findById(2);
@@ -48,43 +48,57 @@ public class ColeccionesRepositorySeeder {
         if (hecho1 == null || hecho2 == null || hecho3 == null || hecho4 == null || hecho5 == null) {
             throw new IllegalStateException("No se encontraron todos los hechos necesarios");
         }
+        */
 
         // Obtener fuentes (validar que existan)
         Fuente fuente1 = fuentesRepository.findById(1);
         Fuente fuente2 = fuentesRepository.findById(2);
         Fuente fuente3 = fuentesRepository.findById(3);
+        Fuente fuente4 = fuentesRepository.findById(4);
 
-        if (fuente1 == null || fuente2 == null || fuente3 == null) {
+        if (fuente1 == null || fuente2 == null || fuente3 == null || fuente4 == null) {
             throw new IllegalStateException("No se encontraron todas las fuentes necesarias");
         }
 
-        // Crear listas
-        List<Hecho> coleccionHechos1 = List.of(hecho1, hecho3);
-        List<Hecho> coleccionHechos2 = List.of(hecho4, hecho2);
-        List<Hecho> coleccionHechos3 = List.of(hecho1, hecho3, hecho4, hecho2, hecho5);
-
-        List<Hecho> hechosVisibles1 = List.of(hecho1, hecho3);
-        List<Hecho> hechosVisibles2 = List.of();
-        List<Hecho> hechosVisibles3 = List.of(hecho1, hecho4, hecho5);
-
         List<Fuente> fuentes1 = List.of(fuente1);
-        List<Fuente> fuentes2 = List.of(fuente2);
-        List<Fuente> fuentes3 = List.of(fuente1, fuente2, fuente3);
+        List<Fuente> fuentes2 = List.of(fuente2, fuente3);
+        List<Fuente> fuentes3 = List.of(fuente1, fuente2, fuente3, fuente4);
 
         // Crear colecciones
         CriteriosRepository criteriosRepository = CriteriosRepository.getInstance();
-        List<Criterio> criterios = new ArrayList<>();
-        CriterioDescripcion criterioDescripcion =  new CriterioDescripcion("perro");
-        criteriosRepository.add(criterioDescripcion);
-        criterios.add(criterioDescripcion);
+        List<Criterio> criteriosColec1 = new ArrayList<>();
+        List<Criterio> criteriosColec2 = new ArrayList<>();
+        List<Criterio> criteriosColec3 = new ArrayList<>();
 
-        Coleccion coleccion1 = new Coleccion(1, "Incendios", "Incendios de cualquier objeto", criterios, fuentes1, coleccionHechos1,hechosVisibles1, null);
-        coleccion1.cambiarAlgoritmoConsenso(TipoConsenso.ABSOLUTO);
-        Coleccion coleccion2 = new Coleccion(2, "Choques", "Todos los choques", criterios, fuentes2, coleccionHechos2,hechosVisibles2, null);
-        Coleccion coleccion3 = new Coleccion(3, "Sin victimas fatales", "Accidentes de cualquier tipo sin accidentes", criterios, fuentes3, coleccionHechos3,hechosVisibles3, null);
-        coleccion3.cambiarAlgoritmoConsenso(TipoConsenso.MAYORIA_SIMPLE);
-        coleccion3.modificarModoNavegacion(ModoDeNavegacion.CURADA);
 
+        CriterioHoraSuceso criterioHoraNocturna = new CriterioHoraSuceso(LocalTime.of(18, 0), LocalTime.of(6,0));
+        Categoria violencia = new Categoria("Violencia");
+        categoriaRepository.add(violencia);
+        CriterioCategoria criterioViolencia = new CriterioCategoria(violencia);
+        Categoria robo = new Categoria("Robo");
+        categoriaRepository.add(robo);
+        CriterioCategoria criterioRobo = new CriterioCategoria(robo);
+        Categoria estafa = new Categoria("Estafa");
+        categoriaRepository.add(estafa);
+        CriterioCategoria criterioEstafa = new CriterioCategoria(estafa);
+        CriterioFechaSuceso criterioFecha = new CriterioFechaSuceso(LocalDate.of(2024,12,31), LocalDate.of(2026,1,1));
+
+        criteriosRepository.add(criterioHoraNocturna);
+        criteriosRepository.add(criterioViolencia);
+        criteriosRepository.add(criterioRobo);
+        criteriosRepository.add(criterioEstafa);
+        criteriosRepository.add(criterioFecha);
+
+        criteriosColec1.add(criterioHoraNocturna);
+        criteriosColec1.add(criterioViolencia);
+        criteriosColec2.add(criterioRobo);
+        criteriosColec3.add(criterioEstafa);
+        criteriosColec3.add(criterioFecha);
+
+
+        Coleccion coleccion1 = new Coleccion(1, "Violencia Nocturna", "Hechos violentos ocurridos en horas de noche y madrugada", criteriosColec1, fuentes2, null,null, null);
+        Coleccion coleccion2 = new Coleccion(2, "Robos", "Todos los robos", criteriosColec2, fuentes3, null,null, null);
+        Coleccion coleccion3 = new Coleccion(3, "Estafas del año 2025", "Estafas llevadas a cabo durante el año 2025", criteriosColec3, fuentes3, null,null, null);
 
         // Guardar colecciones
         coleccionesRepository.add(coleccion1);
