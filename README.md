@@ -9,6 +9,6 @@ Repositorio para TP anual de la materia diseño de sistemas de la información c
 
 - CARGADORES: https://documenter.getpostman.com/view/42598532/2sB3dTsTAN
 
-- DIAGRAMAS: 
+- DIAGRAMAS y OTRA DOCUMENTACIÓN: https://drive.google.com/drive/folders/1H4faVenx5r6vOyg1D3lyqlB9a2ZU_Lpk?usp=sharing
  
 
