@@ -207,7 +207,8 @@
                                    th:text="${c.cantidadHechos()}"></p>
                             </div>
 
-                            <div class="card-field">
+                            <div class="card-field"
+                                th:if="${c.modoDeNavegacion() == 'CURADA'}">
                                 <strong>Cantidad de hechos visibles:</strong>
                                 (Modo de navegación curado, puede estar desactualizado)
                                 <p class="view-mode"><span th:text="${c.cantidadHechosVisibles()}">0</span></p>
