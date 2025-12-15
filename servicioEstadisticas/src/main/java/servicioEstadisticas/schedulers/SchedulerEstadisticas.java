@@ -21,7 +21,7 @@ public class SchedulerEstadisticas {
     }
 
     // Ejecutar cada 24 horas
-    @Scheduled(fixedRate = 24 * 60 * 60 * 1000) // milliseconds
+    @Scheduled(fixedRate = 5 * 60 * 1000) // milliseconds
     public void ejecutarActualizacionEstadisticas() {
         long start = System.currentTimeMillis();
         String jobId = UUID.randomUUID().toString();
