@@ -1,5 +1,6 @@
 package web.service;
 
+import web.config.RutasProperties;
 import web.dto.ColeccionDTO;
 import web.dto.HechoDTO;
 import com.fasterxml.jackson.databind.JsonNode;

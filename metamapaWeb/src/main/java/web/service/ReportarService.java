@@ -1,5 +1,6 @@
 package web.service;
 
+import web.config.RutasProperties;
 import web.dto.HechoDTO;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

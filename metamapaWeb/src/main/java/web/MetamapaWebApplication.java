@@ -1,6 +1,6 @@
-package web.application;
+package web;
 
-import web.service.RutasProperties;
+import web.config.RutasProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
