@@ -5,13 +5,17 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: Root123456
-    ports:
-      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./mysql-init:/docker-entrypoint-initdb.d
     networks:
       - metamapa-net
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$${MYSQL_ROOT_PASSWORD} || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   core:
     build: ./core
@@ -27,10 +31,14 @@ services:
       CargadorDinamico: http://cargador-dinamico:8083/cargadorDinamico
       CargadorProxy: http://cargador-proxy:8084/cargadorProxy
       CargadorEstatico: http://cargador-estatica:8085/cargadorEstatico
-    ports:
-      - "8081:8081"
     networks:
       - metamapa-net
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://127.0.0.1:8081/ > /dev/null 2>&1 || exit 1" ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 45s
 
   cargador-dinamico:
     build: ./cargadorDinamica
@@ -47,10 +55,14 @@ services:
 
       METAMAPA_API_BASE_URL: http://core:8081/core/api/public
       METAMAPA_API_ADMIN_BASE_URL: http://core:8081/core/api/admin
-    ports:
-      - "8083:8083"
     networks:
       - metamapa-net
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://127.0.0.1:8083/cargadorDinamico/health > /dev/null 2>&1 || exit 1" ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 45s
 
   cargador-estatica:
     build: ./cargadorEstatica
@@ -64,12 +76,15 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/cargador_estatica?serverTimezone=America/Argentina/Buenos_Aires
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: Root123456
-
       METAMAPA_API_BASE_URL: http://core:8081/core/api/public
-    ports:
-      - "8085:8085"
     networks:
       - metamapa-net
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://127.0.0.1:8085/cargadorEstatico/health > /dev/null 2>&1 || exit 1" ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 45s
 
   cargador-proxy:
     build: ./cargadorProxy
@@ -85,10 +100,14 @@ services:
       SPRING_DATASOURCE_PASSWORD: Root123456
 
       METAMAPA_API_BASE_URL: http://core:8081/core/api/public
-    ports:
-      - "8084:8084"
     networks:
       - metamapa-net
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://127.0.0.1:8084/cargadorProxy/health > /dev/null 2>&1 || exit 1" ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 45s
 
   servicio-estadisticas:
     build: ./servicioEstadisticas
@@ -104,10 +123,14 @@ services:
       SPRING_DATASOURCE_PASSWORD: Root123456
 
       METAMAPA_API_BASE_URL: http://core:8081/core/api/public
-    ports:
-      - "8090:8090"
     networks:
       - metamapa-net
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://127.0.0.1:8090/servicioEstadisticas/health > /dev/null 2>&1 || exit 1" ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 45s
 
   prometheus:
     image: prom/prometheus:latest
@@ -115,8 +138,6 @@ services:
     restart: unless-stopped
     depends_on:
       - core
-    ports:
-      - "9090:9090"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
@@ -132,8 +153,6 @@ services:
     restart: unless-stopped
     depends_on:
       - prometheus
-    ports:
-      - "3000:3000"
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=Root123456
@@ -157,12 +176,25 @@ services:
       METAMAPA_API_BASE_URL: http://core:8081/core/api/public
       METAMAPA_API_ADMIN_BASE_URL: http://core:8081/core/api/admin
       METAMAPA_API_ESTADISTICAS_BASE_URL: http://servicio-estadisticas:8090/servicioEstadisticas
-      APP_URL_GRAPHQL_PLAYGROUND: http://localhost:8081/playground
-      APP_URL_GRAFANA_DASHBOARD: http://localhost:3000/d/metamapa-observabilidad/metamapa-observabilidad-core-metricas
-    ports:
-      - "8080:8080"
+      APP_URL_GRAPHQL_PLAYGROUND: http://3.16.160.73:80/graphql
+      APP_URL_GRAFANA_DASHBOARD: http://3.16.160.73:80/grafana
     networks:
       - metamapa-net
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: metamapa-nginx
+    restart: unless-stopped
+    depends_on:
+      - metamapa-web
+      - core
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - metamapa-net
+
 
 networks:
   metamapa-net:
