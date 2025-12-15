@@ -145,8 +145,8 @@ public class Application {
 
         FuentesRepositorySeeder.getInstance().cargarFuentesSeeder();
         ColeccionesRepositorySeeder.getInstance().cargarColeccionesRepositorySeeder();
-        //HechosRepositorySeeder.getInstance().cargarHechosSeeder();
-        //SolicitudEliminacioRepositorySeeder.getInstance().cargarSolicitudDeEliminacionSeeder();
+        HechosRepositorySeeder.getInstance().cargarHechosSeeder();
+        SolicitudEliminacioRepositorySeeder.getInstance().cargarSolicitudDeEliminacionSeeder();
 
         app.start("0.0.0.0", 8081);
     }
