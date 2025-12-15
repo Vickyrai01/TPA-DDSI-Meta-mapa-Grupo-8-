@@ -1,5 +1,6 @@
 package web.service;
 
+import web.config.RutasProperties;
 import web.dto.HechoDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
