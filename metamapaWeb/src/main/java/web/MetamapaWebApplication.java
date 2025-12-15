@@ -1,4 +1,4 @@
-package web.application;
+package web;
 
 import web.config.RutasProperties;
 import org.springframework.boot.SpringApplication;
