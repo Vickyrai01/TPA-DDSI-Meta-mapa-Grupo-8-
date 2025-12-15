@@ -84,7 +84,7 @@ for (const p of puntos) {
     const marker = L.marker([p.lat, p.lon]).bindPopup(html);
 
     markers.push(marker);
-    markerCluster.addLayer(marker); // 👈 en vez de addTo(map)
+    markerCluster.addLayer(marker); // en vez de addTo(map)
 }
 
 // Agregamos el grupo al mapa
