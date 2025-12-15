@@ -2,6 +2,7 @@ package web.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import web.config.RutasProperties;
 
 import java.util.List;
 import java.util.Map;

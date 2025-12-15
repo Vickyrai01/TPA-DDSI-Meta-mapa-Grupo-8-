@@ -2,7 +2,7 @@ package web.controller;
 
 import web.dto.ColeccionDTO;
 import web.dto.HechoDTO;
-import web.enums.Provincia;
+import web.dto.Provincia;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

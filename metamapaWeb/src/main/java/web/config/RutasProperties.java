@@ -1,4 +1,4 @@
-package web.service;
+package web.config;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
@@ -25,4 +25,7 @@ public class RutasProperties {
         log.info("ESTADISTICAS URL = " + estadisticasBaseUrl);
     }
 
+    public String getBaseUrl() {
+        return baseUrl;
+    }
 }

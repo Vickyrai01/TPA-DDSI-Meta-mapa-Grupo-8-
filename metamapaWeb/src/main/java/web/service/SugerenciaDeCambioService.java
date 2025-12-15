@@ -1,5 +1,6 @@
 package web.service;
 
+import web.config.RutasProperties;
 import web.dto.SugerenciaConHechoDTO;
 import web.dto.SugerenciaDTO;
 import org.springframework.stereotype.Service;
