@@ -1,4 +1,4 @@
-package web.enums;
+package web.dto;
 
 import java.text.Normalizer;
 

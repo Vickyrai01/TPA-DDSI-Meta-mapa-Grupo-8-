@@ -1,4 +1,4 @@
-package web.service;
+package web.config;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;

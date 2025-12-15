@@ -1,6 +1,6 @@
 package web.controller;
 
-import web.service.RutasProperties;
+import web.config.RutasProperties;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
