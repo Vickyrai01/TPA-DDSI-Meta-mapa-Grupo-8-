@@ -18,6 +18,9 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.LinkedHashMap;
 
 public class GetHechosDeColeccionCurados implements Handler {
 
@@ -59,6 +62,15 @@ public class GetHechosDeColeccionCurados implements Handler {
                     .filtrarHechosPorDTO(hechosParaFiltrar, filtro);   // <-- filtrás esa lista
 
             var respuesta = hechosFiltrados.stream()
+                    .filter(h -> h.getHash() != null)
+                    .collect(Collectors.toMap(
+                            Hecho::getHash,
+                            Function.identity(),
+                            (h1, h2) -> h1,          // si se repite el hash, me quedo con el primero
+                            LinkedHashMap::new       // mantiene el orden
+                    ))
+                    .values()
+                    .stream()
                     .map(HechoResumenDTO::from)
                     .toList();
             log.info("Hechos devueltos ok idColeccion={} modo=IRRESTRICTA count={}", idBuscado, respuesta.size());
