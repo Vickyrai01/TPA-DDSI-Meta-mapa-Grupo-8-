@@ -98,3 +98,71 @@ if (markers.length > 1) {
 
 window.addEventListener('load', () => map.invalidateSize());
 window.addEventListener('resize', () => map.invalidateSize());
+
+// === DETECTOR DE MENSAJES FLASH ===
+document.addEventListener("DOMContentLoaded", function() {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    // Si la URL tiene ?solicitudEliminacion=ok
+    if (urlParams.get('solicitudEliminacion') === 'ok') {
+        mostrarToast("¡Solicitud enviada con éxito!", "success");
+        limpiarUrl();
+    }
+    // Si la URL tiene ?solicitudEliminacion=error
+    else if (urlParams.get('solicitudEliminacion') === 'error') {
+        mostrarToast("Hubo un error al enviar la solicitud.", "error");
+        limpiarUrl();
+    }
+});
+
+function limpiarUrl() {
+    // Quita los parámetros feos de la URL sin recargar
+    const nuevaUrl = window.location.pathname;
+    window.history.replaceState({}, document.title, nuevaUrl);
+}
+
+function mostrarToast(mensaje, tipo) {
+    const toast = document.createElement("div");
+    toast.textContent = mensaje;
+
+    // Color según tipo
+    const bgColor = tipo === 'success' ? '#28a745' : '#dc3545'; // Verde o Rojo
+
+    toast.style.cssText = `
+        position: fixed;
+        /* AJUSTA ESTE VALOR según la altura de tu navbar (aprox 80px suele estar bien) */
+        top: 80px; 
+        
+        /* Esto centra el elemento horizontalmente */
+        left: 50%;
+        transform: translateX(-50%);
+        
+        background-color: ${bgColor};
+        color: white;
+        padding: 15px 30px;
+        border-radius: 50px; /* Bordes más redondeados quedan mejor al centro */
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        z-index: 9999;
+        font-family: sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+        text-align: center;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out, top 0.5s ease-in-out;
+    `;
+
+    document.body.appendChild(toast);
+
+    // Animación de entrada (hacemos que baje un poquito al aparecer)
+    setTimeout(() => {
+        toast.style.opacity = "1";
+        toast.style.top = "90px"; // Efecto de bajada suave
+    }, 100);
+
+    // Animación de salida
+    setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.top = "80px"; // Vuelve a subir al desaparecer
+        setTimeout(() => { document.body.removeChild(toast); }, 500);
+    }, 4000);
+}

@@ -305,9 +305,11 @@
                 <input type="hidden" id="csrfHeader" th:if="${_csrf}" th:value="${_csrf.headerName}"/>
 
                 <div style="margin-bottom:1rem;">
-                    <label for="sug-motivo"><b>Motivo / descripción de la sugerencia</b></label>
+                    <label for="sug-motivo"><b>Motivo / Descripción de la sugerencia <span style="color:red">*</span></b></label>
                     <textarea id="sug-motivo" class="form-control" rows="3"
-                              placeholder="Explicá qué querés cambiar (opcional pero recomendado)"></textarea>
+                              placeholder="Explicá qué querés cambiar (Obligatorio)"></textarea>
+
+                    <div id="sug-error-motivo" style="color: #dc3545; font-weight: bold; font-size: 0.9rem; margin-top: 5px; display: none;"></div>
                 </div>
 
                 <hr style="margin: 1rem 0;"/>
@@ -368,11 +370,52 @@
         /*]]>*/
     </script>
 
-
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     <script>
-        // --- VALIDACION: Deshabilitar edicion si pasaron 7 días o si no hay fecha ---
+        // --- FUNCIÓN TOAST (Notificación flotante) ---
+        // La definimos afuera para que esté disponible globalmente
+        function mostrarToast(mensaje, tipo = 'success') {
+            const toast = document.createElement("div");
+            toast.textContent = mensaje;
+            const bgColor = tipo === 'success' ? '#28a745' : '#dc3545';
+
+            toast.style.cssText = `
+                position: fixed;
+                top: 80px;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: ${bgColor};
+                color: white;
+                padding: 15px 30px;
+                border-radius: 50px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                z-index: 9999;
+                font-family: sans-serif;
+                font-size: 15px;
+                font-weight: 500;
+                text-align: center;
+                opacity: 0;
+                transition: opacity 0.5s ease-in-out, top 0.5s ease-in-out;
+            `;
+
+            document.body.appendChild(toast);
+
+            // Animación entrada
+            setTimeout(() => {
+                toast.style.opacity = "1";
+                toast.style.top = "90px";
+            }, 100);
+
+            // Animación salida
+            setTimeout(() => {
+                toast.style.opacity = "0";
+                toast.style.top = "80px";
+                setTimeout(() => { document.body.removeChild(toast); }, 500);
+            }, 4000);
+        }
+
+        // --- VALIDACION: Deshabilitar edicion si pasaron 7 días ---
         document.addEventListener('DOMContentLoaded', () => {
             const detalles = document.querySelectorAll('details[data-hash]');
 
@@ -383,7 +426,7 @@
 
                 if (!fechaString || fechaString === "null" || fechaString.trim() === "") {
                     bloquearEdicion = true;
-                    mensajeError = " (No puede editar el hecho: Fecha no disponible)";
+                    mensajeError = " (No puede editar: Fecha no disponible)";
                 } else {
                     const fechaCarga = new Date(fechaString);
                     const hoy = new Date();
@@ -392,7 +435,7 @@
 
                     if (diasPasados > 7) {
                         bloquearEdicion = true;
-                        mensajeError = " (No puede editar el hecho: Pasaron más de 7 días)";
+                        mensajeError = " (No puede editar: Pasaron más de 7 días)";
                     }
                 }
 
@@ -402,29 +445,19 @@
                         btnEditar.disabled = true;
                         btnEditar.style.opacity = "0.5";
                         btnEditar.style.cursor = "not-allowed";
-                        btnEditar.title = "No se puede editar: " + mensajeError.trim();
-
-                        const mensaje = document.createElement('span');
-                        mensaje.innerText = mensajeError;
-                        mensaje.style.color = "#d9534f";
-                        mensaje.style.fontSize = "0.85em";
-                        mensaje.style.marginLeft = "10px";
-                        mensaje.style.fontWeight = "bold";
-
-                        btnEditar.parentNode.insertBefore(mensaje, btnEditar.nextSibling);
+                        btnEditar.title = mensajeError.trim();
+                        // Opcional: mostrar mensaje visual
                     }
                 }
             });
         });
 
-        // Edición de hechos en "mis hechos" (SOLO descripcion + etiquetas)
+        // Edición de hechos en "mis hechos"
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.hecho-detalle').forEach(detalle => {
                 const editBtn = detalle.querySelector('.edit-btn');
                 const saveBtn = detalle.querySelector('.save-btn');
                 const cancelBtn = detalle.querySelector('.cancel-btn');
-
-                // Importante: solo los contenedores editables (no ocultamos el view-mode)
                 const editContainers = detalle.querySelectorAll('.field.edit-mode');
                 const hash = detalle.closest('details')?.getAttribute('data-hash');
 
@@ -436,25 +469,15 @@
                 }
 
                 if (editBtn && !editBtn.disabled) {
-                    editBtn.addEventListener('click', () => {
-                        setEditing(true);
-                    });
+                    editBtn.addEventListener('click', () => setEditing(true));
                 }
-
-                cancelBtn?.addEventListener('click', () => {
-                    setEditing(false);
-                });
+                cancelBtn?.addEventListener('click', () => setEditing(false));
 
                 saveBtn?.addEventListener('click', async () => {
                     saveBtn.disabled = true;
+                    const descripcion = detalle.querySelector('input.edit-mode[name="descripcion"]')?.value?.trim() || '';
+                    const etiquetasCsv = detalle.querySelector('input.edit-mode[name="etiquetas"]')?.value?.trim() || '';
 
-                    const descripcionInput = detalle.querySelector('input.edit-mode[name="descripcion"]');
-                    const etiquetasInput = detalle.querySelector('input.edit-mode[name="etiquetas"]');
-
-                    const descripcion = descripcionInput?.value?.trim() || '';
-                    const etiquetasCsv = etiquetasInput?.value?.trim() || '';
-
-                    // Payload SOLO con campos permitidos
                     const payload = {
                         descripcion: descripcion.length ? descripcion : null,
                         etiquetas: etiquetasCsv.split(',').map(s => s.trim()).filter(Boolean)
@@ -467,24 +490,14 @@
                             body: JSON.stringify(payload)
                         });
 
-                        if (!resp.ok) {
-                            const txt = await resp.text().catch(() => '');
-                            throw new Error(`PATCH failed: ${resp.status} ${txt}`);
-                        }
+                        if (!resp.ok) throw new Error('Error al guardar');
 
-                        // Actualizar descripción en view-mode
+                        // Actualizar UI
                         const descSpan = detalle.querySelector('[data-field="descripcion"]');
                         if (descSpan) {
-                            if (payload.descripcion == null) {
-                                descSpan.textContent = 'No indica';
-                                descSpan.classList.add('muted');
-                            } else {
-                                descSpan.textContent = payload.descripcion;
-                                descSpan.classList.remove('muted');
-                            }
+                            descSpan.textContent = payload.descripcion || 'No indica';
+                            payload.descripcion ? descSpan.classList.remove('muted') : descSpan.classList.add('muted');
                         }
-
-                        // Actualizar chips de etiquetas en view-mode
                         const tagsWrap = detalle.querySelector('.tags.view-mode');
                         if (tagsWrap) {
                             tagsWrap.innerHTML = '';
@@ -495,11 +508,10 @@
                                 tagsWrap.appendChild(span);
                             });
                         }
-
                         setEditing(false);
+                        mostrarToast('Cambios guardados correctamente', 'success');
                     } catch (err) {
-                        alert('Error guardando cambios. Revisá la consola/Network.');
-                        console.error(err);
+                        alert('Error guardando cambios.');
                     } finally {
                         saveBtn.disabled = false;
                     }
@@ -507,7 +519,7 @@
             });
         });
 
-        // Configuración del Mapa (ORIGINAL)
+        // Configuración del Mapa
         const toNum = v => {
             if (v == null) return null;
             const n = parseFloat(String(v).replace(',', '.'));
@@ -539,16 +551,11 @@
         });
 
         puntos.forEach(p => {
-            const popupHtml = `
-              <div class="popup-card">
-                <div class="popup-title"><b>${p.nombre ?? '(sin título)'}</b></div>
-              </div>
-            `;
+            const popupHtml = `<div class="popup-card"><div class="popup-title"><b>${p.nombre ?? '(sin título)'}</b></div></div>`;
             const m = L.marker([p.lat, p.lon]).bindPopup(popupHtml);
             clusterGroup.addLayer(m);
             markersByHash[p.hash] = m;
         });
-
         clusterGroup.addTo(map);
 
         const sidebarPanel = document.querySelector('.sidebar-panel');
@@ -556,44 +563,25 @@
         function focusMarker(hash, {zoom=15, openPopup=true} = {}) {
             const m = markersByHash[hash];
             if (!m) return;
-            const latlng = m.getLatLng();
-            map.flyTo(latlng, Math.max(map.getZoom(), zoom), { duration: .45 });
+            map.flyTo(m.getLatLng(), Math.max(map.getZoom(), zoom), { duration: .45 });
             if (openPopup) m.openPopup();
         }
 
         function openDetails(hash, {scroll=true, highlight=true, closeOthers=true} = {}) {
             const details = document.querySelector(`details[data-hash="${hash}"]`);
             if (!details) return;
-
-            if (closeOthers) {
-                document.querySelectorAll('.hechos-accordion details[open]')
-                    .forEach(d => { if (d !== details) d.removeAttribute('open'); });
-            }
-
+            if (closeOthers) document.querySelectorAll('.hechos-accordion details[open]').forEach(d => { if (d !== details) d.removeAttribute('open'); });
             details.setAttribute('open', true);
-
             if (highlight) {
-                document.querySelectorAll('.hechos-accordion details')
-                    .forEach(d => d.classList.remove('highlight'));
+                document.querySelectorAll('.hechos-accordion details').forEach(d => d.classList.remove('highlight'));
                 details.classList.add('highlight');
             }
-
-            if (scroll && sidebarPanel) {
-                sidebarPanel.scrollTo({ top: details.offsetTop - 40, behavior: 'smooth' });
-            }
+            if (scroll && sidebarPanel) sidebarPanel.scrollTo({ top: details.offsetTop - 40, behavior: 'smooth' });
         }
 
         document.addEventListener('click', (e) => {
             const link = e.target.closest('.js-ver-hecho');
             if (!link) return;
-            const clickedAnchor = e.target.closest('a');
-            if (clickedAnchor) {
-                const href = clickedAnchor.getAttribute('href');
-                if (href && href !== '#') {
-                    return;
-                }
-            }
-
             e.preventDefault();
             const hash = link.dataset.hash;
             focusMarker(hash, { openPopup: true });
@@ -601,172 +589,105 @@
         });
 
         function fitLayout(){
+            const cont = document.querySelector('.map-layout-container');
+            if(!cont) return;
             const header = document.querySelector('header.site-header');
             const footer = document.querySelector('footer.site-footer');
-            const cont   = document.querySelector('.map-layout-container');
-            if(!cont) return;
             const h = window.innerHeight - (header?.offsetHeight||0) - (footer?.offsetHeight||0) - 16;
-            cont.style.height = Math.max(360, h) + 'px'; // ⬅️ antes era minHeight
+            cont.style.height = Math.max(360, h) + 'px';
         }
-
         window.addEventListener('load',  () => { fitLayout(); setTimeout(()=>map.invalidateSize(), 80); });
         window.addEventListener('resize',() => { fitLayout(); map.invalidateSize(); });
 
-        // ===== POPUP MULTIMEDIA (IMAGEN + VIDEO) =====
+        // ===== MODAL MULTIMEDIA =====
         (function () {
             const modal = document.getElementById('media-modal');
             if (!modal) return;
-
-            const modalImg     = document.getElementById('media-modal-img');
-            const modalVideo   = document.getElementById('media-modal-video');
+            const modalImg = document.getElementById('media-modal-img');
+            const modalVideo = document.getElementById('media-modal-video');
             const modalCaption = document.getElementById('media-modal-caption');
-            const btnClose     = modal.querySelector('.img-modal-close');
-
-            const actionsWrap  = document.getElementById('media-modal-actions');
-            const btnDownload  = document.getElementById('media-modal-download');
-            const btnOpenTab   = document.getElementById('media-modal-open');
+            const btnClose = modal.querySelector('.img-modal-close');
+            const actionsWrap = document.getElementById('media-modal-actions');
+            const btnDownload = document.getElementById('media-modal-download');
+            const btnOpenTab = document.getElementById('media-modal-open');
 
             function openModal({ type, src, alt }) {
                 if (!src) return;
-
-                // reset
                 modalImg.style.display = 'none';
                 modalVideo.style.display = 'none';
                 modalVideo.pause();
-                modalVideo.removeAttribute('src'); // importante para “cortar” descarga
-                modalVideo.load();
-
-                // set caption + acciones
                 modalCaption.textContent = alt || '';
                 if (actionsWrap) actionsWrap.style.display = 'flex';
                 if (btnDownload) btnDownload.href = src;
-                if (btnOpenTab)  btnOpenTab.href = src;
+                if (btnOpenTab) btnOpenTab.href = src;
 
-                // show correct media
                 if (type === 'video') {
                     modalVideo.style.display = 'block';
                     modalVideo.src = src;
-                    modalVideo.load();
                 } else {
                     modalImg.style.display = 'block';
                     modalImg.src = src;
-                    modalImg.alt = alt || '';
                 }
-
                 modal.classList.add('is-visible');
-                modal.setAttribute('aria-hidden', 'false');
             }
 
             function closeModal() {
                 modal.classList.remove('is-visible');
-                modal.setAttribute('aria-hidden', 'true');
-
-                // limpiar para que no siga sonando / descargando
-                modalImg.src = '';
-                modalImg.alt = '';
-
                 modalVideo.pause();
                 modalVideo.removeAttribute('src');
-                modalVideo.load();
-
-                modalCaption.textContent = '';
-                if (actionsWrap) actionsWrap.style.display = 'none';
             }
 
-            // Click en miniatura
             document.addEventListener('click', (e) => {
                 const btn = e.target.closest('.multimedia-item');
-                if (!btn) return;
-
-                e.preventDefault();
-
-                const src  = btn.dataset.src;
-                const alt  = btn.dataset.alt || '';
-                const type = btn.dataset.type || 'image';
-
-                openModal({ type, src, alt });
-            });
-
-            // cerrar
-            btnClose?.addEventListener('click', (e) => {
-                e.preventDefault();
-                closeModal();
-            });
-
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal || e.target.classList.contains('img-modal-backdrop')) {
-                    closeModal();
+                if (btn) {
+                    e.preventDefault();
+                    openModal({ type: btn.dataset.type, src: btn.dataset.src, alt: btn.dataset.alt });
                 }
             });
-
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && modal.classList.contains('is-visible')) {
-                    closeModal();
-                }
-            });
+            btnClose?.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
         })();
 
         // =========== PANEL SUGERENCIA ===========
         function abrirPanelSugerencia(hecho, idHecho) {
             document.getElementById('panel-sugerencia').style.display = 'block';
             document.getElementById('sug-idHecho').value = idHecho;
-
-            // precargar con valores actuales
             document.getElementById('sug-titulo').value = hecho.nombre || '';
             document.getElementById('sug-descripcion').value = hecho.descripcion || '';
             document.getElementById('sug-fecha').value = hecho.fechaSuceso || '';
             document.getElementById('sug-hora').value = hecho.horaSuceso || '';
+            document.getElementById('sug-categoria').value = (hecho.categorias && hecho.categorias.length) ? hecho.categorias[0] : '';
+            document.getElementById('sug-etiquetas').value = (hecho.etiquetas && hecho.etiquetas.length) ? hecho.etiquetas.join(', ') : '';
 
-            const cat = (hecho.categorias && hecho.categorias.length) ? hecho.categorias[0] : '';
-            document.getElementById('sug-categoria').value = cat;
-
-            document.getElementById('sug-etiquetas').value =
-                (hecho.etiquetas && hecho.etiquetas.length) ? hecho.etiquetas.join(', ') : '';
-
+            // Limpiar campos y errores
             document.getElementById('sug-motivo').value = '';
-            const msg = document.getElementById('sug-msg');
-            msg.style.display = 'none';
-            msg.textContent = '';
+            const errorDiv = document.getElementById('sug-error-motivo');
+            if(errorDiv) errorDiv.style.display = 'none';
+            document.getElementById('sug-msg').style.display = 'none';
         }
 
         document.getElementById('cerrar-panel-sugerencia').addEventListener('click', () => {
             document.getElementById('panel-sugerencia').style.display = 'none';
         });
 
-        // Crear botón "Sugerir cambio" por hecho (al lado de Editar)
+        // Crear botón "Sugerir cambio"
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.hecho-detalle').forEach(det => {
-                const details = det.closest('details');
-                const hash = details?.getAttribute('data-hash');
-                const idHecho = details?.getAttribute('data-idhecho');
-                if (!hash || !idHecho) return;
+                const multimediaField = det.querySelector('.multimedia-gallery')?.closest('.field') ||
+                    Array.from(det.querySelectorAll('.field')).find(f => (f.querySelector('.field-label')?.textContent || '').toLowerCase().includes('multimedia'));
 
-                // Buscar el field de Multimedia (es el que tiene la galería o el texto "No tiene archivos...")
-                const multimediaField =
-                    det.querySelector('.multimedia-gallery')?.closest('.field') ||
-                    Array.from(det.querySelectorAll('.field')).find(f =>
-                        (f.querySelector('.field-label')?.textContent || '').toLowerCase().includes('multimedia')
-                    );
+                if (!multimediaField || det.querySelector('.hecho-actions')) return;
 
-                if (!multimediaField) return;
-
-// Si ya existe el bloque de acciones, no lo dupliques
-                if (det.querySelector('.hecho-actions')) return;
-
-// Crear un bloque de acciones propio
                 const acciones = document.createElement('div');
                 acciones.className = 'field hecho-actions';
                 acciones.innerHTML = `<span class="field-label">Acciones:</span>`;
-
-// Insertarlo antes de Multimedia
                 multimediaField.insertAdjacentElement('afterend', acciones);
 
-// Crear botón
                 const b = document.createElement('button');
-                b.type = 'button';
                 b.className = 'edit-btn suggest-btn';
                 b.textContent = 'Sugerir cambio';
                 b.style.background = '#ff8c42';
+                b.type = 'button';
 
                 b.addEventListener('click', () => {
                     const details = det.closest('details');
@@ -775,69 +696,73 @@
                     if (hecho) abrirPanelSugerencia(hecho, Number(idHecho));
                 });
 
-// Si el editar está bloqueado, bloqueá sugerir también
                 const editBtn = det.querySelector('.edit-btn:not(.suggest-btn)');
                 if (editBtn && editBtn.disabled) {
                     b.disabled = true;
                     b.style.opacity = "0.5";
                     b.style.cursor = "not-allowed";
-                    b.title = editBtn.title || "No se puede modificar: edición bloqueada";
                 }
-
                 acciones.appendChild(b);
-
             });
         });
 
-        // Submit -> POST /misHechos/{idHecho}/sugerencias (JSON = SugerenciaDTO)
+        // === ENVÍO DE SUGERENCIA (CORREGIDO) ===
         document.getElementById('form-sugerencia').addEventListener('submit', async (e) => {
-            e.preventDefault();
+            e.preventDefault(); // 1. Prevenir recarga
 
+            // 2. Obtener datos
             const idHecho = Number(document.getElementById('sug-idHecho').value);
             const motivo = document.getElementById('sug-motivo').value.trim();
+            const errorDiv = document.getElementById('sug-error-motivo');
 
+            // 3. Validación de Motivo
+            if(errorDiv) errorDiv.style.display = 'none';
+
+            if (!motivo) {
+                if(errorDiv) {
+                    errorDiv.textContent = "La descripción es obligatoria para enviar una sugerencia.";
+                    errorDiv.style.display = 'block';
+                } else {
+                    alert("La descripción es obligatoria.");
+                }
+                document.getElementById('sug-motivo').focus();
+                return; // Cortar ejecución si está vacío
+            }
+
+            // 4. Preparar Payload
             const titulo = document.getElementById('sug-titulo').value.trim();
             const descripcion = document.getElementById('sug-descripcion').value.trim();
-            const fechaSuceso = document.getElementById('sug-fecha').value; // yyyy-MM-dd o ""
-            const horaSuceso = document.getElementById('sug-hora').value;   // HH:mm o ""
+            const fechaSuceso = document.getElementById('sug-fecha').value;
+            const horaSuceso = document.getElementById('sug-hora').value;
             const categoria = document.getElementById('sug-categoria').value;
             const etiquetasCsv = document.getElementById('sug-etiquetas').value.trim();
-
-            const etiquetas = etiquetasCsv
-                ? etiquetasCsv.split(',').map(s => s.trim()).filter(Boolean)
-                : null;
-
+            const etiquetas = etiquetasCsv ? etiquetasCsv.split(',').map(s => s.trim()).filter(Boolean) : null;
             const d = new Date();
             const hoyIso = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0,10);
 
-
-            // JSON con nombres EXACTOS del record SugerenciaDTO
             const payload = {
-                descripcionSolicitud: motivo.length ? motivo : null,
+                descripcionSolicitud: motivo,
                 fechaSugerencia: hoyIso,
-
                 tituloSugerencia: titulo.length ? titulo : null,
                 descripcionSugerencia: descripcion.length ? descripcion : null,
                 fechaSucesoSugerencia: fechaSuceso ? fechaSuceso : null,
                 horaSucesoSugerencia: horaSuceso ? horaSuceso : null,
                 categoriaSugerencia: categoria ? categoria : null,
-                etiquetasSugerencia: etiquetas, // null o List<String>
-
+                etiquetasSugerencia: etiquetas,
                 idHecho: idHecho
             };
 
             const csrfToken = document.getElementById('csrfToken')?.value;
             const csrfHeader = document.getElementById('csrfHeader')?.value;
-
             const headers = { 'Content-Type': 'application/json' };
             if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
 
             const msg = document.getElementById('sug-msg');
             const btn = document.getElementById('btn-enviar-sugerencia');
 
+            // 5. Fetch
             try {
                 btn.disabled = true;
-
                 const resp = await fetch(`/misHechos/${encodeURIComponent(idHecho)}/sugerencias`, {
                     method: 'POST',
                     headers,
@@ -849,20 +774,17 @@
                     throw new Error(`POST failed: ${resp.status} ${txt}`);
                 }
 
-                msg.style.display = 'block';
-                msg.style.color = '#166534';
-                msg.textContent = 'Sugerencia enviada. ¡Gracias!';
+                // 6. ÉXITO: Mostrar Toast y cerrar panel
+                mostrarToast('¡Sugerencia enviada con éxito! Gracias.', 'success');
 
-                // opcional: cerrar panel
                 setTimeout(() => {
                     document.getElementById('panel-sugerencia').style.display = 'none';
-                }, 800);
+                    // Opcional: limpiar form
+                }, 400);
 
             } catch (err) {
                 console.error(err);
-                msg.style.display = 'block';
-                msg.style.color = '#b91c1c';
-                msg.textContent = 'No se pudo enviar la sugerencia. Volvé a intentarlo mas tarde.';
+                mostrarToast('No se pudo enviar la sugerencia.', 'error');
             } finally {
                 btn.disabled = false;
             }
