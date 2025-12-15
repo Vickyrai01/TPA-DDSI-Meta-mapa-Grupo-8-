@@ -300,6 +300,11 @@
     .remove-tag:hover {
       color: #1f2937;
     }
+    @media (min-width: 851px){
+      #categoria-otra-group{
+        grid-column: 2; /* misma columna que Categoría */
+      }
+    }
   </style>
 </th:block>
 
@@ -354,6 +359,12 @@
               </select>
             </div>
 
+            <!-- input que aparece solo si se elige "Otro" -->
+            <div class="form-group hidden" id="categoria-otra-group">
+              <label for="categoriaOtra">Especificá la categoría <span style="color:#F47C2C;">*</span></label>
+              <input type="text" id="categoriaOtra" name="categoriaOtra"
+                     placeholder="Describí la categoría">
+            </div>
             <div class="form-group">
               <label for="fechaSuceso">Fecha de suceso <span style="color:#F47C2C;">*</span></label>
               <input type="date" id="fechaSuceso" name="fechaSuceso"
@@ -367,12 +378,6 @@
               <small class="map-help">Formato 24 hs (HH:mm). Si no sabés la hora, dejalo vacío.</small>
             </div>
 
-            <!-- input que aparece solo si se elige "Otro" -->
-            <div class="form-group hidden" id="categoria-otra-group">
-              <label for="categoriaOtra">Especificá la categoría <span style="color:#F47C2C;">*</span></label>
-              <input type="text" id="categoriaOtra" name="categoriaOtra"
-                     placeholder="Describí la categoría">
-            </div>
 
             <div class="form-group" style="grid-column: 1 / -1;">
               <label for="descripcion">Descripción <span style="color:#F47C2C;">*</span></label>
@@ -437,17 +442,6 @@
           </div>
         </div>
       </form>
-      <button id="btn-ejecutar-agregacion"
-              style="padding:0.4rem 1rem;
-               border:none;
-               border-radius:8px;
-               background:#F47C2C;
-               color:white;
-               cursor:pointer;
-               font-weight:bold;">
-        Ejecutar Servicio de Agregación
-      </button>
-
       <input type="hidden" id="csrf-token" th:value="${_csrf.token}">
 
     </div>
@@ -658,32 +652,6 @@
             renderTags();
           }
           input.value = '';
-        }
-      });
-    });
-
-    // ====== EJECUTAR AGREGACIÓN ======
-    document.addEventListener("DOMContentLoaded", () => {
-
-      const btn = document.getElementById("btn-ejecutar-agregacion");
-      const csrf = document.getElementById("csrf-token")?.value;
-
-      btn.addEventListener("click", async () => {
-
-        try {
-          const resp = await fetch("/ejecutar-agregacion", {
-            method: "POST",
-            headers: { "X-CSRF-TOKEN": csrf }
-          });
-
-          if (resp.ok) {
-            alert("Servicio ejecutado correctamente");
-          } else {
-            alert("Error ejecutando servicio: " + resp.status);
-          }
-        } catch (e) {
-          console.error(e);
-          alert("Error de red ejecutando servicio");
         }
       });
     });
