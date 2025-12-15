@@ -25,4 +25,7 @@ public class RutasProperties {
         log.info("ESTADISTICAS URL = " + estadisticasBaseUrl);
     }
 
+    public String getBaseUrl() {
+        return baseUrl;
+    }
 }
