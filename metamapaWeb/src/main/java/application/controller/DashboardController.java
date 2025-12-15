@@ -2,6 +2,7 @@ package application.controller;
 
 import application.service.EstadisticasService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
@@ -15,9 +16,14 @@ public class DashboardController {
     @Autowired
     EstadisticasService estadisticasService;
 
+    @Value("${metamapa.api.estadisticas-base-url}")
+    private String estadisticasBaseUrl;
+
     // Vista Dashboard (HTML)
     @GetMapping("/dashboard")
-    public String dashboard() {
+    public String dashboard(Model model) {
+        model.addAttribute("estadisticasBaseUrl", estadisticasBaseUrl);
+
         return "dashboard/dashboard";
     }
 
