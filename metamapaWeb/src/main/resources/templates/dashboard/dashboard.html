@@ -30,7 +30,9 @@
     <div class="dashboard-chart-card">
       <div class="dashboard-card-header">
         <span>Cantidad de hechos por categoría</span>
-        <a class="descarga-csv" href="http://localhost:8090/servicioEstadisticas/export/csv/categoria-mas-reportada" target="_blank">
+        <a class="descarga-csv"
+           th:href="${estadisticasBaseUrl + '/export/csv/categoria-mas-reportada'}"
+           target="_blank">
           Descargar CSV
         </a>
       </div>
@@ -39,7 +41,9 @@
     <div class="dashboard-chart-card">
       <div class="dashboard-card-header">
         <span>Cantidad de hechos por provincia</span>
-        <a class="descarga-csv" href="http://localhost:8090/servicioEstadisticas/export/csv/provincia-mas-hechos" target="_blank">
+        <a class="descarga-csv"
+           th:href="${estadisticasBaseUrl + '/export/csv/provincia-mas-hechos'}"
+           target="_blank">
           Descargar CSV
         </a>
       </div>
@@ -59,21 +63,28 @@
       <div class="dashboard-chart-card">
         <div class="dashboard-card-header">
           <span>Hechos por provincia (categoría seleccionada)</span>
-          <a id="csv-prov-categ" class="descarga-csv" target="_blank">Descargar CSV</a>
+          <a id="csv-prov-categ" class="descarga-csv"
+             th:href="${estadisticasBaseUrl + '/export/csv/provincia-por-categoria/' + selectedCategoria}"
+             target="_blank">
+            Descargar CSV
+          </a>
         </div>
         <canvas id="hechos-por-provincia-cat"></canvas>
       </div>
       <div class="dashboard-chart-card">
         <div class="dashboard-card-header">
           <span>Hechos por hora (categoría seleccionada)</span>
-          <a id="csv-hora-categ" class="descarga-csv" target="_blank">Descargar CSV</a>
+          <a id="csv-hora-categ" class="descarga-csv"
+             th:href="${estadisticasBaseUrl + '/export/csv/horario-por-categoria/' + selectedCategoria}"
+             target="_blank">
+            Descargar CSV
+          </a>
         </div>
         <canvas id="hechos-por-hora-cat"></canvas>
       </div>
     </div>
   </div>
-</div>
-</div>
+
 
 <th:block id="scripts-dashboard">
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
