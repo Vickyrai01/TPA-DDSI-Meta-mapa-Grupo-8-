@@ -109,7 +109,7 @@ public class HandlerCargadores {
             return hechosExtraidos;
         }
 
-        // ✅ viene del Scheduler (no lo generes acá)
+        // viene del Scheduler (no lo generes acá)
         String traceId = MDC.get("traceId");
         if (traceId == null || traceId.isBlank()) {
             // por seguridad si alguien llama fuera del scheduler
@@ -117,7 +117,7 @@ public class HandlerCargadores {
             MDC.put("traceId", traceId);
         }
 
-        // ✅ correlationId propio de este handler (lo querés mantener)
+        // correlationId propio de este handler (lo querés mantener)
         String correlationId = MDC.get("correlationId");
         if (correlationId == null || correlationId.isBlank()) {
             correlationId = UUID.randomUUID().toString().substring(0, 8);
@@ -142,9 +142,9 @@ public class HandlerCargadores {
                 .uri(URI.create(fuente))
                 .timeout(Duration.ofSeconds(10))
                 .header("Accept", "application/json")
-                .header("X-Trace-Id", traceId)              // ✅ traceId del scheduler
-                .header("X-Correlation-Id", correlationId)  // ✅ correlationId mantenido
-                .header("X-Span-Id", spanId)                // ✅ opcional
+                .header("X-Trace-Id", traceId)              // traceId del scheduler
+                .header("X-Correlation-Id", correlationId)  // correlationId mantenido
+                .header("X-Span-Id", spanId)                // opcional
                 .GET()
                 .build();
 
