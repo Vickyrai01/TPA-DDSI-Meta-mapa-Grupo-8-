@@ -7,4 +7,6 @@ Repositorio para TP anual de la materia diseño de sistemas de la información c
 
 - API SERVICIO ESTADISTICA: https://documenter.getpostman.com/view/42598532/2sB3WnxNAj
 
+- CARGADORES: https://documenter.getpostman.com/view/42598532/2sB3dTsTAN
+
 - DIAGRAMAS: 
