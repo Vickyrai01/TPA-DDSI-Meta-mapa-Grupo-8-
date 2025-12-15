@@ -85,7 +85,6 @@ body{
   background-image:
           linear-gradient(rgba(255,255,255,0.65), rgba(255,255,255,0.65)),
           var(--home-bg-url);
-  background-repeat: no-repeat, repeat-y;
   background-size: cover, auto;
   background-position: center top, center top;
   background-blend-mode: soft-light;
