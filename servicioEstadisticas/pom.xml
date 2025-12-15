@@ -88,11 +88,21 @@
 
     <build>
         <plugins>
-            <!-- Plugin de Spring Boot -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>servicioEstadisticas.application.Application</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>
+
 </project>

@@ -99,7 +99,7 @@ services:
       - mysql
       - core
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/servicioestadisticas?serverTimezone=America/Argentina/Buenos_Aires
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/core?serverTimezone=America/Argentina/Buenos_Aires
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: Root123456
 
