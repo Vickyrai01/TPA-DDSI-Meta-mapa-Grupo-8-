@@ -100,7 +100,7 @@ public class PostHechoHandler implements Handler {
 
             if (statusCargador == 201) {
                 log.info("Hecho enviado correctamente al cargador (anonimo={})", tratarComoAnonimo);
-                context.status(201);
+                context.status(201).result("Hecho enviado correctamente al cargador");
             } else if (statusCargador >= 400 && statusCargador < 500) {
                 log.warn("Error 4xx del cargador: {} - {}", statusCargador, bodyCargador);
                 context.status(statusCargador).result(bodyCargador);
