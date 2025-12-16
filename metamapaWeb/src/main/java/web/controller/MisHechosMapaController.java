@@ -76,7 +76,7 @@ public class MisHechosMapaController {
     }
 
     // POST /misHechos/{idHecho}/sugerencias
-    @PostMapping(path = "/misHechos/{idHecho}/sugerencias", consumes = "web/json")
+    @PostMapping(path = "/misHechos/{idHecho}/sugerencias", consumes = "application/json")
     @ResponseBody
     public ResponseEntity<?> crearSugerencia(
             @RequestBody SugerenciaDTO req) {

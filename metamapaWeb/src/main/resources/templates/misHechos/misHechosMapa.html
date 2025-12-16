@@ -486,7 +486,7 @@
                     try {
                         const resp = await fetch(`/admin/hechos/${encodeURIComponent(hash)}/modificar`, {
                             method: 'PATCH',
-                            headers: { 'Content-Type': 'web/json' },
+                            headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(payload)
                         });
 
@@ -754,7 +754,7 @@
 
             const csrfToken = document.getElementById('csrfToken')?.value;
             const csrfHeader = document.getElementById('csrfHeader')?.value;
-            const headers = { 'Content-Type': 'web/json' };
+            const headers = { 'Content-Type': 'application/json' };
             if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
 
             const msg = document.getElementById('sug-msg');
